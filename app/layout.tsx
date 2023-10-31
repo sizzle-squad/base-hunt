@@ -1,5 +1,5 @@
 "use client";
-import { WagmiConfig, createConfig, chain } from "wagmi";
+import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import Navbar from "@/components/navigation/navbar";
 import Footer from "@/components/navigation/footer";
@@ -9,7 +9,7 @@ const alchemyId = process.env.ALCHEMY_ID;
 
 const walletConnectProjectId = process.env.WALLETCONNECT_PROJECT_ID!;
 
-const chains = [base];
+const chains = [ base ];
 
 const config = createConfig(
   getDefaultConfig({
