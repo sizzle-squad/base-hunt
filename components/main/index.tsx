@@ -5,12 +5,9 @@ export default function Main() {
     <div className={styles.container}>
       <header className={styles.header_container}>
         <div className={styles.header}>
-
         </div>
       </header>
-
       <div className={styles.container}>
-
       </div>
     </div>
   );

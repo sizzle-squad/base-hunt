@@ -4,6 +4,7 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import Navbar from "@/components/navigation/navbar";
 import Footer from "@/components/navigation/footer";
 import { base } from "viem/chains";
+import { Jumbotron } from "@/components/assets/Jumbotron";
 
 const alchemyId = process.env.ALCHEMY_ID;
 
@@ -32,6 +33,7 @@ export default function RootLayout({
           <body>
             <div style={{ display: "flex", flexDirection: "column", minHeight: "105vh" }}>
               <Navbar />
+              <Jumbotron imageUrl="/images/map.png" isCircular />
               <div style={{flexGrow: 1}}>{children}</div>
               <Footer />
             </div>
