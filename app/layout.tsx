@@ -1,8 +1,8 @@
 "use client";
 import { WagmiConfig, createConfig, chain } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import Navbar from "@/components/navigation/Navbar";
-import Footer from "@/components/navigation/Footer";
+import Navbar from "@/components/navigation/navbar";
+import Footer from "@/components/navigation/footer";
 import { base } from "viem/chains";
 
 const alchemyId = process.env.ALCHEMY_ID;
