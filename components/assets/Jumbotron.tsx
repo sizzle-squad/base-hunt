@@ -1,5 +1,5 @@
-import Image from "next/image";
-import { Box, Container, Stack } from "@mui/material";
+import Image from 'next/image';
+import { Box, Container, Stack } from '@mui/material';
 
 type Props = {
   imageUrl: string;
@@ -18,7 +18,7 @@ export function Jumbotron({
     <Container>
       <Stack
         border="3px solid black"
-        borderRadius={isCircular ? "50%" : ""}
+        borderRadius={isCircular ? '50%' : ''}
         overflow="hidden"
         width="500px"
         height="500px"

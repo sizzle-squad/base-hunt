@@ -1,10 +1,10 @@
-"use client";
-import { WagmiConfig, createConfig } from "wagmi";
-import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import Navbar from "@/components/navigation/navbar";
-import Footer from "@/components/navigation/footer";
-import { base } from "viem/chains";
-import { Jumbotron } from "@/components/assets/Jumbotron";
+'use client';
+import { WagmiConfig, createConfig } from 'wagmi';
+import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
+import Navbar from '@/components/navigation/navbar';
+import Footer from '@/components/navigation/footer';
+import { base } from 'viem/chains';
+import { Jumbotron } from '@/components/assets/Jumbotron';
 
 const alchemyId = process.env.ALCHEMY_ID;
 
@@ -14,11 +14,11 @@ const chains = [base];
 
 const config = createConfig(
   getDefaultConfig({
-    appName: "Base Hunt",
+    appName: 'Base Hunt',
     alchemyId,
     walletConnectProjectId,
     chains,
-  }),
+  })
 );
 
 export default function RootLayout({
@@ -33,9 +33,9 @@ export default function RootLayout({
           <body>
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "105vh",
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '105vh',
               }}
             >
               <Navbar />

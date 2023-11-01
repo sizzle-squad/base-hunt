@@ -8,8 +8,8 @@ module.exports = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "**.midjourney.com",
+        protocol: 'https',
+        hostname: '**.midjourney.com',
       },
     ],
   },
