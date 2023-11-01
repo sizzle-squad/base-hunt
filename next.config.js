@@ -11,7 +11,7 @@ module.exports = {
         protocol: 'https',
         hostname: '**.midjourney.com',
       },
-    ]
+    ],
   },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false };
