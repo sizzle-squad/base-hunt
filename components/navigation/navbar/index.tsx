@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { ConnectKitButton } from "connectkit";
 import styles from "./navbar.module.css";

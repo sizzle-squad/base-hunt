@@ -8,10 +8,10 @@ module.exports = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**.midjourney.com',
+        protocol: "https",
+        hostname: "**.midjourney.com",
       },
-    ]
+    ],
   },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false };

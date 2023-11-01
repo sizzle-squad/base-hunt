@@ -10,7 +10,7 @@ const alchemyId = process.env.ALCHEMY_ID;
 
 const walletConnectProjectId = process.env.WALLETCONNECT_PROJECT_ID!;
 
-const chains = [ base ];
+const chains = [base];
 
 const config = createConfig(
   getDefaultConfig({
@@ -31,10 +31,16 @@ export default function RootLayout({
       <WagmiConfig config={config}>
         <ConnectKitProvider mode="dark">
           <body>
-            <div style={{ display: "flex", flexDirection: "column", minHeight: "105vh" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "105vh",
+              }}
+            >
               <Navbar />
               <Jumbotron imageUrl="/images/map.png" isCircular />
-              <div style={{flexGrow: 1}}>{children}</div>
+              <div style={{ flexGrow: 1 }}>{children}</div>
               <Footer />
             </div>
           </body>

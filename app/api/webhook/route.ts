@@ -1,4 +1,4 @@
-import { NextResponse,NextRequest } from 'next/server'
+import { NextResponse, NextRequest } from "next/server";
 
 // type commandOp = {
 //   command: string,
@@ -6,8 +6,8 @@ import { NextResponse,NextRequest } from 'next/server'
 //   userAddress: string
 // }
 
-export async function POST(req:NextRequest) {  
-  const body = await req.json()
-  console.log(JSON.stringify(body))
-  return NextResponse.json({status: 'ok'})
-} 
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  console.log(JSON.stringify(body));
+  return NextResponse.json({ status: "ok" });
+}
