@@ -5,6 +5,7 @@ import Navbar from '@/components/navigation/navbar';
 import Footer from '@/components/navigation/footer';
 import { base } from 'viem/chains';
 import { Jumbotron } from '@/components/assets/Jumbotron';
+import { Box, Stack } from '@mui/material';
 
 const alchemyId = process.env.ALCHEMY_ID;
 
@@ -27,25 +28,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <WagmiConfig config={config}>
-        <ConnectKitProvider mode="dark">
-          <body>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '105vh',
-              }}
-            >
-              <Navbar />
-              <Jumbotron imageUrl="/images/map.png" isCircular />
-              <div style={{ flexGrow: 1 }}>{children}</div>
-              <Footer />
-            </div>
-          </body>
-        </ConnectKitProvider>
-      </WagmiConfig>
-    </html>
+    <Stack
+      alignItems="center"
+      justifyContent="center"
+      paddingY="24px"
+      paddingX="20px"
+      direction="column"
+      overflow={'hidden'}
+      position={'relative'}
+    >
+      {children}
+      <Footer />
+    </Stack>
   );
 }
