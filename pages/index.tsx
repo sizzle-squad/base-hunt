@@ -1,10 +1,10 @@
 import Layout from '@/components/layout';
 import { Jumbotron } from '@/components/assets/Jumbotron';
 import Head from 'next/head';
-import { Button, Link, Stack } from '@mui/material';
+import { Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Color } from '@/constants/color';
-import { relative } from 'path';
+import { ConnnectButton } from '@/components/assets/ConnectButton';
 export default function Home() {
   return (
     <>
@@ -34,13 +34,7 @@ export default function Home() {
           </Typography>
         </Stack>
         <Stack paddingTop={5} alignItems="center">
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ py: 2, px: 5, fontSize: '22px', backgroundColor: '#000000' }}
-          >
-            Start Exploring
-          </Button>
+          <ConnnectButton />
         </Stack>
         <Stack gap={1} alignItems="center" paddingY={5}>
           <Typography variant="subtitle2">Coinbase Wallet Required</Typography>

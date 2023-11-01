@@ -33,11 +33,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={config}>
-        <ConnectKitProvider mode="dark">
-          <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <ConnectKitProvider mode="dark">
             <Component {...pageProps} />
-          </ThemeProvider>
-        </ConnectKitProvider>
+          </ConnectKitProvider>
+        </ThemeProvider>
       </WagmiConfig>
     </QueryClientProvider>
   );
