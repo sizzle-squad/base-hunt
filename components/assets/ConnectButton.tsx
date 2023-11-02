@@ -1,7 +1,22 @@
 import { Button } from '@mui/material';
 import { ConnectKitButton } from 'connectkit';
+import { useMemo } from 'react';
 
-export function ConnnectButton() {
+type Props = {
+  variant?: 'text' | 'outlined' | 'contained';
+  fontSize?: string;
+  px?: number;
+};
+
+export function ConnectButton({
+  variant = 'contained',
+  fontSize = '22px',
+  px = 5,
+}: Props) {
+  const backgroundColor = useMemo(() => {
+    return variant === 'contained' ? '#000000' : undefined;
+  }, []);
+
   return (
     <ConnectKitButton.Custom>
       {({
@@ -16,16 +31,16 @@ export function ConnnectButton() {
       }) => {
         return (
           <Button
-            variant="contained"
+            variant={variant}
             color="primary"
-            sx={{ py: 2, px: 5, fontSize: '22px', backgroundColor: '#000000' }}
+            sx={{ py: 2, px, fontSize, backgroundColor }}
             onClick={show}
           >
             {isConnected
-              ? ensName ?? truncatedAddress
+              ? 'Disconnect'
               : isConnecting
               ? 'Connecting...'
-              : 'Start Exploring'}
+              : 'Connect Wallet'}
           </Button>
         );
       }}

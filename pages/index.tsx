@@ -1,11 +1,37 @@
 import Layout from '@/components/layout';
 import { Jumbotron } from '@/components/assets/Jumbotron';
 import Head from 'next/head';
-import { Link, Stack } from '@mui/material';
+import { Button, Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Color } from '@/constants/color';
-import { ConnnectButton } from '@/components/assets/ConnectButton';
+import { ConnectButton } from '@/components/assets/ConnectButton';
+import { useCallback, useMemo } from 'react';
+import { useAccount } from 'wagmi';
+import { useRouter } from 'next/router';
+
 export default function Home() {
+  const { isConnected } = useAccount();
+  const router = useRouter();
+
+  const handleStartExploring = useCallback(() => {
+    return router.push('/badges');
+  }, []);
+
+  const ctaButton = useMemo(() => {
+    return isConnected ? (
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ py: 2, px: 5, fontSize: '22px', backgroundColor: '#000000' }}
+        onClick={handleStartExploring}
+      >
+        Start Exploring
+      </Button>
+    ) : (
+      <ConnectButton />
+    );
+  }, []);
+
   return (
     <>
       <Head>
@@ -34,7 +60,7 @@ export default function Home() {
           </Typography>
         </Stack>
         <Stack paddingTop={5} alignItems="center">
-          <ConnnectButton />
+          {ctaButton}
         </Stack>
         <Stack gap={1} alignItems="center" paddingY={5}>
           <Typography variant="subtitle2">Coinbase Wallet Required</Typography>
