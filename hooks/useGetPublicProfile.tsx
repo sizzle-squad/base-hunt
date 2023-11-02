@@ -27,7 +27,7 @@ export function useGetPublicProfile({ address }: Props) {
 
   if (error) {
     console.log(error);
-    throw error;
+    // throw error;
   }
 
   return {
