@@ -11,6 +11,10 @@ module.exports = {
         protocol: 'https',
         hostname: '**.midjourney.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.seadn.io',
+      },
     ],
   },
   webpack: (config) => {
