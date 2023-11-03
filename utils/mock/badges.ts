@@ -233,7 +233,7 @@ export const MOCK_IRL_BADGES: Badge[] = [
   },
 ];
 
-const MOCK_ONLINE_BADGES: Badge[] = [
+export const MOCK_ONLINE_BADGES: Badge[] = [
   {
     id: '1',
     title: 'Online Badge 1',
