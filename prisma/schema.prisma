@@ -27,3 +27,15 @@ model webhook_data {
 
   @@id([transaction_hash, network_id])
 }
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model badge_configuration {
+  id               BigInt  @id @default(autoincrement())
+  name             String  @db.VarChar
+  contract_address String  @db.VarChar
+  token_id         BigInt
+  level            Int?
+  points           Int     @default(1)
+  minter           String
+  image_url        String?
+}
