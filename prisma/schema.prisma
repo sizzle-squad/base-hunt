@@ -38,4 +38,7 @@ model badge_configuration {
   points           Int     @default(1)
   minter           String
   image_url        String?
+  game_id          BigInt  @default(0)
+  cta_url          String?
+  cta_text         String?
 }
