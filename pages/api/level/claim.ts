@@ -12,6 +12,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
+    console.log("body:",req.body)
     const badge = await prisma.badge_configuration.findFirst({
       where: {
         contract_address: {
