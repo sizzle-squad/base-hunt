@@ -27,7 +27,7 @@ export default async function handler(
     })
     console.log("badge:",badge);
     if(badge !=null){
-      const score = await prisma.score.findFirst({
+      const prevScore = await prisma.score.findFirst({
         where: {
           user_address: {
               equals: req.body.record.to_address,
@@ -36,7 +36,7 @@ export default async function handler(
           game_id: badge.game_id,          
         }
       })
-      console.log("current score:", score)
+      console.log("current score:", prevScore)
       //get current score from db 
       const badges = await prisma.$queryRaw`select DISTINCT b.contract_address,b.token_id,b.game_id,b.points from badge_configuration as b join webhook_data as w
       on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = substring(w.value,3)::bigint and LOWER(w.from_address) = LOWER(b.minter)
@@ -44,21 +44,38 @@ export default async function handler(
       
       console.log("collected badges:", badges)  
         const newScore = (badges as any[]).reduce((a:BigInt, b:any) => a + b.points, 0)
-      if (score == null){
+      if (prevScore == null){
         console.log("insert new score",newScore)
         //create new score
-        // const newScore = await prisma.score.create({
-        //   data: {
-        //     user_address: req.body.record.to_address,
-        //     game_id: badge.game_id,
-        //     score: badges.reduce((a, b) => a + b.points, 0),
-        //   },
-        // })
-        // console.log("new score:", newScore)
+        const insert = await prisma.score.create({
+          data: {
+            user_address: req.body.record.to_address,
+            game_id: badge.game_id,
+            current_score: newScore,
+          },
+        })
+        console.log("inserted new score:", insert)
       // //update current score to score + 1
       }else{
-        console.log("compare and update new score",newScore);
-      }   
+        if (prevScore.current_score < newScore){
+          console.log("update new score",newScore)
+          // update current score to score + 1
+          const update = await prisma.score.update({
+            where: {
+              id: prevScore.id,
+            },
+            data: {
+              current_score: newScore,
+            },
+          })
+          console.log("compare and update new score",newScore);
+        }else{
+          console.error("new score is lower than current score, do nothing:",prevScore,newScore)
+        }
+        
+      }
+      
+      
     }
     return res.json({});
   }
