@@ -1,6 +1,5 @@
 import type { NextApiResponse, NextApiRequest } from 'next';
 import { PrismaClient } from '@prisma/client'
-import { AirdropNft } from '@/utils/walletapi';
 const prisma = new PrismaClient()
 
 /*
