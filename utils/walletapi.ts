@@ -52,4 +52,5 @@ export async function AirdropNft(userAddress:string, command:string){
       console.log("[AirdropNft] airdrop disabled")
     }
     console.log("[AirdropNft] airdrop completed")
+    
 }

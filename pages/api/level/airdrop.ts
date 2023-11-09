@@ -4,24 +4,24 @@ import { AirdropNft } from '@/utils/walletapi';
 const prisma = new PrismaClient()
 
 /*
-curl -X POST 'http://localhost:3000/api/level/claim' -d ' body: {
-  type: 'UPDATE',
-  table: 'score',
-  record: {
-    id: 3,
-    game_id: 0,
-    updated_at: '2023-11-09T02:22:09.379',
-    user_address: '0xa14a25930babc1220df002070be86b030b1d4c68',
-    current_score: 2
-  },
-  schema: 'public',
-  old_record: {
-    id: 3,
-    game_id: 0,
-    updated_at: '2023-11-09T02:22:09.379',
-    user_address: '0xa14a25930babc1220df002070be86b030b1d4c68',
-    current_score: 1
-  }
+curl -X POST 'http://localhost:3000/api/level/airdrop' -d '{
+    "type": "UPDATE",
+    "table": "score",
+    "record": {
+        "id": "3",
+        "game_id": "0",
+        "updated_at": "2023-11-09T02:22:09.379",
+        "user_address": "0xa14a25930babc1220df002070be86b030b1d4c68",
+        "current_score": "2"
+    },
+    "schema": "public",
+    "old_record": {
+        "id": "3",
+        "game_id": "0",
+        "updated_at": "2023-11-09T02:22:09.379",
+        "user_address": "0xa14a25930babc1220df002070be86b030b1d4c68",
+        "current_score": "1"
+    }
 }'  -H 'Content-Type: application/json'
 */
 
@@ -40,7 +40,7 @@ export default async function handler(
             }
         })
         if (level) {
-            AirdropNft(req.body.record.user_address,level.airdrop_command)
+            await AirdropNft(req.body.record.user_address,level.airdrop_command)
         }else{
             console.log("[webhook airdrop] no level found:",req.body.record.game_id,req.body.record.user_address,currentScore)
         }
