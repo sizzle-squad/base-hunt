@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { NextResponse } from 'next/server'
 const prisma = new PrismaClient()
 
 
@@ -10,5 +11,5 @@ export async function POST(req: Request) {
         },
     })
     console.log(JSON.stringify(webhook_data))
-    return Response.json({ status: 'ok' });
+    return NextResponse.json({ status: 'ok' });
 }

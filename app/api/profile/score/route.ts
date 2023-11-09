@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import 'utils/helper'; 
 import { headers } from 'next/headers'
+import { NextResponse } from 'next/server';
 const prisma = new PrismaClient()
 
 /*
@@ -51,7 +52,7 @@ export async function GET(req: Request) {
         }
 
     }
-    return Response.json({
+    return NextResponse.json({
         currentLevel:currentLevel,
         nextLevel:nextLevel,
         score:score

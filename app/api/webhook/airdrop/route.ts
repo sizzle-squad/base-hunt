@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { AirdropNft } from '@/utils/walletapi';
+import { NextResponse } from 'next/server';
 const prisma = new PrismaClient()
 
 /*
@@ -45,5 +46,5 @@ export async function POST(req: Request) {
         console.warn("[webhook airdrop] unsupported type:",body.type,body.table)
     }
 
-    return Response.json({});
+    return NextResponse.json({});
 }
