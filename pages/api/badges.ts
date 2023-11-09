@@ -3,15 +3,18 @@ import { Badge } from '@/hooks/types';
 import { MOCK_BADGES } from '@/utils/mock/badges';
 
 export type BadgeData = {
-  irlBadges: Badge[],
-  onlineBadges: Badge[],
-}
+  irlBadges: Badge[];
+  onlineBadges: Badge[];
+};
 
 export type GetBadgesResponse = {
   data: BadgeData;
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<GetBadgesResponse | { message: string }>) {
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<GetBadgesResponse | { message: string }>
+) {
   const { gameId, walletAddress } = req.query;
 
   if (req.method === 'GET') {
