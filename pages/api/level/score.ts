@@ -16,10 +16,10 @@ export default async function handler(
     const score = await prisma.score.findFirst({
         where: {
           user_address: {
-              equals: req.query.userAddress,
+              equals: req.query.userAddress as string,
               mode: 'insensitive'
           },
-          game_id: req.query.gameId,          
+          game_id: BigInt(req.query.gameId as string),          
         }
       })
       if (score!=null){
