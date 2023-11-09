@@ -6,8 +6,8 @@ import { Stack, Typography } from '@mui/material';
 import { useAccount } from 'wagmi';
 
 export default function Badges() {
-  const { address } = useAccount();
-  const { data: badges } = useGetBadges({ address });
+  const { address, isConnected } = useAccount();
+  const { data: badges } = useGetBadges({ address, isConnected });
 
   return (
     <Layout>
@@ -24,7 +24,9 @@ export default function Badges() {
         >
           Art Basel (Miami)
         </Typography>
-        <BadgeContainer badges={badges.data.irlBadges} />
+        {badges && badges.data && (
+          <BadgeContainer badges={badges.data.irlBadges} />
+        )}
       </Stack>
       <Stack
         sx={{ paddingTop: '30px', alignItems: 'flex-start', width: '100%' }}
@@ -38,7 +40,9 @@ export default function Badges() {
         >
           Virtual
         </Typography>
-        <BadgeContainer badges={badges.data.onlineBadges} />
+        {badges && badges.data && (
+          <BadgeContainer badges={badges.data.onlineBadges} />
+        )}
       </Stack>
     </Layout>
   );
