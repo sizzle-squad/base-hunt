@@ -18,19 +18,17 @@ const domain = {
   };
 
 export async function AirdropNft(userAddress:string, command:string){
-    const wallet = new Wallet(process.env.PK as string,new ethers.JsonRpcProvider("https://mainnet.base.org"));
-   console.log("loaded wallet:",wallet.address);
-    
-   
-      const message ={
-        "userAddress":userAddress,
-        "command": command
-      };
-    
-               
-      const signature = ethers.Signature.from(await  wallet.signTypedData(domain, types, message));      
-      console.log(JSON.stringify(signature))
-    
+    const wallet = new Wallet(process.env.AUTHORIZER_PK as string,new ethers.JsonRpcProvider("https://mainnet.base.org"));
+    console.log("loaded wallet:",wallet.address);
+  
+    const message ={
+      "userAddress":userAddress,
+      "command": command
+    };
+         
+    const signature = ethers.Signature.from(await  wallet.signTypedData(domain, types, message));      
+    console.log(JSON.stringify(signature))
+
     const postData =  { 
        ...message,
         signature:{
