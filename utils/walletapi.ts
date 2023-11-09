@@ -1,7 +1,6 @@
 import axios from 'axios'
 import {ethers, Wallet} from 'ethers'
 
-import 'dotenv/config'
 
 const domain = {
     name: 'AirdropCommand',
@@ -19,13 +18,13 @@ const domain = {
 
 export async function AirdropNft(userAddress:string, command:string){
     const wallet = new Wallet(process.env.AUTHORIZER_PK as string,new ethers.JsonRpcProvider("https://mainnet.base.org"));
-    console.log("loaded wallet:",wallet.address);
+    console.log("[AirdropNft] loaded wallet:",wallet.address);
   
     const message ={
       "userAddress":userAddress,
       "command": command
     };
-         
+
     const signature = ethers.Signature.from(await  wallet.signTypedData(domain, types, message));      
     console.log(JSON.stringify(signature))
 
@@ -37,12 +36,20 @@ export async function AirdropNft(userAddress:string, command:string){
             v:signature.v
         }
     };
-    console.log("postData:",postData)
 
-    const response = await axios.post("https://api.wallet.coinbase.com/rpc/v2/bot/mint",postData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })    
-    console.log(response.data)
+    console.log("[AirdropNft] postData:",postData)
+    if (process.env.AIRDROP_ENABLED){
+      const response = await axios.post("https://api.wallet.coinbase.com/rpc/v2/bot/mint",postData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })    
+      if (response.status != 200) {
+        console.error("[AirdropNft] error airdropping:",response.data)
+        return
+      }
+    }else{
+      console.log("[AirdropNft] airdrop disabled")
+    }
+    console.log("[AirdropNft] airdrop completed")
 }
