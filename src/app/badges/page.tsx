@@ -3,14 +3,14 @@
 import BadgeContainer from '@/components/assets/BadgeContainer';
 import Layout from '@/components/layout';
 import { useBadges } from '@/hooks/useBadges';
+import { useClientCheck } from '@/hooks/useClientCheck';
 import { Stack, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 export default function Badges() {
-  const [isClient, setIsClient] = useState(false);
-
+  const isClient = useClientCheck();
   const { address, isConnected } = useAccount();
   const { useGetBadges } = useBadges({ address, isConnected });
 
@@ -20,10 +20,6 @@ export default function Badges() {
   });
 
   const { data: badges, isLoading, error } = useGetBadges();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const BadgesWrapper = useMemo(() => {
     if (isClient) {
