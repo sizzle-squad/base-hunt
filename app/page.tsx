@@ -1,3 +1,5 @@
+'use client';
+
 import Layout from '@/components/layout';
 import { Jumbotron } from '@/components/assets/Jumbotron';
 import Head from 'next/head';
@@ -5,11 +7,16 @@ import { Button, Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Color } from '@/constants/color';
 import { ConnectButton } from '@/components/assets/ConnectButton';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   const { isConnected } = useAccount();
   const router = useRouter();
 
@@ -18,19 +25,21 @@ export default function Home() {
   }, []);
 
   const ctaButton = useMemo(() => {
-    return isConnected ? (
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ py: 2, px: 5, fontSize: '22px', backgroundColor: '#000000' }}
-        onClick={handleStartExploring}
-      >
-        Start Exploring
-      </Button>
-    ) : (
-      <ConnectButton />
-    );
-  }, []);
+    if (isClient) {
+      return isConnected ? (
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ py: 2, px: 5, fontSize: '22px', backgroundColor: '#000000' }}
+          onClick={handleStartExploring}
+        >
+          Start Exploring
+        </Button>
+      ) : (
+        <ConnectButton />
+      );
+    }
+  }, [isConnected, handleStartExploring, isClient]);
 
   return (
     <>

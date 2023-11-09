@@ -1,4 +1,3 @@
-import { useGetBadges } from '@/hooks/useGetBadges';
 import { Grid, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 import { Badge } from './Badge';
@@ -8,14 +7,15 @@ type Props = {
   badges: BadgeType[];
 };
 
-export function BadgeContainer({ badges }: Props) {
+export default function BadgeContainer({ badges }: Props) {
   return (
     <Grid container>
       {badges?.map((badge) => (
-        <Grid xs={3} sm={3}>
+        <Grid key={badge.id} xs={3} sm={3}>
           <Badge
+            badge={badge}
             key={badge.id}
-            imageUrl={badge.nftUrl}
+            imageUrl={badge.imageUrl}
             isCompleted={badge.isCompleted}
           />
         </Grid>

@@ -28,13 +28,19 @@ export enum BadgeTypeEnum {
   IRL = 'irl',
 }
 
+export type ChallengeTypeEnum = 'online' | 'irl';
+
+export type Address = string;
+
 export type Badge = {
   id: string;
-  title: string;
+  name: string;
   description: string;
-  nftUrl: string;
+  imageUrl: URL;
   isCompleted: boolean;
-  type: BadgeTypeEnum;
+  type: ChallengeTypeEnum;
   txHash: string | null;
-  completedTimestamp: string | null;
+  completedTimestamp: Date | null;
+  contractAddress: Address | null;
+  tokenId: bigint | null;
 };

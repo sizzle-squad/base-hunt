@@ -1,10 +1,16 @@
+'use client';
+
+import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import type { AppProps } from 'next/app';
+import { base } from 'viem/chains';
 import { WagmiConfig, createConfig } from 'wagmi';
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
-import { base } from 'viem/chains';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import '@fontsource/open-sans';
+
+type Props = {
+  children: React.ReactNode;
+};
 
 const alchemyId = process.env.ALCHEMY_ID;
 
@@ -27,18 +33,17 @@ const theme = createTheme({
   },
 });
 
-const queryClient = new QueryClient();
-
-export default function App({ Component, pageProps }: AppProps) {
+const Providers = ({ children }: Props) => {
+  const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={config}>
         <ThemeProvider theme={theme}>
-          <ConnectKitProvider mode="dark">
-            <Component {...pageProps} />
-          </ConnectKitProvider>
+          <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
         </ThemeProvider>
       </WagmiConfig>
     </QueryClientProvider>
   );
-}
+};
+
+export default Providers;
