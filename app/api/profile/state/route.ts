@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-import 'utils/helper';
+import '@/utils/helper';
 
 const prisma = new PrismaClient()
 
