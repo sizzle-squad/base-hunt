@@ -2,19 +2,19 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import { WALLET_API_URL } from '@/utils/env';
 import { UserPublicProfile } from './types';
+import { routes } from '@/constants/routes';
 
-// https://api.wallet.coinbase.com/rpc/v2/getPublicProfileByAddress?queryAddress=0x86c3854CbcF98c8932935d599A98d737C10d8DA2
 type Props = {
   address: `0x${string}` | undefined;
 };
 
-export function useGetPublicProfile({ address }: Props) {
+export function useCBProfile({ address }: Props) {
   const { data, error, isLoading } = useQuery<UserPublicProfile>(
     ['getPublicProfileByAddress', address],
     async () => {
       return await axios({
         method: 'GET',
-        url: `${WALLET_API_URL}/getPublicProfileByAddress`,
+        url: `${routes.cbProfile}?userAddress=${address}`,
         params: {
           queryAddress: address,
         },
@@ -22,16 +22,15 @@ export function useGetPublicProfile({ address }: Props) {
     },
     {
       enabled: !!address,
+      onError: (error) => {
+        console.error(error);
+        // Handle error appropriately
+      },
     }
   );
 
-  if (error) {
-    console.log(error);
-    // throw error;
-  }
-
   return {
-    data: data?.data?.result,
+    data: data?.data,
     isLoading,
   };
 }

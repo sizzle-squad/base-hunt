@@ -14,12 +14,10 @@ type SubdomainProfileType = EnsDomainProfileType & {
 
 export type UserPublicProfile = {
   data: {
-    result: {
-      address: `0x${string}`;
-      ensDomainProfile: EnsDomainProfileType;
-      primaryDomainType: 'cbid' | 'ens' | 'none';
-      subdomainProfile: SubdomainProfileType;
-    };
+    address: `0x${string}`;
+    ensDomainProfile: EnsDomainProfileType;
+    primaryDomainType: 'cbid' | 'ens' | 'none';
+    subdomainProfile: SubdomainProfileType;
   };
 };
 

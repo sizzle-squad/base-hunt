@@ -19,16 +19,7 @@ export function ConnectButton({
 
   return (
     <ConnectKitButton.Custom>
-      {({
-        isConnected,
-        isConnecting,
-        show,
-        hide,
-        address,
-        ensName,
-        chain,
-        truncatedAddress,
-      }) => {
+      {({ isConnected, isConnecting, show }) => {
         return (
           <Button
             variant={variant}
