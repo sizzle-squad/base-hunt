@@ -3,4 +3,5 @@ export const routes = {
     list: '/api/badges',
     single: '/api/badge',
   },
+  cbProfile: '/api/cb-profile',
 };

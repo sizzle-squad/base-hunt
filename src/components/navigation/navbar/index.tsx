@@ -4,11 +4,11 @@ import { Color } from '@/constants/color';
 import { useMemo } from 'react';
 import { ConnectButton } from '@/components/assets/ConnectButton';
 import { getTruncatedAddress } from '@/utils/truncate';
-import { useGetPublicProfile } from '@/hooks/useGetPublicProfile';
+import { useCBProfile } from '@/hooks/useCBProfile';
 
 export default function Navbar() {
   const { address, isDisconnected } = useAccount();
-  const { data: userPublicProfile } = useGetPublicProfile({ address });
+  const { data: userPublicProfile } = useCBProfile({ address });
 
   const userAddress = useMemo(() => {
     if (userPublicProfile) {
