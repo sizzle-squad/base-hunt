@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import '@/utils/helper'; 
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server';
+import { ScoreState } from '../../../../hooks/types';
 const prisma = new PrismaClient()
 
 /*
@@ -21,10 +22,10 @@ export async function GET(req: Request) {
           game_id: BigInt(searchParams.get("gameId") as string),          
         }
       })
-      if (score!=null){
+  
         let levels = await prisma.level_configuration.findMany({
             where:{
-                game_id:score.game_id
+                game_id:BigInt(searchParams.get("gameId") as string)
             }
         })
         
@@ -37,24 +38,52 @@ export async function GET(req: Request) {
             } else {
               return 0;
             }
-          });
+          }); 
+        
+        if (score){
+          const nextLevelIdx = levels.findIndex((level:any)=>level.threshold_points>score.current_score);
+          var nextLevel = null;
+          var currentLevel = null;
+          if (nextLevelIdx!=null){
+              nextLevel = levels[nextLevelIdx];
+              if (nextLevelIdx>0){
+                  currentLevel = levels[nextLevelIdx-1];
+              }
+          }
+      }else{
+        nextLevel = levels[0];
+      }
+    
+    console.log("Map Score")
+    const scoreState = mapToScore(
+      currentLevel,
+      nextLevel,
+      score
+    )
+    return NextResponse.json(scoreState);
+}
 
-        const nextLevelIdx = levels.findIndex((level:any)=>level.threshold_points>score.current_score);
-        var nextLevel = null;
-        var currentLevel = null;
-        if (nextLevelIdx!=null){
-             nextLevel = levels[nextLevelIdx];
-             if (nextLevelIdx>0){
-                 currentLevel = levels[nextLevelIdx-1];
-             }
-        }else{
-            nextLevel = levels[0];
-        }
-
+function mapToScore(c:any,n:any,s:any):ScoreState{
+  console.log("here");
+    return {
+        currentLevel:c ?{
+          id: c.id,
+          gameId: c.game_id,
+          name: c.name,
+          thresholdPoints: c.threshold_points
+        }:null ,
+        nextLevel:n ? {
+          id: n.id,
+          gameId: n.game_id,
+          name: n.name,
+          thresholdPoints: n.threshold_points
+        }:null,
+        score: s ? {
+          id: s.id,
+          gameId: s.game_id,
+          userAddress: s.user_address,
+          currentScore: s.current_score,
+          updatedAt: s.updated_at
+        }:null
     }
-    return NextResponse.json({
-        currentLevel:currentLevel,
-        nextLevel:nextLevel,
-        score:score
-    });
 }
