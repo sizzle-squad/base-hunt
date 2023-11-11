@@ -41,4 +41,6 @@ export type Badge = {
   completedTimestamp: Date | null;
   contractAddress: Address | null;
   tokenId: bigint | null;
+  ctaText: string;
+  ctaUrl: string;
 };
