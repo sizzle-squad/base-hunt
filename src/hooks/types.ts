@@ -41,4 +41,27 @@ export type Badge = {
   completedTimestamp: Date | null;
   contractAddress: Address | null;
   tokenId: bigint | null;
+  ctaText: string;
+  ctaUrl: string;
 };
+
+export type Level = {
+  id: string;
+  gameId: string;
+  name: string;
+  thresholdPoints: bigint; 
+} 
+
+export type Score = {
+  id: string;
+  gameId: string;
+  userAddress: string;
+  currentScore: bigint;
+  updatedAt: string;
+}
+
+export type ScoreState = {
+  currentLevel: Level | null;
+  nextLevel: Level | null;
+  score: Score | null;
+}

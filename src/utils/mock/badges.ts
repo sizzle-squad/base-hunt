@@ -14,6 +14,8 @@ export const MOCK_IRL_BADGES: Badge[] = [
     completedTimestamp: null,
     contractAddress: null,
     tokenId: null,
+    ctaText:"cta_text",
+    ctaUrl:"cta_url"
   },
   {
     id: '2',
@@ -28,6 +30,8 @@ export const MOCK_IRL_BADGES: Badge[] = [
     completedTimestamp: new Date('2021-01-01'),
     contractAddress: null,
     tokenId: null,
+    ctaText:"cta_text-2",
+    ctaUrl:"cta_url-2"
   },
 ];
 
@@ -45,6 +49,8 @@ export const MOCK_ONLINE_BADGES: Badge[] = [
     completedTimestamp: new Date('2021-01-01'),
     contractAddress: null,
     tokenId: null,
+    ctaText:"cta_text",
+    ctaUrl:"cta_url"
   },
   {
     id: '2',
@@ -59,6 +65,8 @@ export const MOCK_ONLINE_BADGES: Badge[] = [
     completedTimestamp: new Date('2021-01-01'),
     contractAddress: null,
     tokenId: null,
+    ctaText:"cta_text-2",
+    ctaUrl:"cta_url-2"
   },
 ];
 
