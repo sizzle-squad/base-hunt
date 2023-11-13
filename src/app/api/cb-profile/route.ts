@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const userAddress = searchParams.get('userAddress');
 
   if (!userAddress) {
-    return new Response('Missing parameters', { status: 400 });
+    return new Response('Missing parameters: userAddress', { status: 400 });
   }
 
   const result = await axios({
