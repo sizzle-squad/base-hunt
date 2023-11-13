@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import '@/utils/helper'; 
+import '@/utils/helper';
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server';
 import { ScoreState } from '../../../../hooks/types';
@@ -10,80 +10,80 @@ curl -X POST 'http://localhost:3000/api/level/claim' -d ' {"type":"INSERT","tabl
 */
 
 export async function GET(req: Request) {
-    const headersList = headers()
-    const referer = headersList.get('x-app-secert')
-    const { searchParams } = new URL(req.url)
-    const score = await prisma.score.findFirst({
-        where: {
-          user_address: {
-              equals: searchParams.get("userAddress") as string,
-              mode: 'insensitive'
-          },
-          game_id: BigInt(searchParams.get("gameId") as string),          
-        }
-      })
-  
-        let levels = await prisma.level_configuration.findMany({
-            where:{
-                game_id:BigInt(searchParams.get("gameId") as string)
-            }
-        })
-        
-        //inplace sort by threshold points
-        levels.sort((a:any ,b:any) => {
-            if(a.threshold_points > b.threshold_points) {
-              return 1;
-            } else if (a.threshold_points < b.threshold_points){
-              return -1;
-            } else {
-              return 0;
-            }
-          }); 
-        
-        if (score){
-          const nextLevelIdx = levels.findIndex((level:any)=>level.threshold_points>score.current_score);
-          var nextLevel = null;
-          var currentLevel = null;
-          if (nextLevelIdx!=null){
-              nextLevel = levels[nextLevelIdx];
-              if (nextLevelIdx>0){
-                  currentLevel = levels[nextLevelIdx-1];
-              }
-          }
-      }else{
-        nextLevel = levels[0];
+  const headersList = headers()
+  const referer = headersList.get('x-app-secert')
+  const { searchParams } = new URL(req.url)
+  const score = await prisma.score.findFirst({
+    where: {
+      user_address: {
+        equals: searchParams.get("userAddress") as string,
+        mode: 'insensitive'
+      },
+      game_id: BigInt(searchParams.get("gameId") as string),
+    }
+  })
+
+  let levels = await prisma.level_configuration.findMany({
+    where: {
+      game_id: BigInt(searchParams.get("gameId") as string)
+    }
+  })
+
+  //inplace sort by threshold points
+  levels.sort((a: any, b: any) => {
+    if (a.threshold_points > b.threshold_points) {
+      return 1;
+    } else if (a.threshold_points < b.threshold_points) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
+  let nextLevel = null;
+  let currentLevel = null;
+  if (score) {
+    const nextLevelIdx = levels.findIndex((level: any) => level.threshold_points > score.current_score);
+
+    if (nextLevelIdx != null) {
+      nextLevel = levels[nextLevelIdx];
+      if (nextLevelIdx > 0) {
+        currentLevel = levels[nextLevelIdx - 1];
       }
-    
-    console.log("Map Score")
-    const scoreState = mapToScore(
-      currentLevel,
-      nextLevel,
-      score
-    )
-    return NextResponse.json(scoreState);
+    }
+  } else {
+    nextLevel = levels[0];
+  }
+
+  console.log("Map Score")
+  const scoreState = mapToScore(
+    currentLevel,
+    nextLevel,
+    score
+  )
+  return NextResponse.json(scoreState);
 }
 
-function mapToScore(c:any,n:any,s:any):ScoreState{
+function mapToScore(c: any, n: any, s: any): ScoreState {
   console.log("here");
-    return {
-        currentLevel:c ?{
-          id: c.id,
-          gameId: c.game_id,
-          name: c.name,
-          thresholdPoints: c.threshold_points
-        }:null ,
-        nextLevel:n ? {
-          id: n.id,
-          gameId: n.game_id,
-          name: n.name,
-          thresholdPoints: n.threshold_points
-        }:null,
-        score: s ? {
-          id: s.id,
-          gameId: s.game_id,
-          userAddress: s.user_address,
-          currentScore: s.current_score,
-          updatedAt: s.updated_at
-        }:null
-    }
+  return {
+    currentLevel: c ? {
+      id: c.id,
+      gameId: c.game_id,
+      name: c.name,
+      thresholdPoints: c.threshold_points
+    } : null,
+    nextLevel: n ? {
+      id: n.id,
+      gameId: n.game_id,
+      name: n.name,
+      thresholdPoints: n.threshold_points
+    } : null,
+    score: s ? {
+      id: s.id,
+      gameId: s.game_id,
+      userAddress: s.user_address,
+      currentScore: s.current_score,
+      updatedAt: s.updated_at
+    } : null
+  }
 }
