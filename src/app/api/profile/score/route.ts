@@ -54,7 +54,6 @@ export async function GET(req: Request) {
     nextLevel = levels[0];
   }
 
-  console.log("Map Score")
   const scoreState = mapToScore(
     currentLevel,
     nextLevel,
@@ -64,7 +63,6 @@ export async function GET(req: Request) {
 }
 
 function mapToScore(c: any, n: any, s: any): ScoreState {
-  console.log("here");
   return {
     currentLevel: c ? {
       id: c.id,
