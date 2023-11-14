@@ -1,6 +1,5 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { WALLET_API_URL } from '@/utils/env';
 import { UserPublicProfile } from './types';
 import { routes } from '@/constants/routes';
 
@@ -22,6 +21,8 @@ export function useCBProfile({ address }: Props) {
     },
     {
       enabled: !!address,
+      staleTime: 1000 * 60 * 5,
+      cacheTime: 1000 * 60 * 5,
       onError: (error) => {
         console.error(error);
         // Handle error appropriately
