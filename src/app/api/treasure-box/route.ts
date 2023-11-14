@@ -12,7 +12,6 @@ export type UserPublicProfileType = {
 
 export type TreasureBoxType = {
   gameId: string;
-  points: string;
   user: UserPublicProfileType;
 };
 
@@ -48,10 +47,25 @@ export async function POST(request: NextRequest) {
 
   verifyTreasureBoxRequest(body);
 
-  const { gameId, points, user } = body;
+  const { gameId, user } = body;
 
   const gameIdInBigInt = BigInt(gameId as string);
-  const pointInBigInt = BigInt(points as string);
+
+  const score = await prisma.score.findFirst({
+    where: {
+      user_address: {
+        equals: user.address,
+        mode: 'insensitive',
+      },
+      game_id: gameIdInBigInt,
+    },
+  });
+
+  if (!score) {
+    return new Response('Error: score not found', { status: 400 });
+  }
+
+  // const pointInBigInt = BigInt(points as string);
 
   try {
     await prisma.treasure_box_entries.upsert({
@@ -64,11 +78,11 @@ export async function POST(request: NextRequest) {
         user_address: user.address,
         cbid: user.cbId,
         ens_name: user.ensName,
-        total_hitpoints: pointInBigInt,
+        total_hitpoints: score.current_score,
       },
       update: {
         total_hitpoints: {
-          increment: pointInBigInt,
+          increment: score.current_score,
         },
       },
     });
