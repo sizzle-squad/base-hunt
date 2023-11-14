@@ -1,6 +1,5 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { WALLET_API_URL } from '@/utils/env';
 import { UserPublicProfile } from './types';
 import { routes } from '@/constants/routes';
 

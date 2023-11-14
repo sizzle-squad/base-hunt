@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     hitPoints: treasureBox.hit_points,
     isOpen: treasureBox.is_open,
+    location: treasureBox.location,
   });
 }
 

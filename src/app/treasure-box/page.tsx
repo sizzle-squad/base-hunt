@@ -9,6 +9,7 @@ import { useMutateTreasureBox } from '@/hooks/useMutateTreasureBox';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
 import { useCBProfile } from '@/hooks/useCBProfile';
+import { useTreasureBox } from '@/hooks/useTreasureBox';
 
 // hydration issue without dynamic import
 const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
@@ -20,6 +21,7 @@ export default function TreasureBox() {
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
   const { attackBox } = useMutateTreasureBox();
+  const { data: treasureBox } = useTreasureBox({ gameId: GAME_ID });
 
   const handleCTAPress = useCallback(() => {
     attackBox.mutate({
@@ -42,14 +44,19 @@ export default function TreasureBox() {
         gap={2}
       >
         <Typography variant="h3">Treasure Box</Typography>
-        <Button variant="contained" onClick={handleCTAPress}>
+        <Typography variant="body1">{`Remaining HP: ${treasureBox?.hitPoints}`}</Typography>
+        <Button
+          variant="contained"
+          onClick={handleCTAPress}
+          disabled={treasureBox?.isOpen}
+        >
           Attack Box!
         </Button>
       </Stack>
     );
   }, []);
 
-  if (!isClient) return null;
+  if (!isClient || !treasureBox) return null;
 
   return (
     <Layout>
