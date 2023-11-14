@@ -8,4 +8,9 @@ export const routes = {
     score: '/api/profile/score',
     state: '/api/profile/state',
   },
+  treasureBox: {
+    rank: '/api/treasure-box/rank',
+    topRanks: '/api/treasure-box/top-ranks',
+    default: '/api/treasure-box',
+  },
 };
