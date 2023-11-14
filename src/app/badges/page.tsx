@@ -6,7 +6,7 @@ import { useBadges } from '@/hooks/useBadges';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { Stack, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
 export default function Badges() {
