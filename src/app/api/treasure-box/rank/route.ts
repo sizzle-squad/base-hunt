@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   }
 
   const rank =
-    await prisma.$queryRaw`select row_number() over (order by hit_points desc) as rank from treasure_box_entries where game_id = ${BigInt(
+    await prisma.$queryRaw`select row_number() over (order by total_hitpoints desc) as rank from treasure_box_entries where game_id = ${BigInt(
       gameId as string
     )}`;
 
