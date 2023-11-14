@@ -1,10 +1,9 @@
 'use client';
 
 import BadgeContainer from '@/components/assets/BadgeContainer';
-import Layout from '@/components/layout';
 import { useBadges } from '@/hooks/useBadges';
 import { useClientCheck } from '@/hooks/useClientCheck';
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
@@ -15,7 +14,7 @@ export default function Badges() {
   const { useGetBadges } = useBadges({ address, isConnected });
 
   // hydration issue without dynamic import
-  const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
+  const Hero = dynamic(() => import('@/components/Badges/Hero'), {
     ssr: false,
   });
 
@@ -77,9 +76,9 @@ export default function Badges() {
   }, [isClient, badges, isLoading, error]);
 
   return (
-    <Layout>
-      <Navbar />
-      {BadgesWrapper}
-    </Layout>
+    <Box>
+      <Hero />
+      <Box>{BadgesWrapper}</Box>
+    </Box>
   );
 }
