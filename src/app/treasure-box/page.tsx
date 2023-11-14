@@ -31,7 +31,6 @@ export default function TreasureBox() {
         cbId: userPublicProfile?.subdomainProfile.name,
         ensName: userPublicProfile?.ensDomainProfile.name,
       },
-      points: '1', // TODO: fetch from score
     });
   }, []);
 
