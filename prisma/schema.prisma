@@ -64,6 +64,22 @@ model level_configuration {
   airdrop_command  String
 }
 
+model treasure_box {
+  id               BigInt   @id @default(autoincrement())
+  game_id          BigInt   @unique
+  hit_points       BigInt
+  is_open          Boolean  @default(false)
+  location         String?
+}
+model treasure_box_entries {
+  id               BigInt   @id @default(autoincrement())
+  game_id          BigInt
+  total_hitpoints  BigInt   @default(0)
+  cbid             String?
+  ens_name         String?
+  user_address     String   @unique
+}
+
 enum badge_type {
   online
   irl
