@@ -3,13 +3,13 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 const prisma = new PrismaClient();
 
-type UserPublicProfileType = {
+export type UserPublicProfileType = {
   address: `0x${string}`;
-  cbId: string;
-  ensName: string;
+  cbId?: string;
+  ensName?: string;
 };
 
-type TreasureBoxType = {
+export type TreasureBoxType = {
   gameId: string;
   points: string;
   user: UserPublicProfileType;
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ status: 'ok' });
 }
 
-function verifyTreasureBoxRequest(body: TreasureBoxType) {
+export function verifyTreasureBoxRequest(body: TreasureBoxType) {
   const { gameId, points, user } = body;
 
   // check if it has all the required fields
@@ -93,5 +93,9 @@ function verifyTreasureBoxRequest(body: TreasureBoxType) {
 
   if (!user) {
     return new Response('Missing parameters: user', { status: 400 });
+  }
+
+  if (!user.address) {
+    return new Response('Missing parameters: user address', { status: 400 });
   }
 }

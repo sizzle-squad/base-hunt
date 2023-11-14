@@ -1,23 +1,20 @@
 import { useMutation } from 'react-query';
+import {
+  TreasureBoxType,
+  verifyTreasureBoxRequest,
+} from '@/app/api/treasure-box/route';
+import { routes } from '@/constants/routes';
+import axios from 'axios';
 
-// TODO: get types from API
-type UserPublicProfileType = {
-  address: `0x${string}`;
-  cbId: string;
-  ensName: string;
-};
-
-type Props = {
-  gameId: string;
-  points: string;
-  user: UserPublicProfileType;
-};
-
-export function useMutateTreasureBox({ gameId, points, user }: Props) {
+export function useMutateTreasureBox() {
   const attackBox = useMutation({
-    mutationFn: (data) => {
+    mutationFn: (data: TreasureBoxType) => {
       // make sure data is correct
-      return axios.post('');
+
+      verifyTreasureBoxRequest(data);
+      return axios.post(routes.treasureBox.default, data);
     },
   });
+
+  return { attackBox };
 }
