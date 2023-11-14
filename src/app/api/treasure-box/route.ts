@@ -79,11 +79,15 @@ export async function POST(request: NextRequest) {
         cbid: user.cbId,
         ens_name: user.ensName,
         total_hitpoints: score.current_score,
+        tap_count:1,
       },
       update: {
         total_hitpoints: {
           increment: score.current_score,
         },
+        tap_count:{
+          increment: 1,
+        }
       },
     });
   } catch (error) {
