@@ -1,10 +1,41 @@
-import { useAccount, useEnsName } from 'wagmi';
-import { AppBar, Box, Toolbar, Typography } from '@mui/material';
+import { useAccount } from 'wagmi';
+import { Box, Stack } from '@mui/material';
 import { Color } from '@/constants/color';
 import { useMemo } from 'react';
-import { ConnectButton } from '@/components/assets/ConnectButton';
 import { getTruncatedAddress } from '@/utils/truncate';
 import { useCBProfile } from '@/hooks/useCBProfile';
+
+const PointsPill = ({ points }: { points: number }) => (
+  <Box
+    sx={{
+      color: '#151515', // Replaces var(--Black, #151515)
+      fontFeatureSettings: '"clig" off, "liga" off',
+      letterSpacing: '-0.5px',
+      whiteSpace: 'nowrap', // Adjusts for responsiveness
+      borderRadius: '6.25rem',
+      backgroundColor: '#e1ff67', // Replaces var(--Hive-Green, #e1ff67)
+      padding: '4px 8px',
+      fontFamily: 'Coinbase Mono, -apple-system, Roboto, Helvetica, sans-serif',
+      fontSize: '14px',
+      lineHeight: '17px',
+      fontWeight: 400,
+    }}
+  >
+    {points} points
+  </Box>
+);
+
+const StatusIndicatorDot = ({ color }: { color: Color | string }) => (
+  <Box
+    sx={{
+      width: '8px',
+      height: '8px',
+      borderRadius: '50%',
+      backgroundColor: color,
+      padding: '0.25rem 0.5rem 0.25rem 0.25rem',
+    }}
+  />
+);
 
 export default function Navbar() {
   const { address, isDisconnected } = useAccount();
@@ -25,19 +56,43 @@ export default function Navbar() {
   if (isDisconnected) return null;
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-      }}
+    <Stack
+      paddingX="1rem"
+      direction="row"
+      spacing={2}
+      alignItems={'center'}
+      top="2rem"
+      position="absolute"
+      width="100%"
     >
-      <AppBar position="static" sx={{ backgroundColor: '#fff' }}>
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="body1" color={Color.ForegroundMuted}>
-            {userAddress}
-          </Typography>
-          <ConnectButton variant="text" fontSize="16px" px={1} />
-        </Toolbar>
-      </AppBar>
-    </Box>
+      <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing=".25rem"
+          useFlexGap
+          sx={{
+            borderRadius: '6.25rem',
+            padding: '0.25rem 0.5rem 0.25rem 0.5rem',
+            backgroundColor: 'white',
+          }}
+        >
+          <StatusIndicatorDot color="yellow" />
+          {userAddress}
+        </Stack>
+        <Box onClick={() => console.log('yo')}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="17"
+            viewBox="0 0 16 17"
+            fill="none"
+          >
+            <path d="M3 6.5L8 10.5L13 6.5" stroke="white" stroke-width="2" />
+          </svg>
+        </Box>
+      </Stack>
+      <PointsPill points={10} />
+    </Stack>
   );
 }
