@@ -24,14 +24,23 @@ export function ConnectButton({
           <Button
             variant={variant}
             color="primary"
-            sx={{ py: 2, px, fontSize, backgroundColor }}
+            sx={{
+              py: '20px',
+              px: 3,
+              fontSize: '16px',
+              backgroundColor: '#000000',
+              width: '100%',
+              borderRadius: '12px',
+              fontFamily: 'CoinbaseMono',
+              fontWeight: 400,
+            }}
             onClick={show}
           >
             {isConnected
               ? 'Disconnect'
               : isConnecting
-              ? 'Connecting...'
-              : 'Connect Wallet'}
+                ? 'Connecting...'
+                : 'Connect Wallet'}
           </Button>
         );
       }}
