@@ -1,7 +1,7 @@
 import { Box, SxProps } from '@mui/material';
-import React from 'react';
+import { FC } from 'react';
 
-const HeroSVG: React.FC = ({ sx }: { sx?: SxProps }) => {
+const HeroSVG: FC = ({ sx }: { sx?: SxProps }) => {
   return (
     <Box sx={{ ...sx }}>
       <svg

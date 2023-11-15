@@ -1,9 +1,10 @@
 import { useAccount } from 'wagmi';
 import { Box, Stack } from '@mui/material';
 import { Color } from '@/constants/color';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { getTruncatedAddress } from '@/utils/truncate';
 import { useCBProfile } from '@/hooks/useCBProfile';
+import { useDrawer } from '@/context/DrawerContext';
 
 const PointsPill = ({ points }: { points: number }) => (
   <Box
@@ -37,9 +38,10 @@ const StatusIndicatorDot = ({ color }: { color: Color | string }) => (
   />
 );
 
-export default function Navbar() {
+const Navbar = () => {
   const { address, isDisconnected } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
+  const { drawerStates, toggleDrawer } = useDrawer();
 
   const userAddress = useMemo(() => {
     if (userPublicProfile) {
@@ -80,7 +82,7 @@ export default function Navbar() {
           <StatusIndicatorDot color="yellow" />
           {userAddress}
         </Stack>
-        <Box onClick={() => console.log('yo')}>
+        <Box onClick={() => toggleDrawer('walletOperations', 'bottom', true)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -95,4 +97,6 @@ export default function Navbar() {
       <PointsPill points={10} />
     </Stack>
   );
-}
+};
+
+export default memo(Navbar);
