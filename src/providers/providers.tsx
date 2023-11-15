@@ -7,6 +7,7 @@ import { WagmiConfig, createConfig } from 'wagmi';
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import '@fontsource/open-sans';
+import '@/globals.css';
 
 type Props = {
   children: React.ReactNode;
@@ -29,7 +30,7 @@ const config = createConfig(
 
 const theme = createTheme({
   typography: {
-    fontFamily: 'Open Sans',
+    fontFamily: `CoinbaseSans, Open Sans, sans-serif`,
   },
 });
 

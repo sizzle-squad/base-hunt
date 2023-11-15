@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import {
+  coinbaseSans,
+  coinbaseText,
+  coinbaseMono,
+  coinbaseDisplay,
+  inter,
+} from './font';
+import clsx from 'clsx';
 import '@/globals.css';
 import Providers from '@/providers/providers';
 import { Box } from '@mui/material';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -19,7 +24,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Providers>
-        <body className={inter.className}>
+        <body
+          className={clsx(
+            coinbaseSans.variable,
+            coinbaseText.variable,
+            coinbaseMono.variable,
+            coinbaseDisplay.variable,
+            inter.variable
+          )}
+        >
           <Box
             style={{
               margin: '0 auto',

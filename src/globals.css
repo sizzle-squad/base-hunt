@@ -1,8 +1,112 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,500;1,400&display=swap');
 
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseDisplay;
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Coinbase_Display-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseDisplay;
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/Coinbase_Display-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseMono;
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Coinbase_Mono-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseMono;
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/Coinbase_Mono-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseSans;
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/Coinbase_Sans-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseSans;
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Coinbase_Sans-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseSans;
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/Coinbase_Sans-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseSans;
+  font-style: italic;
+  font-weight: 400;
+  src: url("/fonts/Coinbase_Sans-Regular_Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseSans;
+  font-style: italic;
+  font-weight: 500;
+  src: url("/fonts/Coinbase_Sans-Medium_Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseText;
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Coinbase_Text-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseText;
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/Coinbase_Text-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseText;
+  font-style: italic;
+  font-weight: 400;
+  src: url("/fonts/Coinbase_Text-Regular_Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: CoinbaseText;
+  font-style: italic;
+  font-weight: 500;
+  src: url("/fonts/Coinbase_Text-Medium_Italic.woff2") format("woff2");
+}
+
 html,
 body {
-  font-family: 'Rubik';
+  font-family: CoinbaseSans;
   font-weight: normal;
 }
 h1 {
