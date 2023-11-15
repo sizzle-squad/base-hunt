@@ -4,8 +4,9 @@ import { NextResponse } from 'next/server';
 const prisma = new PrismaClient()
 
 export async function POST(req: Request) {
-    console.log("[webhook treasurebox]")
+    
     const body = await req.json()
+    console.log("[webhook treasurebox]",body)
     if ( body.table as string === "treasure_box_entries"){
         let totalAttack = body.record.total_hitpoints
         if(body.type as string === "UPDATE"){
@@ -16,7 +17,8 @@ export async function POST(req: Request) {
             where: {              
               game_id: body.record.game_id,
             },
-            create: {                
+            create: {    
+              game_id: body.record.game_id,            
               current_hitpoints: totalAttack,
               is_open: false,             
             },
