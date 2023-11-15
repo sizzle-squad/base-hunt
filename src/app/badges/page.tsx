@@ -14,7 +14,6 @@ export default function Badges() {
   const isClient = useClientCheck();
   const { address, isConnected } = useAccount();
   const { useGetBadges } = useBadges({ address, isConnected });
-  const [drawerOpen, setDrawerOpen] = React.useState(true);
   const { drawerStates, toggleDrawer } = useDrawer();
 
   const { data: badges, isLoading, error } = useGetBadges();
