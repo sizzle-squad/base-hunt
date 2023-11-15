@@ -5,14 +5,11 @@ import { ScoreState } from './types';
 import { useAccount } from 'wagmi';
 
 type Props = {
-  userAddress: `0x${string}`;
+  userAddress: `0x${string}` | undefined;
   gameId: string;
 };
 
-export function useScore() {
-  const { address: userAddress, isDisconnected } = useAccount();
-  const gameId = process.env.NEXT_PUBLIC_GAME_ID;
-
+export function useScore({ userAddress, gameId }: Props) {
   const { data, isLoading } = useQuery<ScoreState>(
     ['profile/score', userAddress, gameId],
     async () => {

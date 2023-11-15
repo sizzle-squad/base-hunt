@@ -5,6 +5,7 @@ import bgImage from '../../../public/images/bg.png';
 import HeroSVG from '@/components/assets/HeroSVG';
 import dynamic from 'next/dynamic';
 import { useScore } from '@/hooks/useScore';
+import { useAccount } from 'wagmi';
 
 const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
   ssr: false,
@@ -126,7 +127,12 @@ const LevelsBar = ({
 );
 
 const Hero = () => {
-  const { data } = useScore();
+  const { address: userAddress } = useAccount();
+  const gameId = process.env.NEXT_PUBLIC_GAME_ID || '0';
+  const { data } = useScore({
+    userAddress,
+    gameId,
+  });
 
   const nextLevel = useMemo(() => {
     if (!data || !data.nextLevel) return 2;
