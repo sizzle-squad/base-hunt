@@ -1,5 +1,6 @@
 'use client';
 
+import CustomAccordion from '@/components/Badges/Accordion';
 import Hero from '@/components/Badges/Hero';
 import BadgeContainer from '@/components/assets/BadgeContainer';
 import { useDrawer } from '@/context/DrawerContext';
@@ -26,7 +27,7 @@ export default function Badges() {
           {error && <div>Error...</div>}
           {badges && (
             <>
-              <Stack
+              <Box
                 sx={{
                   paddingTop: '30px',
                   alignItems: 'flex-start',
@@ -34,19 +35,13 @@ export default function Badges() {
                 }}
                 gap={2}
               >
-                <Typography
-                  variant="h5"
-                  textAlign="left"
-                  fontWeight="fontWeightBold"
-                  sx={{ fontSize: '22px' }}
-                >
-                  Art Basel (Miami)
-                </Typography>
                 {badges && badges.data && (
-                  <BadgeContainer badges={badges.data.irlBadges} />
+                  <CustomAccordion title={'IRL Badges'}>
+                    <BadgeContainer badges={badges.data.irlBadges} />
+                  </CustomAccordion>
                 )}
-              </Stack>
-              <Stack
+              </Box>
+              <Box
                 sx={{
                   paddingTop: '30px',
                   alignItems: 'flex-start',
@@ -54,18 +49,12 @@ export default function Badges() {
                 }}
                 gap={2}
               >
-                <Typography
-                  variant="h5"
-                  textAlign="left"
-                  fontWeight="fontWeightBold"
-                  sx={{ fontSize: '22px' }}
-                >
-                  Virtual
-                </Typography>
                 {badges && badges.data && (
-                  <BadgeContainer badges={badges.data.onlineBadges} />
+                  <CustomAccordion title={'Virtual Badges'}>
+                    <BadgeContainer badges={badges.data.onlineBadges} />
+                  </CustomAccordion>
                 )}
-              </Stack>
+              </Box>
             </>
           )}
         </>
@@ -106,9 +95,6 @@ export default function Badges() {
       <Box>{BadgesWrapper}</Box>
       {(['bottom'] as const).map((anchor) => (
         <Fragment key={anchor}>
-          <Button onClick={() => handleToggleDrawer(anchor)}>
-            Wallet Operations {anchor}
-          </Button>
           <Drawer
             anchor={anchor}
             open={drawerStates.walletOperations[anchor]}
