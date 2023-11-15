@@ -1,11 +1,8 @@
 'use client';
-import { WagmiConfig, createConfig } from 'wagmi';
-import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
-import Navbar from '@/components/navigation/navbar';
-import Footer from '@/components/navigation/footer';
+import { Stack } from '@mui/material';
+import { getDefaultConfig } from 'connectkit';
 import { base } from 'viem/chains';
-import { Jumbotron } from '@/components/assets/Jumbotron';
-import { Box, Stack } from '@mui/material';
+import { createConfig } from 'wagmi';
 
 const alchemyId = process.env.ALCHEMY_ID;
 
@@ -38,7 +35,6 @@ export default function RootLayout({
       position={'relative'}
     >
       {children}
-      <Footer />
     </Stack>
   );
 }

@@ -8,6 +8,7 @@ import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import '@fontsource/open-sans';
 import '@/globals.css';
+import { CssBaseline } from '@mui/material';
 
 type Props = {
   children: React.ReactNode;
@@ -31,6 +32,14 @@ const config = createConfig(
 const theme = createTheme({
   typography: {
     fontFamily: `CoinbaseSans, Open Sans, sans-serif`,
+    button: {
+      textTransform: 'none',
+    },
+  },
+  palette: {
+    background: {
+      default: '#D9D9D9',
+    },
   },
 });
 
@@ -40,6 +49,7 @@ const Providers = ({ children }: Props) => {
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={config}>
         <ThemeProvider theme={theme}>
+          <CssBaseline />
           <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
         </ThemeProvider>
       </WagmiConfig>
