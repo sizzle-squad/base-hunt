@@ -169,10 +169,11 @@ const Hero = () => {
       >
         <HeroSVG />
       </Box>
+      {/* TODO: temp to surpress type errors, update types once settled */}
       <LevelsBar
-        currentLevel={currentLevel}
-        nextLevel={nextLevel}
-        threshold={threshold}
+        currentLevel={currentLevel as number}
+        nextLevel={nextLevel as number}
+        threshold={threshold as number}
       />
     </Box>
   );
