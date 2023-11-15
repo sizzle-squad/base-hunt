@@ -24,10 +24,11 @@ export async function GET(request: NextRequest) {
   }
 
   const rank: RankType[] =
-    await prisma.$queryRaw`select row_number() over (order by total_hitpoints desc) as rank, user_address as user_address from treasure_box_entries where game_id = ${BigInt(
+    await prisma.$queryRaw`select row_number() over (order by total_hitpoints desc) as rank, 
+    user_address as user_address from treasure_box_entries where game_id = ${BigInt(
       gameId as string
-    )}`;
-
+    )} and user_address ILIKE ${userAddress}`;
+  console.log(rank);
   if (!rank) {
     return new Response(
       `No rank found with gameId: ${gameId}, address: ${userAddress}`,
@@ -37,8 +38,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const playerRank = rank.find((r) => r.user_address === userAddress);
-
+  const playerRank = rank[0];
   return NextResponse.json({
     rank: playerRank?.rank.toString(),
     userAddress: playerRank?.user_address,
