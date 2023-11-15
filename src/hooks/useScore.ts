@@ -5,7 +5,7 @@ import { ScoreState } from './types';
 import { useAccount } from 'wagmi';
 
 type Props = {
-  userAddress: `0x${string}` | undefined;
+  userAddress: `0x${string}` | string;
   gameId: string;
 };
 

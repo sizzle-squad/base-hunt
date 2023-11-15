@@ -41,10 +41,15 @@ const StatusIndicatorDot = ({ color }: { color: Color | string }) => (
 
 const Navbar = () => {
   const { address, isDisconnected } = useAccount();
+  const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
   const { data: userPublicProfile } = useCBProfile({ address });
   const { toggleDrawer } = useDrawer();
 
-  const { data } = useScore();
+  // Todo: solidify types and figure out why this is returning undefined
+  const { data } = useScore({
+    userAddress: address ?? '',
+    gameId,
+  });
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {
       return data.score.currentScore;
