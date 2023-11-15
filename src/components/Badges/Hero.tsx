@@ -1,9 +1,13 @@
 import Image from 'next/image';
 import { Box, LinearProgress, Stack } from '@mui/material';
 import React from 'react';
-import Navbar from '../navigation/navbar';
 import bgImage from '../../../public/images/bg.png';
 import HeroSVG from '@/components/assets/HeroSVG';
+import dynamic from 'next/dynamic';
+
+const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
+  ssr: false,
+});
 
 const LevelsProgressBar = ({ progress }: { progress: number }) => (
   <Box
@@ -145,4 +149,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default React.memo(Hero);
