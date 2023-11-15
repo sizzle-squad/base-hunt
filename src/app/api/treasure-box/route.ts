@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(tb);
 }
 
-export async function mapTreasureBoxState(treasureBox:TreasureBoxStateType): Promise<TreasureBoxState> {
+async function mapTreasureBoxState(treasureBox:TreasureBoxStateType): Promise<TreasureBoxState> {
   return {
     id: treasureBox.id as bigint,
     createdAt: treasureBox.created_at,
