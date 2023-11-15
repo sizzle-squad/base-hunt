@@ -69,7 +69,7 @@ model treasure_box_entries {
   created_at      DateTime @default(now()) @db.Timestamptz(6)
   user_address    String
   total_hitpoints BigInt
-  cbid            String
+  cbid            String?
   game_id         BigInt
   ens_name        String?
   tap_count       Int      @default(0)
