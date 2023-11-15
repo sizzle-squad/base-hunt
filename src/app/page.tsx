@@ -3,13 +3,14 @@
 import Layout from '@/components/layout';
 import { Jumbotron } from '@/components/assets/Jumbotron';
 import Head from 'next/head';
-import { Button, Link, Stack } from '@mui/material';
+import { Box, Button, Icon, Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Color } from '@/constants/color';
 import { ConnectButton } from '@/components/assets/ConnectButton';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -30,7 +31,16 @@ export default function Home() {
         <Button
           variant="contained"
           color="primary"
-          sx={{ py: 2, px: 5, fontSize: '22px', backgroundColor: '#000000' }}
+          sx={{
+            py: '20px',
+            px: 3,
+            fontSize: '16px',
+            backgroundColor: '#000000',
+            width: '100%',
+            borderRadius: '12px',
+            fontFamily: 'CoinbaseMono',
+            fontWeight: 400,
+          }}
           onClick={handleStartExploring}
         >
           Start Exploring
@@ -48,36 +58,58 @@ export default function Home() {
         <meta name="description" content="Base Hunt" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout>
-        <Jumbotron
-          imageUrl="/images/map.png"
-          isCircular
-          width={300}
-          height={300}
-        />
-        <Stack gap={1} paddingTop={10} alignItems="center">
-          <Typography variant="h4" align="center" fontWeight="fontWeightBold">
-            Onchain Odyssey
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            color={Color.ForegroundMuted}
-          >
-            Collect onchain art across Miami and exchange it for exclusive
-            merch.
-          </Typography>
-        </Stack>
-        <Stack paddingTop={5} alignItems="center">
+      <Stack
+        direction="column"
+        justifyContent="space-between"
+        sx={{
+          position: 'absolute',
+          px: '20px',
+          py: '35px',
+          maxWidth: '390px',
+          width: '100vw',
+          height: '100vh',
+          backgroundImage: `url('/images/landing-bg.svg')`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <Jumbotron />
+        <Stack paddingTop={5} alignItems="center" width="100%">
           {ctaButton}
         </Stack>
-        <Stack gap={1} alignItems="center" paddingY={5}>
-          <Typography variant="subtitle2">Coinbase Wallet Required</Typography>
-          <Link href="/" variant="body1" underline="none">
-            Download Here
+        <Stack alignItems="center">
+          <Stack
+            direction="row"
+            alignItems="center"
+            sx={{
+              py: 1,
+              px: 2,
+              mt: 4,
+              mb: 2,
+              borderRadius: 20,
+              bgcolor: 'white',
+              gap: 1,
+            }}
+          >
+            <Image
+              src="/images/coinbase-wallet-logo.png"
+              alt="Coinbase Wallet Logo"
+              height={24}
+              width={24}
+            />
+            <Typography fontSize={14}>
+              Coinbase Wallet{' '}
+              <Box component="span" fontWeight="bold">
+                Recommended
+              </Box>
+            </Typography>
+          </Stack>
+          <Link href="/" variant="body1" color="black" underline="none">
+            Download now
           </Link>
         </Stack>
-      </Layout>
+      </Stack>
     </>
   );
 }

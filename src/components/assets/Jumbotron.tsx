@@ -1,35 +1,22 @@
+import { Stack } from '@mui/material';
 import Image from 'next/image';
-import { Box, Container, Stack } from '@mui/material';
 
-type Props = {
-  imageUrl: string;
-  width?: number;
-  height?: number;
-  isCircular?: boolean;
-};
-
-export function Jumbotron({
-  imageUrl,
-  isCircular,
-  width = 500,
-  height = 500,
-}: Props) {
+export function Jumbotron() {
   return (
     <Stack
-      border="4px solid black"
-      borderRadius={isCircular ? '50%' : ''}
-      overflow="hidden"
-      width={`${width}px`}
-      height={`${height}px`}
       direction="row"
       justifyContent="center"
       alignItems="center"
+      sx={{
+        pt: 18,
+        pb: 30,
+      }}
     >
       <Image
-        src={imageUrl}
-        width="500"
-        height="500"
-        objectFit="cover"
+        src="/images/logo.svg"
+        width="260"
+        height="150"
+        objectFit="contain"
         alt="jumbotron"
       />
     </Stack>
