@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Box, LinearProgress, Stack } from '@mui/material';
-import React from 'react';
+import { memo } from 'react';
 import bgImage from '../../../public/images/bg.png';
 import HeroSVG from '@/components/assets/HeroSVG';
 import dynamic from 'next/dynamic';
@@ -149,4 +149,4 @@ const Hero = () => {
   );
 };
 
-export default React.memo(Hero);
+export default memo(Hero);

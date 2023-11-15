@@ -1,11 +1,10 @@
 import { useAccount } from 'wagmi';
 import { Box, Stack } from '@mui/material';
 import { Color } from '@/constants/color';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { getTruncatedAddress } from '@/utils/truncate';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useDrawer } from '@/context/DrawerContext';
-import React from 'react';
 
 const PointsPill = ({ points }: { points: number }) => (
   <Box
@@ -100,4 +99,4 @@ const Navbar = () => {
   );
 };
 
-export default React.memo(Navbar);
+export default memo(Navbar);
