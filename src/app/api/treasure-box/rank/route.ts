@@ -4,6 +4,11 @@ import '@/utils/helper';
 
 const prisma = new PrismaClient();
 
+type RankType = {
+  rank: number;
+  user_address: string;
+};
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress');
@@ -18,8 +23,8 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const rank =
-    await prisma.$queryRaw`select row_number() over (order by total_hitpoints desc) as rank from treasure_box_entries where game_id = ${BigInt(
+  const rank: RankType[] =
+    await prisma.$queryRaw`select row_number() over (order by total_hitpoints desc) as rank, user_address as user_address from treasure_box_entries where game_id = ${BigInt(
       gameId as string
     )}`;
 
@@ -32,5 +37,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return NextResponse.json(rank);
+  const playerRank = rank.find((r) => r.user_address === userAddress);
+
+  return NextResponse.json(playerRank);
 }
