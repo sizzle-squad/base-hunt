@@ -127,7 +127,7 @@ const LevelsBar = ({
 );
 
 const Hero = () => {
-  const { address: userAddress } = useAccount();
+  const { address: userAddress = '' } = useAccount();
   const gameId = process.env.NEXT_PUBLIC_GAME_ID || '0';
   const { data } = useScore({
     userAddress,
