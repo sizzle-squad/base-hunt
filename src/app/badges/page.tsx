@@ -6,7 +6,7 @@ import { useDrawer } from '@/context/DrawerContext';
 import { useBadges } from '@/hooks/useBadges';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { Box, Button, Drawer, Stack, Typography } from '@mui/material';
-import React from 'react';
+import { Fragment } from 'react';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -94,7 +94,7 @@ export default function Badges() {
       <Hero />
       <Box>{BadgesWrapper}</Box>
       {(['bottom'] as const).map((anchor) => (
-        <React.Fragment key={anchor}>
+        <Fragment key={anchor}>
           <Button
             onClick={() => toggleDrawer('walletOperations', anchor, true)}
           >
@@ -107,7 +107,7 @@ export default function Badges() {
           >
             {list(anchor)}
           </Drawer>
-        </React.Fragment>
+        </Fragment>
       ))}
     </Box>
   );
