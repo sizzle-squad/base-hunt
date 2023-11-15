@@ -5,6 +5,7 @@ import { memo, useMemo } from 'react';
 import { getTruncatedAddress } from '@/utils/truncate';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useDrawer } from '@/context/DrawerContext';
+import { useScore } from '@/hooks/useScore';
 
 const PointsPill = ({ points }: { points: number }) => (
   <Box
@@ -40,8 +41,22 @@ const StatusIndicatorDot = ({ color }: { color: Color | string }) => (
 
 const Navbar = () => {
   const { address, isDisconnected } = useAccount();
+  const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
   const { data: userPublicProfile } = useCBProfile({ address });
-  const { drawerStates, toggleDrawer } = useDrawer();
+  const { toggleDrawer } = useDrawer();
+
+  // Todo: solidify types and figure out why this is returning undefined
+  const { data } = useScore({
+    userAddress: address ?? '',
+    gameId,
+  });
+  const score = useMemo(() => {
+    if (data && data.score?.currentScore) {
+      return data.score.currentScore;
+    }
+
+    return 0;
+  }, [data]);
 
   const userAddress = useMemo(() => {
     if (userPublicProfile) {
@@ -94,7 +109,8 @@ const Navbar = () => {
           </svg>
         </Box>
       </Stack>
-      <PointsPill points={10} />
+      {/* todo: solidify types */}
+      <PointsPill points={score as number} />
     </Stack>
   );
 };

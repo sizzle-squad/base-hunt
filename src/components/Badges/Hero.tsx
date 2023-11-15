@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import { Box, LinearProgress, Stack } from '@mui/material';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import bgImage from '../../../public/images/bg.png';
 import HeroSVG from '@/components/assets/HeroSVG';
 import dynamic from 'next/dynamic';
+import { useScore } from '@/hooks/useScore';
+import { useAccount } from 'wagmi';
 
 const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
   ssr: false,
@@ -32,7 +34,15 @@ const LevelsProgressBar = ({ progress }: { progress: number }) => (
   </Box>
 );
 
-const LevelsBar = () => (
+const LevelsBar = ({
+  currentLevel,
+  nextLevel,
+  threshold,
+}: {
+  currentLevel: number;
+  nextLevel: number;
+  threshold: number;
+}) => (
   <Box
     sx={{
       backgroundColor: 'var(--Black, #0a0b0d)',
@@ -63,7 +73,7 @@ const LevelsBar = () => (
             typography: 'body1',
           }}
         >
-          You are at Level 2
+          You are at Level {currentLevel}
         </Box>
         <Box
           sx={{
@@ -104,19 +114,40 @@ const LevelsBar = () => (
       <span
         style={{ fontFamily: 'Coinbase Sans, sans-serif', fontWeight: 700 }}
       >
-        3 more
+        {threshold} more
       </span>
       <span
         style={{ fontFamily: 'Coinbase Sans, sans-serif', fontWeight: 400 }}
       >
         {' '}
-        NFTs needed to reach Level 3
+        NFTs needed to reach Level {nextLevel}
       </span>
     </Box>
   </Box>
 );
 
 const Hero = () => {
+  const { address: userAddress = '' } = useAccount();
+  const gameId = process.env.NEXT_PUBLIC_GAME_ID || '0';
+  const { data } = useScore({
+    userAddress,
+    gameId,
+  });
+
+  const nextLevel = useMemo(() => {
+    if (!data || !data.nextLevel) return 2;
+    return data.nextLevel.id ?? 2;
+  }, [data]);
+
+  const currentLevel = useMemo(() => {
+    if (!data || !data.currentLevel) return 1;
+    return data.currentLevel.id ?? 1;
+  }, [data]);
+
+  const threshold = useMemo(() => {
+    if (!data || !data.nextLevel?.thresholdPoints) return 0;
+    return data.nextLevel.thresholdPoints ?? 0;
+  }, [data]);
   return (
     <Box position="relative" width="100%">
       <Box>
@@ -144,7 +175,12 @@ const Hero = () => {
       >
         <HeroSVG />
       </Box>
-      <LevelsBar />
+      {/* TODO: temp to surpress type errors, update types once settled */}
+      <LevelsBar
+        currentLevel={currentLevel as number}
+        nextLevel={nextLevel as number}
+        threshold={threshold as number}
+      />
     </Box>
   );
 };
