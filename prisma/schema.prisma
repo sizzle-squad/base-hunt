@@ -73,6 +73,8 @@ model treasure_box_entries {
   game_id         BigInt
   ens_name        String?
   tap_count       Int      @default(0)
+
+  @@unique([user_address, game_id], map: "treasure_box_entries_unique")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.

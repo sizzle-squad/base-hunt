@@ -87,14 +87,15 @@ export async function POST(request: NextRequest) {
   if (!score) {
     return new Response('Error: score not found', { status: 400 });
   }
-
   // const pointInBigInt = BigInt(points as string);
 
   try {
     await prisma.treasure_box_entries.upsert({
       where: {
-        user_address: user.address,
-        game_id: gameIdInBigInt,
+        user_address_game_id: {
+          user_address: user.address,
+          game_id: gameIdInBigInt  
+        }
       },
       create: {
         game_id: gameIdInBigInt,
@@ -114,6 +115,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    console.error(error);
     return new Response('Error: failed to register treasure box entry', {
       status: 400,
     });
