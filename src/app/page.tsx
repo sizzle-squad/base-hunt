@@ -27,7 +27,7 @@ export default function Home() {
 
   const ctaButton = useMemo(() => {
     if (isClient) {
-      return isConnected || true ? (
+      return isConnected ? (
         <Button
           variant="contained"
           color="primary"
@@ -59,13 +59,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Stack
-        component="div"
         direction="column"
         justifyContent="space-between"
         sx={{
           position: 'absolute',
           px: '20px',
           py: '35px',
+          maxWidth: '390px',
           width: '100vw',
           height: '100vh',
           backgroundImage: `url('/images/landing-bg.svg')`,
