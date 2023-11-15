@@ -65,3 +65,14 @@ export type ScoreState = {
   nextLevel: Level | null;
   score: Score | null;
 }
+
+export type TreasureBoxState = {
+  id: bigint,
+  createdAt: Date,
+  totalHitpoints: bigint,
+  gameId: bigint,
+  name: string,
+  location: string,
+  currentHitpoints: bigint,
+  isOpen: boolean 
+}

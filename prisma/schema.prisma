@@ -64,20 +64,36 @@ model level_configuration {
   airdrop_command  String
 }
 
-model treasure_box {
-  id               BigInt   @id @default(autoincrement())
-  game_id          BigInt   @unique
-  hit_points       BigInt
-  is_open          Boolean  @default(false)
-  location         String?
-}
 model treasure_box_entries {
-  id               BigInt   @id @default(autoincrement())
-  game_id          BigInt
-  total_hitpoints  BigInt   @default(0)
-  cbid             String?
-  ens_name         String?
-  user_address     String   @unique
+  id              BigInt   @id(map: "treasurebox_attacks_pkey") @default(autoincrement())
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  user_address    String
+  total_hitpoints BigInt
+  cbid            String?
+  game_id         BigInt
+  ens_name        String?
+  tap_count       Int      @default(0)
+
+  @@unique([user_address, game_id], map: "treasure_box_entries_unique")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model treasure_box_configuration {
+  id              BigInt   @id(map: "treasurebox_configuration_pkey") @default(autoincrement())
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  total_hitpoints BigInt
+  game_id         BigInt
+  name            String
+  location        String?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model treasure_box_state {
+  id                BigInt   @id @default(autoincrement())
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+  current_hitpoints BigInt
+  is_open           Boolean  @default(false)
+  game_id           BigInt?  @unique(map: "treasure_box_state_unique")
 }
 
 enum badge_type {
