@@ -39,5 +39,8 @@ export async function GET(request: NextRequest) {
 
   const playerRank = rank.find((r) => r.user_address === userAddress);
 
-  return NextResponse.json(playerRank);
+  return NextResponse.json({
+    rank: playerRank?.rank.toString(),
+    userAddress: playerRank?.user_address,
+  });
 }
