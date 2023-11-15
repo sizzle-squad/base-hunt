@@ -6,7 +6,7 @@ import { useDrawer } from '@/context/DrawerContext';
 import { useBadges } from '@/hooks/useBadges';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { Box, Button, Drawer, Stack, Typography } from '@mui/material';
-import { Fragment } from 'react';
+import { Fragment, useCallback } from 'react';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -89,21 +89,30 @@ export default function Badges() {
     </Box>
   );
 
+  const handleToggleDrawer = useCallback(
+    (anchor: Anchor) => {
+      toggleDrawer(
+        'walletOperations',
+        anchor,
+        drawerStates.walletOperations[anchor]
+      );
+    },
+    [toggleDrawer]
+  );
+
   return (
     <Box>
       <Hero />
       <Box>{BadgesWrapper}</Box>
       {(['bottom'] as const).map((anchor) => (
         <Fragment key={anchor}>
-          <Button
-            onClick={() => toggleDrawer('walletOperations', anchor, true)}
-          >
+          <Button onClick={() => handleToggleDrawer(anchor)}>
             Wallet Operations {anchor}
           </Button>
           <Drawer
             anchor={anchor}
             open={drawerStates.walletOperations[anchor]}
-            onClose={() => toggleDrawer('walletOperations', anchor, false)}
+            onClose={() => handleToggleDrawer(anchor)}
           >
             {list(anchor)}
           </Drawer>
