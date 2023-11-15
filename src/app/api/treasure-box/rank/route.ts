@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     user_address as user_address from treasure_box_entries where game_id = ${BigInt(
       gameId as string
     )} and user_address ILIKE ${userAddress}`;
-  console.log(rank);
+
   if (!rank) {
     return new Response(
       `No rank found with gameId: ${gameId}, address: ${userAddress}`,
