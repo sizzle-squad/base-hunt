@@ -17,12 +17,16 @@ import AccordionPill from '@/components/Badges/AccordionPill';
 import Circle from '@/components/Circle';
 import Text from '@/components/Text';
 import { useRouter } from 'next/navigation';
+import { useUserName } from '@/hooks/useUsername';
+import { useCBProfile } from '@/hooks/useCBProfile';
 
 export default function Badges() {
   const isClient = useClientCheck();
   const router = useRouter();
   const { address, isConnected } = useAccount();
   const { drawerStates, toggleDrawer } = useDrawer();
+  const { data: userPublicProfile } = useCBProfile({ address });
+  const userName = useUserName({ address, userPublicProfile });
   const { disconnectAsync } = useDisconnect();
   const [irlAccordionExpanded, setIrlAccordionExpanded] = useState(false);
   const [virtualAccordionExpanded, setVirtualAccordionExpanded] =
@@ -231,7 +235,7 @@ export default function Badges() {
                 }}
               >
                 <Circle color="#FFC52D" size="2rem" />
-                <Text fontSize="0.875rem">noragrets.eth</Text>
+                {userName && <Text fontSize="0.875rem">{userName}</Text>}
               </Stack>
             </Box>
           </Box>
