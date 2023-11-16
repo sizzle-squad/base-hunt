@@ -287,9 +287,9 @@ export default function Badges() {
   );
 
   return (
-    <Box>
+    <Box paddingX="1.25rem">
       <Hero />
-      <Box paddingX="1.25rem">{BadgesWrapper}</Box>
+      <Box>{BadgesWrapper}</Box>
       {(['bottom'] as const).map((anchor) => (
         <Fragment key={anchor}>
           <Drawer
