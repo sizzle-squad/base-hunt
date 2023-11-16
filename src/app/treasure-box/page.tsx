@@ -21,6 +21,7 @@ export default function TreasureBox() {
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
   const { attackBox } = useMutateTreasureBox();
+
   const { data: treasureBox } = useTreasureBox({ gameId: GAME_ID });
 
   const handleCTAPress = useCallback(() => {
@@ -41,9 +42,10 @@ export default function TreasureBox() {
         sx={{ width: '100%' }}
         alignItems="center"
         gap={2}
+        paddingTop={6}
       >
         <Typography variant="h3">Treasure Box</Typography>
-        <Typography variant="body1">{`Remaining HP: ${treasureBox?.hitPoints}`}</Typography>
+        <Typography variant="body1">{`Remaining HP: ${treasureBox?.totalHitpoints}`}</Typography>
         <Button
           variant="contained"
           onClick={handleCTAPress}

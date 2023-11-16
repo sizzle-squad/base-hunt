@@ -20,7 +20,7 @@ export function useScore({ userAddress, gameId }: Props) {
       return score.data;
     },
     {
-      enabled: !!userAddress && !!gameId,
+      enabled: !!userAddress && gameId !== undefined,
       onError: (error) => {
         console.error(error);
         // Handle error appropriately
