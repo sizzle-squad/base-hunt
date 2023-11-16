@@ -31,18 +31,19 @@ model webhook_data {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model badge_configuration {
-  id               BigInt     @id @default(autoincrement())
-  name             String     @db.VarChar
-  contract_address String     @db.VarChar
+  id               BigInt          @id @default(autoincrement())
+  name             String          @db.VarChar
+  contract_address String          @db.VarChar
   token_id         BigInt
   level            Int?
-  points           Int        @default(1)
+  points           Int             @default(1)
   minter           String
   image_url        String?
-  game_id          BigInt     @default(0)
+  game_id          BigInt          @default(0)
   cta_url          String?
   cta_text         String?
-  type             badge_type @default(irl)
+  type             badge_type      @default(irl)
+  claimed_boost    claimed_boost[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -112,11 +113,12 @@ model boost_configuration {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model claimed_boost {
-  id           BigInt   @id @default(autoincrement())
-  updated_at   DateTime @default(now()) @db.Timestamptz(6)
-  user_address String   @db.VarChar
-  boost_id     BigInt
-  game_id      BigInt
+  id                  BigInt              @id @default(autoincrement())
+  updated_at          DateTime            @default(now()) @db.Timestamptz(6)
+  user_address        String              @db.VarChar
+  boost_id            BigInt
+  game_id             BigInt
+  badge_configuration badge_configuration @relation(fields: [boost_id], references: [id], onDelete: Cascade)
 
   @@unique([user_address, boost_id, game_id], map: "claimed_boost_unique")
 }
