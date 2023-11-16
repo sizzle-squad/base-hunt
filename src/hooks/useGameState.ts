@@ -18,7 +18,7 @@ export function useGameState({ userAddress, gameId }: Props) {
       });
     },
     {
-      enabled: !!userAddress && !!gameId,
+      enabled: !!userAddress && gameId !== undefined,
       onError: (error) => {
         console.error(error);
         // Handle error appropriately

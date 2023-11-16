@@ -131,7 +131,7 @@ export default function Badges() {
         drawerStates.walletOperations[anchor]
       );
     },
-    [toggleDrawer]
+    [drawerStates.walletOperations, toggleDrawer]
   );
 
   return (

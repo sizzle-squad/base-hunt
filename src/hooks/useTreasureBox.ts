@@ -7,10 +7,12 @@ type Props = {
 };
 
 type TreasureBoxType = {
-  gameId: string;
-  hitPoints: bigint;
-  isOpen: boolean;
-  location?: string;
+  data: {
+    gameId: string;
+    totalHitpoints: bigint;
+    isOpen: boolean;
+    location?: string;
+  };
 };
 
 type TreasureBotReturnType = Omit<TreasureBoxType, 'gameId'>;
@@ -23,12 +25,12 @@ export function useTreasureBox({ gameId }: Props) {
         method: 'GET',
         url: routes.treasureBox.default,
         params: {
-          gameId,
+          gameId: gameId,
         },
       });
     },
     {
-      enabled: !!gameId,
+      enabled: gameId !== undefined,
       onError: (error) => {
         console.error(error);
         // Handle error appropriately
@@ -37,7 +39,7 @@ export function useTreasureBox({ gameId }: Props) {
   );
 
   return {
-    data,
+    data: data?.data,
     isLoading,
   };
 }

@@ -23,7 +23,7 @@ export default function Home() {
 
   const handleStartExploring = useCallback(() => {
     return router.push('/badges');
-  }, []);
+  }, [router]);
 
   const ctaButton = useMemo(() => {
     if (isClient) {

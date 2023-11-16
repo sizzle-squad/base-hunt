@@ -4,7 +4,13 @@ import { useClientCheck } from '@/hooks/useClientCheck';
 import dynamic from 'next/dynamic';
 import Layout from '@/components/layout';
 import { useCallback, useMemo } from 'react';
-import { Button, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { useMutateTreasureBox } from '@/hooks/useMutateTreasureBox';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
@@ -21,7 +27,8 @@ export default function TreasureBox() {
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
   const { attackBox } = useMutateTreasureBox();
-  const { data: treasureBox } = useTreasureBox({ gameId: GAME_ID });
+
+  const { data: treasureBox, isLoading } = useTreasureBox({ gameId: GAME_ID });
 
   const handleCTAPress = useCallback(() => {
     attackBox.mutate({
@@ -32,7 +39,12 @@ export default function TreasureBox() {
         ensName: userPublicProfile?.ensDomainProfile.name,
       },
     });
-  }, []);
+  }, [
+    address,
+    attackBox,
+    userPublicProfile?.ensDomainProfile.name,
+    userPublicProfile?.subdomainProfile.name,
+  ]);
 
   const content = useMemo(() => {
     return (
@@ -41,9 +53,17 @@ export default function TreasureBox() {
         sx={{ width: '100%' }}
         alignItems="center"
         gap={2}
+        paddingTop={6}
       >
         <Typography variant="h3">Treasure Box</Typography>
-        <Typography variant="body1">{`Remaining HP: ${treasureBox?.hitPoints}`}</Typography>
+        {isLoading ? (
+          <Box sx={{ display: 'flex' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Typography variant="body1">{`Remaining HP: ${treasureBox?.totalHitpoints}`}</Typography>
+        )}
+
         <Button
           variant="contained"
           onClick={handleCTAPress}
@@ -53,7 +73,12 @@ export default function TreasureBox() {
         </Button>
       </Stack>
     );
-  }, []);
+  }, [
+    handleCTAPress,
+    isLoading,
+    treasureBox?.isOpen,
+    treasureBox?.totalHitpoints,
+  ]);
 
   if (!isClient || !treasureBox) return null;
 

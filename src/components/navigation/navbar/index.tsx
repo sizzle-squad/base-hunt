@@ -105,7 +105,7 @@ const Navbar = () => {
             viewBox="0 0 16 17"
             fill="none"
           >
-            <path d="M3 6.5L8 10.5L13 6.5" stroke="white" stroke-width="2" />
+            <path d="M3 6.5L8 10.5L13 6.5" stroke="white" strokeWidth="2" />
           </svg>
         </Box>
       </Stack>

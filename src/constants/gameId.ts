@@ -1,1 +1,1 @@
-export const GAME_ID = process.env.GAME_ID || '';
+export const GAME_ID = process.env.NEXT_PUBLIC_GAME_ID ?? '';
