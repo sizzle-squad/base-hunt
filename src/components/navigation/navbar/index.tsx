@@ -80,8 +80,6 @@ const Navbar = () => {
       direction="row"
       spacing={2}
       alignItems={'center'}
-      top="2rem"
-      position="absolute"
       width="100%"
     >
       <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
