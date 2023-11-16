@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { Badge, BadgeTypeEnum } from './types';
 import { useMemo } from 'react';
+import { sortWithBigInt } from '@/utils/sortWithBigInt';
 
 type Props = {
   userAddress?: `0x${string}`;
@@ -33,9 +34,14 @@ export function useGameState({ userAddress, gameId }: Props) {
 
   return useMemo(() => {
     const irlBadges =
-      data?.data.filter((badge) => badge.type === BadgeTypeEnum.IRL) || [];
+      data?.data
+        .filter((badge) => badge.type === BadgeTypeEnum.IRL)
+        .sort((a, b) => sortWithBigInt(a.tokenId, b.tokenId)) || [];
+
     const onlineBadges =
-      data?.data.filter((badge) => badge.type === BadgeTypeEnum.Online) || [];
+      data?.data
+        .filter((badge) => badge.type === BadgeTypeEnum.Online)
+        .sort((a, b) => sortWithBigInt(a.tokenId, b.tokenId)) || [];
 
     const completedIRLBadgeCount = irlBadges.filter(
       (badge) => badge.isCompleted

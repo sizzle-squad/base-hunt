@@ -10,7 +10,7 @@ type Props = {
 };
 export function Badge({ imageUrl, isCompleted, badge }: Props) {
   return (
-    <Box sx={{ opacity: isCompleted ? 1 : 0.5 }} width={80} height={80}>
+    <Box sx={{ opacity: isCompleted ? 1 : 0.15 }} width={80} height={80}>
       <Link href={`/badges/${badge.id}`}>
         <Image
           src={imageUrl as string}
