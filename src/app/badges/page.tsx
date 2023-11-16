@@ -147,7 +147,8 @@ export default function Badges() {
         drawerStates.walletOperations[anchor]
       );
     },
-    [toggleAccordion]
+    // Adding walletOperations to the dependency array causes toggleDrawer always set to true
+    [toggleDrawer]
   );
 
   return (
