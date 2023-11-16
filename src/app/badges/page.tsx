@@ -277,7 +277,6 @@ export default function Badges() {
               </svg>
             </Box>
           </Stack>
-          {/* ... other components */}
         </Stack>
       )}
     </Box>
