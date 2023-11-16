@@ -71,6 +71,8 @@ export default function BadgeDetails({ params }: Props) {
       return currentBadge?.isCompleted;
     }, [currentBadge]) ?? false;
 
+  if (!isClient) return null;
+
   return (
     <>
       {isLoading && <div>Loading...</div>}
