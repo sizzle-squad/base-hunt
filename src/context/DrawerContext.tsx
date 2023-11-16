@@ -8,6 +8,8 @@ import React, {
   useState,
 } from 'react';
 
+export type DrawerType = 'walletOperations' | 'badgeActions';
+
 interface DrawerStates {
   walletOperations: Record<string, boolean>;
   badgeActions: Record<string, boolean>;
@@ -15,11 +17,7 @@ interface DrawerStates {
 
 interface DrawerContextType {
   drawerStates: DrawerStates;
-  toggleDrawer: (
-    type: 'walletOperations' | 'badgeActions',
-    anchor: string,
-    open: boolean
-  ) => void;
+  toggleDrawer: (type: DrawerType, anchor: string, open: boolean) => void;
 }
 
 interface DrawerProviderProps {
@@ -37,11 +35,7 @@ export const DrawerProvider: React.FunctionComponent<DrawerProviderProps> = ({
   });
 
   const toggleDrawer = useCallback(
-    (
-      type: 'walletOperations' | 'badgeActions',
-      anchor: string,
-      open: boolean
-    ) => {
+    (type: DrawerType, anchor: string, open: boolean) => {
       setDrawerStates((prevStates) => ({
         ...prevStates,
         [type]: { ...prevStates[type], [anchor]: open },
