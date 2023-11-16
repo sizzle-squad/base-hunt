@@ -6,6 +6,7 @@ import { getTruncatedAddress } from '@/utils/truncate';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useDrawer } from '@/context/DrawerContext';
 import { useScore } from '@/hooks/useScore';
+import { useUserName } from '@/hooks/useUsername';
 
 const PointsPill = ({ points }: { points: number }) => (
   <Box
@@ -43,6 +44,7 @@ const Navbar = () => {
   const { address, isDisconnected } = useAccount();
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
   const { data: userPublicProfile } = useCBProfile({ address });
+  const userName = useUserName({ address, userPublicProfile });
   const { toggleDrawer } = useDrawer();
 
   // Todo: solidify types and figure out why this is returning undefined
@@ -95,7 +97,7 @@ const Navbar = () => {
           }}
         >
           <StatusIndicatorDot color="yellow" />
-          {userAddress}
+          {userName && userName}
         </Stack>
         <Box onClick={() => toggleDrawer('walletOperations', 'bottom', true)}>
           <svg
