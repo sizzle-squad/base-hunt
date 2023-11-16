@@ -124,7 +124,7 @@ function LevelsBar({
           style={{ fontFamily: 'Coinbase Sans, sans-serif', fontWeight: 400 }}
         >
           {' '}
-          NFTs needed to reach Level {nextLevel}
+          points needed to reach Level {nextLevel}
         </span>
       </Box>
     </Box>
@@ -150,12 +150,14 @@ const Hero = () => {
   }, [data]);
 
   const threshold = useMemo(() => {
+    // user is yet to play the game so threshold is 2 to reach level 2.
+    // all player starts at level 1, not 0
     if (
       !data ||
       !data.score?.currentScore ||
       !data.currentLevel?.thresholdPoints
     )
-      return 0;
+      return 2;
     return Number(
       data.score?.currentScore - data.currentLevel?.thresholdPoints
     );
