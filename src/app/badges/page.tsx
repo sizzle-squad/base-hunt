@@ -1,20 +1,24 @@
 'use client';
 
 import CustomAccordion from '@/components/Badges/Accordion';
+import AccordionPill from '@/components/Badges/AccordionPill';
 import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
+import Circle from '@/components/Circle';
+import Text from '@/components/Text';
 import BadgeContainer from '@/components/assets/BadgeContainer';
+import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
+import { BadgeTypeEnum } from '@/hooks/types';
+import { useCBProfile } from '@/hooks/useCBProfile';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
-import { Box, Drawer, Typography } from '@mui/material';
-import { Fragment, useCallback, useState } from 'react';
-import { useMemo } from 'react';
-import { useAccount } from 'wagmi';
-import { GAME_ID } from '@/constants/gameId';
-import { BadgeTypeEnum } from '@/hooks/types';
-import AccordionPill from '@/components/Badges/AccordionPill';
+import { useUserName } from '@/hooks/useUsername';
+import { Box, Drawer, Stack } from '@mui/material';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
+import { Fragment, useCallback, useMemo, useState } from 'react';
+import { useAccount, useDisconnect } from 'wagmi';
 
 const Footer = dynamic(() => import('@/components/navigation/footer'), {
   ssr: false,
@@ -22,8 +26,12 @@ const Footer = dynamic(() => import('@/components/navigation/footer'), {
 
 export default function Badges() {
   const isClient = useClientCheck();
-  const { address } = useAccount();
+  const router = useRouter();
+  const { address, isConnected } = useAccount();
   const { drawerStates, toggleDrawer } = useDrawer();
+  const { data: userPublicProfile } = useCBProfile({ address });
+  const userName = useUserName({ address, userPublicProfile });
+  const { disconnectAsync } = useDisconnect();
   const [irlAccordionExpanded, setIrlAccordionExpanded] = useState(false);
   const [virtualAccordionExpanded, setVirtualAccordionExpanded] =
     useState(false);
@@ -33,7 +41,28 @@ export default function Badges() {
     error,
   } = useGameState({ userAddress: address, gameId: GAME_ID });
 
-  const toggleAccordion = useCallback((type: BadgeTypeEnum) => {
+  const handleDisconnect = useCallback(async () => {
+    await disconnectAsync();
+    router.push('/');
+  }, [disconnectAsync]);
+
+  const handleDrawerDismiss = useCallback(() => {
+    toggleDrawer('walletOperations', 'bottom', false);
+  }, [toggleDrawer]);
+
+  const handleToggleDrawer = useCallback(
+    (anchor: Anchor) => {
+      toggleDrawer(
+        'walletOperations',
+        anchor,
+        drawerStates.walletOperations[anchor]
+      );
+    },
+    // Adding walletOperations to the dependency array causes toggleDrawer always set to true
+    [toggleDrawer]
+  );
+
+  const handleToggleAccordion = useCallback((type: BadgeTypeEnum) => {
     if (type === BadgeTypeEnum.IRL) {
       setIrlAccordionExpanded((prev) => !prev);
     } else if (type === BadgeTypeEnum.Online) {
@@ -61,7 +90,7 @@ export default function Badges() {
                   <>
                     <CustomAccordion
                       title={'IRL Badges'}
-                      toggleFunction={toggleAccordion}
+                      toggleFunction={handleToggleAccordion}
                       expanded={irlAccordionExpanded}
                       panel={BadgeTypeEnum.IRL}
                       pill={
@@ -74,7 +103,7 @@ export default function Badges() {
                       <BadgeContainer badges={badges.irlBadges} />
                     </CustomAccordion>
                     <BadgeStack
-                      toggleFunction={toggleAccordion}
+                      toggleFunction={handleToggleAccordion}
                       panel={BadgeTypeEnum.IRL}
                       hide={irlAccordionExpanded}
                     />
@@ -93,7 +122,7 @@ export default function Badges() {
                   <>
                     <CustomAccordion
                       title={'Online Badges'}
-                      toggleFunction={toggleAccordion}
+                      toggleFunction={handleToggleAccordion}
                       expanded={virtualAccordionExpanded}
                       panel={BadgeTypeEnum.Online}
                       pill={
@@ -106,7 +135,7 @@ export default function Badges() {
                       <BadgeContainer badges={badges.onlineBadges} />
                     </CustomAccordion>
                     <BadgeStack
-                      toggleFunction={toggleAccordion}
+                      toggleFunction={handleToggleAccordion}
                       panel={BadgeTypeEnum.Online}
                       hide={virtualAccordionExpanded}
                     />
@@ -125,34 +154,140 @@ export default function Badges() {
     error,
     irlAccordionExpanded,
     virtualAccordionExpanded,
-    toggleAccordion,
+    handleToggleAccordion,
   ]);
 
   type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
   const list = (anchor: Anchor) => (
     <Box
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      sx={{
+        width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250,
+        display: 'flex',
+        padding: '1.5rem 1.25rem',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        gap: '1.5rem',
+        alignSelf: 'stretch',
+        background: '#E3E3E3',
+        boxShadow: '0px -12px 24px 0px rgba(0, 0, 0, 0.10)',
+        backdropFilter: 'blur(4px)',
+      }}
       role="presentation"
-      // onClick={toggleDrawer(anchor, false)}
-      // onKeyDown={toggleDrawer(anchor, false)}
     >
-      {/* Add the content you want in the drawer here */}
-      <Typography variant="h6" sx={{ p: 2 }}>
-        Drawer Content Wallet
-      </Typography>
+      <Stack flexDirection="row" justifyContent="space-between" width="100%">
+        <Text variant="h3" fontSize="1.25rem">
+          Wallet
+        </Text>
+        <Box
+          onClick={handleDrawerDismiss}
+          sx={{
+            cursor: 'pointer',
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="25"
+            viewBox="0 0 24 25"
+            fill="none"
+          >
+            <rect
+              y="0.5"
+              width="24"
+              height="24"
+              rx="12"
+              fill="black"
+              fill-opacity="0.2"
+            />
+            <path
+              d="M16 8.5L8 16.5M8 8.5L16 16.5"
+              stroke="white"
+              stroke-width="2"
+            />
+          </svg>
+        </Box>
+      </Stack>
+      {isConnected && address && (
+        <Stack width="100%" gap={2}>
+          <Text variant="h3" fontSize="1.5rem">
+            Connected Wallet
+          </Text>
+          <Box
+            sx={{
+              justifyContent: 'space-between',
+              borderRadius: '0.75rem',
+              backgroundColor: '#fff',
+              display: 'flex',
+              width: '100%',
+              gap: '20px',
+              margin: '16px -20px 0 0',
+              padding: '12px 16px',
+            }}
+          >
+            {/* ... content of Div3 */}
+            <Box width="100%">
+              <Stack
+                flexDirection="row"
+                gap="0.5rem"
+                alignItems="center"
+                width="100%"
+                sx={{
+                  borderRadius: '0.75rem',
+                  backgroundColor: '#fff',
+                }}
+              >
+                <Circle color="#FFC52D" size="2rem" />
+                {userName && <Text fontSize="0.875rem">{userName}</Text>}
+              </Stack>
+            </Box>
+          </Box>
+          <Stack
+            flexDirection="row"
+            gap="0.5rem"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+            sx={{
+              borderRadius: '0.75rem',
+              backgroundColor: '#0A25A5',
+              padding: '1.25rem 1.5rem',
+            }}
+          >
+            <Text
+              fontSize="1rem"
+              sx={{
+                color: 'white',
+              }}
+            >
+              Disconnect wallet
+            </Text>
+            <Box
+              onClick={handleDisconnect}
+              sx={{
+                cursor: 'pointer',
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M16.9994 7.99963L20.9994 11.9996M20.9994 11.9996L16.9994 15.9996M20.9994 11.9996H8.99942M11.9994 2.99963H6.2002C5.08009 2.99963 4.52004 2.99963 4.09222 3.21762C3.71589 3.40937 3.40993 3.71533 3.21819 4.09165C3.0002 4.51948 3.0002 5.07953 3.0002 6.19963V17.7996C3.0002 18.9197 3.0002 19.4798 3.21819 19.9076C3.40993 20.2839 3.71589 20.5899 4.09222 20.7816C4.52004 20.9996 5.08009 20.9996 6.2002 20.9996H11.9994"
+                  stroke="white"
+                  strokeWidth={2}
+                  strokeLinecap="square"
+                />
+              </svg>
+            </Box>
+          </Stack>
+        </Stack>
+      )}
     </Box>
-  );
-
-  const handleToggleDrawer = useCallback(
-    (anchor: Anchor) => {
-      toggleDrawer(
-        'walletOperations',
-        anchor,
-        drawerStates.walletOperations[anchor]
-      );
-    },
-    [drawerStates.walletOperations, toggleDrawer]
   );
 
   return (
