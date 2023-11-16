@@ -2,7 +2,7 @@ import { getTruncatedAddress } from '@/utils/truncate';
 import { useMemo } from 'react';
 
 type Props = {
-  address: `0x${string}` | string;
+  address: `0x${string}` | string | undefined;
   userPublicProfile?: {
     subdomainProfile?: {
       name: string;
@@ -13,7 +13,7 @@ type Props = {
   };
 };
 
-export const useUserAddress = ({ address, userPublicProfile }: Props) => {
+export const useUserName = ({ address, userPublicProfile }: Props) => {
   return useMemo(() => {
     if (userPublicProfile) {
       if (userPublicProfile.subdomainProfile) {
