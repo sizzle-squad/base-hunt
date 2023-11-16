@@ -116,6 +116,7 @@ export default function BadgeDetails({ params }: Props) {
             type="badgeActions"
             owned={isOwned}
             title={currentBadge?.name ?? 'Some NFT Title'}
+            completedOn={currentBadge?.completedTimestamp}
             mapURL={
               currentBadge?.ctaUrl ??
               'https://maps.app.goo.gl/51g9q5AzvsQQUPan9'
@@ -123,8 +124,7 @@ export default function BadgeDetails({ params }: Props) {
             // todo: add labels
             labels={[]}
             description={
-              currentBadge?.description ||
-              'In the bustling heart of Miami, blablabla.'
+              currentBadge?.description || 'In the bustling heart of Miami.'
             }
           />
         </Stack>

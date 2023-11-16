@@ -2,6 +2,7 @@ import { DrawerType, useDrawer } from '@/context/DrawerContext';
 import { Global } from '@emotion/react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { format } from 'date-fns';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';
@@ -53,6 +54,7 @@ type Props = {
     color: string;
   }[];
   owned: boolean;
+  completedOn: Date | null;
 };
 
 function SwipeUpDrawer({
@@ -62,6 +64,7 @@ function SwipeUpDrawer({
   labels,
   mapURL,
   owned,
+  completedOn,
 }: Props) {
   const { drawerStates, toggleDrawer } = useDrawer();
 
@@ -70,7 +73,7 @@ function SwipeUpDrawer({
       <Global
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {
-            height: `calc(60% - ${drawerBleeding}px)`,
+            height: `calc(${owned ? '40%' : '60%'} - ${drawerBleeding}px)`,
             overflow: 'visible',
             backgroundColor: 'var(--sheet-white, rgba(255, 255, 255))',
           },
@@ -124,6 +127,11 @@ function SwipeUpDrawer({
             ))}
           </Stack>
           <Typography sx={{}}>{description}</Typography>
+          {owned && completedOn && (
+            <Typography fontWeight={700}>
+              Badge found {format(completedOn, 'do MMMM yyyy')}
+            </Typography>
+          )}
           {!owned && (
             <Button
               variant="contained"
