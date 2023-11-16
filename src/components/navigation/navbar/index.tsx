@@ -75,15 +75,7 @@ const Navbar = () => {
   if (isDisconnected) return null;
 
   return (
-    <Stack
-      paddingX="1rem"
-      direction="row"
-      spacing={2}
-      alignItems={'center'}
-      top="2rem"
-      position="absolute"
-      width="100%"
-    >
+    <Stack direction="row" spacing={2} alignItems={'center'} width="100%">
       <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
         <Stack
           direction="row"
@@ -107,7 +99,7 @@ const Navbar = () => {
             viewBox="0 0 16 17"
             fill="none"
           >
-            <path d="M3 6.5L8 10.5L13 6.5" stroke="white" strokeWidth="2" />
+            <path d="M3 6.5L8 10.5L13 6.5" stroke="black" strokeWidth="2" />
           </svg>
         </Box>
       </Stack>

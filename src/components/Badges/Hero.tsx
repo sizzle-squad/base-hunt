@@ -6,6 +6,7 @@ import HeroSVG from '@/components/assets/HeroSVG';
 import dynamic from 'next/dynamic';
 import { useScore } from '@/hooks/useScore';
 import { useAccount } from 'wagmi';
+import AnimatedHero from './AnimatedHero';
 
 const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
   ssr: false,
@@ -50,12 +51,12 @@ function LevelsBar({
   return (
     <Box
       sx={{
+        borderRadius: '0.75rem',
         backgroundColor: 'var(--Black, #0a0b0d)',
         display: 'flex',
         flexDirection: 'column',
         p: { xs: '0 20px' },
         zIndex: 2,
-        position: 'absolute',
         bottom: 0,
         width: '100%',
       }}
@@ -179,32 +180,9 @@ const Hero = () => {
   }, [data, threshold]);
 
   return (
-    <Box position="relative" width="100%">
-      <Box>
-        <Image
-          src={bgImage}
-          width={700}
-          height={475}
-          sizes="100vw"
-          style={{
-            width: '100%',
-            height: 'auto',
-          }}
-          alt="Base Hunt 2023"
-        />
-      </Box>
+    <Stack gap="1rem" width="100%" flexDirection="column" mt="1rem">
       <Navbar />
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: '0%',
-          left: '50%',
-          transform: 'translate(-50%,-50%)',
-          zIndex: 1,
-        }}
-      >
-        <HeroSVG />
-      </Box>
+      <AnimatedHero width="100%" height="100%" />
       {/* TODO: temp to surpress type errors, update types once settled */}
       <LevelsBar
         currentLevel={currentLevel as number}
@@ -212,7 +190,7 @@ const Hero = () => {
         threshold={threshold as number}
         progress={progress as number}
       />
-    </Box>
+    </Stack>
   );
 };
 
