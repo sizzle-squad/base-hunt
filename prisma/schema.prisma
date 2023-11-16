@@ -118,7 +118,7 @@ model claimed_boost {
   user_address        String              @db.VarChar
   boost_id            BigInt
   game_id             BigInt
-  badge_configuration boost_configuration @relation(fields: [boost_id], references: [id], onDelete: Cascade)
+  boost_configuration boost_configuration @relation(fields: [boost_id], references: [id], onDelete: Cascade)
 
   @@unique([user_address, boost_id, game_id], map: "claimed_boost_unique")
 }
