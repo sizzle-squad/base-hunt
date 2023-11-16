@@ -15,6 +15,10 @@ module.exports = {
         protocol: 'https',
         hostname: '**.seadn.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'fastly.picsum.photos',
+      },
     ],
   },
   async headers() {
@@ -48,7 +52,7 @@ module.exports = {
   },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false };
-    
+
     config.module.rules.push({
       test: /\.(woff|woff2|eot|ttf|otf)$/,
       issuer: /\.\w+(?<!(s?c|sa)ss)$/i,

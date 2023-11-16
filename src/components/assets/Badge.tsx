@@ -1,4 +1,4 @@
-import { Box, Card, CardMedia } from '@mui/material';
+import { Box, Card, CardMedia, Paper } from '@mui/material';
 import Image from 'next/image';
 import type { Badge as BadgeType } from '@/hooks/types';
 import Link from 'next/link';
@@ -10,8 +10,8 @@ type Props = {
 };
 export function Badge({ imageUrl, isCompleted, badge }: Props) {
   return (
-    <Link href={`/badges/${badge.id}`}>
-      <Box sx={{ opacity: isCompleted ? 1 : 0.5 }} width={80} height={80}>
+    <Box sx={{ opacity: isCompleted ? 1 : 0.5 }} width={80} height={80}>
+      <Link href={`/badges/${badge.id}`}>
         <Image
           src={imageUrl as string}
           alt="jumbotron"
@@ -19,7 +19,7 @@ export function Badge({ imageUrl, isCompleted, badge }: Props) {
           width={74}
           height={66}
         />
-      </Box>
-    </Link>
+      </Link>
+    </Box>
   );
 }

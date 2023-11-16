@@ -1,15 +1,20 @@
 import { routes } from '@/constants/routes';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Badge } from './types';
+import { Badge, BadgeTypeEnum } from './types';
+import { useMemo } from 'react';
 
 type Props = {
-  userAddress: `0x${string}`;
+  userAddress?: `0x${string}`;
   gameId: string;
 };
 
+type GameStateReturnType = {
+  data: Badge[];
+};
+
 export function useGameState({ userAddress, gameId }: Props) {
-  const { data, isLoading } = useQuery<Badge[]>(
+  const { data, isLoading, error } = useQuery<GameStateReturnType>(
     ['profile/state', userAddress, gameId],
     async () => {
       return await axios({
@@ -26,8 +31,29 @@ export function useGameState({ userAddress, gameId }: Props) {
     }
   );
 
-  return {
-    data,
-    isLoading,
-  };
+  return useMemo(() => {
+    const irlBadges =
+      data?.data.filter((badge) => badge.type === BadgeTypeEnum.IRL) || [];
+    const onlineBadges =
+      data?.data.filter((badge) => badge.type === BadgeTypeEnum.Online) || [];
+
+    const completedIRLBadgeCount = irlBadges.filter(
+      (badge) => badge.isCompleted
+    ).length;
+    const completedOnlineBadgeCount = onlineBadges.filter(
+      (badge) => badge.isCompleted
+    ).length;
+
+    return {
+      data: {
+        irlBadges,
+        completedIRLBadgeCount,
+        onlineBadges,
+        completedOnlineBadgeCount,
+        badges: data?.data || [],
+      },
+      isLoading,
+      error,
+    };
+  }, [data?.data, error, isLoading]);
 }

@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { routes } from '@/constants/routes';
+import { useMemo } from 'react';
 
 type Props = {
   gameId: string;
@@ -18,7 +19,7 @@ type TreasureBoxType = {
 type TreasureBotReturnType = Omit<TreasureBoxType, 'gameId'>;
 
 export function useTreasureBox({ gameId }: Props) {
-  const { data, isLoading } = useQuery<TreasureBotReturnType>(
+  const { data, isLoading, error } = useQuery<TreasureBotReturnType>(
     ['treasure-box', gameId],
     async () => {
       return await axios({
@@ -38,8 +39,12 @@ export function useTreasureBox({ gameId }: Props) {
     }
   );
 
-  return {
-    data: data?.data,
-    isLoading,
-  };
+  return useMemo(
+    () => ({
+      data: data?.data,
+      isLoading,
+      error,
+    }),
+    [data?.data, error, isLoading]
+  );
 }

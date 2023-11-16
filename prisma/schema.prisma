@@ -43,6 +43,7 @@ model badge_configuration {
   cta_url          String?
   cta_text         String?
   type             badge_type @default(irl)
+  airdrop_command  String?    @unique
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -62,6 +63,7 @@ model level_configuration {
   name             String
   threshold_points BigInt
   airdrop_command  String
+  level            String?
 }
 
 model treasure_box_entries {

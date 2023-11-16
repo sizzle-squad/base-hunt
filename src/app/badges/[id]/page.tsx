@@ -1,20 +1,30 @@
 'use client';
 
-import { useBadges } from '@/hooks/useBadges';
+import { GAME_ID } from '@/constants/gameId';
 import { useClientCheck } from '@/hooks/useClientCheck';
+import { useGameState } from '@/hooks/useGameState';
 import React, { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
-export default function BadgeDetailPage({
-  params,
-}: {
+type Props = {
   params: { id: string };
-}) {
-  const { address, isConnected } = useAccount();
+};
+
+export default function BadgeDetailPage({ params }: Props) {
+  const { address } = useAccount();
   const isClient = useClientCheck();
-  const { useGetBadge } = useBadges({ address, isConnected });
-  const id = params.id;
-  const { data: badge, isLoading, error } = useGetBadge({ badgeId: id });
+  const { id } = params;
+  const { data, isLoading, error } = useGameState({
+    userAddress: address,
+    gameId: GAME_ID,
+  });
+
+  const { badges } = data;
+
+  const currentBadge = useMemo(() => {
+    if (!badges) return null;
+    return badges.find((badge) => badge.id === id);
+  }, [badges, id]);
 
   const BadgeWrapper = useMemo(() => {
     if (!isClient) return null;
@@ -23,15 +33,15 @@ export default function BadgeDetailPage({
       <>
         {isLoading && <div>Loading...</div>}
         {error && <div>Error...</div>}
-        {badge && (
+        {currentBadge && (
           <>
-            <div>{badge.name}</div>
-            <div>{badge.description}</div>
-            <div>{badge.imageUrl}</div>
+            <div>{currentBadge.name}</div>
+            <div>{currentBadge.description}</div>
+            <div>{currentBadge.imageUrl.toString()}</div>
           </>
         )}
       </>
     );
-  }, [isClient, isLoading, error, badge]);
+  }, [isClient, isLoading, error, currentBadge]);
   return BadgeWrapper;
 }

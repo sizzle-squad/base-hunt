@@ -1,6 +1,11 @@
 import { Box } from '@mui/material';
 
-function AccordionPill() {
+type Props = {
+  totalCount: number;
+  collectedCount: number;
+};
+
+function AccordionPill({ collectedCount, totalCount }: Props) {
   return (
     <Box
       sx={{
@@ -16,7 +21,7 @@ function AccordionPill() {
         },
       }}
     >
-      4/16
+      {collectedCount}/{totalCount}
     </Box>
   );
 }

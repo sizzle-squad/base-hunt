@@ -26,8 +26,6 @@ export enum BadgeTypeEnum {
   IRL = 'irl',
 }
 
-export type ChallengeTypeEnum = 'online' | 'irl';
-
 export type Address = string;
 
 export type Badge = {
@@ -36,7 +34,7 @@ export type Badge = {
   description: string;
   imageUrl: URL;
   isCompleted: boolean;
-  type: ChallengeTypeEnum;
+  type: BadgeTypeEnum;
   txHash: string | null;
   completedTimestamp: Date | null;
   contractAddress: Address | null;
@@ -49,8 +47,9 @@ export type Level = {
   id: string;
   gameId: string;
   name: string;
-  thresholdPoints: bigint; 
-} 
+  thresholdPoints: bigint;
+  level: string;
+};
 
 export type Score = {
   id: string;
@@ -58,21 +57,21 @@ export type Score = {
   userAddress: string;
   currentScore: bigint;
   updatedAt: string;
-}
+};
 
 export type ScoreState = {
   currentLevel: Level | null;
   nextLevel: Level | null;
   score: Score | null;
-}
+};
 
 export type TreasureBoxState = {
-  id: bigint,
-  createdAt: Date,
-  totalHitpoints: bigint,
-  gameId: bigint,
-  name: string,
-  location: string,
-  currentHitpoints: bigint,
-  isOpen: boolean 
-}
+  id: bigint;
+  createdAt: Date;
+  totalHitpoints: bigint;
+  gameId: bigint;
+  name: string;
+  location: string;
+  currentHitpoints: bigint;
+  isOpen: boolean;
+};

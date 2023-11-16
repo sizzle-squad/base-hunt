@@ -4,12 +4,20 @@ import {
   AccordionDetails,
   Typography,
   Stack,
+  Box,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AccordionPill from './AccordionPill';
 import { ReactNode } from 'react';
+import { BadgeTypeEnum } from '@/hooks/types';
 
-export type Panel = 'irl' | 'virtual';
+type Props = {
+  title: string;
+  children?: ReactNode;
+  toggleFunction: (type: BadgeTypeEnum) => void;
+  expanded: boolean;
+  panel: BadgeTypeEnum;
+  pill?: ReactNode;
+};
 
 export default function CustomAccordion({
   children,
@@ -17,13 +25,8 @@ export default function CustomAccordion({
   toggleFunction,
   expanded,
   panel,
-}: {
-  title: string;
-  children?: ReactNode;
-  toggleFunction: (type: Panel) => void;
-  expanded: boolean;
-  panel: 'irl' | 'virtual';
-}) {
+  pill,
+}: Props) {
   return (
     <Accordion
       expanded={expanded}
@@ -50,11 +53,11 @@ export default function CustomAccordion({
           >
             {title}
           </Typography>
-          <AccordionPill />
+          {pill}
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
-        <Typography>{children}</Typography>
+        <Box>{children}</Box>
       </AccordionDetails>
     </Accordion>
   );

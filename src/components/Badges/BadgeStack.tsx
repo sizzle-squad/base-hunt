@@ -1,10 +1,10 @@
+import { BadgeTypeEnum } from '@/hooks/types';
 import { Box } from '@mui/material';
-import { Panel } from './Accordion';
 import Image from 'next/image';
 
 type Props = {
-  panel: Panel;
-  toggleFunction: (type: Panel) => void;
+  panel: BadgeTypeEnum;
+  toggleFunction: (type: BadgeTypeEnum) => void;
   hide: boolean;
 };
 

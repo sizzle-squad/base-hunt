@@ -1,36 +1,40 @@
 'use client';
 
-import CustomAccordion, { Panel } from '@/components/Badges/Accordion';
+import CustomAccordion from '@/components/Badges/Accordion';
 import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
 import BadgeContainer from '@/components/assets/BadgeContainer';
 import { useDrawer } from '@/context/DrawerContext';
-import { useBadges } from '@/hooks/useBadges';
 import { useClientCheck } from '@/hooks/useClientCheck';
+import { useGameState } from '@/hooks/useGameState';
 import { Box, Drawer, Typography } from '@mui/material';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useCallback, useState } from 'react';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
+import { GAME_ID } from '@/constants/gameId';
+import { BadgeTypeEnum } from '@/hooks/types';
+import AccordionPill from '@/components/Badges/AccordionPill';
 
 export default function Badges() {
   const isClient = useClientCheck();
-  const { address, isConnected } = useAccount();
-  const { useGetBadges } = useBadges({ address, isConnected });
+  const { address } = useAccount();
   const { drawerStates, toggleDrawer } = useDrawer();
   const [irlAccordionExpanded, setIrlAccordionExpanded] = useState(false);
   const [virtualAccordionExpanded, setVirtualAccordionExpanded] =
     useState(false);
+  const {
+    data: badges,
+    isLoading,
+    error,
+  } = useGameState({ userAddress: address, gameId: GAME_ID });
 
-  const toggleAccordion = useCallback((type: Panel) => {
-    console.log('🚀 ~ file: page.tsx:25 ~ toggleAccordion ~ type:', type);
-    if (type === 'irl') {
+  const toggleAccordion = useCallback((type: BadgeTypeEnum) => {
+    if (type === BadgeTypeEnum.IRL) {
       setIrlAccordionExpanded((prev) => !prev);
-    } else if (type === 'virtual') {
+    } else if (type === BadgeTypeEnum.Online) {
       setVirtualAccordionExpanded((prev) => !prev);
     }
   }, []);
-
-  const { data: badges, isLoading, error } = useGetBadges();
 
   const BadgesWrapper = useMemo(() => {
     if (isClient) {
@@ -48,19 +52,25 @@ export default function Badges() {
                 }}
                 gap={2}
               >
-                {badges && badges.data && (
+                {badges && (
                   <>
                     <CustomAccordion
                       title={'IRL Badges'}
                       toggleFunction={toggleAccordion}
                       expanded={irlAccordionExpanded}
-                      panel="irl"
+                      panel={BadgeTypeEnum.IRL}
+                      pill={
+                        <AccordionPill
+                          totalCount={badges.irlBadges.length}
+                          collectedCount={badges.completedIRLBadgeCount}
+                        />
+                      }
                     >
-                      <BadgeContainer badges={badges.data.irlBadges} />
+                      <BadgeContainer badges={badges.irlBadges} />
                     </CustomAccordion>
                     <BadgeStack
                       toggleFunction={toggleAccordion}
-                      panel="irl"
+                      panel={BadgeTypeEnum.IRL}
                       hide={irlAccordionExpanded}
                     />
                   </>
@@ -74,19 +84,25 @@ export default function Badges() {
                 }}
                 gap={2}
               >
-                {badges && badges.data && (
+                {badges && (
                   <>
                     <CustomAccordion
-                      title={'Virtual Badges'}
+                      title={'Online Badges'}
                       toggleFunction={toggleAccordion}
                       expanded={virtualAccordionExpanded}
-                      panel="virtual"
+                      panel={BadgeTypeEnum.Online}
+                      pill={
+                        <AccordionPill
+                          totalCount={badges.onlineBadges.length}
+                          collectedCount={badges.completedOnlineBadgeCount}
+                        />
+                      }
                     >
-                      <BadgeContainer badges={badges.data.onlineBadges} />
+                      <BadgeContainer badges={badges.onlineBadges} />
                     </CustomAccordion>
                     <BadgeStack
                       toggleFunction={toggleAccordion}
-                      panel="virtual"
+                      panel={BadgeTypeEnum.Online}
                       hide={virtualAccordionExpanded}
                     />
                   </>

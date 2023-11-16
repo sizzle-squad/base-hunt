@@ -47,13 +47,6 @@ export async function GET(req: NextRequest) {
   let nextLevel = null;
   let currentLevel = null;
 
-  const max_level = {
-    id: 0,
-    gameId: 0,
-    name: 'max level',
-    thresholdPoints: 999999,
-  };
-
   if (score) {
     const nextLevelIdx = levels.findIndex(
       (level: any) => level.threshold_points > score.current_score
@@ -82,12 +75,14 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
           gameId: c.game_id,
           name: c.name,
           thresholdPoints: c.threshold_points,
+          level: c.level,
         }
       : {
           id: '',
           gameId: gameId.toString(),
           name: 'zero level',
           thresholdPoints: BigInt(0),
+          level: '0',
         },
     nextLevel: n
       ? {
@@ -95,12 +90,14 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
           gameId: n.game_id,
           name: n.name,
           thresholdPoints: n.threshold_points,
+          level: n.level,
         }
       : {
           id: '',
           gameId: gameId.toString(),
           name: 'max level',
           thresholdPoints: BigInt(0),
+          level: '999999',
         },
     score: s
       ? {
