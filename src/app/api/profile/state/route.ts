@@ -25,9 +25,9 @@ export async function GET(req: NextRequest) {
 
   //queryRaw is safe: https://www.prisma.io/docs/concepts/components/prisma-client/raw-database-access#queryraw
   const data: QueryData[] =
-    await prisma.$queryRaw`select  b.id,b.name,b.image_url,b.contract_address,b.token_id,b.cta_url,b.cta_text,b.type,w.to_address,w.transaction_hash,w.created_at,w.event_type from badge_configuration as b LEFT join webhook_data as w
-     on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = substring(w.value,3)::bigint and LOWER(w.from_address) = LOWER(b.minter)
-     and LOWER(w.to_address) = ${userAddress.toLowerCase()} and b.game_id = ${gameId}`;
+    await prisma.$queryRaw`select b.id,b.name,b.image_url,b.contract_address,b.token_id,b.cta_url,b.cta_text,b.type,w.to_address,w.transaction_hash,w.created_at,w.event_type from badge_configuration as b LEFT join webhook_data as w
+  on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(w.value,3)),16,'0'))::bit(64)::bigint and LOWER(w.from_address) = LOWER(b.minter)
+  and w.to_address ILIKE ${userAddress} and b.game_id = ${gameId}`;
 
   //Note: remove duplicate badges from the same contract:tokenId
   const addressSet: Set<string> = new Set();
