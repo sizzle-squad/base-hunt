@@ -48,6 +48,7 @@ export type Level = {
   gameId: string;
   name: string;
   thresholdPoints: bigint;
+  level: string;
 };
 
 export type Score = {

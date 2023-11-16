@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { Badge, ChallengeTypeEnum } from '../../../../hooks/types';
+import { Badge, BadgeTypeEnum } from '../../../../hooks/types';
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,7 @@ type QueryData = {
   name: string;
   image_url: string;
   to_address: string;
-  type: ChallengeTypeEnum;
+  type: BadgeTypeEnum;
   transaction_hash: string;
   created_at: Date;
   contract_address: string;

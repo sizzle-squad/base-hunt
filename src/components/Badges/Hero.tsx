@@ -34,97 +34,102 @@ const LevelsProgressBar = ({ progress }: { progress: number }) => (
   </Box>
 );
 
-const LevelsBar = ({
-  currentLevel,
-  nextLevel,
-  threshold,
-}: {
+type LevelsBarProps = {
   currentLevel: number;
   nextLevel: number;
   threshold: number;
-}) => (
-  <Box
-    sx={{
-      backgroundColor: 'var(--Black, #0a0b0d)',
-      display: 'flex',
-      flexDirection: 'column',
-      p: { xs: '0 20px' },
-      zIndex: 2,
-      position: 'absolute',
-      bottom: 0,
-      width: '100%',
-    }}
-  >
-    <Stack
-      width="100%"
-      flexDirection="row"
-      justifyContent="space-between"
-      alignItems="center"
-      gap={2}
-    >
-      <Box width="100%">
-        <Box
-          sx={{
-            color: 'var(--Hive-Green, #e1ff67)',
-            fontFeatureSettings: '"clig" off, "liga" off',
-            letterSpacing: '-0.5px',
-            mt: '16px',
-            whiteSpace: { xs: 'initial', sm: 'nowrap' },
-            typography: 'body1',
-          }}
-        >
-          You are at Level {currentLevel}
-        </Box>
-        <Box
-          sx={{
-            borderRadius: '6.25rem',
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            display: 'flex',
-            mt: '8px',
-            flexDirection: 'column',
-            alignItems: 'start',
-          }}
-        >
-          {/* progress bar */}
-          <LevelsProgressBar progress={10} />
-        </Box>
-      </Box>
-      <Stack>
-        {/* from figma */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="15"
-          height="18"
-          viewBox="0 0 15 18"
-          fill="none"
-        >
-          <path d="M0 0H15V14.5L7.5 18L0 14.5V0Z" fill="#E1FF67" />
-        </svg>
-      </Stack>
-    </Stack>
+  progress: number;
+};
+
+function LevelsBar({
+  currentLevel,
+  nextLevel,
+  threshold,
+  progress,
+}: LevelsBarProps) {
+  return (
     <Box
       sx={{
-        color: 'var(--White, #fff)',
-        fontFeatureSettings: '"clig" off, "liga" off',
-        whiteSpace: { xs: 'initial', sm: 'nowrap' },
-        m: '8px 0 16px',
-        typography: 'caption',
+        backgroundColor: 'var(--Black, #0a0b0d)',
+        display: 'flex',
+        flexDirection: 'column',
+        p: { xs: '0 20px' },
+        zIndex: 2,
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
       }}
     >
-      <span
-        style={{ fontFamily: 'Coinbase Sans, sans-serif', fontWeight: 700 }}
+      <Stack
+        width="100%"
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        gap={2}
       >
-        {threshold} more
-      </span>
-      <span
-        style={{ fontFamily: 'Coinbase Sans, sans-serif', fontWeight: 400 }}
+        <Box width="100%">
+          <Box
+            sx={{
+              color: 'var(--Hive-Green, #e1ff67)',
+              fontFeatureSettings: '"clig" off, "liga" off',
+              letterSpacing: '-0.5px',
+              mt: '16px',
+              whiteSpace: { xs: 'initial', sm: 'nowrap' },
+              typography: 'body1',
+            }}
+          >
+            You are at Level {currentLevel}
+          </Box>
+          <Box
+            sx={{
+              borderRadius: '6.25rem',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              display: 'flex',
+              mt: '8px',
+              flexDirection: 'column',
+              alignItems: 'start',
+            }}
+          >
+            <LevelsProgressBar progress={progress} />
+          </Box>
+        </Box>
+        <Stack>
+          {/* from figma */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="15"
+            height="18"
+            viewBox="0 0 15 18"
+            fill="none"
+          >
+            <path d="M0 0H15V14.5L7.5 18L0 14.5V0Z" fill="#E1FF67" />
+          </svg>
+        </Stack>
+      </Stack>
+      <Box
+        sx={{
+          color: 'var(--White, #fff)',
+          fontFeatureSettings: '"clig" off, "liga" off',
+          whiteSpace: { xs: 'initial', sm: 'nowrap' },
+          m: '8px 0 16px',
+          typography: 'caption',
+        }}
       >
-        {' '}
-        NFTs needed to reach Level {nextLevel}
-      </span>
+        <span
+          style={{ fontFamily: 'Coinbase Sans, sans-serif', fontWeight: 700 }}
+        >
+          {threshold} more
+        </span>
+        <span
+          style={{ fontFamily: 'Coinbase Sans, sans-serif', fontWeight: 400 }}
+        >
+          {' '}
+          NFTs needed to reach Level {nextLevel}
+        </span>
+      </Box>
     </Box>
-  </Box>
-);
+  );
+}
 
 const Hero = () => {
   const { address: userAddress = '' } = useAccount();
@@ -136,18 +141,41 @@ const Hero = () => {
 
   const nextLevel = useMemo(() => {
     if (!data || !data.nextLevel) return 2;
-    return data.nextLevel.id ?? 2;
+    return data.nextLevel.level ?? 2;
   }, [data]);
 
   const currentLevel = useMemo(() => {
     if (!data || !data.currentLevel) return 1;
-    return data.currentLevel.id ?? 1;
+    return data.currentLevel.level ?? 1;
   }, [data]);
 
   const threshold = useMemo(() => {
-    if (!data || !data.nextLevel?.thresholdPoints) return 0;
-    return data.nextLevel.thresholdPoints ?? 0;
+    if (
+      !data ||
+      !data.score?.currentScore ||
+      !data.currentLevel?.thresholdPoints
+    )
+      return 0;
+    return Number(
+      data.score?.currentScore - data.currentLevel?.thresholdPoints
+    );
   }, [data]);
+
+  const progress = useMemo(() => {
+    if (
+      !data ||
+      !data.nextLevel?.thresholdPoints ||
+      !data.score?.currentScore ||
+      !data.currentLevel?.thresholdPoints
+    )
+      return 0;
+
+    const denom = Number(
+      data.nextLevel?.thresholdPoints - data.currentLevel?.thresholdPoints
+    );
+    return (threshold / denom) * 100;
+  }, [data, threshold]);
+
   return (
     <Box position="relative" width="100%">
       <Box>
@@ -180,6 +208,7 @@ const Hero = () => {
         currentLevel={currentLevel as number}
         nextLevel={nextLevel as number}
         threshold={threshold as number}
+        progress={progress as number}
       />
     </Box>
   );

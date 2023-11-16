@@ -2,7 +2,6 @@ import { routes } from '@/constants/routes';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { ScoreState } from './types';
-import { useAccount } from 'wagmi';
 import { useMemo } from 'react';
 
 type Props = {
