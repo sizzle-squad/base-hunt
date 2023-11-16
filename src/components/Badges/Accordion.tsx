@@ -56,7 +56,7 @@ export default function CustomAccordion({
           {pill}
         </Stack>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails sx={{ paddingX: 0 }}>
         <Box>{children}</Box>
       </AccordionDetails>
     </Accordion>
