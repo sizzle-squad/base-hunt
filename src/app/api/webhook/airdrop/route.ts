@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
 import { AirdropNft } from '@/utils/walletapi';
 import { NextResponse } from 'next/server';
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 /*
 curl -X POST 'http://localhost:3000/api/level/airdrop' -d '{
@@ -26,25 +26,32 @@ curl -X POST 'http://localhost:3000/api/level/airdrop' -d '{
 */
 
 export async function POST(req: Request) {
-    console.log("[webhook airdrop]")
-    const body = await req.json()
-    if (body.type as string === "UPDATE" && body.table as string === "score"){
-        const currentScore = BigInt(body.record.current_score)
-        const level = await prisma.level_configuration.findFirst({
-            where:{
-                game_id:BigInt(body.record.game_id),
-                threshold_points:currentScore            
-            }
-        })
-        if (level) {
-            AirdropNft(body.record.user_address,level.airdrop_command)
-        }else{
-            console.log("[webhook airdrop] no level found:",body.record.game_id,body.record.user_address,currentScore)
-        }
-
-    }else{
-        console.warn("[webhook airdrop] unsupported type:",body.type,body.table)
+  console.log('[webhook airdrop]');
+  const body = await req.json();
+  if (
+    (body.type as string) === 'UPDATE' &&
+    (body.table as string) === 'score'
+  ) {
+    const currentScore = BigInt(body.record.current_score);
+    const level = await prisma.level_configuration.findFirst({
+      where: {
+        game_id: BigInt(body.record.game_id),
+        threshold_points: currentScore,
+      },
+    });
+    if (level) {
+      await AirdropNft(body.record.user_address, level.airdrop_command);
+    } else {
+      console.log(
+        '[webhook airdrop] no level found:',
+        body.record.game_id,
+        body.record.user_address,
+        currentScore
+      );
     }
+  } else {
+    console.warn('[webhook airdrop] unsupported type:', body.type, body.table);
+  }
 
-    return NextResponse.json({});
+  return NextResponse.json({});
 }
