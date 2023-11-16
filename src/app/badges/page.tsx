@@ -291,23 +291,21 @@ export default function Badges() {
   );
 
   return (
-    <>
-      <Box>
-        <Hero />
-        <Box>{BadgesWrapper}</Box>
-        {(['bottom'] as const).map((anchor) => (
-          <Fragment key={anchor}>
-            <Drawer
-              anchor={anchor}
-              open={drawerStates.walletOperations[anchor]}
-              onClose={() => handleToggleDrawer(anchor)}
-            >
-              {list(anchor)}
-            </Drawer>
-          </Fragment>
-        ))}
-      </Box>
+    <Box>
+      <Hero />
+      <Box paddingX="1.25rem">{BadgesWrapper}</Box>
+      {(['bottom'] as const).map((anchor) => (
+        <Fragment key={anchor}>
+          <Drawer
+            anchor={anchor}
+            open={drawerStates.walletOperations[anchor]}
+            onClose={() => handleToggleDrawer(anchor)}
+          >
+            {list(anchor)}
+          </Drawer>
+        </Fragment>
+      ))}
       <Footer />
-    </>
+    </Box>
   );
 }
