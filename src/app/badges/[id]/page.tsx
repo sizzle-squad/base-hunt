@@ -17,7 +17,7 @@ interface Props {
   params: { id: string };
 }
 
-const TitleBar = () => (
+const TitleBar = ({ owned }: { owned: boolean }) => (
   <Stack alignItems="center" marginTop="24px">
     <Box
       sx={{
@@ -27,7 +27,9 @@ const TitleBar = () => (
     >
       <Link href="/badges">
         <Image
-          src="/images/icon-back.png"
+          src={
+            owned ? '/images/icon-back-light.png' : '/images/icon-back-dark.png'
+          }
           alt="Back Button"
           height={24}
           width={24}
@@ -39,6 +41,7 @@ const TitleBar = () => (
         fontFamily: 'CoinbaseDisplay',
         fontSize: '1.25rem',
         fontWeight: 400,
+        color: owned ? '#FFFFFF' : '#1D1818',
       }}
     >
       View Badge
@@ -46,7 +49,7 @@ const TitleBar = () => (
   </Stack>
 );
 
-export default function SwipeableEdgeDrawer({ params }: Props) {
+export default function BadgeDetails({ params }: Props) {
   const { id } = params;
   const { address } = useAccount();
 
@@ -63,45 +66,69 @@ export default function SwipeableEdgeDrawer({ params }: Props) {
     return badges.find((badge) => badge.id === id);
   }, [badges, id]);
 
+  const isOwned =
+    useMemo(() => {
+      return currentBadge?.isCompleted;
+    }, [currentBadge]) ?? false;
+
   return (
-    <Stack
-      sx={{
-        height: '100vh',
-        widows: '100vw',
-        color: 'white',
-        background: 'linear-gradient(180deg, #0A0B0D 0%, #26292F 100%)',
-        alignItems: 'center',
-      }}
-    >
-      <TitleBar />
+    <>
+      {isLoading && <div>Loading...</div>}
+      {error && <div>Error...</div>}
+      {currentBadge && (
+        <Stack
+          sx={{
+            height: '100vh',
+            widows: '100vw',
+            color: 'white',
+            background: isOwned
+              ? 'linear-gradient(180deg, #0A0B0D 0%, #26292F 100%)'
+              : 'var(--Gray, #E3E3E3);',
+            alignItems: 'center',
+          }}
+        >
+          <TitleBar owned={isOwned} />
 
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '32px',
-          overflow: 'hidden',
-          mt: '120px',
-          boxShadow:
-            '0px 4px 4px 0px rgba(0, 0, 0, 0.10), 0px 8px 12px 0px rgba(0, 0, 0, 0.10), 0px 24px 32px 0px rgba(0, 0, 0, 0.10)',
-        }}
-      >
-        <Image
-          src={currentBadge?.imageUrl.toString() ?? ''}
-          alt={currentBadge?.name ?? ''}
-          width={256}
-          height={256}
-        />
-      </Box>
+          <Box
+            sx={{
+              filter: isOwned ? 'grayscale(0)' : 'grayscale(1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '32px',
+              overflow: 'hidden',
+              mt: '120px',
+              boxShadow:
+                '0px 4px 4px 0px rgba(0, 0, 0, 0.10), 0px 8px 12px 0px rgba(0, 0, 0, 0.10), 0px 24px 32px 0px rgba(0, 0, 0, 0.10)',
+            }}
+          >
+            <Image
+              src={currentBadge?.imageUrl.toString() ?? ''}
+              alt={currentBadge?.name ?? ''}
+              width={256}
+              height={256}
+            />
+          </Box>
 
-      <OwnershipPill owned={currentBadge?.isCompleted ?? false} />
+          <OwnershipPill owned={isOwned} />
 
-      <SwipeUpDrawer
-        type="badgeActions"
-        title="Some NFT title"
-        description="In the bustling heart of Miami, there's a quaint, vintage bookstore nestled among the modern skyscrapers. Its wooden shelves are filled with old tomes and rare manuscripts, and there's a faint aroma of aged paper and leather."
-      />
-    </Stack>
+          <SwipeUpDrawer
+            type="badgeActions"
+            owned={isOwned}
+            title={currentBadge?.name ?? 'Some NFT Title'}
+            mapURL={
+              currentBadge?.ctaUrl ??
+              'https://maps.app.goo.gl/51g9q5AzvsQQUPan9'
+            }
+            // todo: add labels
+            labels={[]}
+            description={
+              currentBadge?.description ||
+              'In the bustling heart of Miami, blablabla.'
+            }
+          />
+        </Stack>
+      )}
+    </>
   );
 }
