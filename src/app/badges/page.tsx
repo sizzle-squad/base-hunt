@@ -14,6 +14,11 @@ import { useAccount } from 'wagmi';
 import { GAME_ID } from '@/constants/gameId';
 import { BadgeTypeEnum } from '@/hooks/types';
 import AccordionPill from '@/components/Badges/AccordionPill';
+import dynamic from 'next/dynamic';
+
+const Footer = dynamic(() => import('@/components/navigation/footer'), {
+  ssr: false,
+});
 
 export default function Badges() {
   const isClient = useClientCheck();
@@ -151,20 +156,23 @@ export default function Badges() {
   );
 
   return (
-    <Box>
-      <Hero />
-      <Box>{BadgesWrapper}</Box>
-      {(['bottom'] as const).map((anchor) => (
-        <Fragment key={anchor}>
-          <Drawer
-            anchor={anchor}
-            open={drawerStates.walletOperations[anchor]}
-            onClose={() => handleToggleDrawer(anchor)}
-          >
-            {list(anchor)}
-          </Drawer>
-        </Fragment>
-      ))}
-    </Box>
+    <>
+      <Box>
+        <Hero />
+        <Box>{BadgesWrapper}</Box>
+        {(['bottom'] as const).map((anchor) => (
+          <Fragment key={anchor}>
+            <Drawer
+              anchor={anchor}
+              open={drawerStates.walletOperations[anchor]}
+              onClose={() => handleToggleDrawer(anchor)}
+            >
+              {list(anchor)}
+            </Drawer>
+          </Fragment>
+        ))}
+      </Box>
+      <Footer />
+    </>
   );
 }
