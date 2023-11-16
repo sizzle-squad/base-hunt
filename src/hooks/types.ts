@@ -38,7 +38,7 @@ export type Badge = {
   txHash: string | null;
   completedTimestamp: Date | null;
   contractAddress: Address | null;
-  tokenId: bigint | null;
+  tokenId: bigint;
   ctaText: string;
   ctaUrl: string;
 };
