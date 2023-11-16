@@ -1,3 +1,4 @@
+'use client';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import MapIcon from '@mui/icons-material/Map';

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -9,27 +8,26 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionPill from './AccordionPill';
 
+export type Panel = 'irl' | 'virtual';
+
 export default function CustomAccordion({
   children,
   title,
+  toggleFunction,
+  expanded,
+  panel,
 }: {
   title: string;
   children?: React.ReactNode;
+  toggleFunction: (type: Panel) => void;
+  expanded: boolean;
+  panel: 'irl' | 'virtual';
 }) {
-  // State for the expanded accordion panel
-  const [expanded, setExpanded] = useState<string | false>(false);
-
-  // Handle changing the expanded accordion panel
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
-
   return (
     <div>
       <Accordion
-        expanded={expanded === 'panel1'}
-        onChange={handleChange('panel1')}
+        expanded={expanded}
+        onChange={() => toggleFunction(panel)}
         sx={{
           background: 'transparent',
           boxShadow: 'none',
