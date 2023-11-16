@@ -1,24 +1,28 @@
 'use client';
 
 import CustomAccordion from '@/components/Badges/Accordion';
+import AccordionPill from '@/components/Badges/AccordionPill';
 import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
-import BadgeContainer from '@/components/assets/BadgeContainer';
-import { useDrawer } from '@/context/DrawerContext';
-import { useClientCheck } from '@/hooks/useClientCheck';
-import { useGameState } from '@/hooks/useGameState';
-import { Box, Drawer, Stack } from '@mui/material';
-import { Fragment, useCallback, useState } from 'react';
-import { useMemo } from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
-import { GAME_ID } from '@/constants/gameId';
-import { BadgeTypeEnum } from '@/hooks/types';
-import AccordionPill from '@/components/Badges/AccordionPill';
 import Circle from '@/components/Circle';
 import Text from '@/components/Text';
-import { useRouter } from 'next/navigation';
-import { useUserName } from '@/hooks/useUsername';
+import BadgeContainer from '@/components/assets/BadgeContainer';
+import { GAME_ID } from '@/constants/gameId';
+import { useDrawer } from '@/context/DrawerContext';
+import { BadgeTypeEnum } from '@/hooks/types';
 import { useCBProfile } from '@/hooks/useCBProfile';
+import { useClientCheck } from '@/hooks/useClientCheck';
+import { useGameState } from '@/hooks/useGameState';
+import { useUserName } from '@/hooks/useUsername';
+import { Box, Drawer, Stack } from '@mui/material';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
+import { Fragment, useCallback, useMemo, useState } from 'react';
+import { useAccount, useDisconnect } from 'wagmi';
+
+const Footer = dynamic(() => import('@/components/navigation/footer'), {
+  ssr: false,
+});
 
 export default function Badges() {
   const isClient = useClientCheck();
@@ -287,20 +291,23 @@ export default function Badges() {
   );
 
   return (
-    <Box paddingX="1.25rem">
-      <Hero />
-      <Box>{BadgesWrapper}</Box>
-      {(['bottom'] as const).map((anchor) => (
-        <Fragment key={anchor}>
-          <Drawer
-            anchor={anchor}
-            open={drawerStates.walletOperations[anchor]}
-            onClose={() => handleToggleDrawer(anchor)}
-          >
-            {list(anchor)}
-          </Drawer>
-        </Fragment>
-      ))}
-    </Box>
+    <>
+      <Box paddingX="1.25rem">
+        <Hero />
+        <Box>{BadgesWrapper}</Box>
+        {(['bottom'] as const).map((anchor) => (
+          <Fragment key={anchor}>
+            <Drawer
+              anchor={anchor}
+              open={drawerStates.walletOperations[anchor]}
+              onClose={() => handleToggleDrawer(anchor)}
+            >
+              {list(anchor)}
+            </Drawer>
+          </Fragment>
+        ))}
+      </Box>
+      <Footer />
+    </>
   );
 }
