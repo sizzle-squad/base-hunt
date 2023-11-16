@@ -2,7 +2,7 @@ import { Box, Stack } from '@mui/material';
 import Image from 'next/image';
 import type { Badge as BadgeType } from '@/hooks/types';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import Text from '@/components/Text';
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   badge: BadgeType;
 };
 
-const CompletedSvg = () => (
+const CompletedSvg = memo(() => (
   <svg
     width={32}
     height={32}
@@ -34,9 +34,9 @@ const CompletedSvg = () => (
       strokeLinecap="square"
     />
   </svg>
-);
+));
 
-const IncompleteSvg = () => (
+const IncompleteSvg = memo(() => (
   <svg
     width={32}
     height={32}
@@ -55,7 +55,10 @@ const IncompleteSvg = () => (
     <path d="M13 13L19 19" stroke="white" strokeWidth="1.5" />
     <path d="M13 19L19 13" stroke="white" strokeWidth="1.5" />
   </svg>
-);
+));
+
+IncompleteSvg.displayName = 'IncompleteSvg';
+CompletedSvg.displayName = 'CompletedSvg';
 
 export function Badge({ imageUrl, isCompleted, badge }: Props) {
   const CompletedSvgMemo = useMemo(() => <CompletedSvg />, []);
