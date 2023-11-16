@@ -61,9 +61,6 @@ IncompleteSvg.displayName = 'IncompleteSvg';
 CompletedSvg.displayName = 'CompletedSvg';
 
 export function Badge({ imageUrl, isCompleted, badge }: Props) {
-  const CompletedSvgMemo = useMemo(() => <CompletedSvg />, []);
-  const IncompleteSvgMemo = useMemo(() => <IncompleteSvg />, []);
-
   return (
     <Box
       sx={{
@@ -104,7 +101,7 @@ export function Badge({ imageUrl, isCompleted, badge }: Props) {
             right: 0,
           }}
         >
-          {isCompleted ? CompletedSvgMemo : IncompleteSvgMemo}
+          {isCompleted ? <CompletedSvg /> : <IncompleteSvg />}
         </Box>
       </Link>
     </Box>
