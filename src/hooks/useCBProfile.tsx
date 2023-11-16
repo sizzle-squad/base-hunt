@@ -2,6 +2,7 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import { UserPublicProfile } from './types';
 import { routes } from '@/constants/routes';
+import { useMemo } from 'react';
 
 type Props = {
   address: `0x${string}` | undefined;
@@ -30,8 +31,12 @@ export function useCBProfile({ address }: Props) {
     }
   );
 
-  return {
-    data: data?.data,
-    isLoading,
-  };
+  return useMemo(
+    () => ({
+      data: data?.data,
+      isLoading,
+      error,
+    }),
+    [data?.data, error, isLoading]
+  );
 }

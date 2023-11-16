@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { ScoreState } from './types';
 import { useAccount } from 'wagmi';
+import { useMemo } from 'react';
 
 type Props = {
   userAddress: `0x${string}` | string;
@@ -10,7 +11,7 @@ type Props = {
 };
 
 export function useScore({ userAddress, gameId }: Props) {
-  const { data, isLoading } = useQuery<ScoreState>(
+  const { data, isLoading, error } = useQuery<ScoreState>(
     ['profile/score', userAddress, gameId],
     async () => {
       const score = await axios({
@@ -28,8 +29,12 @@ export function useScore({ userAddress, gameId }: Props) {
     }
   );
 
-  return {
-    data,
-    isLoading,
-  };
+  return useMemo(
+    () => ({
+      data,
+      isLoading,
+      error,
+    }),
+    [data, error, isLoading]
+  );
 }

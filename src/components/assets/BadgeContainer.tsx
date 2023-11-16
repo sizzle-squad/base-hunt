@@ -11,7 +11,7 @@ export default function BadgeContainer({ badges }: Props) {
   return (
     <Grid container>
       {badges?.map((badge) => (
-        <Grid key={badge.id} xs={3} sm={3}>
+        <Grid key={badge.id} xs={3} sm={3} item>
           <Badge
             badge={badge}
             key={badge.id}
