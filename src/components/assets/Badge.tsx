@@ -1,8 +1,9 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import Image from 'next/image';
 import type { Badge as BadgeType } from '@/hooks/types';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import Text from '@/components/Text';
 
 type Props = {
   imageUrl: URL | string;
@@ -89,19 +90,9 @@ export function Badge({ imageUrl, isCompleted, badge }: Props) {
               borderRadius: '0.75rem',
             }}
           />
-          <Typography
-            sx={{
-              color: 'var(--Black, #151515)',
-              textAlign: 'center',
-              width: '100%',
-              paddingTop: '0.75rem',
-              fontWeight: 400,
-              fontSize: '.875rem',
-              lineHeight: '100%',
-            }}
-          >
+          <Text fontSize="1rem" align="center">
             {badge.name}
-          </Typography>
+          </Text>
         </Stack>
         <Box
           sx={{
