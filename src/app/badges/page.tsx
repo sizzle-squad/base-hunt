@@ -22,6 +22,11 @@ export default function Badges() {
   const [irlAccordionExpanded, setIrlAccordionExpanded] = useState(false);
   const [virtualAccordionExpanded, setVirtualAccordionExpanded] =
     useState(false);
+  const {
+    data: badges,
+    isLoading,
+    error,
+  } = useGameState({ userAddress: address, gameId: GAME_ID });
 
   const toggleAccordion = useCallback((type: BadgeTypeEnum) => {
     if (type === BadgeTypeEnum.IRL) {
@@ -30,12 +35,6 @@ export default function Badges() {
       setVirtualAccordionExpanded((prev) => !prev);
     }
   }, []);
-
-  const {
-    data: badges,
-    isLoading,
-    error,
-  } = useGameState({ userAddress: address, gameId: GAME_ID });
 
   const BadgesWrapper = useMemo(() => {
     if (isClient) {

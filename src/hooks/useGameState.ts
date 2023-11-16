@@ -50,6 +50,7 @@ export function useGameState({ userAddress, gameId }: Props) {
         completedIRLBadgeCount,
         onlineBadges,
         completedOnlineBadgeCount,
+        badges: data?.data || [],
       },
       isLoading,
       error,
