@@ -43,7 +43,6 @@ model badge_configuration {
   cta_url          String?
   cta_text         String?
   type             badge_type @default(irl)
-  airdrop_command  String?    @unique
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -98,7 +97,41 @@ model treasure_box_state {
   game_id           BigInt?  @unique(map: "treasure_box_state_unique")
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model boost_configuration {
+  id                 BigInt          @id @default(autoincrement())
+  name               String          @db.VarChar
+  contract_addresses String[]        @db.VarChar
+  refresh_time       DateTime?       @db.Time(6)
+  image_url          String?         @db.VarChar
+  game_id            BigInt          @default(0)
+  cta_url            String?         @db.VarChar
+  cta_text           String?         @db.VarChar
+  boost_type         boost_type      @default(NFT)
+  claimed_boost      claimed_boost[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model claimed_boost {
+  id                  BigInt              @id @default(autoincrement())
+  updated_at          DateTime            @default(now()) @db.Timestamptz(6)
+  user_address        String              @db.VarChar
+  boost_id            BigInt
+  game_id             BigInt
+  boost_configuration boost_configuration @relation(fields: [boost_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_address, boost_id, game_id], map: "claimed_boost_unique")
+}
+
 enum badge_type {
   online
   irl
+  level
+}
+
+enum boost_type {
+  NFT
+  NFT_PER_MINT
+  TOKEN
+  RECURRING
 }
