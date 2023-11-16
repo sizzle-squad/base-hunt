@@ -33,20 +33,29 @@ export async function POST(req: Request) {
     (body.table as string) === 'score'
   ) {
     const currentScore = BigInt(body.record.current_score);
+    const prevScore = BigInt(body.old_record.current_score);
     const level = await prisma.level_configuration.findFirst({
       where: {
         game_id: BigInt(body.record.game_id),
-        threshold_points: currentScore,
+        threshold_points: {
+          lte: currentScore,
+          gt: prevScore,
+        },
       },
     });
     if (level) {
       await AirdropNft(body.record.user_address, level.airdrop_command);
     } else {
       console.log(
-        '[webhook airdrop] no level found:',
+        '[webhook airdrop] no level found',
+        'gameId:',
         body.record.game_id,
+        'userAddress:',
         body.record.user_address,
-        currentScore
+        'currentScore:',
+        currentScore,
+        'prevScore:',
+        prevScore
       );
     }
   } else {
