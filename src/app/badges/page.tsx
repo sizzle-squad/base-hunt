@@ -1,13 +1,14 @@
 'use client';
 
-import CustomAccordion from '@/components/Badges/Accordion';
+import CustomAccordion, { Panel } from '@/components/Badges/Accordion';
+import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
 import BadgeContainer from '@/components/assets/BadgeContainer';
 import { useDrawer } from '@/context/DrawerContext';
 import { useBadges } from '@/hooks/useBadges';
 import { useClientCheck } from '@/hooks/useClientCheck';
-import { Box, Button, Drawer, Stack, Typography } from '@mui/material';
-import { Fragment, useCallback } from 'react';
+import { Box, Drawer, Typography } from '@mui/material';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -16,6 +17,18 @@ export default function Badges() {
   const { address, isConnected } = useAccount();
   const { useGetBadges } = useBadges({ address, isConnected });
   const { drawerStates, toggleDrawer } = useDrawer();
+  const [irlAccordionExpanded, setIrlAccordionExpanded] = useState(false);
+  const [virtualAccordionExpanded, setVirtualAccordionExpanded] =
+    useState(false);
+
+  const toggleAccordion = useCallback((type: Panel) => {
+    console.log('🚀 ~ file: page.tsx:25 ~ toggleAccordion ~ type:', type);
+    if (type === 'irl') {
+      setIrlAccordionExpanded((prev) => !prev);
+    } else if (type === 'virtual') {
+      setVirtualAccordionExpanded((prev) => !prev);
+    }
+  }, []);
 
   const { data: badges, isLoading, error } = useGetBadges();
 
@@ -36,9 +49,21 @@ export default function Badges() {
                 gap={2}
               >
                 {badges && badges.data && (
-                  <CustomAccordion title={'IRL Badges'}>
-                    <BadgeContainer badges={badges.data.irlBadges} />
-                  </CustomAccordion>
+                  <>
+                    <CustomAccordion
+                      title={'IRL Badges'}
+                      toggleFunction={toggleAccordion}
+                      expanded={irlAccordionExpanded}
+                      panel="irl"
+                    >
+                      <BadgeContainer badges={badges.data.irlBadges} />
+                    </CustomAccordion>
+                    <BadgeStack
+                      toggleFunction={toggleAccordion}
+                      panel="irl"
+                      hide={irlAccordionExpanded}
+                    />
+                  </>
                 )}
               </Box>
               <Box
@@ -50,9 +75,21 @@ export default function Badges() {
                 gap={2}
               >
                 {badges && badges.data && (
-                  <CustomAccordion title={'Virtual Badges'}>
-                    <BadgeContainer badges={badges.data.onlineBadges} />
-                  </CustomAccordion>
+                  <>
+                    <CustomAccordion
+                      title={'Virtual Badges'}
+                      toggleFunction={toggleAccordion}
+                      expanded={virtualAccordionExpanded}
+                      panel="virtual"
+                    >
+                      <BadgeContainer badges={badges.data.onlineBadges} />
+                    </CustomAccordion>
+                    <BadgeStack
+                      toggleFunction={toggleAccordion}
+                      panel="virtual"
+                      hide={virtualAccordionExpanded}
+                    />
+                  </>
                 )}
               </Box>
             </>
@@ -60,7 +97,15 @@ export default function Badges() {
         </>
       );
     }
-  }, [isClient, badges, isLoading, error]);
+  }, [
+    isClient,
+    badges,
+    isLoading,
+    error,
+    irlAccordionExpanded,
+    virtualAccordionExpanded,
+    toggleAccordion,
+  ]);
 
   type Anchor = 'top' | 'left' | 'bottom' | 'right';
 

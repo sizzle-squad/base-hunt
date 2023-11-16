@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -8,57 +7,55 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionPill from './AccordionPill';
+import { ReactNode } from 'react';
+
+export type Panel = 'irl' | 'virtual';
 
 export default function CustomAccordion({
   children,
   title,
+  toggleFunction,
+  expanded,
+  panel,
 }: {
   title: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
+  toggleFunction: (type: Panel) => void;
+  expanded: boolean;
+  panel: 'irl' | 'virtual';
 }) {
-  // State for the expanded accordion panel
-  const [expanded, setExpanded] = useState<string | false>(false);
-
-  // Handle changing the expanded accordion panel
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
-
   return (
-    <div>
-      <Accordion
-        expanded={expanded === 'panel1'}
-        onChange={handleChange('panel1')}
+    <Accordion
+      expanded={expanded}
+      onChange={() => toggleFunction(panel)}
+      sx={{
+        background: 'transparent',
+        boxShadow: 'none',
+      }}
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1bh-content"
+        id="panel1bh-header"
         sx={{
-          background: 'transparent',
-          boxShadow: 'none',
+          paddingX: 0,
         }}
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-          sx={{
-            paddingX: 0,
-          }}
-        >
-          <Stack flexDirection="row" alignItems="center" gap={2}>
-            <Typography
-              variant="h5"
-              textAlign="left"
-              fontWeight="400"
-              sx={{ fontSize: '22px' }}
-            >
-              {title}
-            </Typography>
-            <AccordionPill />
-          </Stack>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>{children}</Typography>
-        </AccordionDetails>
-      </Accordion>
-    </div>
+        <Stack flexDirection="row" alignItems="center" gap={2}>
+          <Typography
+            variant="h5"
+            textAlign="left"
+            fontWeight="400"
+            sx={{ fontSize: '22px' }}
+          >
+            {title}
+          </Typography>
+          <AccordionPill />
+        </Stack>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Typography>{children}</Typography>
+      </AccordionDetails>
+    </Accordion>
   );
 }

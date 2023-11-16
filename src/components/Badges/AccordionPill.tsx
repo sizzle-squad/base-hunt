@@ -1,7 +1,6 @@
-import * as React from 'react';
 import { Box } from '@mui/material';
 
-function AccordionPill(props: any) {
+function AccordionPill() {
   return (
     <Box
       sx={{
