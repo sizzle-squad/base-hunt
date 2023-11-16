@@ -86,10 +86,22 @@ export function Badge({ imageUrl, isCompleted, badge }: Props) {
             width={146}
             height={146}
             style={{
-              opacity: isCompleted ? 1 : 0.15,
               borderRadius: '0.75rem',
             }}
           />
+          {!isCompleted && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(211, 211, 211, 0.5)',
+                borderRadius: '0.75rem',
+              }}
+            />
+          )}
           <Text fontSize="1rem" align="center">
             {badge.name}
           </Text>
