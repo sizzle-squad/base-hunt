@@ -4,6 +4,7 @@ import '@/utils/helper';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { Level, ScoreState } from '../../../../hooks/types';
+
 const prisma = new PrismaClient();
 
 /*
@@ -62,9 +63,34 @@ export async function GET(req: NextRequest) {
     nextLevel = levels[0];
   }
 
-  const scoreState = mapToScore(currentLevel, nextLevel, score, gameId);
+  const scoreState = mapToScore(
+    currentLevel,
+    getNextLevel(currentLevel, nextLevel, levels),
+    score,
+    gameId
+  );
 
   return NextResponse.json(scoreState);
+}
+
+function getNextLevel(currentLevel: any, nextLevel: any, levels: any[]) {
+  // if your haven't played the game yet, next display next level as 2
+  if (!currentLevel) {
+    return levels[1];
+  }
+  // If user is at max level, then display max level config
+  if (!nextLevel) {
+    return {
+      id: '',
+      gameId: currentLevel.gameId.toString(),
+      name: 'Max level',
+      thresholdPoints: currentLevel.thresholdPoints,
+      level: 'Max level',
+    };
+  }
+
+  // all other case, return next level
+  return nextLevel;
 }
 
 function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
@@ -82,23 +108,9 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
           gameId: gameId.toString(),
           name: 'zero level',
           thresholdPoints: BigInt(0),
-          level: '0',
+          level: '1',
         },
-    nextLevel: n
-      ? {
-          id: n.id,
-          gameId: n.game_id,
-          name: n.name,
-          thresholdPoints: n.threshold_points,
-          level: n.level,
-        }
-      : {
-          id: '',
-          gameId: gameId.toString(),
-          name: 'max level',
-          thresholdPoints: BigInt(0),
-          level: '999999',
-        },
+    nextLevel: n,
     score: s
       ? {
           id: s.id,
