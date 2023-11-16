@@ -10,9 +10,12 @@ export default function Footer() {
   const router = useRouter();
   const [value, setValue] = useState(0);
 
-  const handleActionPress = useCallback((route: string) => {
-    return () => router.push(`/${route}/`);
-  }, []);
+  const handleActionPress = useCallback(
+    (route: string) => {
+      return () => router.push(`/${route}/`);
+    },
+    [router]
+  );
 
   return (
     <Paper

@@ -15,7 +15,7 @@ export function ConnectButton({
 }: Props) {
   const backgroundColor = useMemo(() => {
     return variant === 'contained' ? '#000000' : undefined;
-  }, []);
+  }, [variant]);
 
   return (
     <ConnectKitButton.Custom>
@@ -39,8 +39,8 @@ export function ConnectButton({
             {isConnected
               ? 'Disconnect'
               : isConnecting
-                ? 'Connecting...'
-                : 'Connect Wallet'}
+              ? 'Connecting...'
+              : 'Connect Wallet'}
           </Button>
         );
       }}
