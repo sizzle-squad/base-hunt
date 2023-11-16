@@ -147,7 +147,7 @@ export default function Badges() {
         drawerStates.walletOperations[anchor]
       );
     },
-    [drawerStates.walletOperations, toggleDrawer]
+    [toggleAccordion]
   );
 
   return (
