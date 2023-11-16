@@ -62,6 +62,7 @@ model level_configuration {
   name             String
   threshold_points BigInt
   airdrop_command  String
+  level            String?
 }
 
 model treasure_box_entries {
@@ -99,4 +100,5 @@ model treasure_box_state {
 enum badge_type {
   online
   irl
+  level
 }
