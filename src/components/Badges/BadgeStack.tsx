@@ -1,6 +1,7 @@
 import { BadgeTypeEnum } from '@/hooks/types';
 import { Box } from '@mui/material';
 import Image from 'next/image';
+import { useCallback } from 'react';
 
 type Props = {
   panel: BadgeTypeEnum;
@@ -9,10 +10,15 @@ type Props = {
 };
 
 function BadgeStack({ panel, toggleFunction, hide }: Props) {
+  const handleToggle = useCallback(() => {
+    toggleFunction(panel);
+  }, [panel, toggleFunction]);
+
   if (hide) return null;
+
   return (
     <Box
-      onClick={() => toggleFunction(panel)}
+      onClick={handleToggle}
       sx={{
         justifyContent: 'space-between',
         alignSelf: 'stretch',
