@@ -3,7 +3,13 @@ import Lottie from 'react-lottie';
 import animationData from './BaseHunt_Stacked.json'; // Update with the path to your Lottie file
 import { Box, Card } from '@mui/material';
 
-const AnimatedHero = ({ width, height }: { width: string; height: string }) => {
+const BaseHuntAnimated = ({
+  width,
+  height,
+}: {
+  width: string;
+  height: string;
+}) => {
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -13,11 +19,7 @@ const AnimatedHero = ({ width, height }: { width: string; height: string }) => {
     },
   };
 
-  return (
-    <Card sx={{ borderRadius: '.75rem' }}>
-      <Lottie options={defaultOptions} height={height} width={width} />
-    </Card>
-  );
+  return <Lottie options={defaultOptions} height={height} width={width} />;
 };
 
-export default AnimatedHero;
+export default BaseHuntAnimated;

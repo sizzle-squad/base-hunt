@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -74,41 +75,45 @@ export default function Home() {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <Jumbotron />
-        <Stack paddingTop={5} alignItems="center" width="100%">
-          {ctaButton}
+        <Stack width="100%" justifyContent="center" marginTop="5rem">
+          <BaseHuntAnimated width="20rem" height="" />
         </Stack>
-        <Stack alignItems="center">
-          <Stack
-            direction="row"
-            alignItems="center"
-            sx={{
-              py: 1,
-              px: 2,
-              mt: 4,
-              mb: 2,
-              borderRadius: 20,
-              bgcolor: 'white',
-              gap: 1,
-            }}
-          >
-            <Image
-              src="/images/coinbase-wallet-logo.png"
-              alt="Coinbase Wallet Logo"
-              height={24}
-              width={24}
-            />
-            <Typography fontSize={14}>
-              Coinbase Wallet{' '}
-              <Box component="span" fontWeight="bold">
-                Recommended
-              </Box>
-            </Typography>
+        <Box>
+          <Stack paddingTop={5} alignItems="center" width="100%">
+            {ctaButton}
           </Stack>
-          <Link href="/" variant="body1" color="black" underline="none">
-            Download now
-          </Link>
-        </Stack>
+          <Stack alignItems="center">
+            <Stack
+              direction="row"
+              alignItems="center"
+              sx={{
+                py: 1,
+                px: 2,
+                mt: 4,
+                mb: 2,
+                borderRadius: 20,
+                bgcolor: 'white',
+                gap: 1,
+              }}
+            >
+              <Image
+                src="/images/coinbase-wallet-logo.png"
+                alt="Coinbase Wallet Logo"
+                height={24}
+                width={24}
+              />
+              <Typography fontSize={14}>
+                Coinbase Wallet{' '}
+                <Box component="span" fontWeight="bold">
+                  Recommended
+                </Box>
+              </Typography>
+            </Stack>
+            <Link href="/" variant="body1" color="black" underline="none">
+              Download now
+            </Link>
+          </Stack>
+        </Box>
       </Stack>
     </>
   );
