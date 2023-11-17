@@ -50,18 +50,6 @@ const Navbar = () => {
     return 0;
   }, [data]);
 
-  const userAddress = useMemo(() => {
-    if (userPublicProfile) {
-      if (userPublicProfile.subdomainProfile) {
-        return userPublicProfile.subdomainProfile.name;
-      } else if (userPublicProfile.ensDomainProfile) {
-        return userPublicProfile.ensDomainProfile.name;
-      }
-    }
-
-    return address && getTruncatedAddress(address);
-  }, [address, userPublicProfile]);
-
   if (isDisconnected) return null;
 
   return (
