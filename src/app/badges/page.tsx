@@ -292,7 +292,7 @@ export default function Badges() {
 
   return (
     <>
-      <Box paddingX="1.25rem">
+      <Box paddingX="1.25rem" marginBottom={7}>
         <Hero />
         <Box>{BadgesWrapper}</Box>
         {(['bottom'] as const).map((anchor) => (
@@ -301,6 +301,12 @@ export default function Badges() {
               anchor={anchor}
               open={drawerStates.walletOperations[anchor]}
               onClose={() => handleToggleDrawer(anchor)}
+              PaperProps={{
+                style: {
+                  width: '390px',
+                  left: 'calc(50% - 195px)', // 50% - half of width
+                },
+              }}
             >
               {list(anchor)}
             </Drawer>

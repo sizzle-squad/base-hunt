@@ -97,6 +97,12 @@ function SwipeUpDrawer({
         onOpen={() => toggleDrawer(type, anchor, true)}
         swipeAreaWidth={drawerBleeding}
         disableSwipeToOpen={false}
+        PaperProps={{
+          style: {
+            width: '390px',
+            left: 'calc(50% - 195px)', // 50% - half of width
+          },
+        }}
         ModalProps={{
           keepMounted: true,
         }}
