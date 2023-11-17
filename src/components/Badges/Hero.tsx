@@ -1,12 +1,9 @@
-import Image from 'next/image';
-import { Box, LinearProgress, Stack } from '@mui/material';
+import { Box, Card, LinearProgress, Stack } from '@mui/material';
 import { memo, useMemo } from 'react';
-import bgImage from '../../../public/images/bg.png';
-import HeroSVG from '@/components/assets/HeroSVG';
 import dynamic from 'next/dynamic';
 import { useScore } from '@/hooks/useScore';
 import { useAccount } from 'wagmi';
-import AnimatedHero from './AnimatedHero';
+import BaseHuntAnimated from './AnimatedHero';
 
 const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
   ssr: false,
@@ -183,7 +180,9 @@ const Hero = () => {
   return (
     <Stack gap="1rem" width="100%" flexDirection="column" mt="1rem">
       <Navbar />
-      <AnimatedHero width="100%" height="100%" />
+      <Card sx={{ borderRadius: '.75rem' }}>
+        <BaseHuntAnimated width="100%" height="100%" />
+      </Card>
       {/* TODO: temp to surpress type errors, update types once settled */}
       <LevelsBar
         currentLevel={currentLevel as number}
