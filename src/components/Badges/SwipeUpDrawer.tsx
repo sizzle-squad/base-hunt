@@ -3,11 +3,12 @@ import { Global } from '@emotion/react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { format } from 'date-fns';
+import { memo } from 'react';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';
 
-const Puller = () => (
+const Puller = memo(() => (
   <Box
     sx={{
       width: 48,
@@ -19,9 +20,15 @@ const Puller = () => (
       left: 'calc(50% - 15px)',
     }}
   />
-);
+));
+Puller.displayName = 'Puller';
 
-const Label = ({ title, color }: { title: string; color: string }) => (
+type LabelProps = {
+  title: string;
+  color: string;
+};
+
+const Label = memo(({ title, color }: LabelProps) => (
   <Box
     sx={{
       padding: '4px 8px',
@@ -42,9 +49,10 @@ const Label = ({ title, color }: { title: string; color: string }) => (
       {title}
     </Typography>
   </Box>
-);
+));
+Label.displayName = 'Label';
 
-type Props = {
+type SwipeUpDrawerProps = {
   type: DrawerType;
   title: string;
   description: string;
@@ -65,7 +73,7 @@ function SwipeUpDrawer({
   mapURL,
   owned,
   completedOn,
-}: Props) {
+}: SwipeUpDrawerProps) {
   const { drawerStates, toggleDrawer } = useDrawer();
 
   return (
@@ -129,7 +137,7 @@ function SwipeUpDrawer({
           <Typography sx={{}}>{description}</Typography>
           {owned && completedOn && (
             <Typography fontWeight={700}>
-              Badge found {format(completedOn, 'do MMMM yyyy')}
+              Badge found {format(new Date(completedOn), 'do MMMM yyyy')}
             </Typography>
           )}
           {!owned && (
