@@ -1,7 +1,7 @@
 import { useAccount } from 'wagmi';
 import { Box, Stack } from '@mui/material';
 import { Color } from '@/constants/color';
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { getTruncatedAddress } from '@/utils/truncate';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useDrawer } from '@/context/DrawerContext';
@@ -50,13 +50,17 @@ const Navbar = () => {
     return 0;
   }, [data]);
 
+  const handleDrawerToggle = useCallback(() => {
+    toggleDrawer('walletOperations', 'bottom', true);
+  }, [toggleDrawer]);
+
   if (isDisconnected) return null;
 
   return (
     <Stack direction="row" spacing={2} alignItems={'center'} width="100%">
       <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
         <Stack
-          onClick={() => toggleDrawer('walletOperations', 'bottom', true)}
+          onClick={handleDrawerToggle}
           direction="row"
           alignItems="center"
           spacing=".25rem"
