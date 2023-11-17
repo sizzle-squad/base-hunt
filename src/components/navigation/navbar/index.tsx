@@ -7,6 +7,8 @@ import { useCBProfile } from '@/hooks/useCBProfile';
 import { useDrawer } from '@/context/DrawerContext';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
+import Text from '@/components/Text';
+import Circle from '@/components/Circle';
 
 const PointsPill = ({ points }: { points: number }) => (
   <Box
@@ -26,18 +28,6 @@ const PointsPill = ({ points }: { points: number }) => (
   >
     {points} points
   </Box>
-);
-
-const StatusIndicatorDot = ({ color }: { color: Color | string }) => (
-  <Box
-    sx={{
-      width: '8px',
-      height: '8px',
-      borderRadius: '50%',
-      backgroundColor: color,
-      padding: '0.25rem 0.5rem 0.25rem 0.25rem',
-    }}
-  />
 );
 
 const Navbar = () => {
@@ -78,6 +68,7 @@ const Navbar = () => {
     <Stack direction="row" spacing={2} alignItems={'center'} width="100%">
       <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
         <Stack
+          onClick={() => toggleDrawer('walletOperations', 'bottom', true)}
           direction="row"
           alignItems="center"
           spacing=".25rem"
@@ -88,20 +79,15 @@ const Navbar = () => {
             backgroundColor: 'white',
           }}
         >
-          <StatusIndicatorDot color="yellow" />
-          {userName && userName}
+          {isDisconnected ? (
+            <Text>Not connected</Text>
+          ) : (
+            <>
+              <Circle color="yellow" size="1rem" />
+              {userName && userName}
+            </>
+          )}
         </Stack>
-        <Box onClick={() => toggleDrawer('walletOperations', 'bottom', true)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="17"
-            viewBox="0 0 16 17"
-            fill="none"
-          >
-            <path d="M3 6.5L8 10.5L13 6.5" stroke="black" strokeWidth="2" />
-          </svg>
-        </Box>
       </Stack>
       {/* todo: solidify types */}
       <PointsPill points={score as number} />
