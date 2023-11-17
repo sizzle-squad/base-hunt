@@ -1,5 +1,6 @@
 'use client';
 
+import Loading from '@/app/badges/loading';
 import CustomAccordion from '@/components/Badges/Accordion';
 import AccordionPill from '@/components/Badges/AccordionPill';
 import BadgeStack from '@/components/Badges/BadgeStack';
@@ -17,7 +18,7 @@ import { useUserName } from '@/hooks/useUsername';
 import { Box, Drawer, Stack } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { Fragment, useCallback, useMemo, useState } from 'react';
+import { Fragment, Suspense, useCallback, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 
 const Footer = dynamic(() => import('@/components/navigation/footer'), {
@@ -74,9 +75,9 @@ export default function Badges() {
     if (isClient) {
       return (
         <>
-          {isLoading && <div>Loading...</div>}
+          {/* {isLoading && <div>Loading All the badges...</div>} */}
           {error && <div>Error...</div>}
-          {badges && (
+          <Suspense fallback={<Loading />}>
             <>
               <Box
                 sx={{
@@ -143,7 +144,7 @@ export default function Badges() {
                 )}
               </Box>
             </>
-          )}
+          </Suspense>
         </>
       );
     }
