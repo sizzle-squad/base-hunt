@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 
 export type DrawerType = 'walletOperations' | 'badgeActions';
+export type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 interface DrawerStates {
   walletOperations: Record<string, boolean>;
