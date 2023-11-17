@@ -150,23 +150,17 @@ const Hero = () => {
   const threshold = useMemo(() => {
     // user is yet to play the game so threshold is 2 to reach level 2.
     // all player starts at level 1, not 0
-    if (
-      !data ||
-      !data.score?.currentScore ||
-      !data.currentLevel?.thresholdPoints
-    )
+    if (!data || !data.score?.currentScore || !data.nextLevel?.thresholdPoints)
       return 2;
-    return Number(
-      data.score?.currentScore - data.currentLevel?.thresholdPoints
-    );
+    return Number(data.nextLevel?.thresholdPoints - data.score?.currentScore);
   }, [data]);
 
   const progress = useMemo(() => {
     if (
       !data ||
       !data.nextLevel?.thresholdPoints ||
-      // !data.score?.currentScore ||
-      !data.currentLevel?.thresholdPoints
+      !data.currentLevel?.thresholdPoints ||
+      !data.score?.currentScore
     )
       return 0;
 
@@ -174,8 +168,11 @@ const Hero = () => {
       data.nextLevel?.thresholdPoints - data.currentLevel?.thresholdPoints
     );
 
-    return (threshold / denom) * 100;
-  }, [data, threshold]);
+    const bar = Number(
+      data.score?.currentScore - data.currentLevel?.thresholdPoints
+    );
+    return (bar / denom) * 100;
+  }, [data]);
 
   return (
     <Stack gap="1rem" width="100%" flexDirection="column" mt="1rem">
