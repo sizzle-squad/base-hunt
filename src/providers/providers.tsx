@@ -9,6 +9,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import '@fontsource/open-sans';
 import '@/globals.css';
 import { CssBaseline } from '@mui/material';
+import { MobileProvider } from '@/context/MobileContext';
 
 type Props = {
   children: React.ReactNode;
@@ -46,14 +47,16 @@ const theme = createTheme({
 const Providers = ({ children }: Props) => {
   const queryClient = new QueryClient();
   return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiConfig config={config}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
-        </ThemeProvider>
-      </WagmiConfig>
-    </QueryClientProvider>
+    <MobileProvider>
+      <QueryClientProvider client={queryClient}>
+        <WagmiConfig config={config}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
+          </ThemeProvider>
+        </WagmiConfig>
+      </QueryClientProvider>
+    </MobileProvider>
   );
 };
 
