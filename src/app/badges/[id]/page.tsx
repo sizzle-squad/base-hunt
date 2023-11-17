@@ -18,11 +18,16 @@ interface Props {
 }
 
 const TitleBar = ({ owned }: { owned: boolean }) => (
-  <Stack alignItems="center" marginTop="24px">
+  <Stack
+    alignItems="center"
+    marginTop="24px"
+    position={'relative'}
+    width={'100%'}
+  >
     <Box
       sx={{
         position: 'absolute',
-        left: 20,
+        left: '20px',
       }}
     >
       <Link href="/badges">
