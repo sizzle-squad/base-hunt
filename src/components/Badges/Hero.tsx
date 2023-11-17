@@ -59,6 +59,7 @@ function LevelsBar({
         zIndex: 2,
         bottom: 0,
         width: '100%',
+        position: 'relative',
       }}
     >
       <Stack
@@ -66,7 +67,6 @@ function LevelsBar({
         flexDirection="row"
         justifyContent="space-between"
         alignItems="center"
-        gap={2}
       >
         <Box width="100%">
           <Box
@@ -94,7 +94,7 @@ function LevelsBar({
             <LevelsProgressBar progress={progress} />
           </Box>
         </Box>
-        <Stack>
+        <Stack sx={{ position: 'relative', right: '10px' }}>
           {/* from figma */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -168,7 +168,7 @@ const Hero = () => {
     if (
       !data ||
       !data.nextLevel?.thresholdPoints ||
-      !data.score?.currentScore ||
+      // !data.score?.currentScore ||
       !data.currentLevel?.thresholdPoints
     )
       return 0;
@@ -176,6 +176,7 @@ const Hero = () => {
     const denom = Number(
       data.nextLevel?.thresholdPoints - data.currentLevel?.thresholdPoints
     );
+
     return (threshold / denom) * 100;
   }, [data, threshold]);
 
