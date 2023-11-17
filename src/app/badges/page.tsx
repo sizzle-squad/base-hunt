@@ -6,6 +6,7 @@ import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
 import BadgeContainer from '@/components/assets/BadgeContainer';
 import { ConnectedDrawer } from '@/components/drawers/ConnectedDrawer';
+import { RetryDrawer } from '@/components/drawers/RetryDrawer';
 import { GAME_ID } from '@/constants/gameId';
 import { Anchor, useDrawer } from '@/context/DrawerContext';
 import { BadgeTypeEnum } from '@/hooks/types';
@@ -26,7 +27,7 @@ const Footer = dynamic(() => import('@/components/navigation/footer'), {
 export default function Badges() {
   const isClient = useClientCheck();
   const router = useRouter();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isReconnecting } = useAccount();
   const { drawerStates, toggleDrawer } = useDrawer();
   const { data: userPublicProfile } = useCBProfile({ address });
   const userName = useUserName({ address, userPublicProfile });
@@ -156,6 +157,23 @@ export default function Badges() {
     handleToggleAccordion,
   ]);
 
+  const DrawerContent = useMemo(() => {
+    if (isConnected) {
+      return (
+        <ConnectedDrawer
+          anchor="bottom"
+          dismissCallback={handleDrawerDismiss}
+          disconnectCallback={handleDisconnect}
+          isConnected={isConnected}
+          address={address}
+          userName={userName}
+        />
+      );
+    } else if (!isConnected || !isReconnecting) {
+      return <RetryDrawer />;
+    }
+  }, [isConnected, handleDrawerDismiss, handleDisconnect, address, userName]);
+
   return (
     <>
       <Box paddingX="1.25rem">
@@ -168,16 +186,7 @@ export default function Badges() {
               open={drawerStates.walletOperations[anchor]}
               onClose={() => handleToggleDrawer(anchor)}
             >
-              {
-                <ConnectedDrawer
-                  anchor={anchor}
-                  dismissCallback={handleDrawerDismiss}
-                  disconnectCallback={handleDisconnect}
-                  isConnected={isConnected}
-                  address={address}
-                  userName={userName}
-                />
-              }
+              {DrawerContent}
             </Drawer>
           </Fragment>
         ))}
