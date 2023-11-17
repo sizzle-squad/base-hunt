@@ -292,7 +292,7 @@ export default function Badges() {
 
   return (
     <>
-      <Box paddingX="1.25rem">
+      <Box paddingX="1.25rem" marginBottom={7}>
         <Hero />
         <Box>{BadgesWrapper}</Box>
         {(['bottom'] as const).map((anchor) => (
