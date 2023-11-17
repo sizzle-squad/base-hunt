@@ -12,6 +12,7 @@ function BadgeStack({ panel, toggleFunction, hide }: Props) {
   if (hide) return null;
   return (
     <Box
+      onClick={() => toggleFunction(panel)}
       sx={{
         justifyContent: 'space-between',
         alignSelf: 'stretch',
@@ -38,7 +39,6 @@ function BadgeStack({ panel, toggleFunction, hide }: Props) {
         height={80}
       />
       <Box
-        onClick={() => toggleFunction(panel)}
         sx={{
           color: 'var(--Dark-Blue, #0a25a5)',
           fontFeatureSettings: '"clig" 0, "liga" 0',
