@@ -10,12 +10,12 @@ const settings = {
 
 const alchemy = new Alchemy(settings);
 
-export async function ownsNFT(userAddress: string, contract: string) {
+async function ownsNFT(userAddress: string, contract: string) {
     const response = await alchemy.nft.verifyNftOwnership(userAddress, contract);
     return response;
 }
 
-export async function hasToken(userAddress: string, contract: string) {
+async function hasToken(userAddress: string, contract: string) {
     const contracts = [contract];
 
     const tokenBalanceRes = await alchemy.core.getTokenBalances(userAddress, contracts);
