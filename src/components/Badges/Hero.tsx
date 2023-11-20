@@ -175,18 +175,18 @@ const Hero = () => {
   }, [data]);
 
   return (
-    <Stack gap="1rem" width="100%" flexDirection="column" mt="1rem">
+    <Stack gap="12px" width="100%" flexDirection="column" mt="1rem">
       <Navbar />
       <Card sx={{ borderRadius: '.75rem' }}>
         <BaseHuntAnimated width="100%" height="100%" />
       </Card>
-      {/* TODO: temp to surpress type errors, update types once settled */}
-      <LevelsBar
+      {/* TODO: Comment out for now, remove once confirmed we will no longer use */}
+      {/* <LevelsBar
         currentLevel={currentLevel as number}
         nextLevel={nextLevel as number}
         threshold={threshold as number}
         progress={progress as number}
-      />
+      /> */}
     </Stack>
   );
 };
