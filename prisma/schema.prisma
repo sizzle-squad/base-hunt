@@ -108,6 +108,10 @@ model boost_configuration {
   cta_url            String?         @db.VarChar
   cta_text           String?         @db.VarChar
   boost_type         boost_type      @default(NFT)
+  is_enabled         Boolean         @default(true)
+  points             BigInt          @default(0)
+  nft_amount         BigInt?
+  airdrop_cmd        String?         @db.VarChar
   claimed_boost      claimed_boost[]
 }
 
@@ -118,6 +122,7 @@ model claimed_boost {
   user_address        String              @db.VarChar
   boost_id            BigInt
   game_id             BigInt
+  contract_address    String?             @db.VarChar
   boost_configuration boost_configuration @relation(fields: [boost_id], references: [id], onDelete: Cascade)
 
   @@unique([user_address, boost_id, game_id], map: "claimed_boost_unique")
@@ -130,6 +135,7 @@ enum badge_type {
 }
 
 enum boost_type {
+  IRL
   NFT
   NFT_PER_MINT
   TOKEN
