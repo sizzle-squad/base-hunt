@@ -108,6 +108,8 @@ model boost_configuration {
   cta_url            String?         @db.VarChar
   cta_text           String?         @db.VarChar
   boost_type         boost_type      @default(NFT)
+  is_enabled         Boolean         @default(true)
+  points             BigInt          @default(0)
   claimed_boost      claimed_boost[]
 }
 
