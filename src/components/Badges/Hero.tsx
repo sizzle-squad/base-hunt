@@ -3,7 +3,8 @@ import { memo, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useScore } from '@/hooks/useScore';
 import { useAccount } from 'wagmi';
-import BaseHuntAnimated from './AnimatedHero';
+import HeroSVG from '@/components/assets/HeroSVG';
+import Text from '@/components/Text';
 
 const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
   ssr: false,
@@ -177,8 +178,20 @@ const Hero = () => {
   return (
     <Stack gap="1rem" width="100%" flexDirection="column" mt="1rem">
       <Navbar />
-      <Card sx={{ borderRadius: '.75rem' }}>
-        <BaseHuntAnimated width="100%" height="100%" />
+      <Card sx={{ borderRadius: '.75rem', paddingInline: '20px' }}>
+        <Stack
+          flexDirection="column"
+          alignItems="center"
+          gap="1rem"
+          justifyContent="center"
+          width="100%"
+          paddingY="48px"
+        >
+          <HeroSVG />
+          <Text fontSize={20} fontWeight={400}>
+            Interesting sub-heading
+          </Text>
+        </Stack>
       </Card>
       {/* TODO: temp to surpress type errors, update types once settled */}
       <LevelsBar
