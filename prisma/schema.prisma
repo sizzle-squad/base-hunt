@@ -111,7 +111,7 @@ model boost_configuration {
   is_enabled         Boolean         @default(true)
   points             BigInt          @default(0)
   nft_amount         BigInt?
-  airdrop_cmd        String?         @db.VarChar
+  available_time     DateTime?       @db.Timestamp(6)
   claimed_boost      claimed_boost[]
 }
 
@@ -135,7 +135,7 @@ enum badge_type {
 }
 
 enum boost_type {
-  IRL
+  TRANSFER_NFT
   NFT
   NFT_PER_MINT
   TOKEN
