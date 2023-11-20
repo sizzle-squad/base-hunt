@@ -12,7 +12,7 @@ const commonStyles = {
   fontStyle: 'normal',
   fontWeight: 400,
   lineHeight: 'normal',
-};
+} as const;
 
 const Text: FC<CustomTypographyProps> = ({
   children,
