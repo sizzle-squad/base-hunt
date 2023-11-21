@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 
-export type DrawerType = 'walletOperations' | 'badgeActions';
+export type DrawerType = 'walletOperations' | 'badgeActions' | 'levelsAction';
 
 interface DrawerStates {
   walletOperations: Record<string, boolean>;
