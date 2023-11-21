@@ -13,6 +13,7 @@ type TreasureBoxType = {
     totalHitpoints: bigint;
     isOpen: boolean;
     location?: string;
+    currentHitpoints: bigint;
   };
 };
 
