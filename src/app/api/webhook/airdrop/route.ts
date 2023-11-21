@@ -28,38 +28,36 @@ curl -X POST 'http://localhost:3000/api/level/airdrop' -d '{
 export async function POST(req: Request) {
   console.log('[webhook airdrop]');
   const body = await req.json();
-  if (
-    (body.type as string) === 'UPDATE' &&
-    (body.table as string) === 'score'
-  ) {
-    const currentScore = BigInt(body.record.current_score);
-    const prevScore = BigInt(body.old_record.current_score);
-    const level = await prisma.level_configuration.findFirst({
-      where: {
-        game_id: BigInt(body.record.game_id),
-        threshold_points: {
-          lte: currentScore,
-          gt: prevScore,
-        },
+
+  const currentScore = BigInt(body.record.current_score);
+  let prevScore = BigInt(0);
+  //if this is an update, then check prev score to new score
+  if (body.old_record) {
+    prevScore = BigInt(body.old_record.current_score);
+  }
+  const level = await prisma.level_configuration.findFirst({
+    where: {
+      game_id: BigInt(body.record.game_id),
+      threshold_points: {
+        lte: currentScore,
+        gt: prevScore,
       },
-    });
-    if (level) {
-      await AirdropNft(body.record.user_address, level.airdrop_command);
-    } else {
-      console.log(
-        '[webhook airdrop] no level found',
-        'gameId:',
-        body.record.game_id,
-        'userAddress:',
-        body.record.user_address,
-        'currentScore:',
-        currentScore,
-        'prevScore:',
-        prevScore
-      );
-    }
+    },
+  });
+  if (level) {
+    await AirdropNft(body.record.user_address, level.airdrop_command);
   } else {
-    console.warn('[webhook airdrop] unsupported type:', body.type, body.table);
+    console.log(
+      '[webhook airdrop] no level found',
+      'gameId:',
+      body.record.game_id,
+      'userAddress:',
+      body.record.user_address,
+      'currentScore:',
+      currentScore,
+      'prevScore:',
+      prevScore
+    );
   }
 
   return NextResponse.json({});
