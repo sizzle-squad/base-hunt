@@ -4,6 +4,7 @@ import CustomAccordion from '@/components/Badges/Accordion';
 import AccordionPill from '@/components/Badges/AccordionPill';
 import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
+import { TreasureChest } from '@/components/Cards/TreasureChest';
 import Circle from '@/components/Circle';
 import Text from '@/components/Text';
 import BadgeContainer from '@/components/assets/BadgeContainer';
@@ -292,27 +293,30 @@ export default function Badges() {
 
   return (
     <>
-      <Box paddingX="1.25rem" marginBottom={7}>
+      <Stack paddingX="1.25rem" gap="12px">
         <Hero />
-        <Box>{BadgesWrapper}</Box>
-        {(['bottom'] as const).map((anchor) => (
-          <Fragment key={anchor}>
-            <Drawer
-              anchor={anchor}
-              open={drawerStates.walletOperations[anchor]}
-              onClose={() => handleToggleDrawer(anchor)}
-              PaperProps={{
-                style: {
-                  width: '390px',
-                  left: 'calc(50% - 195px)', // 50% - half of width
-                },
-              }}
-            >
-              {list(anchor)}
-            </Drawer>
-          </Fragment>
-        ))}
-      </Box>
+        <TreasureChest />
+        {BadgesWrapper}
+        <Box>
+          {(['bottom'] as const).map((anchor) => (
+            <Fragment key={anchor}>
+              <Drawer
+                anchor={anchor}
+                open={drawerStates.walletOperations[anchor]}
+                onClose={() => handleToggleDrawer(anchor)}
+                PaperProps={{
+                  style: {
+                    width: '390px',
+                    left: 'calc(50% - 195px)', // 50% - half of width
+                  },
+                }}
+              >
+                {list(anchor)}
+              </Drawer>
+            </Fragment>
+          ))}
+        </Box>
+      </Stack>
       <Footer />
     </>
   );

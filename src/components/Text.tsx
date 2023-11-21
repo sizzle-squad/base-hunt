@@ -6,24 +6,25 @@ interface CustomTypographyProps extends TypographyProps {
   fontSize?: string | number;
 }
 
+const commonStyles = {
+  color: '#000',
+  fontFeatureSettings: "'clig' off, 'liga' off",
+  fontStyle: 'normal',
+  fontWeight: 400,
+  lineHeight: 'normal',
+} as const;
+
 const Text: FC<CustomTypographyProps> = ({
   children,
   variant,
   fontSize,
+  color,
   ...props
 }) => {
-  const commonStyles = {
-    color: '#000',
-    fontFeatureSettings: "'clig' off, 'liga' off",
-    fontStyle: 'normal',
-    fontWeight: 400,
-    lineHeight: 'normal',
-  };
-
   return (
     <Typography
       variant={variant}
-      sx={{ ...commonStyles, fontSize: fontSize }}
+      sx={{ ...commonStyles, fontSize: fontSize, color }}
       {...props}
     >
       {children}
