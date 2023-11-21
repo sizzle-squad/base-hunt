@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(w.value,3)),16,'0'))::bit(64)::bigint and LOWER(w.from_address) = LOWER(b.minter)
       and LOWER(w.to_address) = ${body.record.to_address.toLowerCase()} and b.game_id = ${
         badge.game_id
-      } and b.type NOT ILIKE 'level'`;
+      } and b.type != 'level'`;
 
     const unclaimedTransferBoosts = (await prisma.$queryRaw`SELECT b.id
       FROM boost_configuration AS b
