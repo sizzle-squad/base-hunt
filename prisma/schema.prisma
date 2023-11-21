@@ -52,6 +52,8 @@ model score {
   user_address  String
   current_score BigInt   @default(0)
   updated_at    DateTime @default(now()) @db.Timestamp(6)
+
+  @@unique([user_address, game_id], map: "score_unique")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
