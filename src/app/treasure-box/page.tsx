@@ -26,6 +26,7 @@ export default function TreasureBox() {
   const isClient = useClientCheck();
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
+
   const { attackBox } = useMutateTreasureBox();
 
   const { data: treasureBox, isLoading } = useTreasureBox({ gameId: GAME_ID });
@@ -35,16 +36,25 @@ export default function TreasureBox() {
       gameId: GAME_ID,
       user: {
         address: address!,
-        cbId: userPublicProfile?.subdomainProfile.name,
-        ensName: userPublicProfile?.ensDomainProfile.name,
+        cbId: userPublicProfile?.subdomainProfile?.name,
+        ensName: userPublicProfile?.ensDomainProfile?.name,
       },
     });
   }, [
     address,
     attackBox,
-    userPublicProfile?.ensDomainProfile.name,
-    userPublicProfile?.subdomainProfile.name,
+    userPublicProfile?.ensDomainProfile?.name,
+    userPublicProfile?.subdomainProfile?.name,
   ]);
+
+  const progress = useMemo(() => {
+    if (!treasureBox?.totalHitpoints || !treasureBox?.currentHitpoints) {
+      return 0;
+    }
+
+    return `${Number(treasureBox?.currentHitpoints)} /
+      ${Number(treasureBox?.totalHitpoints)}`;
+  }, [treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
 
   const content = useMemo(() => {
     return (
@@ -61,7 +71,7 @@ export default function TreasureBox() {
             <CircularProgress />
           </Box>
         ) : (
-          <Typography variant="body1">{`Remaining HP: ${treasureBox?.totalHitpoints}`}</Typography>
+          <Typography variant="body1">{`Remaining HP: ${progress}`}</Typography>
         )}
 
         <Button
@@ -73,12 +83,7 @@ export default function TreasureBox() {
         </Button>
       </Stack>
     );
-  }, [
-    handleCTAPress,
-    isLoading,
-    treasureBox?.isOpen,
-    treasureBox?.totalHitpoints,
-  ]);
+  }, [handleCTAPress, isLoading, progress, treasureBox?.isOpen]);
 
   if (!isClient || !treasureBox) return null;
 
