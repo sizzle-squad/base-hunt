@@ -14,9 +14,9 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
-interface Props {
+type Props = {
   params: { id: string };
-}
+};
 
 export default function BadgeDetails({ params }: Props) {
   const { id } = params;
