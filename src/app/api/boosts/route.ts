@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
+import { hoursToMilliseconds } from 'date-fns';
 
 const prisma = new PrismaClient();
 
@@ -42,8 +43,6 @@ export async function GET(request: NextRequest) {
     const claimedAddresses = boost.claimed_boost.filter(b => b.contract_address).map(b => b.contract_address);
     switch (boost.boost_type) {
         case 'NFT':
-            isClaimed = boost.contract_addresses.every(a => claimedAddresses.includes(a));
-            break;
         case 'NFT_PER_MINT':
             isClaimed = boost.contract_addresses.every(a => claimedAddresses.includes(a));
             break;
@@ -53,7 +52,7 @@ export async function GET(request: NextRequest) {
         case 'RECURRING':
             const activeClaims = boost.claimed_boost.filter(c => {
                 const refreshHours = boost.refresh_time ? boost.refresh_time.getHours() : 24;
-                const expirationTime = new Date(c.updated_at.getTime() + refreshHours * 60 * 60 * 1000);
+                const expirationTime = new Date(c.updated_at.getTime() + hoursToMilliseconds(refreshHours));
                 return new Date() < expirationTime;
             });
             isClaimed = activeClaims.length > 0;

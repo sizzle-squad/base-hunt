@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
-import { Network, Alchemy } from "alchemy-sdk";
+import { Network, Alchemy, TokenBalance } from "alchemy-sdk";
+import { hoursToMilliseconds } from 'date-fns';
 
 const settings = {
     apiKey: process.env.ALCHEMY_ID,
@@ -16,10 +17,8 @@ async function ownsNFT(userAddress: string, contract: string) {
 }
 
 async function hasToken(userAddress: string, contract: string) {
-    const contracts = [contract];
-
-    const tokenBalanceRes = await alchemy.core.getTokenBalances(userAddress, contracts);
-    const filterByBalance = tokenBalanceRes.tokenBalances.filter((balance: any) => Number(balance.tokenBalance) > 0);
+    const tokenBalanceRes = await alchemy.core.getTokenBalances(userAddress, [contract]);
+    const filterByBalance = tokenBalanceRes.tokenBalances.filter((balance: TokenBalance) => Number(balance.tokenBalance) > 0);
     return filterByBalance.length > 0;
 }
 
@@ -80,8 +79,6 @@ export async function GET(request: NextRequest) {
   let verified = false;
   switch (boost.boost_type) {
     case 'NFT':
-        verified = await ownsNFT(userAddress, contractAddress);
-        break;
     case 'NFT_PER_MINT':
         verified = await ownsNFT(userAddress, contractAddress);
         break;
@@ -91,26 +88,21 @@ export async function GET(request: NextRequest) {
     case 'RECURRING':
         const activeClaims = boost.claimed_boost.filter(c => {
             const refreshHours = boost.refresh_time ? boost.refresh_time.getHours() : 24;
-            const expirationTime = new Date(c.updated_at.getTime() + refreshHours * 60 * 60 * 1000);
+            const expirationTime = new Date(c.updated_at.getTime() + hoursToMilliseconds(refreshHours));
             return new Date() < expirationTime;
         });
         verified = activeClaims.length == 0;
         break;
   }
 
-  if (verified) {
-    const claimedBoost = await prisma.claimed_boost.create({
-        data: {
-          user_address: userAddress,
-          boost_id: boost.id,
-          game_id: gameId,
-          contract_address: contractAddress ? contractAddress : null
-        }
-      });
-      return NextResponse.json(claimedBoost);
-  } else {
-    return new Response(`Unable to claim boost for boostId: ${boostId}, gameId: ${gameId}`, {
-        status: 400,
-      });
-  }
+  if (!verified) return new Response(`Unable to claim boost for boostId: ${boostId}, gameId: ${gameId}`, { status: 400 });
+  const claimedBoost = await prisma.claimed_boost.create({
+    data: {
+        user_address: userAddress,
+        boost_id: boost.id,
+        game_id: gameId,
+        contract_address: contractAddress ? contractAddress : null
+    }
+  });
+  return NextResponse.json(claimedBoost);
 }
