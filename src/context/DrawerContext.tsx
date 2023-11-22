@@ -14,6 +14,7 @@ interface DrawerStates {
   walletOperations: Record<string, boolean>;
   badgeActions: Record<string, boolean>;
   levelsAction: Record<string, boolean>;
+  boostsAction: Record<string, boolean>;
 }
 
 interface DrawerContextType {
@@ -34,6 +35,7 @@ export const DrawerProvider: React.FunctionComponent<DrawerProviderProps> = ({
     walletOperations: {},
     badgeActions: {},
     levelsAction: {},
+    boostsAction: {},
   });
 
   const toggleDrawer = useCallback(
