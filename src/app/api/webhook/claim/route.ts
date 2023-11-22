@@ -95,6 +95,7 @@ end;
 $$
 
 create or replace function getTransferNftBoosts(
+    _game_id bigint,
     _num_badges bigint,
     _user_address text
 ) 
@@ -108,6 +109,7 @@ begin
       FROM boost_configuration AS b
       LEFT JOIN claimed_boost AS c ON b.id = c.boost_id AND c.user_address ILIKE _user_address
       WHERE b.boost_type = 'TRANSFER_NFT' 
+      and b.game_id = _game_id
       AND c.boost_id IS NULL
       AND b.nft_amount <= _num_badges) as temp;
 end; 
