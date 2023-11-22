@@ -129,6 +129,7 @@ model claimed_boost {
   boost_id            BigInt
   game_id             BigInt
   contract_address    String?             @db.VarChar
+  transaction_hash    String?             @db.VarChar
   boost_configuration boost_configuration @relation(fields: [boost_id], references: [id], onDelete: Cascade)
 
   @@unique([user_address, boost_id, game_id], map: "claimed_boost_unique")
