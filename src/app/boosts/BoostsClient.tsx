@@ -10,94 +10,15 @@ import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
 import { PointsPill } from '@/components/Pill';
 
-type ListCardPropsWithExplanation = ListCardProps & {
+type ListCardPropsForBoosts = ListCardProps & {
   explanation?: string;
+  points: number;
+  cta: string;
+  completed: {
+    times: number;
+    maxTimes: number;
+  };
 };
-
-const collection = [
-  {
-    title: 'Buy Merch',
-    subtitle: '4 points required',
-    startContent: (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M2.64359 8.28868L16 0.57735L29.3564 8.28868V23.7113L16 31.4227L2.64359 23.7113V8.28868Z"
-          fill="white"
-          stroke="#1D1818"
-        />
-        <path
-          d="M12.0795 13.7044V18.2247L15.954 20.4855L19.8297 18.2247V13.7044L15.954 11.4436L12.0795 13.7044Z"
-          stroke="#1D1818"
-        />
-      </svg>
-    ),
-    endContent: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-      >
-        <g opacity="0.4">
-          <circle cx="3" cy="8" r="1" fill="#1D1818" />
-          <circle cx="8" cy="8" r="1" fill="#1D1818" />
-          <circle cx="13" cy="8" r="1" fill="#1D1818" />
-        </g>
-      </svg>
-    ),
-  },
-  {
-    title: 'Buy coffee from Base Cafe',
-    subtitle: '8 points required',
-    explanation: 'Max 5 times',
-    startContent: (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M2.64359 8.28868L16 0.57735L29.3564 8.28868V23.7113L16 31.4227L2.64359 23.7113V8.28868Z"
-          fill="#1D1818"
-          stroke="white"
-        />
-        <path
-          d="M8.26489 11.5853V16.1056L12.1394 18.3664L16.0151 16.1056V11.5853L12.1394 9.32446L8.26489 11.5853Z"
-          stroke="white"
-        />
-        <path
-          d="M16 16.1417V20.662L19.8745 22.9228L23.7502 20.662V16.1417L19.8745 13.8809L16 16.1417Z"
-          stroke="white"
-        />
-        <path d="M12.1854 13.8809L19.8146 18.4372" stroke="white" />
-      </svg>
-    ),
-    endContent: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-      >
-        <g opacity="0.4">
-          <circle cx="3" cy="8" r="1" fill="#1D1818" />
-          <circle cx="8" cy="8" r="1" fill="#1D1818" />
-          <circle cx="13" cy="8" r="1" fill="#1D1818" />
-        </g>
-      </svg>
-    ),
-  },
-] as ListCardPropsWithExplanation[];
 
 const PageConsts = {
   navTitle: 'Point Boost' as const,
@@ -110,9 +31,80 @@ const PageConsts = {
   drawerAnchor: 'bottom' as const,
 } as const;
 
+const BoostsCollection = [
+  {
+    title: 'Buy Merch',
+    subtitle: '4 points required',
+    cta: 'Visit merch store',
+    points: 30,
+    completed: {
+      times: 3,
+      maxTimes: 5,
+    },
+    startContent: (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M9 11V6C9 4.34315 10.3431 3 12 3C13.6569 3 15 4.34315 15 6V10.9673M10.4 21H13.6C15.8402 21 16.9603 21 17.816 20.564C18.5686 20.1805 19.1805 19.5686 19.564 18.816C20 17.9603 20 16.8402 20 14.6V12.2C20 11.0799 20 10.5198 19.782 10.092C19.5903 9.71569 19.2843 9.40973 18.908 9.21799C18.4802 9 17.9201 9 16.8 9H7.2C6.0799 9 5.51984 9 5.09202 9.21799C4.71569 9.40973 4.40973 9.71569 4.21799 10.092C4 10.5198 4 11.0799 4 12.2V14.6C4 16.8402 4 17.9603 4.43597 18.816C4.81947 19.5686 5.43139 20.1805 6.18404 20.564C7.03968 21 8.15979 21 10.4 21Z"
+          stroke="#131A29"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    ),
+    endContent: <Text>30 pts</Text>,
+  },
+  {
+    title: 'Buy coffee from Base Cafe',
+    subtitle: '8 points required',
+    cta: 'Visit Base Cafe',
+    points: 100,
+    explanation: 'Max 5 times',
+    completed: {
+      times: 3,
+      maxTimes: 5,
+    },
+    startContent: (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M6 6V3H12L18 5V6H6Z" stroke="black" stroke-width="1.5" />
+        <rect
+          x="5"
+          y="6"
+          width="14"
+          height="3"
+          rx="1.5"
+          stroke="black"
+          stroke-width="1.5"
+        />
+        <path
+          d="M7.88 21L6.5 9H18L16.16 21H7.88Z"
+          stroke="black"
+          stroke-width="1.5"
+        />
+        <path d="M7 11.5H17.5" stroke="black" stroke-width="1.5" />
+        <path d="M8 17.5H16" stroke="black" stroke-width="1.5" />
+      </svg>
+    ),
+    endContent: <Text>100 pts</Text>,
+  },
+] as ListCardPropsForBoosts[];
+
 export default function BoostsPageClient() {
-  const [activeItem, setActiveItem] =
-    useState<ListCardPropsWithExplanation | null>(null);
+  const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
+    null
+  );
   const { drawerStates, toggleDrawer } = useDrawer();
 
   const isOpen = useMemo(
@@ -121,7 +113,7 @@ export default function BoostsPageClient() {
   );
 
   const handleToggleDrawer = useCallback(
-    (item: ListCardPropsWithExplanation) => {
+    (item: ListCardPropsForBoosts) => {
       setActiveItem(item);
       toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
     },
@@ -133,8 +125,8 @@ export default function BoostsPageClient() {
       item,
       onClick,
     }: {
-      item: ListCardPropsWithExplanation;
-      onClick: (item: ListCardPropsWithExplanation) => void;
+      item: ListCardPropsForBoosts;
+      onClick: (item: ListCardPropsForBoosts) => void;
     }) => <Box onClick={() => onClick(item)}>{item.endContent}</Box>
   );
 
@@ -145,19 +137,15 @@ export default function BoostsPageClient() {
       item,
     }: {
       title: string;
-      onClick: (item: ListCardPropsWithExplanation) => void;
-      item: ListCardPropsWithExplanation;
+      onClick: (item: ListCardPropsForBoosts) => void;
+      item: ListCardPropsForBoosts;
     }) => <ToolBar title={title} onDismiss={() => onClick(item)} />
   );
 
   ToggleDrawerButton.displayName = 'ToggleDrawerButton';
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
-  const LevelDrawerContent = ({
-    item,
-  }: {
-    item: ListCardPropsWithExplanation;
-  }) => (
+  const LevelDrawerContent = ({ item }: { item: ListCardPropsForBoosts }) => (
     <Stack gap="24px">
       <ToolbarWithClose
         item={item}
@@ -177,10 +165,7 @@ export default function BoostsPageClient() {
             </>
           )}
         </Stack>
-        <PointsPill
-          points={PageConsts.drawerSubtitlePoints}
-          unit={PageConsts.drawerSubtitleUnit}
-        />
+        <PointsPill points={item.points} unit={PageConsts.drawerSubtitleUnit} />
       </Stack>
 
       <Button
@@ -194,7 +179,7 @@ export default function BoostsPageClient() {
           color: 'white',
         }}
       >
-        {PageConsts.drawerButtonText}
+        {item.cta}
       </Button>
     </Stack>
   );
@@ -204,7 +189,7 @@ export default function BoostsPageClient() {
       <DetailsPageNavbar title={PageConsts.navTitle} />
       <NoSsr>
         <Stack gap={2}>
-          {collection.map((item, index) => (
+          {BoostsCollection.map((item, index) => (
             <ListCard
               key={index}
               title={item.title}
