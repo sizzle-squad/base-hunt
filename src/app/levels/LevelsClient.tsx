@@ -144,7 +144,7 @@ export default function LevelsPageClient() {
     <Stack spacing={2}>
       <ToolBar title="Rewards" />
 
-      <Text variant="h4">{item.title}</Text>
+      {item.title && <Text variant="h4">{item.title}</Text>}
 
       <Text>{item.description}</Text>
 
