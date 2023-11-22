@@ -1,11 +1,9 @@
 'use client';
-import { DrawerType, useDrawer } from '@/context/DrawerContext';
+import { DrawerType } from '@/context/DrawerContext';
 import { Global } from '@emotion/react';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { format } from 'date-fns';
-import { memo, useCallback } from 'react';
-import ToolBar from '../drawer/Toolbar';
+import { memo } from 'react';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';
@@ -79,11 +77,9 @@ function SwipeUpDrawer({
           '.MuiDrawer-root > .MuiPaper-root': {
             overflow: 'visible',
             paddingBottom: '24px',
-            backgroundColor: 'var(--sheet-white, rgba(255, 255, 255))',
+            backgroundColor: 'rgba(255, 255, 255, 0.90)',
           },
-          '.MuiDrawer-root > .MuiBackdrop-root': {
-            backgroundColor: 'transparent',
-          },
+          '.MuiDrawer-root > .MuiBackdrop-root': {},
         }}
       />
       <SwipeableDrawer
@@ -105,7 +101,6 @@ function SwipeUpDrawer({
             flexDirection: 'column',
             gap: '16px',
             visibility: 'visible',
-            background: 'rgba(255, 255, 255, 0.90)',
             width: '100%',
           }}
         >
