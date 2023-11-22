@@ -101,20 +101,24 @@ model treasure_box_state {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model boost_configuration {
-  id                 BigInt          @id @default(autoincrement())
-  name               String          @db.VarChar
-  contract_addresses String[]        @db.VarChar
-  refresh_time       DateTime?       @db.Time(6)
-  image_url          String?         @db.VarChar
-  game_id            BigInt          @default(0)
-  cta_url            String?         @db.VarChar
-  cta_text           String?         @db.VarChar
-  boost_type         boost_type      @default(NFT)
-  is_enabled         Boolean         @default(true)
-  points             BigInt          @default(0)
-  nft_amount         BigInt?
-  available_time     DateTime?       @db.Timestamp(6)
-  claimed_boost      claimed_boost[]
+  id                          BigInt          @id @default(autoincrement())
+  name                        String          @db.VarChar
+  contract_addresses          String[]        @db.VarChar
+  refresh_time                DateTime?       @db.Time(6)
+  image_url                   String?         @db.VarChar
+  game_id                     BigInt          @default(0)
+  cta_url                     String?         @db.VarChar
+  cta_text                    String?         @db.VarChar
+  boost_type                  boost_type      @default(NFT)
+  is_enabled                  Boolean         @default(true)
+  points                      BigInt          @default(0)
+  nft_amount                  BigInt?
+  available_time              DateTime?       @db.Timestamp(6)
+  transaction_to              String?         @db.VarChar
+  transaction_from            String?         @db.VarChar
+  transaction_value_threshold BigInt?
+  network                     String          @default("base-mainnet") @db.VarChar
+  claimed_boost               claimed_boost[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -125,6 +129,7 @@ model claimed_boost {
   boost_id            BigInt
   game_id             BigInt
   contract_address    String?             @db.VarChar
+  transaction_hash    String?             @db.VarChar
   boost_configuration boost_configuration @relation(fields: [boost_id], references: [id], onDelete: Cascade)
 
   @@unique([user_address, boost_id, game_id], map: "claimed_boost_unique")
@@ -142,4 +147,5 @@ enum boost_type {
   NFT_PER_MINT
   TOKEN
   RECURRING
+  TRANSACTION
 }
