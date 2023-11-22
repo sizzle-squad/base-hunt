@@ -102,39 +102,59 @@ const collection = [
   },
 ] as ListCardPropsWithDescription[];
 
+const PageConsts = {
+  navTitle: 'Levels' as const,
+  drawerTitle: 'Rewards' as const,
+  drawerSubtitle: 'Level up boost' as const,
+  drawerSubtitlePoints: 100 as const,
+  drawerSubtitleUnit: 'pts' as const,
+  drawerButtonText: 'Visit merch store' as const,
+  drawerType: 'levelsAction' as DrawerType,
+  drawerAnchor: 'bottom' as const,
+} as const;
+
 export default function LevelsPageClient() {
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
   const { drawerStates, toggleDrawer } = useDrawer();
-  const drawerType = 'levelsAction' as DrawerType;
-  const anchor = 'bottom' as const;
 
   const isOpen = useMemo(
-    () => Boolean(drawerStates.levelsAction[anchor]),
-    [drawerStates.levelsAction, anchor]
+    () => Boolean(drawerStates.levelsAction[PageConsts.drawerAnchor]),
+    [drawerStates.levelsAction, PageConsts.drawerAnchor]
   );
 
   const handleToggleDrawer = useCallback(
     (item: ListCardPropsWithDescription) => {
       setActiveItem(item);
-      toggleDrawer(drawerType, anchor, !isOpen);
+      toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
     },
-    [isOpen, anchor, drawerType, toggleDrawer]
+    [isOpen, PageConsts.drawerAnchor, PageConsts.drawerType, toggleDrawer]
   );
 
-  const ToggleDrawerButton = ({
-    item,
-    onClick,
-  }: {
-    item: ListCardPropsWithDescription;
-    onClick: (item: ListCardPropsWithDescription) => void;
-  }) => <Box onClick={() => onClick(item)}>{item.endContent}</Box>;
+  const ToggleDrawerButton = memo(
+    ({
+      item,
+      onClick,
+    }: {
+      item: ListCardPropsWithDescription;
+      onClick: (item: ListCardPropsWithDescription) => void;
+    }) => <Box onClick={() => onClick(item)}>{item.endContent}</Box>
+  );
+
+  const ToolbarWithClose = memo(
+    ({
+      title,
+      onClick,
+      item,
+    }: {
+      title: string;
+      onClick: (item: ListCardPropsWithDescription) => void;
+      item: ListCardPropsWithDescription;
+    }) => <ToolBar title={title} onDismiss={() => onClick(item)} />
+  );
 
   ToggleDrawerButton.displayName = 'ToggleDrawerButton';
-
-  memo(ToggleDrawerButton, (prevProps, nextProps) => {
-    return prevProps.item === nextProps.item;
-  });
+  ToolbarWithClose.displayName = 'ToolbarWithClose';
 
   const LevelDrawerContent = ({
     item,
@@ -142,15 +162,25 @@ export default function LevelsPageClient() {
     item: ListCardPropsWithDescription;
   }) => (
     <Stack spacing={2}>
-      <ToolBar title="Rewards" />
-
-      {item.title && <Text variant="h4">{item.title}</Text>}
+      {item.title && (
+        <>
+          <ToolbarWithClose
+            item={item}
+            onClick={handleToggleDrawer}
+            title={PageConsts.drawerTitle}
+          />
+          <Text variant="h4">{item.title}</Text>
+        </>
+      )}
 
       <Text>{item.description}</Text>
 
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Text>Level up boost</Text>
-        <PointsPill points={100} unit="pts" />
+        <Text>{PageConsts.drawerSubtitle}</Text>
+        <PointsPill
+          points={PageConsts.drawerSubtitlePoints}
+          unit={PageConsts.drawerSubtitleUnit}
+        />
       </Stack>
 
       <Button
@@ -164,14 +194,14 @@ export default function LevelsPageClient() {
           color: 'white',
         }}
       >
-        Visit merch store
+        {PageConsts.drawerButtonText}
       </Button>
     </Stack>
   );
 
   return (
     <>
-      <DetailsPageNavbar title="Level Art" />
+      <DetailsPageNavbar title={PageConsts.navTitle} />
       <NoSsr>
         <Stack gap={2}>
           {collection.map((item, index) => (
@@ -187,8 +217,8 @@ export default function LevelsPageClient() {
           ))}
         </Stack>
         <SwipeUpDrawer
-          toolbarTitle="Rewards"
-          type="levelsAction"
+          toolbarTitle={PageConsts.drawerTitle}
+          type={PageConsts.drawerType}
           handleClose={handleToggleDrawer}
           open={isOpen}
         >
