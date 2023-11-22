@@ -8,7 +8,7 @@ const supabase = createClient(
 );
 
 /*
-curl -X POST 'http://localhost:3000/api/level/airdrop' -d '{
+curl -X POST 'http://localhost:3000/api/webhook/airdrop' -d '{
     "type": "UPDATE",
     "table": "score",
     "record": {
@@ -39,20 +39,20 @@ export async function POST(req: Request) {
   if (body.old_record) {
     prevScore = BigInt(body.old_record.current_score);
   }
-  const levelData = await supabase
+  const levelData = (await supabase
     .from('level_configuration')
     .select()
-    .eq('level_configuration.game_id', BigInt(body.record.game_id))
-    .lte('level_configuration.threshold_points', currentScore)
-    .gt('level_configuration.threshold_points', prevScore)
-    .single();
+    .eq('game_id', BigInt(body.record.game_id))
+    .lte('threshold_points', currentScore)
+    .gt('threshold_points', prevScore)) as any;
 
   if (levelData.error) {
     console.error(levelData.error);
     throw new Error(levelData.error.message);
   }
-  const level = levelData.data;
-  if (level) {
+
+  if (levelData.data && levelData.data.length > 0) {
+    const level = levelData.data[0];
     await AirdropNft(body.record.user_address, level.airdrop_command);
   } else {
     console.log(
