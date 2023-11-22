@@ -25,6 +25,10 @@ export async function POST(req: Request) {
     throw new Error(badgeData.error.message);
   }
   const badge = badgeData.data;
+  if (badge.type === 'level') {
+    console.log('[webhook claim] skipping level badge');
+    return NextResponse.json({});
+  }
   console.log('[webhook claim] badge:', badge);
 
   //get current badges from db
