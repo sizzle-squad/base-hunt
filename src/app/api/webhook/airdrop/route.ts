@@ -1,7 +1,11 @@
-import { PrismaClient } from '@prisma/client';
 import { AirdropNft } from '@/utils/walletapi';
 import { NextResponse } from 'next/server';
-const prisma = new PrismaClient();
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_ANON_KEY as string
+);
 
 /*
 curl -X POST 'http://localhost:3000/api/level/airdrop' -d '{
@@ -35,15 +39,19 @@ export async function POST(req: Request) {
   if (body.old_record) {
     prevScore = BigInt(body.old_record.current_score);
   }
-  const level = await prisma.level_configuration.findFirst({
-    where: {
-      game_id: BigInt(body.record.game_id),
-      threshold_points: {
-        lte: currentScore,
-        gt: prevScore,
-      },
-    },
-  });
+  const levelData = await supabase
+    .from('level_configuration')
+    .select()
+    .eq('level_configuration.game_id', BigInt(body.record.game_id))
+    .lte('level_configuration.threshold_points', currentScore)
+    .gt('level_configuration.threshold_points', prevScore)
+    .single();
+
+  if (levelData.error) {
+    console.error(levelData.error);
+    throw new Error(levelData.error.message);
+  }
+  const level = levelData.data;
   if (level) {
     await AirdropNft(body.record.user_address, level.airdrop_command);
   } else {
