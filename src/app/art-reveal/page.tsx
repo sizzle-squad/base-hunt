@@ -4,28 +4,40 @@ import { useClientCheck } from '@/hooks/useClientCheck';
 import dynamic from 'next/dynamic';
 import Layout from '@/components/layout';
 import { useCallback, useMemo } from 'react';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import { useMutateTreasureBox } from '@/hooks/useMutateTreasureBox';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useTreasureBox } from '@/hooks/useTreasureBox';
+import { ProgressCard } from '@/components/assets/ProgressCard';
+import { useScore } from '@/hooks/useScore';
+import Footer from '@/components/navigation/footer';
+import Image from 'next/image';
+
+const imageUrl = '@/assets/images/map.png';
 
 // hydration issue without dynamic import
 const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
   ssr: false,
 });
 
-export default function TreasureBox() {
+export default function ArtReveal() {
   const isClient = useClientCheck();
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
+  const { data } = useScore({
+    userAddress: address ?? '',
+    gameId: GAME_ID,
+  });
+
+  const score = useMemo(() => {
+    if (data && data.score?.currentScore) {
+      return data.score.currentScore;
+    }
+
+    return 0;
+  }, [data]);
 
   const { attackBox } = useMutateTreasureBox();
 
@@ -52,8 +64,9 @@ export default function TreasureBox() {
       return 0;
     }
 
-    return `${Number(treasureBox?.currentHitpoints)} /
-      ${Number(treasureBox?.totalHitpoints)}`;
+    return (
+      Number(treasureBox.currentHitpoints / treasureBox.totalHitpoints) * 100
+    );
   }, [treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
 
   const content = useMemo(() => {
@@ -63,27 +76,54 @@ export default function TreasureBox() {
         sx={{ width: '100%' }}
         alignItems="center"
         gap={2}
-        paddingTop={6}
+        paddingY={6}
       >
-        <Typography variant="h3">Treasure Box</Typography>
+        <Typography variant="h5">Art Reveal</Typography>
         {isLoading ? (
           <Box sx={{ display: 'flex' }}>
             <CircularProgress />
           </Box>
         ) : (
-          <Typography variant="body1">{`Remaining HP: ${progress}`}</Typography>
+          <>
+            <Box
+              sx={{
+                width: '311px',
+                height: '373px',
+                border: '8px solid white',
+                padding: '10px',
+                position: 'relative',
+              }}
+            >
+              <Image
+                src={'/images/map.png' as string}
+                alt="jumbotron"
+                sizes="100vw"
+                fill
+                style={{
+                  padding: '10px',
+                  filter: 'blur(8px)',
+                }}
+              />
+            </Box>
+            <ProgressCard
+              ctaText={`Tap to reveal (${score} pts)`}
+              onPress={handleCTAPress}
+              progress={progress}
+              currentPoints={treasureBox?.currentHitpoints}
+              totalPoints={treasureBox?.totalHitpoints}
+            />
+          </>
         )}
-
-        <Button
-          variant="contained"
-          onClick={handleCTAPress}
-          disabled={treasureBox?.isOpen}
-        >
-          Attack Box!
-        </Button>
       </Stack>
     );
-  }, [handleCTAPress, isLoading, progress, treasureBox?.isOpen]);
+  }, [
+    handleCTAPress,
+    isLoading,
+    progress,
+    score,
+    treasureBox?.currentHitpoints,
+    treasureBox?.totalHitpoints,
+  ]);
 
   if (!isClient || !treasureBox) return null;
 
@@ -91,6 +131,7 @@ export default function TreasureBox() {
     <Layout>
       <Navbar />
       {content}
+      <Footer />
     </Layout>
   );
 }
