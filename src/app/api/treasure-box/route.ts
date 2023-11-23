@@ -115,7 +115,6 @@ export async function POST(request: NextRequest) {
     _ens_name: user.ensName || '',
     _increment: score.current_score,
     _tap_count: BigInt(1),
-    _is_open: false,
   };
   console.log(params);
   const { error } = await supabase.rpc('upserttreasurebox', params);
@@ -137,23 +136,26 @@ create or replace function upsertTreasureBox(
     _cbid text,
     _ens_name text,    
     _increment bigint,
-    _tap_count int4,
-    _is_open boolean
+    _tap_count int4
 ) 
 returns table ( j json ) 
 language plpgsql
 as $$
 declare 
-
+ _is_open_ boolean:=false;
 begin
+SELECT (treasure_box_state.current_hitpoints+_increment) > treasure_box_configuration.total_hitpoints INTO _is_open_
+    FROM treasure_box_state, treasure_box_configuration
+    WHERE treasure_box_state.game_id = treasure_box_configuration.game_id;
+   _is_open_ = COALESCE(_is_open_, FALSE);
  INSERT INTO treasure_box_entries (game_id,user_address, cbid, ens_name,total_hitpoints,tap_count) VALUES (_game_id,_user_address,_cbid,_ens_name,_increment,_tap_count)
 ON CONFLICT (user_address,game_id) DO
 UPDATE SET total_hitpoints=treasure_box_entries.total_hitpoints + _increment,
 tap_count = treasure_box_entries.tap_count + _tap_count;
-INSERT INTO treasure_box_state (current_hitpoints,game_id,is_open) VALUES (_increment,_game_id,_is_open)
+INSERT INTO treasure_box_state (current_hitpoints,game_id,is_open) VALUES (_increment,_game_id,_is_open_)
 ON CONFLICT (game_id) DO
 UPDATE SET current_hitpoints=treasure_box_state.current_hitpoints + _increment,
-is_open = _is_open ;
+is_open = _is_open_ ;
 end; 
 $$
 
