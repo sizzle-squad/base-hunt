@@ -1,6 +1,6 @@
 import { DrawerProvider } from '@/context/DrawerContext';
 
-export default function TreasureBoxLayout({
+export default function ArtRevealLayout({
   children,
 }: {
   children: React.ReactNode;
