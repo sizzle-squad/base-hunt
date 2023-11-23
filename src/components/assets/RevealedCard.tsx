@@ -2,9 +2,10 @@ import { Stack } from '@mui/material';
 import { Card } from './Card';
 import Text from '../Text';
 import { Button } from './Button';
+import { RevealedArtListCard } from '@/app/art-reveal/ArtRevealClient';
 
 type Props = {
-  onClick?: () => void;
+  onClick?: (args?: any) => void;
 };
 
 export function RevealedCard({ onClick }: Props) {

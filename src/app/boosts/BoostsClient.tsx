@@ -1,4 +1,5 @@
 'use client';
+
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
@@ -109,7 +110,7 @@ export default function BoostsPageClient() {
 
   const isOpen = useMemo(
     () => Boolean(drawerStates.boostsAction[PageConsts.drawerAnchor]),
-    [drawerStates.boostsAction, PageConsts.drawerAnchor]
+    [drawerStates.boostsAction]
   );
 
   const handleToggleDrawer = useCallback(
@@ -117,7 +118,7 @@ export default function BoostsPageClient() {
       setActiveItem(item);
       toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
     },
-    [isOpen, PageConsts.drawerAnchor, PageConsts.drawerType, toggleDrawer]
+    [isOpen, toggleDrawer]
   );
 
   const ToggleDrawerButton = memo(
@@ -145,7 +146,7 @@ export default function BoostsPageClient() {
   ToggleDrawerButton.displayName = 'ToggleDrawerButton';
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
-  const LevelDrawerContent = ({ item }: { item: ListCardPropsForBoosts }) => (
+  const BoostDrawerContent = ({ item }: { item: ListCardPropsForBoosts }) => (
     <Stack gap="24px">
       <ToolbarWithClose
         item={item}
@@ -207,7 +208,7 @@ export default function BoostsPageClient() {
           handleClose={handleToggleDrawer}
           open={isOpen}
         >
-          {activeItem && <LevelDrawerContent item={activeItem} />}
+          {activeItem && <BoostDrawerContent item={activeItem} />}
         </SwipeUpDrawer>
       </NoSsr>
     </>
