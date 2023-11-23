@@ -1,9 +1,13 @@
-import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
 import { Badge, BadgeTypeEnum } from '../../../../hooks/types';
 
-const prisma = new PrismaClient();
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_ANON_KEY as string
+);
 
 type QueryData = {
   id: bigint;
@@ -23,20 +27,24 @@ export async function GET(req: NextRequest) {
   const userAddress = searchParams.get('userAddress') as string;
   const gameId = BigInt(searchParams.get('gameId') as string);
 
-  //queryRaw is safe: https://www.prisma.io/docs/concepts/components/prisma-client/raw-database-access#queryraw
-  const data: QueryData[] =
-    await prisma.$queryRaw`select b.id,b.name,b.image_url,b.contract_address,b.token_id,b.cta_url,b.cta_text,b.type,w.to_address,w.transaction_hash,w.created_at,w.event_type from badge_configuration as b LEFT join webhook_data as w
-  on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(w.value,3)),16,'0'))::bit(64)::bigint and LOWER(w.from_address) = LOWER(b.minter)
-  and w.to_address ILIKE ${userAddress} and b.game_id = ${gameId}`;
+  const { data, error } = await supabase.rpc('getbadgestate', {
+    _game_id: gameId,
+    _user_address: userAddress,
+  });
+  if (error) {
+    console.error(error);
+    throw new Error(error.message);
+  }
 
+  console.log(data);
   //Note: remove duplicate badges from the same contract:tokenId
   const addressSet: Set<string> = new Set();
   let results: Badge[] = [];
   for (const d of data as any[]) {
-    const key = d.contract_address + '::' + d.token_id;
+    const key = d.j.contract_address + '::' + d.j.token_id;
     if (!addressSet.has(key)) {
       addressSet.add(key);
-      results.push(mapToBadge(d));
+      results.push(mapToBadge(d.j));
     }
   }
 
@@ -60,3 +68,25 @@ function mapToBadge(b: QueryData): Badge {
     ctaUrl: b.cta_url,
   };
 }
+
+/*
+database function:
+
+create or replace function getBadgeState(
+    _game_id bigint,
+    _user_address text
+) 
+returns table ( j json ) 
+language plpgsql
+as $$
+declare 
+
+begin
+ RETURN QUERY select to_json(temp) from (select b.id,b.name,b.image_url,b.contract_address,b.token_id,b.cta_url,b.cta_text,b.type,w.to_address,w.transaction_hash,w.created_at,w.event_type from badge_configuration as b LEFT join webhook_data as w
+  on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(w.value,3)),16,'0'))::bit(64)::bigint and LOWER(w.from_address) = LOWER(b.minter)
+  and w.to_address ILIKE _user_address and b.game_id = _game_id) as temp;
+end; 
+$$
+
+
+*/
