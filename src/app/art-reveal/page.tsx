@@ -17,6 +17,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import ArtRevealClient from './ArtRevealClient';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
+import { UNIT } from '@/constants/unit';
 
 const imageUrl = '@/assets/images/map.png';
 
@@ -68,16 +69,6 @@ export default function ArtReveal() {
     router.push('/art-reveal');
   }, [router]);
 
-  const progress = useMemo(() => {
-    if (!treasureBox?.totalHitpoints || !treasureBox?.currentHitpoints) {
-      return 0;
-    }
-
-    return (
-      Number(treasureBox.currentHitpoints / treasureBox.totalHitpoints) * 100
-    );
-  }, [treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
-
   const content = useMemo(() => {
     return (
       <Stack
@@ -121,9 +112,8 @@ export default function ArtReveal() {
               <ArtRevealClient />
             ) : (
               <ProgressCard
-                ctaText={`Tap to reveal (${score} pts)`}
+                ctaText={`Tap to reveal (${score} ${UNIT})`}
                 onPress={handleCTAPress}
-                progress={progress}
                 currentPoints={treasureBox?.currentHitpoints}
                 totalPoints={treasureBox?.totalHitpoints}
               />
@@ -135,7 +125,6 @@ export default function ArtReveal() {
   }, [
     handleCTAPress,
     isLoading,
-    progress,
     score,
     treasureBox?.currentHitpoints,
     treasureBox?.isOpen,

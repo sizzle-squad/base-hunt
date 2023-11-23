@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   Stack,
   Box,
@@ -13,12 +12,29 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../assets/Button';
 
+import { useTreasureBox } from '@/hooks/useTreasureBox';
+import { useMemo } from 'react';
+import { GAME_ID } from '@/constants/gameId';
+
 export function TreasureChest() {
   const router = useRouter();
 
   const handleCTAPress = useCallback(() => {
     router.push('/art-reveal');
   }, [router]);
+
+  const { data: treasureBox, isLoading } = useTreasureBox({
+    gameId: GAME_ID,
+  });
+  const progress = useMemo(() => {
+    if (!treasureBox?.totalHitpoints || !treasureBox?.currentHitpoints) {
+      return 0;
+    }
+
+    return (
+      Number(treasureBox.currentHitpoints / treasureBox.totalHitpoints) * 100
+    );
+  }, [treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
 
   return (
     <Card
@@ -43,14 +59,14 @@ export function TreasureChest() {
           position="relative"
         >
           <Text variant="h5" fontSize="24px">
-            Treasure Chest
+            Art Reveal
           </Text>
           <CardMedia
             component="img"
-            image="https://cdn.builder.io/api/v1/image/assets/TEMP/0b51b0ed-d493-4d87-88b1-7e12bb79878e?"
+            image="https://cdn.builder.io/api/v1/image/assets/TEMP/dfb3e45a-8ea6-43a3-b768-5070d4c9fc04?"
             sx={{
               position: 'absolute',
-              top: '-24px',
+              top: '5px',
               right: 0,
               width: 72,
               objectFit: 'contain',
@@ -58,17 +74,9 @@ export function TreasureChest() {
             }}
           />
         </Stack>
-        <Stack direction="row" gap="2px" alignItems="center">
-          <Text variant="h5">500</Text>
-          <Box>/</Box>
-          <Text variant="body2" noWrap>
-            1000 hp
-          </Text>
-        </Stack>
-        {/* TODO: Hardcoded till we create/connect data-layer */}
-        <ArtRevealProgressBar progress={50} />
+        <ArtRevealProgressBar />
         <Button onClick={handleCTAPress}>
-          <Text color="#fff">Treasure Chest CTA</Text>
+          <Text color="#fff">Tap to reveal</Text>
         </Button>
       </Stack>
     </Card>
