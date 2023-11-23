@@ -8,29 +8,7 @@ import {
   LinearProgress,
 } from '@mui/material';
 import Text from '@/components/Text';
-
-const LevelsProgressBar = ({ progress }: { progress: number }) => (
-  <Box
-    sx={{
-      borderRadius: '6.25rem',
-      width: '100%',
-      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    }}
-  >
-    <LinearProgress
-      variant="determinate"
-      value={progress}
-      sx={{
-        borderRadius: '6.25rem',
-        height: '10px',
-        backgroundColor: '#D5D5D5', // To make the unused part of the progress bar transparent
-        '& .MuiLinearProgress-bar': {
-          backgroundColor: 'var(--Hive-Green, #e1ff67)', // Color for the progress indicator
-        },
-      }}
-    />
-  </Box>
-);
+import { ArtRevealProgressBar } from '../assets/ArtRevealProgressBar';
 
 export function TreasureChest() {
   return (
@@ -79,7 +57,7 @@ export function TreasureChest() {
           </Text>
         </Stack>
         {/* TODO: Hardcoded till we create/connect data-layer */}
-        <LevelsProgressBar progress={50} />
+        <ArtRevealProgressBar progress={50} />
         <Box
           sx={{
             px: '20px',

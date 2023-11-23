@@ -1,8 +1,6 @@
 import { useAccount } from 'wagmi';
 import { Box, Stack } from '@mui/material';
-import { Color } from '@/constants/color';
 import { memo, useCallback, useMemo } from 'react';
-import { getTruncatedAddress } from '@/utils/truncate';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useDrawer } from '@/context/DrawerContext';
 import { useScore } from '@/hooks/useScore';
