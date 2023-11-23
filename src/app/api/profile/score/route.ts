@@ -1,11 +1,14 @@
-import { PrismaClient } from '@prisma/client';
 import { type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { Level, ScoreState } from '../../../../hooks/types';
+import { createClient } from '@supabase/supabase-js';
 
-const prisma = new PrismaClient();
+const supabase = createClient(
+  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_ANON_KEY as string
+);
 
 /*
 curl -X POST 'http://localhost:3000/api/level/claim' -d ' {"type":"INSERT","table":"webhook_data","record":{"value":"0x0000000000000000000000000000000000000000000000000000000000000002","log_index":"0x0","block_hash":"0x7b247ffeae4605413ae1729d51f0c5c8ad4df8f92e18cdfeedbf2a44bb391f8f","created_at":"2023-11-08T09:01:57.114+00:00","event_type":"EVENT_TYPE_TRANSFER_ERC1155","network_id":"networks/base-goerli-testnet","to_address":"0xa14a25930babc1220df002070be86b030b1d4c68","from_address":"0x4c64c7dc4fc7ba5b89fad3aebc68892bfc1b67d5","block_timestamp":"seconds:1699434114","contract_address":"0x68814e0f414b8fbcf984d3af85edfa365ef7254c","transaction_hash":"0x67b0c7879ea1821a5ff8e68ce43b48be98fab6f27addc9db3c51cce534513629","is_to_address_cbw":true,"is_from_address_cbw":true},"schema":"public","old_record":null}'  -H 'Content-Type: application/json'
@@ -18,79 +21,93 @@ export async function GET(req: NextRequest) {
   const userAddress = searchParams.get('userAddress') as string;
   const gameId = BigInt(searchParams.get('gameId') as string);
 
-  const score = await prisma.score.findFirst({
-    where: {
-      user_address: {
-        equals: userAddress,
-        mode: 'insensitive',
-      },
-      game_id: gameId,
-    },
-  });
+  try {
+    let scoreData = (await supabase
+      .from('score')
+      .select()
+      .ilike('user_address', userAddress)
+      .eq('game_id', gameId)) as any;
 
-  let levels = await prisma.level_configuration.findMany({
-    where: {
-      game_id: gameId,
-    },
-  });
-
-  //inplace sort by threshold points
-  levels.sort((a: any, b: any) => {
-    if (a.threshold_points > b.threshold_points) {
-      return 1;
-    } else if (a.threshold_points < b.threshold_points) {
-      return -1;
-    } else {
-      return 0;
+    if (scoreData.error) {
+      console.error(scoreData.error);
+      throw new Error(scoreData.error.message);
     }
-  });
+    const score = scoreData.data[0];
 
-  let nextLevel = null;
-  let currentLevel = null;
+    const levelsData = (await supabase
+      .from('level_configuration')
+      .select()
+      .eq('game_id', gameId)) as any;
 
-  if (score) {
-    const nextLevelIdx = levels.findIndex(
-      (level: any) => level.threshold_points > score.current_score
-    );
+    console.log(levelsData);
 
-    if (nextLevelIdx != null) {
-      nextLevel = levels[nextLevelIdx];
-      if (nextLevelIdx > 0) {
-        currentLevel = levels[nextLevelIdx - 1];
+    const levelsError = levelsData.error;
+    let levels = levelsData.data as any[];
+    if (levelsError) {
+      console.error(levelsError);
+      throw new Error(levelsError.message);
+    }
+
+    if (!levels || levels.length === 0) {
+      return NextResponse.json({});
+    }
+    levels.push({});
+    //inplace sort by threshold points
+    levels.sort((a: any, b: any) => {
+      if (a.threshold_points > b.threshold_points) {
+        return 1;
+      } else if (a.threshold_points < b.threshold_points) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+
+    let nextLevel = null;
+    let currentLevel = null;
+    let currentScore = score ? score.current_score : BigInt(0);
+
+    if (score) {
+      for (let i = 0; i < levels.length; i++) {
+        console.log(levels[i]);
+        if (levels[i].threshold_points > currentScore) {
+          console.log('setting current score');
+          nextLevel = levels[i];
+          if (i > 0) {
+            currentLevel = levels[i - 1];
+          }
+          break;
+        }
       }
     }
-  } else {
-    nextLevel = levels[0];
+    if (currentLevel === null) {
+      currentLevel = {
+        id: '',
+        gameId: gameId,
+        name: '0 level',
+        thresholdPoints: 0,
+        level: '0 level',
+      };
+      nextLevel = levels[0];
+    }
+
+    if (nextLevel === null) {
+      nextLevel = {
+        id: '',
+        gameId: gameId,
+        name: 'max level',
+        thresholdPoints: 0,
+        level: 'max level',
+      };
+      currentLevel = levels[levels.length - 1];
+    }
+    const scoreState = mapToScore(currentLevel, nextLevel, score, gameId);
+
+    return NextResponse.json(scoreState);
+  } catch (e) {
+    console.error(e);
+    NextResponse.error();
   }
-
-  const scoreState = mapToScore(
-    currentLevel,
-    getNextLevel(currentLevel, nextLevel, levels),
-    score,
-    gameId
-  );
-
-  return NextResponse.json(scoreState);
-}
-
-function getNextLevel(currentLevel: any, nextLevel: any, levels: any[]) {
-  // if your haven't played the game yet, next display next level as 2
-  if (!currentLevel) {
-    return levels[1];
-  }
-  // If user is at max level, then display max level config
-  if (!nextLevel) {
-    return {
-      id: '',
-      gameId: currentLevel.gameId.toString(),
-      name: 'Max level',
-      thresholdPoints: currentLevel.thresholdPoints,
-      level: 'Max level',
-    };
-  }
-
-  // all other case, return next level
-  return nextLevel;
 }
 
 function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
