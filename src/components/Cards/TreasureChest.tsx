@@ -9,8 +9,17 @@ import {
 } from '@mui/material';
 import Text from '@/components/Text';
 import { ArtRevealProgressBar } from '../assets/ArtRevealProgressBar';
+import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '../assets/Button';
 
 export function TreasureChest() {
+  const router = useRouter();
+
+  const handleCTAPress = useCallback(() => {
+    router.push('/art-reveal');
+  }, [router]);
+
   return (
     <Card
       sx={{
@@ -58,18 +67,9 @@ export function TreasureChest() {
         </Stack>
         {/* TODO: Hardcoded till we create/connect data-layer */}
         <ArtRevealProgressBar progress={50} />
-        <Box
-          sx={{
-            px: '20px',
-            py: '16px',
-            borderRadius: '1rem',
-            bgcolor: 'text.primary',
-            color: 'white',
-            textAlign: 'center',
-          }}
-        >
+        <Button onClick={handleCTAPress}>
           <Text color="#fff">Treasure Chest CTA</Text>
-        </Box>
+        </Button>
       </Stack>
     </Card>
   );
