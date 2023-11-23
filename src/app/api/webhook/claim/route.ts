@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import '@/utils/helper';
 import { createClient } from '@supabase/supabase-js';
+import { Database } from '@/utils/database.types';
 
-const supabase = createClient(
+const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
 );
@@ -32,10 +33,10 @@ export async function POST(req: Request) {
   console.log('[webhook claim] badge:', badge);
 
   //get current badges from db
-  let rpcData = (await supabase.rpc('getbadges', {
+  let rpcData = await supabase.rpc('getbadges', {
     _game_id: badge.game_id,
     _user_address: body.record.to_address.toLowerCase(),
-  })) as any;
+  });
   if (rpcData.error) {
     console.error(rpcData.error);
     throw new Error(rpcData.error.message);
@@ -43,11 +44,11 @@ export async function POST(req: Request) {
   const badges = rpcData.data;
   console.log('[webhook claim] badges:', badges);
 
-  rpcData = (await supabase.rpc('gettransfernftboosts', {
+  rpcData = await supabase.rpc('gettransfernftboosts', {
     _game_id: badge.game_id,
     _num_badges: badges.length,
     _user_address: body.record.to_address.toLowerCase(),
-  })) as any;
+  });
 
   if (rpcData.error) {
     console.error(rpcData.error);
