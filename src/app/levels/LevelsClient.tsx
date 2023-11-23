@@ -120,7 +120,7 @@ export default function LevelsPageClient() {
 
   const isOpen = useMemo(
     () => Boolean(drawerStates.levelsAction[PageConsts.drawerAnchor]),
-    [drawerStates.levelsAction, PageConsts.drawerAnchor]
+    [drawerStates.levelsAction]
   );
 
   const handleToggleDrawer = useCallback(
@@ -128,7 +128,7 @@ export default function LevelsPageClient() {
       setActiveItem(item);
       toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
     },
-    [isOpen, PageConsts.drawerAnchor, PageConsts.drawerType, toggleDrawer]
+    [isOpen, toggleDrawer]
   );
 
   const ToggleDrawerButton = memo(

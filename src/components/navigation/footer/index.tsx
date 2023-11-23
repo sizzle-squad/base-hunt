@@ -24,7 +24,7 @@ export default function Footer() {
         bottom: 0,
         left: 0,
         right: 0,
-        maxWidth: 390,
+        maxWidth: 1290,
         margin: 'auto',
       }}
       elevation={3}
