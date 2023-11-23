@@ -1,9 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { getTapRef } from '@/utils/iyk';
-
-const prisma = new PrismaClient();
 
 type RankType = {
   rank: number;
