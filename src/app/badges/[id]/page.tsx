@@ -8,9 +8,7 @@ import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
 import { Stack } from '@mui/material';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -44,7 +42,6 @@ export default function BadgeDetails({ params }: Props) {
 
   return (
     <>
-      {isLoading && <div>Loading...</div>}
       {error && <div>Error...</div>}
       {currentBadge && (
         <Stack

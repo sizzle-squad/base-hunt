@@ -3,9 +3,9 @@ import Text from '@/components/Text';
 import { ArtRevealProgressBar } from './ArtRevealProgressBar';
 import { Button } from './Button';
 import { Card } from './Card';
+import { UNIT } from '@/constants/unit';
 
 type Props = {
-  progress: number;
   ctaText: string;
   currentPoints?: bigint;
   totalPoints?: bigint;
@@ -13,7 +13,6 @@ type Props = {
 };
 
 export function ProgressCard({
-  progress,
   ctaText,
   currentPoints,
   totalPoints,
@@ -23,14 +22,7 @@ export function ProgressCard({
 
   return (
     <Card>
-      <Stack direction="row" gap="2px" alignItems="center">
-        <Text variant="h5">{currentPoints.toString()}</Text>
-        <Box>/</Box>
-        <Text variant="body2" noWrap>
-          {`${totalPoints.toString()} hp`}
-        </Text>
-      </Stack>
-      <ArtRevealProgressBar progress={progress} />
+      <ArtRevealProgressBar />
       <Button onClick={onPress}>{ctaText}</Button>
     </Card>
   );

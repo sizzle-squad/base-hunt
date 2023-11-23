@@ -75,7 +75,6 @@ export default function Badges() {
     if (isClient) {
       return (
         <>
-          {isLoading && <div>Loading...</div>}
           {error && <div>Error...</div>}
           {badges && (
             <>
@@ -90,7 +89,7 @@ export default function Badges() {
                 {badges && (
                   <>
                     <CustomAccordion
-                      title={'IRL Badges'}
+                      title="Art Basel Exclusive"
                       toggleFunction={handleToggleAccordion}
                       expanded={irlAccordionExpanded}
                       panel={BadgeTypeEnum.IRL}
@@ -122,7 +121,7 @@ export default function Badges() {
                 {badges && (
                   <>
                     <CustomAccordion
-                      title={'Online Badges'}
+                      title="Global Collection"
                       toggleFunction={handleToggleAccordion}
                       expanded={virtualAccordionExpanded}
                       panel={BadgeTypeEnum.Online}
@@ -293,7 +292,7 @@ export default function Badges() {
 
   return (
     <>
-      <Stack paddingX="1.25rem" gap="12px">
+      <Stack paddingX="1.25rem" gap="12px" paddingBottom="6rem">
         <Hero />
         <TreasureChest />
         {BadgesWrapper}

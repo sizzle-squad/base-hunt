@@ -1,5 +1,5 @@
 import { useAccount } from 'wagmi';
-import { Box, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { memo, useCallback, useMemo } from 'react';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useDrawer } from '@/context/DrawerContext';
@@ -8,19 +8,23 @@ import { useUserName } from '@/hooks/useUsername';
 import Text from '@/components/Text';
 import Circle from '@/components/Circle';
 import { PointsPill } from '@/components/Pill';
+import { UNIT } from '@/constants/unit';
 
 const Navbar = () => {
-  const { address, isDisconnected } = useAccount();
+  const { address, isDisconnected, isConnecting } = useAccount();
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
-  const { data: userPublicProfile } = useCBProfile({ address });
+  const { data: userPublicProfile, isLoading: isProfileLoading } = useCBProfile(
+    { address }
+  );
   const userName = useUserName({ address, userPublicProfile });
   const { toggleDrawer } = useDrawer();
 
   // Todo: solidify types and figure out why this is returning undefined
-  const { data } = useScore({
+  const { data, isLoading: isScoreLoading } = useScore({
     userAddress: address ?? '',
     gameId,
   });
+
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {
       return data.score.currentScore;
@@ -33,39 +37,48 @@ const Navbar = () => {
     toggleDrawer('walletOperations', 'bottom', true);
   }, [toggleDrawer]);
 
-  if (isDisconnected) return null;
+  const isLoading = useMemo(() => {
+    return isProfileLoading || isScoreLoading || isConnecting;
+  }, [isConnecting, isProfileLoading, isScoreLoading]);
+
+  const content = useMemo(() => {
+    return (
+      <>
+        <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
+          <Stack
+            onClick={handleDrawerToggle}
+            direction="row"
+            alignItems="center"
+            spacing=".25rem"
+            useFlexGap
+            sx={{
+              borderRadius: '6.25rem',
+              padding: '0.25rem 0.5rem 0.25rem 0.5rem',
+              backgroundColor: 'white',
+            }}
+          >
+            {isDisconnected ? (
+              <Text>Not connected</Text>
+            ) : (
+              <>
+                <Circle color="yellow" size="1rem" />
+                {userName && userName}
+              </>
+            )}
+          </Stack>
+        </Stack>
+        <PointsPill
+          backgroundColor="var(--CB-Blue, #0052FF)"
+          points={score as number}
+          unit={UNIT}
+        />
+      </>
+    );
+  }, [handleDrawerToggle, isDisconnected, score, userName]);
 
   return (
     <Stack direction="row" spacing={2} alignItems={'center'} width="100%">
-      <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
-        <Stack
-          onClick={handleDrawerToggle}
-          direction="row"
-          alignItems="center"
-          spacing=".25rem"
-          useFlexGap
-          sx={{
-            borderRadius: '6.25rem',
-            padding: '0.25rem 0.5rem 0.25rem 0.5rem',
-            backgroundColor: 'white',
-          }}
-        >
-          {isDisconnected ? (
-            <Text>Not connected</Text>
-          ) : (
-            <>
-              <Circle color="yellow" size="1rem" />
-              {userName && userName}
-            </>
-          )}
-        </Stack>
-      </Stack>
-      {/* todo: solidify types */}
-      <PointsPill
-        backgroundColor="#e1ff67"
-        points={score as number}
-        unit="points"
-      />
+      {content}
     </Stack>
   );
 };

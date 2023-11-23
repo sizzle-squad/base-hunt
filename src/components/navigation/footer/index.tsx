@@ -1,10 +1,11 @@
 'use client';
+
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import MapIcon from '@mui/icons-material/Map';
-import NfcIcon from '@mui/icons-material/Nfc';
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArtIcon } from '@/components/assets/icons/ArtIcon';
+import { LocationIcon } from '@/components/assets/icons/LocationIcon';
+import { ArtRevealIcon } from '@/components/assets/icons/ArtRevealIcon';
 
 export default function Footer() {
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function Footer() {
         right: 0,
         maxWidth: 1290,
         margin: 'auto',
+        paddingY: '12px',
       }}
       elevation={3}
     >
@@ -37,19 +39,19 @@ export default function Footer() {
         }}
       >
         <BottomNavigationAction
-          label="Badges"
+          label="Art"
           onClick={handleActionPress('badges')}
-          icon={<VerifiedIcon />}
+          icon={<ArtIcon />}
         />
         <BottomNavigationAction
           label="Locations"
           onClick={handleActionPress('')}
-          icon={<MapIcon />}
+          icon={<LocationIcon />}
         />
         <BottomNavigationAction
-          label="Treasure Box"
-          onClick={handleActionPress('treasure-box')}
-          icon={<NfcIcon />}
+          label="Grand Reveal"
+          onClick={handleActionPress('art-reveal')}
+          icon={<ArtRevealIcon />}
         />
       </BottomNavigation>
     </Paper>
