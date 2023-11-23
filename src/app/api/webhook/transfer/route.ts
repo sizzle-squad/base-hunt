@@ -1,13 +1,18 @@
-import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-const prisma = new PrismaClient();
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_ANON_KEY as string
+);
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const webhook_data = await prisma.webhook_data.create({
-    data: {
-      ...body,
-    },
-  });
+  console.log('[webhook transfer] body:', body);
+  const webhookData = await supabase.from('webhook_data').insert(body).select();
+  if (webhookData.error) {
+    console.error(webhookData);
+    throw new Error(webhookData.error.message);
+  }
   return NextResponse.json({ status: 'ok' });
 }
