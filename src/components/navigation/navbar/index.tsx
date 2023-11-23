@@ -9,26 +9,7 @@ import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
 import Text from '@/components/Text';
 import Circle from '@/components/Circle';
-
-const PointsPill = ({ points }: { points: number }) => (
-  <Box
-    sx={{
-      color: '#151515', // Replaces var(--Black, #151515)
-      fontFeatureSettings: '"clig" off, "liga" off',
-      letterSpacing: '-0.5px',
-      whiteSpace: 'nowrap', // Adjusts for responsiveness
-      borderRadius: '6.25rem',
-      backgroundColor: '#e1ff67', // Replaces var(--Hive-Green, #e1ff67)
-      padding: '4px 8px',
-      fontFamily: 'Coinbase Mono, -apple-system, Roboto, Helvetica, sans-serif',
-      fontSize: '14px',
-      lineHeight: '17px',
-      fontWeight: 400,
-    }}
-  >
-    {points} points
-  </Box>
-);
+import { PointsPill } from '@/components/Pill';
 
 const Navbar = () => {
   const { address, isDisconnected } = useAccount();
@@ -82,7 +63,11 @@ const Navbar = () => {
         </Stack>
       </Stack>
       {/* todo: solidify types */}
-      <PointsPill points={score as number} />
+      <PointsPill
+        backgroundColor="#e1ff67"
+        points={score as number}
+        unit="points"
+      />
     </Stack>
   );
 };
