@@ -4,7 +4,7 @@ import { useClientCheck } from '@/hooks/useClientCheck';
 import dynamic from 'next/dynamic';
 import Layout from '@/components/layout';
 import { useCallback, useMemo } from 'react';
-import { Box, CircularProgress, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, Stack } from '@mui/material';
 import { useMutateTreasureBox } from '@/hooks/useMutateTreasureBox';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
@@ -14,6 +14,9 @@ import { ProgressCard } from '@/components/assets/ProgressCard';
 import { useScore } from '@/hooks/useScore';
 import Footer from '@/components/navigation/footer';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import ArtRevealClient from './ArtRevealClient';
+import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 
 const imageUrl = '@/assets/images/map.png';
 
@@ -24,6 +27,7 @@ const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
 
 export default function ArtReveal() {
   const isClient = useClientCheck();
+  const router = useRouter();
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
   const { data } = useScore({
@@ -59,6 +63,11 @@ export default function ArtReveal() {
     userPublicProfile?.subdomainProfile?.name,
   ]);
 
+  const handleLearnMorePress = useCallback(() => {
+    // TODO: link to NFT or artist
+    router.push('/art-reveal');
+  }, [router]);
+
   const progress = useMemo(() => {
     if (!treasureBox?.totalHitpoints || !treasureBox?.currentHitpoints) {
       return 0;
@@ -78,7 +87,6 @@ export default function ArtReveal() {
         gap={2}
         paddingY={6}
       >
-        <Typography variant="h5">Art Reveal</Typography>
         {isLoading ? (
           <Box sx={{ display: 'flex' }}>
             <CircularProgress />
@@ -89,9 +97,13 @@ export default function ArtReveal() {
               sx={{
                 width: '311px',
                 height: '373px',
-                border: '8px solid white',
-                padding: '10px',
+                border: '8px solid var(--White, #FFF)',
+                padding: '20px',
                 position: 'relative',
+                boxShadow:
+                  '0px 0.5px 0.5px 0px rgba(0, 0, 0, 0.04), 0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 2px 2px 0px rgba(0, 0, 0, 0.06), 0px 4px 4px 0px rgba(0, 0, 0, 0.07), 0px 8px 8px 0px rgba(0, 0, 0, 0.08), 0px 16px 16px 0px rgba(0, 0, 0, 0.10)',
+                marginBottom: '20px',
+                marginTop: '25px',
               }}
             >
               <Image
@@ -101,17 +113,21 @@ export default function ArtReveal() {
                 fill
                 style={{
                   padding: '10px',
-                  filter: 'blur(8px)',
+                  filter: !treasureBox?.isOpen ? 'blur(8px)' : 'none',
                 }}
               />
             </Box>
-            <ProgressCard
-              ctaText={`Tap to reveal (${score} pts)`}
-              onPress={handleCTAPress}
-              progress={progress}
-              currentPoints={treasureBox?.currentHitpoints}
-              totalPoints={treasureBox?.totalHitpoints}
-            />
+            {treasureBox?.isOpen ? (
+              <ArtRevealClient />
+            ) : (
+              <ProgressCard
+                ctaText={`Tap to reveal (${score} pts)`}
+                onPress={handleCTAPress}
+                progress={progress}
+                currentPoints={treasureBox?.currentHitpoints}
+                totalPoints={treasureBox?.totalHitpoints}
+              />
+            )}
           </>
         )}
       </Stack>
@@ -122,6 +138,7 @@ export default function ArtReveal() {
     progress,
     score,
     treasureBox?.currentHitpoints,
+    treasureBox?.isOpen,
     treasureBox?.totalHitpoints,
   ]);
 
@@ -129,8 +146,9 @@ export default function ArtReveal() {
 
   return (
     <Layout>
-      <Navbar />
+      <DetailsPageNavbar title="Art Reveal" />
       {content}
+
       <Footer />
     </Layout>
   );
