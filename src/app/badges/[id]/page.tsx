@@ -2,6 +2,7 @@
 
 import OwnershipPill from '@/components/Badges/OwnershipPill';
 import SwipeUpDrawer from '@/components/Badges/SwipeUpDrawer';
+import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { GAME_ID } from '@/constants/gameId';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
@@ -13,46 +14,9 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
-interface Props {
+type Props = {
   params: { id: string };
-}
-
-const TitleBar = ({ owned }: { owned: boolean }) => (
-  <Stack
-    alignItems="center"
-    marginTop="24px"
-    position={'relative'}
-    width={'100%'}
-  >
-    <Box
-      sx={{
-        position: 'absolute',
-        left: '20px',
-      }}
-    >
-      <Link href="/badges">
-        <Image
-          src={
-            owned ? '/images/icon-back-light.png' : '/images/icon-back-dark.png'
-          }
-          alt="Back Button"
-          height={24}
-          width={24}
-        />
-      </Link>
-    </Box>
-    <Typography
-      sx={{
-        fontFamily: 'CoinbaseDisplay',
-        fontSize: '1.25rem',
-        fontWeight: 400,
-        color: owned ? '#FFFFFF' : '#1D1818',
-      }}
-    >
-      View Badge
-    </Typography>
-  </Stack>
-);
+};
 
 export default function BadgeDetails({ params }: Props) {
   const { id } = params;
@@ -94,8 +58,9 @@ export default function BadgeDetails({ params }: Props) {
             alignItems: 'center',
           }}
         >
-          <TitleBar owned={isOwned} />
-
+          <Box marginTop="24px" width="100%">
+            <DetailsPageNavbar title="View Badge" />
+          </Box>
           <Box
             sx={{
               filter: isOwned ? 'grayscale(0)' : 'grayscale(1)',
