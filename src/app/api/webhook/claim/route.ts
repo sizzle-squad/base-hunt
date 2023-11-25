@@ -64,17 +64,15 @@ export async function POST(req: Request) {
   if (unclaimedTransferBoosts.length > 0) {
     console.log('[webhook claim] inserting unclaimedTransferBoosts');
     const { error } = await supabase.from('claimed_boost').upsert(
-      unclaimedTransferBoosts.map(
-        (b: any) => ({
-          boost_id: b.j.id,
-          user_address: body.record.to_address.toLowerCase(),
-          game_id: badge.game_id,
-        }),
-        {
-          onConflict: 'user_address,boost_id,game_id',
-          ignoreDuplicates: true,
-        }
-      )
+      unclaimedTransferBoosts.map((b: any) => ({
+        boost_id: b.j.id,
+        user_address: body.record.to_address.toLowerCase(),
+        game_id: badge.game_id,
+      })),
+      {
+        onConflict: 'user_address,boost_id,game_id',
+        ignoreDuplicates: true,
+      }
     );
     if (error) {
       console.error(error);
