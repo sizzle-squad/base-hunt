@@ -52,7 +52,6 @@ export async function GET(req: NextRequest) {
 }
 
 function mapToBadge(b: QueryData): Badge {
-  console.log('queryData:', b);
   return {
     id: b.id.toString(),
     name: b.name,
