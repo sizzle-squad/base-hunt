@@ -1,20 +1,9 @@
-import {
-  Stack,
-  Box,
-  Typography,
-  Card,
-  CardMedia,
-  LinearProgress,
-} from '@mui/material';
+import { Stack, Card, CardMedia } from '@mui/material';
 import Text from '@/components/Text';
 import { ArtRevealProgressBar } from '../assets/ArtRevealProgressBar';
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../assets/Button';
-
-import { useTreasureBox } from '@/hooks/useTreasureBox';
-import { useMemo } from 'react';
-import { GAME_ID } from '@/constants/gameId';
 
 export function TreasureChest() {
   const router = useRouter();
@@ -22,19 +11,6 @@ export function TreasureChest() {
   const handleCTAPress = useCallback(() => {
     router.push('/art-reveal');
   }, [router]);
-
-  const { data: treasureBox, isLoading } = useTreasureBox({
-    gameId: GAME_ID,
-  });
-  const progress = useMemo(() => {
-    if (!treasureBox?.totalHitpoints || !treasureBox?.currentHitpoints) {
-      return 0;
-    }
-
-    return (
-      Number(treasureBox.currentHitpoints / treasureBox.totalHitpoints) * 100
-    );
-  }, [treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
 
   return (
     <Card
