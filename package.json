@@ -21,6 +21,7 @@
     "@types/node": "20.2.5",
     "@types/react": "18.2.9",
     "@types/react-dom": "18.2.4",
+    "alchemy-sdk": "^3.0.0",
     "axios": "^1.6.0",
     "clsx": "^2.0.0",
     "connectkit": "^1.5.3",

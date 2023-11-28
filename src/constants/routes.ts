@@ -9,4 +9,8 @@ export const routes = {
     topRanks: '/api/treasure-box/top-ranks',
     default: '/api/treasure-box',
   },
+  boosts : {
+    claim: '/api/boosts/claim',
+    default: '/api/boosts'
+  }
 };

@@ -75,3 +75,17 @@ export type TreasureBoxState = {
   currentHitpoints: bigint;
   isOpen: boolean;
 };
+
+export type Boost = {
+  id: bigint;
+  name: string;
+  contractAddresses: string[];
+  imageUrl: string | null;
+  gameId: bigint;
+  ctaUrl: string | null;
+  ctaText: string | null;
+  boostType: string;
+  isEnabled: boolean;
+  points: bigint;
+  nftAmount: bigint | null;
+};
