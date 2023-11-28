@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
     throw new Error(error.message);
   }
   console.log(data);
-  return NextResponse.json(data.map((d) => d.j));
+  return NextResponse.json(data.map((d: any) => d.j));
 }
 
 /*
