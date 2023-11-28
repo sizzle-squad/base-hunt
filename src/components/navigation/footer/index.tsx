@@ -25,7 +25,7 @@ export default function Footer() {
         bottom: 0,
         left: 0,
         right: 0,
-        maxWidth: 1290,
+        maxWidth: 500,
         margin: 'auto',
         paddingY: '12px',
       }}
