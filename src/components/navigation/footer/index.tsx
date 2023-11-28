@@ -46,9 +46,7 @@ export default function Footer() {
           label="Locations"
           value="/locations"
           icon={
-            <LocationIcon
-              color={value === '/locations' ? '#E1FF67' : '#1D1818'}
-            />
+            <LocationIcon color={value === '/locations' ? '#E1FF67' : 'none'} />
           }
         />
         <BottomNavigationAction
@@ -56,7 +54,7 @@ export default function Footer() {
           value="/art-reveal"
           icon={
             <ArtRevealIcon
-              color={value === '/art-reveal' ? '#E1FF67' : '#1D1818'}
+              color={value === '/art-reveal' ? '#E1FF67' : 'none'}
             />
           }
         />
