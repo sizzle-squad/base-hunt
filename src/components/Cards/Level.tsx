@@ -1,6 +1,9 @@
-import { Level } from '@/hooks/types';
+import { type Level } from '@/hooks/types';
 import { Box, Skeleton, Typography } from '@mui/material';
 import { useMemo } from 'react';
+import Text from '@/components/Text';
+
+import SvgSwitcher from '../LevelsBadge';
 
 type Props = {
   currentLevel?: Level | null;
@@ -13,40 +16,43 @@ export function Level({ currentLevel, isLoading }: Props) {
       return <Skeleton variant="text" width={100} height={20} />;
     }
 
-    return (
-      <Typography
-        variant="body1"
-        sx={{
-          color: 'var(--Black, #1d1818)',
-          margin: 'auto 0',
-          fontFeatureSettings: "'clig' off, 'liga' off",
-          fontFamily:
-            "'Coinbase Display', 'Apple System', 'Roboto', 'Helvetica', sans-serif",
-          fontSize: 16,
-          lineHeight: '19px',
-          fontWeight: 400,
-        }}
-      >
-        Level {currentLevel.level}
-      </Typography>
-    );
+    return <Text whiteSpace="nowrap">Level {currentLevel.level}</Text>;
   }, [currentLevel, isLoading]);
 
   return (
     <Box
       sx={{
         display: 'flex',
-        alignItems: 'center',
-        borderRadius: 8,
+        alignItems: 'flex-start',
+        borderRadius: '8px',
         backgroundColor: 'var(--White, #fff)',
         padding: '12px 16px',
         justifyContent: 'space-between',
-        gap: 20,
         height: '44px',
         width: '100%',
+        flexDirection: 'column',
+        position: 'relative',
+        flex: 1,
+        overflow: 'hidden',
       }}
     >
       {content}
+      {currentLevel?.level && (
+        <Box
+          sx={{
+            position: 'absolute',
+            right: '-16.5px',
+            top: '-10px',
+          }}
+        >
+          <SvgSwitcher
+            alt={`Level ${currentLevel.level || 'Level badge'} Badge`}
+            level={currentLevel?.level || null}
+            width={64}
+            height={64}
+          />
+        </Box>
+      )}
     </Box>
   );
 }

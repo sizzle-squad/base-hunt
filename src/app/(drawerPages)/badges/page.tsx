@@ -308,10 +308,11 @@ export default function Badges() {
         <Hero />
         <TreasureChest />
         <Stack
-          direction="row"
+          flexDirection="row"
           justifyContent="center"
-          alignItems="stretch"
-          spacing={10}
+          alignItems="flex-start"
+          gap="10px"
+          alignSelf="stretch"
         >
           <Level
             currentLevel={score?.currentLevel}

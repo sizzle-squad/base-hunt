@@ -51,12 +51,13 @@ export function Rank({ currentRank, isLoading }: Props) {
   return (
     <Stack
       justifyContent="space-between"
-      borderRadius={8}
+      borderRadius="8px"
       bgcolor="var(--White, #fff)"
       display="flex"
       spacing={2}
       padding="12px 12px 12px 16px"
       sx={{ width: '100%' }}
+      flex={1}
     >
       {content}
     </Stack>
