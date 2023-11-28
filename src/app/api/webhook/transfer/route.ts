@@ -9,7 +9,10 @@ const supabase = createClient(
 export async function POST(req: Request) {
   const body = await req.json();
   console.log('[webhook transfer] body:', body);
-  const webhookData = await supabase.from('webhook_data').insert(body).select();
+  const webhookData = await supabase
+    .from('webhook_data')
+    .upsert(body, { ignoreDuplicates: true })
+    .select();
   if (webhookData.error) {
     console.error(webhookData);
     throw new Error(webhookData.error.message);
