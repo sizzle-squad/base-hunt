@@ -4,6 +4,8 @@ import CustomAccordion from '@/components/Badges/Accordion';
 import AccordionPill from '@/components/Badges/AccordionPill';
 import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
+import { Level } from '@/components/Cards/Level';
+import { Rank } from '@/components/Cards/Rank';
 import { TreasureChest } from '@/components/Cards/TreasureChest';
 import Circle from '@/components/Circle';
 import Text from '@/components/Text';
@@ -14,8 +16,10 @@ import { BadgeTypeEnum } from '@/hooks/types';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
+import { useRank } from '@/hooks/useRank';
+import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
-import { Box, Drawer, Stack } from '@mui/material';
+import { Box, Drawer, NoSsr, Stack } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useMemo, useState } from 'react';
@@ -41,6 +45,15 @@ export default function Badges() {
     isLoading,
     error,
   } = useGameState({ userAddress: address, gameId: GAME_ID });
+  const { data: score, isLoading: isScoreLoading } = useScore({
+    userAddress: address ?? '',
+    gameId: GAME_ID,
+  });
+
+  const { data: rank, isLoading: isRankLoading } = useRank({
+    userAddress: address ?? '',
+    gameId: GAME_ID,
+  });
 
   const handleDisconnect = useCallback(async () => {
     await disconnectAsync();
@@ -150,7 +163,6 @@ export default function Badges() {
   }, [
     isClient,
     badges,
-    isLoading,
     error,
     irlAccordionExpanded,
     virtualAccordionExpanded,
@@ -295,6 +307,21 @@ export default function Badges() {
       <Stack paddingX="1.25rem" gap="12px" paddingBottom="6rem">
         <Hero />
         <TreasureChest />
+        <Stack
+          flexDirection="row"
+          justifyContent="center"
+          alignItems="flex-start"
+          gap="10px"
+          alignSelf="stretch"
+        >
+          <NoSsr>
+            <Level
+              currentLevel={score?.currentLevel}
+              isLoading={isScoreLoading}
+            />
+            <Rank currentRank={rank?.rank} isLoading={isRankLoading} />
+          </NoSsr>
+        </Stack>
         {BadgesWrapper}
         <Box>
           {(['bottom'] as const).map((anchor) => (
