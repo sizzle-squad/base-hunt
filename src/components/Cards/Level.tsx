@@ -47,7 +47,7 @@ export function Level({ currentLevel, isLoading }: Props) {
         >
           <SvgSwitcher
             alt={`Level ${currentLevel.level || 'Level badge'} Badge`}
-            level={currentLevel?.level || null}
+            level={(currentLevel?.level as Level['level']) || null}
             width={64}
             height={64}
           />
