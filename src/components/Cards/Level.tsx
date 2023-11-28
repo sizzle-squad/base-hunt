@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import Text from '@/components/Text';
 
 import SvgSwitcher from '../LevelsBadge';
+import Link from 'next/link';
 
 type Props = {
   currentLevel?: Level | null;
@@ -36,23 +37,25 @@ export function Level({ currentLevel, isLoading }: Props) {
         overflow: 'hidden',
       }}
     >
-      {content}
-      {currentLevel?.level && (
-        <Box
-          sx={{
-            position: 'absolute',
-            right: '-16.5px',
-            top: '-10px',
-          }}
-        >
-          <SvgSwitcher
-            alt={`Level ${currentLevel.level || 'Level badge'} Badge`}
-            level={(currentLevel?.level as Level['level']) || null}
-            width={64}
-            height={64}
-          />
-        </Box>
-      )}
+      <Link href="/levels">
+        {content}
+        {currentLevel?.level && (
+          <Box
+            sx={{
+              position: 'absolute',
+              right: '-16.5px',
+              top: '-10px',
+            }}
+          >
+            <SvgSwitcher
+              alt={`Level ${currentLevel.level || 'Level badge'} Badge`}
+              level={(currentLevel?.level as Level['level']) || null}
+              width={64}
+              height={64}
+            />
+          </Box>
+        )}
+      </Link>
     </Box>
   );
 }
