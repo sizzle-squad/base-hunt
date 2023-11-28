@@ -31,5 +31,15 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  return NextResponse.json(data);
+  const result = data.map((entry) => ({
+    cbid: entry.cbid,
+    createdAt: entry.created_at,
+    gameId: entry.game_id,
+    totalHitpoints: entry.total_hitpoints,
+    userAddress: entry.user_address,
+    tapCount: entry.tap_count,
+    ensName: entry.ens_name,
+  }));
+
+  return NextResponse.json(result);
 }

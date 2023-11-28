@@ -75,3 +75,14 @@ export type TreasureBoxState = {
   currentHitpoints: bigint;
   isOpen: boolean;
 };
+
+export type Rank = {
+  cbid: string | null;
+  createdAt: string;
+  ensName: string | null;
+  gameId: number;
+  id: number;
+  tapCount: number;
+  totalHitpoints: number;
+  userAddress: string;
+};
