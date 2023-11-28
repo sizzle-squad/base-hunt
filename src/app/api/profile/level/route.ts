@@ -39,23 +39,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(data.map((d) => d.j));
 }
 
-function mapToBadge(b: QueryData): Badge {
-  return {
-    id: b.id.toString(),
-    name: b.name,
-    description: '',
-    imageUrl: new URL(b.image_url),
-    isCompleted: b.to_address != null,
-    type: b.type,
-    txHash: b.transaction_hash,
-    completedTimestamp: b.created_at,
-    contractAddress: b.contract_address,
-    tokenId: b.token_id,
-    ctaText: b.cta_text,
-    ctaUrl: b.cta_url,
-  };
-}
-
 /*
 database function:
 
