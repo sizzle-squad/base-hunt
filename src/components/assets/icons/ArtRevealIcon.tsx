@@ -1,10 +1,12 @@
-export function ArtRevealIcon() {
+import { memo } from 'react';
+
+export const ArtRevealIcon = memo(({ color }: { color?: string }) => {
   return (
     <svg
       width="34"
       height="33"
       viewBox="0 0 34 33"
-      fill="none"
+      fill={color ?? 'none'}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -47,4 +49,6 @@ export function ArtRevealIcon() {
       </g>
     </svg>
   );
-}
+});
+
+ArtRevealIcon.displayName = 'ArtRevealIcon';
