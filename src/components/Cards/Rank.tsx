@@ -1,18 +1,7 @@
-import { Box, Skeleton, Stack, Typography } from '@mui/material';
-import { useCallback, useMemo } from 'react';
+import { Skeleton, Stack } from '@mui/material';
+import { useMemo } from 'react';
 import Text from '../Text';
-import { useRouter } from 'next/navigation';
-
-const textStyle = {
-  color: 'var(--Black, #1d1818)',
-  margin: 'auto 0',
-  fontFeatureSettings: "'clig' off, 'liga' off",
-  fontFamily:
-    "'Coinbase Display', 'Apple System', 'Roboto', 'Helvetica', sans-serif",
-  fontSize: 16,
-  lineHeight: '19px',
-  fontWeight: 400,
-};
+import Link from 'next/link';
 
 type Props = {
   currentRank?: string | null;
@@ -20,7 +9,6 @@ type Props = {
 };
 
 export function Rank({ currentRank, isLoading }: Props) {
-  const router = useRouter();
   const position = useMemo(() => {
     return currentRank ? `#${currentRank}` : 'N/A';
   }, [currentRank]);
@@ -40,19 +28,11 @@ export function Rank({ currentRank, isLoading }: Props) {
         }}
         gap={3}
       >
-        <Text variant="body1" sx={textStyle}>
-          Rank
-        </Text>
-        <Text variant="body1" sx={textStyle} align="center">
-          {position}
-        </Text>
+        <Text fontSize="16px">Rank</Text>
+        <Text fontSize="16px">{position}</Text>
       </Stack>
     );
   }, [isLoading, position]);
-
-  const handlePress = useCallback(() => {
-    return router.push('/leaderboard');
-  }, [router]);
 
   return (
     <Stack
@@ -64,9 +44,8 @@ export function Rank({ currentRank, isLoading }: Props) {
       padding="12px 12px 12px 16px"
       sx={{ width: '100%' }}
       flex={1}
-      onClick={handlePress}
     >
-      {content}
+      <Link href="/leaderboard">{content}</Link>
     </Stack>
   );
 }
