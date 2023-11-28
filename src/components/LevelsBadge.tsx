@@ -14,14 +14,14 @@ type LevelNumber = Level['level'];
 const Levels: {
   [key in LevelNumber]: typeof Svg1;
 } = {
-  '0': Svg1,
-  '1': Svg2,
-  '2': Svg3,
-  '3': Svg4,
-  '4': Svg5,
-  '5': Svg6,
-  '6': null,
-  '7': null,
+  0: Svg1,
+  1: Svg2,
+  2: Svg3,
+  3: Svg4,
+  4: Svg5,
+  5: Svg6,
+  6: null,
+  7: null,
 };
 
 type SvgSwitcherProps = {
@@ -30,13 +30,15 @@ type SvgSwitcherProps = {
 
 const SvgSwitcher = ({ level, ...imageProps }: SvgSwitcherProps) => {
   let SvgComponent = null;
-  if (!level) {
+  if (level === null) {
     return null;
   }
 
-  const levelString = level.toString() as LevelNumber; // Convert level to a string
-
-  SvgComponent = Levels[levelString];
+  if (typeof level === 'string') {
+    SvgComponent = Levels[parseInt(level) as unknown as LevelNumber];
+  } else {
+    SvgComponent = Levels[level];
+  }
 
   return (
     <Image
