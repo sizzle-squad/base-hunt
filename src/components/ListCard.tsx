@@ -1,5 +1,5 @@
-import { FC, ReactElement, ReactNode } from 'react';
-import { Box, Card, LinearProgress, Stack, Typography } from '@mui/material';
+import { ReactNode } from 'react';
+import { Box, Card, Stack } from '@mui/material';
 import Text from '@/components/Text';
 
 // Define a type that requires either title or subtitle to be present
@@ -11,12 +11,12 @@ export type ListCardProps = {
   subtitle?: string;
 };
 
-const ListCard: FC<ListCardProps> = ({
+function ListCard({
   startContent,
   title,
   subtitle,
   endContent,
-}) => {
+}: ListCardProps) {
   // Component implementation remains the same
   return (
     <Card
@@ -56,6 +56,6 @@ const ListCard: FC<ListCardProps> = ({
       </Stack>
     </Card>
   );
-};
+}
 
 export default ListCard;

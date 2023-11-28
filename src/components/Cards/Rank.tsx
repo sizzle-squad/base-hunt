@@ -1,6 +1,7 @@
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import Text from '../Text';
+import { useRouter } from 'next/navigation';
 
 const textStyle = {
   color: 'var(--Black, #1d1818)',
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export function Rank({ currentRank, isLoading }: Props) {
+  const router = useRouter();
   const position = useMemo(() => {
     return currentRank ? `#${currentRank}` : 'N/A';
   }, [currentRank]);
@@ -48,6 +50,10 @@ export function Rank({ currentRank, isLoading }: Props) {
     );
   }, [isLoading, position]);
 
+  const handlePress = useCallback(() => {
+    return router.push('/leaderboard');
+  }, [router]);
+
   return (
     <Stack
       justifyContent="space-between"
@@ -58,6 +64,7 @@ export function Rank({ currentRank, isLoading }: Props) {
       padding="12px 12px 12px 16px"
       sx={{ width: '100%' }}
       flex={1}
+      onClick={handlePress}
     >
       {content}
     </Stack>
