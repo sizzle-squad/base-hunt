@@ -19,7 +19,7 @@ import { useGameState } from '@/hooks/useGameState';
 import { useRank } from '@/hooks/useRank';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
-import { Box, Drawer, Stack } from '@mui/material';
+import { Box, Drawer, NoSsr, Stack } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useMemo, useState } from 'react';
@@ -314,11 +314,13 @@ export default function Badges() {
           gap="10px"
           alignSelf="stretch"
         >
-          <Level
-            currentLevel={score?.currentLevel}
-            isLoading={isScoreLoading}
-          />
-          <Rank currentRank={rank?.rank} isLoading={isRankLoading} />
+          <NoSsr>
+            <Level
+              currentLevel={score?.currentLevel}
+              isLoading={isScoreLoading}
+            />
+            <Rank currentRank={rank?.rank} isLoading={isRankLoading} />
+          </NoSsr>
         </Stack>
         {BadgesWrapper}
         <Box>
