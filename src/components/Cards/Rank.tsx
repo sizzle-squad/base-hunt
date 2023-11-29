@@ -1,7 +1,7 @@
 import { Skeleton, Stack } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '../Text';
-import AnimatedLink from '@/components/AnimatedLink';
+import Link from '@/components/AnimatedLink';
 
 type Props = {
   currentRank?: string | null;
@@ -45,7 +45,7 @@ export function Rank({ currentRank, isLoading }: Props) {
       sx={{ width: '100%', cursor: 'pointer' }}
       flex={1}
     >
-      <AnimatedLink href="/leaderboard">{content}</AnimatedLink>
+      <Link href="/leaderboard">{content}</Link>
     </Stack>
   );
 }

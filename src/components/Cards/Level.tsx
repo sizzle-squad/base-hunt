@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import Text from '@/components/Text';
 
 import SvgSwitcher from '../LevelsBadge';
-import AnimatedLink from '@/components/AnimatedLink';
+import Link from '@/components/AnimatedLink';
 
 type Props = {
   currentLevel?: Level | null;
@@ -38,7 +38,7 @@ export function Level({ currentLevel, isLoading }: Props) {
         cursor: 'pointer',
       }}
     >
-      <AnimatedLink href="/levels">
+      <Link href="/levels">
         {content}
         {currentLevel?.level && (
           <Box
@@ -56,7 +56,7 @@ export function Level({ currentLevel, isLoading }: Props) {
             />
           </Box>
         )}
-      </AnimatedLink>
+      </Link>
     </Stack>
   );
 }
