@@ -15,21 +15,18 @@ curl -X POST 'http://localhost:3000/api/level/claim' -d ' {"type":"INSERT","tabl
 */
 
 export async function GET(req: NextRequest) {
-  const headersList = headers();
-  const referer = headersList.get('x-app-secert');
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
-  const gameId = BigInt(searchParams.get('gameId') as string);
-
-  if (!userAddress || !gameId) {
+  const gameIdString = searchParams.get('gameId') as string;
+  if (!userAddress || !gameIdString) {
     return new Response(
-      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
+      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameIdString}`,
       {
         status: 400,
       }
     );
   }
-
+  let gameId = BigInt(gameIdString);
   try {
     let scoreData = (await supabase
       .from('score')

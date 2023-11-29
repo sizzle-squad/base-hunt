@@ -107,6 +107,31 @@ export async function POST(request: NextRequest) {
   if (!score) {
     return new Response('Error: score not found', { status: 400 });
   }
+
+  let tbeData = (await supabase
+    .from('treasure_box_entries')
+    .select()
+    .ilike('user_address', user.address)
+    .eq('game_id', gameId)) as any;
+  if (tbeData.error) {
+    return new Response('Error: treasure box entry not found', { status: 400 });
+  }
+
+  if (tbeData.data.length > 0) {
+    const now = new Date();
+    const nowHash = now.getFullYear() + now.getMonth() + now.getDate();
+    now.getDay();
+    const tbe = tbeData.data[0];
+    const updatedAt = new Date(tbe.updated_at);
+    const updatedAtHash =
+      updatedAt.getFullYear() + updatedAt.getMonth() + updatedAt.getDate();
+    if (nowHash === updatedAtHash) {
+      return new Response(`Error: tap count exceeded for:${now}`, {
+        status: 400,
+      });
+    }
+  }
+
   // const pointInBigInt = BigInt(points as string);
   const params = {
     _game_id: gameIdInBigInt,
