@@ -3,8 +3,8 @@
 import { useClientCheck } from '@/hooks/useClientCheck';
 import dynamic from 'next/dynamic';
 import Layout from '@/components/layout';
-import { useCallback, useMemo } from 'react';
-import { Box, CircularProgress, Stack } from '@mui/material';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { Box, Button, CircularProgress, Grid, Stack } from '@mui/material';
 import { useMutateTreasureBox } from '@/hooks/useMutateTreasureBox';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
@@ -18,6 +18,9 @@ import { useRouter } from 'next/navigation';
 import ArtRevealClient from './ArtRevealClient';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { UNIT } from '@/constants/unit';
+import { Card } from '@/components/assets/Card';
+import Text from '@/components/Text';
+import Stepper from '@/components/Reveal/Stepper';
 
 const imageUrl = '@/assets/images/map.png';
 
@@ -26,7 +29,29 @@ const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
   ssr: false,
 });
 
+const TreasureChestInfo = [
+  {
+    title: 'A collaborative challenge',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit.',
+    cta: 'Next',
+  },
+  {
+    title: 'Once per day',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit.',
+    cta: 'Next',
+  },
+  {
+    title: 'Exclusive art from secret artist',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit.',
+    cta: 'Dismiss',
+  },
+] as const;
+
 export default function ArtReveal() {
+  const [activeInfoStep, setActiveInfoStep] = useState<number>(0);
   const isClient = useClientCheck();
   const router = useRouter();
   const { address } = useAccount();
@@ -48,6 +73,16 @@ export default function ArtReveal() {
 
   const { data: treasureBox, isLoading } = useTreasureBox({ gameId: GAME_ID });
 
+  useEffect(() => {
+    const savedStep = window.localStorage.getItem('artRevealInfoStep');
+    if (
+      savedStep &&
+      savedStep < TreasureChestInfo[TreasureChestInfo.length - 1].title
+    ) {
+      setActiveInfoStep(Number(savedStep));
+    }
+  }, []);
+
   const handleCTAPress = useCallback(() => {
     attackBox.mutate({
       gameId: GAME_ID,
@@ -68,6 +103,76 @@ export default function ArtReveal() {
     // TODO: link to NFT or artist
     router.push('/art-reveal');
   }, [router]);
+
+  const handleInfoStepChange = useCallback((step: number) => {
+    if (step === TreasureChestInfo.length + 1) {
+      return;
+    }
+    setActiveInfoStep(step);
+    window.localStorage.setItem('artRevealInfoStep', String(step));
+  }, []);
+
+  const CardContent = memo(() => (
+    <>
+      {activeInfoStep && activeInfoStep >= 3 ? (
+        <ProgressCard
+          ctaText={`Tap to reveal (${score} ${UNIT})`}
+          onPress={handleCTAPress}
+          currentPoints={treasureBox?.currentHitpoints}
+          totalPoints={treasureBox?.totalHitpoints}
+        />
+      ) : (
+        <Card>
+          <Grid container>
+            <Grid item xs={4}>
+              <Stepper
+                activeStep={activeInfoStep}
+                onClick={handleInfoStepChange}
+              />
+            </Grid>
+          </Grid>
+          <Text variant="h6" fontSize="20px">
+            {TreasureChestInfo[activeInfoStep].title}
+          </Text>
+          <Text>{TreasureChestInfo[activeInfoStep].description}</Text>
+          <Button
+            onClick={() => handleInfoStepChange(activeInfoStep + 1)}
+            sx={{
+              ':hover': {
+                backgroundColor: 'black',
+                color: 'white',
+              },
+              color: `${
+                activeInfoStep === TreasureChestInfo.length - 1
+                  ? 'black'
+                  : 'black'
+              }`,
+              background: `${
+                activeInfoStep === TreasureChestInfo.length - 1
+                  ? 'black'
+                  : 'var(--Darker-Gray, #D5D5D5)'
+              }`,
+            }}
+          >
+            <Text
+              color="inherit"
+              sx={{
+                color: `${
+                  activeInfoStep === TreasureChestInfo.length - 1
+                    ? 'white'
+                    : 'black'
+                }`,
+              }}
+            >
+              {TreasureChestInfo[activeInfoStep].cta}
+            </Text>
+          </Button>
+        </Card>
+      )}
+    </>
+  ));
+
+  CardContent.displayName = 'CardContent';
 
   const content = useMemo(() => {
     return (
@@ -108,16 +213,7 @@ export default function ArtReveal() {
                 }}
               />
             </Box>
-            {treasureBox?.isOpen ? (
-              <ArtRevealClient />
-            ) : (
-              <ProgressCard
-                ctaText={`Tap to reveal (${score} ${UNIT})`}
-                onPress={handleCTAPress}
-                currentPoints={treasureBox?.currentHitpoints}
-                totalPoints={treasureBox?.totalHitpoints}
-              />
-            )}
+            {treasureBox?.isOpen ? <ArtRevealClient /> : <CardContent />}
           </>
         )}
       </Stack>
@@ -137,7 +233,6 @@ export default function ArtReveal() {
     <Layout>
       <DetailsPageNavbar title="Art Reveal" />
       {content}
-
       <Footer />
     </Layout>
   );
