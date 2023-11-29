@@ -116,10 +116,9 @@ export default function ArtReveal() {
     <>
       {activeInfoStep && activeInfoStep >= 3 ? (
         <ProgressCard
+          isCTADisabled={score === 0}
           ctaText={`Tap to reveal (${score} ${UNIT})`}
           onPress={handleCTAPress}
-          currentPoints={treasureBox?.currentHitpoints}
-          totalPoints={treasureBox?.totalHitpoints}
         />
       ) : (
         <Card>
