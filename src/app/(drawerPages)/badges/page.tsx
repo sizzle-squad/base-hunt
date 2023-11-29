@@ -343,7 +343,6 @@ export default function Badges() {
           ))}
         </Box>
       </Stack>
-      <Footer />
     </>
   );
 }

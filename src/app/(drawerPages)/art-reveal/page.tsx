@@ -233,7 +233,6 @@ export default function ArtReveal() {
     <Layout>
       <DetailsPageNavbar title="Art Reveal" />
       {content}
-      <Footer />
     </Layout>
   );
 }
