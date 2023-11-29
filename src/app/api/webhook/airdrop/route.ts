@@ -1,4 +1,4 @@
-import { AirdropNft } from '@/utils/walletapi';
+import { airdropNft } from '@/utils/walletapi';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { verifyWebhookSecret } from '@/utils/webhook';
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
   if (levelData.data && levelData.data.length > 0) {
     for (let i = 0; i < levelData.data.length; i++) {
       const level = levelData.data[i];
-      await AirdropNft(body.record.user_address, level.airdrop_command);
+      await airdropNft(body.record.user_address, level.airdrop_command);
     }
   } else {
     console.log(

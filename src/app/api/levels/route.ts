@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/utils/database.types';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -10,9 +11,9 @@ const supabase = createClient<Database>(
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const gameId = searchParams.get('gameId');
+  const gameId = toBigInt(searchParams.get('gameId') as string);
 
-  if (!gameId) {
+  if (gameId === null) {
     return new Response('Missing parameters: gameId', { status: 400 });
   }
 

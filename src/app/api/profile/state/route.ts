@@ -3,6 +3,7 @@ import '@/utils/helper';
 import { Badge, BadgeTypeEnum } from '../../../../hooks/types';
 
 import { createClient } from '@supabase/supabase-js';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -25,7 +26,15 @@ type QueryData = {
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
-  const gameId = BigInt(searchParams.get('gameId') as string);
+  const gameId = toBigInt(searchParams.get('gameId') as string);
+  if (!userAddress || gameId === null) {
+    return new Response(
+      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
+  }
 
   const { data, error } = await supabase.rpc('getbadgestate', {
     _game_id: gameId,
