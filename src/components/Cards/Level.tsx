@@ -1,5 +1,5 @@
 import { type Level } from '@/hooks/types';
-import { Box, Skeleton, Typography } from '@mui/material';
+import { Box, Stack, Skeleton } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '@/components/Text';
 
@@ -21,7 +21,7 @@ export function Level({ currentLevel, isLoading }: Props) {
   }, [currentLevel, isLoading]);
 
   return (
-    <Box
+    <Stack
       sx={{
         display: 'flex',
         alignItems: 'flex-start',
@@ -35,6 +35,7 @@ export function Level({ currentLevel, isLoading }: Props) {
         position: 'relative',
         flex: 1,
         overflow: 'hidden',
+        cursor: 'pointer',
       }}
     >
       <Link href="/levels">
@@ -56,6 +57,6 @@ export function Level({ currentLevel, isLoading }: Props) {
           </Box>
         )}
       </Link>
-    </Box>
+    </Stack>
   );
 }

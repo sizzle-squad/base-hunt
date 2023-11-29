@@ -46,7 +46,7 @@ export const PointsPill = ({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M1 8.5L4 4.5L1 0.5" stroke="white" stroke-width="1.5" />
+        <path d="M1 8.5L4 4.5L1 0.5" stroke="white" strokeWidth="1.5" />
       </svg>
     </Stack>
   </Stack>
