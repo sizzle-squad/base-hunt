@@ -3,10 +3,7 @@ import { memo } from 'react';
 import dynamic from 'next/dynamic';
 import HeroSVG from '@/components/assets/HeroSVG';
 import Text from '@/components/Text';
-
-const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
-  ssr: false,
-});
+import Navbar from '@/components/navigation/navbar';
 
 const Hero = () => {
   return (
