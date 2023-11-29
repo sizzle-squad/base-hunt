@@ -1,4 +1,5 @@
 'use client';
+
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
@@ -33,15 +34,11 @@ EllipsisIcon.displayName = 'ellipsisIcon';
 
 type ListCardPropsWithDescription = ListCardProps & {
   description: string;
-  boost?: string;
 };
 
 const PageConsts = {
   navTitle: 'Levels' as const,
   drawerTitle: 'Rewards' as const,
-  drawerSubtitle: 'Level up boost' as const,
-  drawerSubtitlePoints: 100 as const,
-  drawerSubtitleUnit: 'pts' as const,
   drawerButtonText: 'Visit merch store' as const,
   drawerType: 'levelsAction' as DrawerType,
   drawerAnchor: 'bottom' as const,
@@ -74,7 +71,11 @@ export default function LevelsPageClient() {
     }: {
       item: ListCardPropsWithDescription;
       onClick: (item: ListCardPropsWithDescription) => void;
-    }) => <Box onClick={() => onClick(item)}>{item.endContent}</Box>
+    }) => (
+      <Box onClick={() => onClick(item)}>
+        <EllipsisIcon />
+      </Box>
+    )
   );
 
   const ToolbarWithClose = memo(
@@ -108,17 +109,7 @@ export default function LevelsPageClient() {
           <Text variant="h4">{item.title}</Text>
         </>
       )}
-
       <Text>{item.description}</Text>
-
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Text>{PageConsts.drawerSubtitle}</Text>
-        <PointsPill
-          points={PageConsts.drawerSubtitlePoints}
-          unit={PageConsts.drawerSubtitleUnit}
-        />
-      </Stack>
-
       <Button
         variant="contained"
         color="primary"
@@ -143,24 +134,33 @@ export default function LevelsPageClient() {
       <DetailsPageNavbar title={PageConsts.navTitle} />
       <NoSsr>
         <Stack gap={2}>
-          {collection.map((item: Level, index: number) => (
-            <ListCard
-              key={index}
-              title={`Level ${item.level}`}
-              subtitle={`${item.thresholdPoints} points required`}
-              startContent={
+          {collection.map((item: Level, index: number) => {
+            const content: ListCardPropsWithDescription = {
+              title: `Level ${item.level}`,
+              subtitle: `${item.thresholdPoints} points required`,
+              startContent: (
                 <SvgSwitcher
                   alt={`Level ${item.level}`}
                   level={index.toString() as LevelNumber}
                   width={32}
                   height={32}
                 />
-              }
-              endContent={
-                <ToggleDrawerButton item={item} onClick={handleToggleDrawer} />
-              }
-            />
-          ))}
+              ),
+              description: item.description,
+            };
+            return (
+              <ListCard
+                key={index}
+                {...content}
+                endContent={
+                  <ToggleDrawerButton
+                    item={content}
+                    onClick={handleToggleDrawer}
+                  />
+                }
+              />
+            );
+          })}
         </Stack>
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}

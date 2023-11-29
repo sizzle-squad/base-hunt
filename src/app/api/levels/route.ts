@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
     level: entry.level,
     name: entry.name,
     thresholdPoints: entry.threshold_points,
+    description: entry.description ?? '',
   }));
 
   return NextResponse.json(result);
