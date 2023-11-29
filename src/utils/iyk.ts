@@ -27,7 +27,7 @@ export async function getTapRef(iykRef: string): Promise<TapRef | null> {
       'x-iyk-api-key': process.env.IYK_API_KEY as string,
     },
   });
-  if (data.status != 200) {
+  if (data.status !== 200) {
     return null;
   }
   /*
