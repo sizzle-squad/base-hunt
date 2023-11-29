@@ -21,6 +21,15 @@ export async function GET(req: NextRequest) {
   const userAddress = searchParams.get('userAddress') as string;
   const gameId = BigInt(searchParams.get('gameId') as string);
 
+  if (!userAddress || !gameId) {
+    return new Response(
+      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
+  }
+
   try {
     let scoreData = (await supabase
       .from('score')

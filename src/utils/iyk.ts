@@ -1,15 +1,36 @@
 import axios from 'axios';
 
+export interface TapRef {
+  uid: string;
+  isValidRef: boolean;
+  linkedToken: LinkedToken;
+  poapEvents: PoapEvent[];
+}
 
-export async function getTapRef(iykRef:string){
-    
-    const data = await axios.get(`https://api.iyk.app/refs/${iykRef}`,{
-        headers: {
-            'x-iyk-api-key': process.env.IYK_API_KEY as string,
-        }
-    })
+export interface LinkedToken {
+  contractAddress: string;
+  chainId: number;
+  tokenId: string;
+  otp: string;
+}
 
-    /*
+export interface PoapEvent {
+  id: number;
+  poapEventId: number;
+  otp: string;
+  status: string;
+}
+
+export async function getTapRef(iykRef: string): Promise<TapRef | null> {
+  const data = await axios.get<TapRef>(`https://api.iyk.app/refs/${iykRef}`, {
+    headers: {
+      'x-iyk-api-key': process.env.IYK_API_KEY as string,
+    },
+  });
+  if (data.status != 200) {
+    return null;
+  }
+  /*
     {
         "uid": "1111111111144444",
         "isValidRef": false,
@@ -29,5 +50,5 @@ export async function getTapRef(iykRef:string){
         ]
     }
     */
-    return data;
+  return data.data;
 }

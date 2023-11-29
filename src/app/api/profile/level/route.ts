@@ -27,6 +27,15 @@ export async function GET(req: NextRequest) {
   const userAddress = searchParams.get('userAddress') as string;
   const gameId = BigInt(searchParams.get('gameId') as string);
 
+  if (!userAddress || !gameId) {
+    return new Response(
+      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
+  }
+
   const { data, error } = await supabase.rpc('getlevelstate', {
     _game_id: gameId,
     _user_address: userAddress,
