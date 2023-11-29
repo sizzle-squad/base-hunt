@@ -1,10 +1,11 @@
 import { type Level } from '@/hooks/types';
-import { Box, Stack, Skeleton } from '@mui/material';
+import { Box, Stack, Skeleton, NoSsr } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '@/components/Text';
 
 import SvgSwitcher from '../LevelsBadge';
 import Link from 'next/link';
+import AnimatedLink from '@/components/AnimatedLink';
 
 type Props = {
   currentLevel?: Level | null;
@@ -38,7 +39,7 @@ export function Level({ currentLevel, isLoading }: Props) {
         cursor: 'pointer',
       }}
     >
-      <Link href="/levels">
+      <AnimatedLink href="/levels">
         {content}
         {currentLevel?.level && (
           <Box
@@ -56,7 +57,7 @@ export function Level({ currentLevel, isLoading }: Props) {
             />
           </Box>
         )}
-      </Link>
+      </AnimatedLink>
     </Stack>
   );
 }
