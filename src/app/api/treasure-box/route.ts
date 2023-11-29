@@ -133,7 +133,6 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // const pointInBigInt = BigInt(points as string);
   const params = {
     _game_id: gameIdInBigInt,
     _user_address: user.address,
