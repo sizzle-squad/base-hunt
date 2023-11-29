@@ -7,19 +7,10 @@ import { UNIT } from '@/constants/unit';
 
 type Props = {
   ctaText: string;
-  currentPoints?: bigint;
-  totalPoints?: bigint;
   onPress: () => void;
 };
 
-export function ProgressCard({
-  ctaText,
-  currentPoints,
-  totalPoints,
-  onPress,
-}: Props) {
-  if (!currentPoints || !totalPoints) return null;
-
+export function ProgressCard({ ctaText, onPress }: Props) {
   return (
     <Card>
       <ArtRevealProgressBar />
