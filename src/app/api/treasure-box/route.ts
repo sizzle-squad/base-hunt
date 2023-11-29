@@ -3,6 +3,7 @@ import { verifyTreasureBoxRequest } from '@/utils/verifyTreasureBoxRequest';
 import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { createClient } from '@supabase/supabase-js';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -33,9 +34,8 @@ export type TreasureBoxStateType = {
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const gameId = searchParams.get('gameId');
-
-  if (!gameId) {
+  const gameId = toBigInt(searchParams.get('gameId') as string);
+  if (gameId == null) {
     return new Response('Missing parameters: gameId', { status: 400 });
   }
   const treasureBoxData = await supabase
@@ -119,16 +119,17 @@ export async function POST(request: NextRequest) {
 
   if (tbeData.data.length > 0) {
     const now = new Date();
-    const nowHash = now.getFullYear() + now.getMonth() + now.getDate();
-    now.getDay();
-    const tbe = tbeData.data[0];
-    const updatedAt = new Date(tbe.updated_at);
-    const updatedAtHash =
-      updatedAt.getFullYear() + updatedAt.getMonth() + updatedAt.getDate();
+    const nowHash = `${now.getFullYear()}:${now.getMonth()}:${now.getDate()}:${now.getHours()}`;
+    const updatedAt = new Date(tbeData.data[0].updated_at);
+
+    const updatedAtHash = `${updatedAt.getFullYear()}:${updatedAt.getMonth()}:${updatedAt.getDate()}:${updatedAt.getHours()}`;
     if (nowHash === updatedAtHash) {
-      return new Response(`Error: tap count exceeded for:${now}`, {
-        status: 400,
-      });
+      return new Response(
+        `Error: tap count exceeded for now:${nowHash} updatedAt:${updatedAtHash}`,
+        {
+          status: 400,
+        }
+      );
     }
   }
 

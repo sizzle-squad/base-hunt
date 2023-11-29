@@ -3,6 +3,7 @@ import '@/utils/helper';
 import { getTapRef } from '@/utils/iyk';
 import '@/utils/helper';
 import { createClient } from '@supabase/supabase-js';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -17,9 +18,9 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const iykRef = searchParams.get('iykRef');
   const userAddress = searchParams.get('userAddress');
-  const gameId = searchParams.get('gameId');
+  const gameId = toBigInt(searchParams.get('gameId') as string);
 
-  if (!userAddress || !gameId || !iykRef) {
+  if (!userAddress || gameId == null || !iykRef) {
     return new Response(
       `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}, iykRef: ${iykRef}`,
       {
@@ -33,8 +34,6 @@ export async function GET(request: NextRequest) {
       status: 403,
     });
   }
-
-  const gameIdInBigInt = BigInt(gameId as string);
 
   let scoreData = (await supabase
     .from('score')
@@ -53,7 +52,7 @@ export async function GET(request: NextRequest) {
   }
   // const pointInBigInt = BigInt(points as string);
   const params = {
-    _game_id: gameIdInBigInt,
+    _game_id: gameId,
     _user_address: userAddress,
     _cbid: '',
     _ens_name: '',

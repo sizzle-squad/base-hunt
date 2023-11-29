@@ -1,12 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
+import { createClient } from '@supabase/supabase-js';
+import { toBigInt } from '@/utils/toBigInt';
 
 type RankType = {
   rank: number;
   user_address: string;
 };
-
-import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -16,9 +16,9 @@ const supabase = createClient(
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress');
-  const gameId = searchParams.get('gameId');
+  const gameId = toBigInt(searchParams.get('gameId') as string);
 
-  if (!userAddress || !gameId) {
+  if (!userAddress || gameId == null) {
     return new Response(
       `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
       {
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     );
   }
   const rankData = await supabase.rpc('getuserrank', {
-    _game_id: BigInt(gameId),
+    _game_id: gameId,
     _user_address: userAddress,
   });
   if (rankData.error) {

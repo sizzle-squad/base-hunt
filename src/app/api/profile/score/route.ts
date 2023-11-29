@@ -1,10 +1,9 @@
 import { type NextRequest } from 'next/server';
 import '@/utils/helper';
-import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { Level, ScoreState } from '../../../../hooks/types';
+import { ScoreState } from '../../../../hooks/types';
 import { createClient } from '@supabase/supabase-js';
-
+import { toBigInt } from '@/utils/toBigInt';
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
@@ -17,16 +16,16 @@ curl -X POST 'http://localhost:3000/api/level/claim' -d ' {"type":"INSERT","tabl
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
-  const gameIdString = searchParams.get('gameId') as string;
-  if (!userAddress || !gameIdString) {
+  const gameId = toBigInt(searchParams.get('gameId') as string);
+  if (!userAddress || gameId == null) {
     return new Response(
-      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameIdString}`,
+      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
       {
         status: 400,
       }
     );
   }
-  let gameId = BigInt(gameIdString);
+
   try {
     let scoreData = (await supabase
       .from('score')
