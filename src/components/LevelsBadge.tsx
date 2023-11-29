@@ -29,7 +29,6 @@ type SvgSwitcherProps = {
 } & Omit<ComponentProps<typeof Image>, 'src'>;
 
 const SvgSwitcher = ({ level, ...imageProps }: SvgSwitcherProps) => {
-  console.log('level', level);
   let SvgComponent = null;
   if (level === null) {
     return null;

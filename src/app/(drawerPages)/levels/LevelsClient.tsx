@@ -133,7 +133,7 @@ export default function LevelsPageClient() {
   return (
     <>
       <DetailsPageNavbar title={PageConsts.navTitle} />
-      <Stack gap={2}>
+      <Stack gap={2} className="pageContent">
         {isLoading &&
           loadingCollection.map((_, index) => (
             <ListCard key={index} isLoading={isLoading} />

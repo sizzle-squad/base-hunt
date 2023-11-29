@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import Text from '@/components/Text';
 
 import SvgSwitcher from '../LevelsBadge';
-import Link from 'next/link';
 import AnimatedLink from '@/components/AnimatedLink';
 
 type Props = {
