@@ -131,10 +131,12 @@ export default function ArtReveal() {
               />
             </Grid>
           </Grid>
-          <Text variant="h6" fontSize="20px">
+          <Text color="#1D1818" variant="h6" fontSize="20px">
             {TreasureChestInfo[activeInfoStep].title}
           </Text>
-          <Text>{TreasureChestInfo[activeInfoStep].description}</Text>
+          <Text color="#1D1818">
+            {TreasureChestInfo[activeInfoStep].description}
+          </Text>
           <Button
             onClick={() => handleInfoStepChange(activeInfoStep + 1)}
             sx={{
@@ -142,9 +144,17 @@ export default function ArtReveal() {
                 backgroundColor: 'black',
                 color: 'white',
               },
+              ':active': {
+                backgroundColor: 'black',
+                color: 'white',
+              },
+              ':focused': {
+                backgroundColor: 'black',
+                color: 'white',
+              },
               color: `${
                 activeInfoStep === TreasureChestInfo.length - 1
-                  ? 'black'
+                  ? 'white'
                   : 'black'
               }`,
               background: `${
@@ -154,18 +164,7 @@ export default function ArtReveal() {
               }`,
             }}
           >
-            <Text
-              color="inherit"
-              sx={{
-                color: `${
-                  activeInfoStep === TreasureChestInfo.length - 1
-                    ? 'white'
-                    : 'black'
-                }`,
-              }}
-            >
-              {TreasureChestInfo[activeInfoStep].cta}
-            </Text>
+            <Text color="inherit">{TreasureChestInfo[activeInfoStep].cta}</Text>
           </Button>
         </Card>
       )}
