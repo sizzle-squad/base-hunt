@@ -46,6 +46,7 @@ const PageConsts = {
 
 export default function LevelsPageClient() {
   const { data: collection, isLoading, error } = useLevels({ gameId: GAME_ID });
+  const loadingCollection = useMemo(() => [null, null, null, null], []);
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
@@ -127,14 +128,18 @@ export default function LevelsPageClient() {
   );
 
   // TODO: better loading UX
-  if (isLoading) return <div>Loading...</div>;
+  // if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
       <DetailsPageNavbar title={PageConsts.navTitle} />
-      <NoSsr>
-        <Stack gap={2}>
-          {collection.map((item: Level, index: number) => {
+      <Stack gap={2}>
+        {isLoading &&
+          loadingCollection.map((_, index) => (
+            <ListCard key={index} isLoading={isLoading} />
+          ))}
+        {collection &&
+          collection.map((item: Level, index: number) => {
             const content: ListCardPropsWithDescription = {
               title: `Level ${item.level}`,
               subtitle: `${item.thresholdPoints} points required`,
@@ -158,19 +163,19 @@ export default function LevelsPageClient() {
                     onClick={handleToggleDrawer}
                   />
                 }
+                isLoading={isLoading}
               />
             );
           })}
-        </Stack>
-        <SwipeUpDrawer
-          toolbarTitle={PageConsts.drawerTitle}
-          type={PageConsts.drawerType}
-          handleClose={handleToggleDrawer}
-          open={isOpen}
-        >
-          {activeItem && <LevelDrawerContent item={activeItem} />}
-        </SwipeUpDrawer>
-      </NoSsr>
+      </Stack>
+      <SwipeUpDrawer
+        toolbarTitle={PageConsts.drawerTitle}
+        type={PageConsts.drawerType}
+        handleClose={handleToggleDrawer}
+        open={isOpen}
+      >
+        {activeItem && <LevelDrawerContent item={activeItem} />}
+      </SwipeUpDrawer>
     </>
   );
 }
