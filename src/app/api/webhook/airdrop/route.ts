@@ -52,8 +52,10 @@ export async function POST(req: Request) {
   }
 
   if (levelData.data && levelData.data.length > 0) {
-    const level = levelData.data[0];
-    await AirdropNft(body.record.user_address, level.airdrop_command);
+    for (let i = 0; i < levelData.data.length; i++) {
+      const level = levelData.data[i];
+      await AirdropNft(body.record.user_address, level.airdrop_command);
+    }
   } else {
     console.log(
       '[webhook airdrop] no level found',
