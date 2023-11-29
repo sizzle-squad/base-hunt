@@ -1,17 +1,18 @@
-import { Box, Stack } from '@mui/material';
+import { Skeleton, Stack } from '@mui/material';
 import Text from '@/components/Text';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 type Props = {
   points: number;
   unit: 'pts' | 'points';
   backgroundColor?: string;
+  isLoading?: boolean;
 };
 
 export const PointsPill = ({
   points,
   unit,
   backgroundColor = '#fff',
+  isLoading = false,
 }: Props) => (
   <Stack
     direction="row"
@@ -33,11 +34,13 @@ export const PointsPill = ({
     }}
   >
     <Text sx={{ color: '#fff' }} align="center">
-      {points}
+      {!isLoading && points}
+      {isLoading && <Skeleton variant="text" width={30} />}
     </Text>
     <Stack direction="row" alignItems="center" justifyContent="center" gap={1}>
       <Text sx={{ color: '#fff' }} align="center">
-        {unit}{' '}
+        {!isLoading && unit}{' '}
+        {isLoading && <Skeleton variant="text" width={30} />}
       </Text>
       <svg
         width="5"
