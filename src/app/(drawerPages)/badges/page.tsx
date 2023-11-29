@@ -25,10 +25,6 @@ import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 
-const Footer = dynamic(() => import('@/components/navigation/footer'), {
-  ssr: false,
-});
-
 export default function Badges() {
   const isClient = useClientCheck();
   const router = useRouter();
