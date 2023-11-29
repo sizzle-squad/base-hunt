@@ -116,6 +116,7 @@ export default function ArtReveal() {
     <>
       {activeInfoStep && activeInfoStep >= 3 ? (
         <ProgressCard
+          isCTADisabled={score === 0}
           ctaText={`Tap to reveal (${score} ${UNIT})`}
           onPress={handleCTAPress}
         />
@@ -215,7 +216,14 @@ export default function ArtReveal() {
         )}
       </Stack>
     );
-  }, [CardContent, isLoading, treasureBox?.isOpen]);
+  }, [
+    handleCTAPress,
+    isLoading,
+    score,
+    treasureBox?.currentHitpoints,
+    treasureBox?.isOpen,
+    treasureBox?.totalHitpoints,
+  ]);
 
   if (!isClient || !treasureBox) return null;
 
