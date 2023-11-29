@@ -8,6 +8,7 @@ import { Rank } from '@/hooks/types';
 import { useTopRanks } from '@/hooks/useTopRanks';
 import { Box, NoSsr, Stack } from '@mui/material';
 import { useMemo } from 'react';
+import Text from '@/components/Text';
 
 export default function LeaderboardClient() {
   const { data: topRanks, isLoading, error } = useTopRanks({ gameId: GAME_ID });
@@ -26,30 +27,43 @@ export default function LeaderboardClient() {
     <>
       <DetailsPageNavbar title="Leaderboard" />
       <NoSsr>
-        <Stack direction="column" mt="24px" gap="24px">
-          <Stack direction="column" gap={1}>
-            <TopContributorTag />
-            <LeaderBoardRow
-              rank={topContributor}
-              position={0}
-              offset={1}
-              isLast
-            />
+        {topRanks.length === 0 ? (
+          <Stack
+            direction="column"
+            height="80vh"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Text variant="h6" align="center">
+              No leaderboard found.
+            </Text>
           </Stack>
-          <Box>
-            {restOfRanks.map((rank: Rank, index: number) => {
-              return (
-                <LeaderBoardRow
-                  key={rank.createdAt}
-                  rank={rank}
-                  position={index}
-                  offset={2}
-                  isLast={index === restOfRanks.length - 1}
-                />
-              );
-            })}
-          </Box>
-        </Stack>
+        ) : (
+          <Stack direction="column" mt="24px" gap="24px">
+            <Stack direction="column" gap={1}>
+              <TopContributorTag />
+              <LeaderBoardRow
+                rank={topContributor}
+                position={0}
+                offset={1}
+                isLast
+              />
+            </Stack>
+            <Box>
+              {restOfRanks.map((rank: Rank, index: number) => {
+                return (
+                  <LeaderBoardRow
+                    key={rank.createdAt}
+                    rank={rank}
+                    position={index}
+                    offset={2}
+                    isLast={index === restOfRanks.length - 1}
+                  />
+                );
+              })}
+            </Box>
+          </Stack>
+        )}
       </NoSsr>
     </>
   );
