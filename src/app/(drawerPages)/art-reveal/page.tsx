@@ -216,14 +216,7 @@ export default function ArtReveal() {
         )}
       </Stack>
     );
-  }, [
-    handleCTAPress,
-    isLoading,
-    score,
-    treasureBox?.currentHitpoints,
-    treasureBox?.isOpen,
-    treasureBox?.totalHitpoints,
-  ]);
+  }, [CardContent, isLoading, treasureBox?.isOpen]);
 
   if (!isClient || !treasureBox) return null;
 
