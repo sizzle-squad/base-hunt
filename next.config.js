@@ -9,15 +9,15 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.midjourney.com',
-      },
-      {
-        protocol: 'https',
         hostname: '**.seadn.io',
       },
       {
         protocol: 'https',
         hostname: 'fastly.picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: 'go.wallet.coinbase.com',
       },
     ],
   },
