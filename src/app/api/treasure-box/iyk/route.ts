@@ -50,7 +50,6 @@ export async function GET(request: NextRequest) {
   if (!score) {
     return new Response('Error: score not found', { status: 400 });
   }
-  // const pointInBigInt = BigInt(points as string);
   const params = {
     _game_id: gameId,
     _user_address: userAddress,
