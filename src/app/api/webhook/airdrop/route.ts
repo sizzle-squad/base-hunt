@@ -1,7 +1,7 @@
 import { AirdropNft } from '@/utils/walletapi';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { VerifyWebhookSecret } from '@/utils/webhook';
+import { verifyWebhookSecret } from '@/utils/webhook';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -31,7 +31,7 @@ curl -X POST 'http://localhost:3000/api/webhook/airdrop' -d '{
 */
 
 export async function POST(req: Request) {
-  if (!VerifyWebhookSecret(req)) {
+  if (!verifyWebhookSecret(req)) {
     return NextResponse.json({ status: 'unknown' });
   }
 

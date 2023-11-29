@@ -1,4 +1,4 @@
-export function VerifyWebhookSecret(req: Request): boolean {
+export function verifyWebhookSecret(req: Request): boolean {
   const secret = process.env.WEBHOOK_SECRET;
   const headerSecret = req.headers.get('x-api-secret');
   if (!secret) {
