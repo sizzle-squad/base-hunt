@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
   const gameId = toBigInt(searchParams.get('gameId') as string);
-  if (!userAddress || gameId == null) {
+  if (!userAddress || gameId === null) {
     return new Response(
       `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
       {

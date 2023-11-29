@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   const userAddress = searchParams.get('userAddress');
   const gameId = toBigInt(searchParams.get('gameId') as string);
 
-  if (!userAddress || gameId == null || !iykRef) {
+  if (!userAddress || gameId === null || !iykRef) {
     return new Response(
       `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}, iykRef: ${iykRef}`,
       {
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     );
   }
   const result = await getTapRef(iykRef as string);
-  if (result == null || !result.isValidRef) {
+  if (result === null || !result.isValidRef) {
     return new Response(`Invalid tapRef: ${iykRef}`, {
       status: 403,
     });

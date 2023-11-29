@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const gameId = toBigInt(searchParams.get('gameId') as string);
 
-  if (gameId == null) {
+  if (gameId === null) {
     return new Response('Missing parameters: gameId', { status: 400 });
   }
 
