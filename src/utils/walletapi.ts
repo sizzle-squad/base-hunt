@@ -15,7 +15,7 @@ const types = {
   ],
 };
 
-export async function AirdropNft(userAddress: string, command: string) {
+export async function airdropNft(userAddress: string, command: string) {
   const wallet = new Wallet(
     process.env.AUTHORIZER_PK as string,
     new ethers.JsonRpcProvider('https://mainnet.base.org')
