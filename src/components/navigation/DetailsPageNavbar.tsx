@@ -41,9 +41,9 @@ const TitleBar: React.FC<TitleBarProps> = ({
               height="24"
               rx="12"
               fill="#0A0B0D"
-              fill-opacity="0.2"
+              fillOpacity="0.2"
             />
-            <path d="M15 6L9 12L15 18" stroke="#1D1818" stroke-width="2" />
+            <path d="M15 6L9 12L15 18" stroke="#1D1818" strokeWidth="2" />
           </svg>
         </IconButton>
       </Link>

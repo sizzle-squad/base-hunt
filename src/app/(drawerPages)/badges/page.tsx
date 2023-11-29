@@ -211,12 +211,12 @@ export default function Badges() {
               height="24"
               rx="12"
               fill="black"
-              fill-opacity="0.2"
+              fillOpacity="0.2"
             />
             <path
               d="M16 8.5L8 16.5M8 8.5L16 16.5"
               stroke="white"
-              stroke-width="2"
+              strokeWidth="2"
             />
           </svg>
         </Box>

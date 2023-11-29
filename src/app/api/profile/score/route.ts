@@ -119,6 +119,7 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
           name: c.name,
           thresholdPoints: c.threshold_points,
           level: c.level,
+          description: c.description,
         }
       : {
           id: '',
@@ -126,6 +127,7 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
           name: 'zero level',
           thresholdPoints: BigInt(0),
           level: '1',
+          description: '',
         },
     nextLevel: {
       id: n.id,
@@ -133,6 +135,7 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
       name: n.name,
       thresholdPoints: n.threshold_points,
       level: n.level,
+      description: n.description,
     },
     score: s
       ? {

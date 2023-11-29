@@ -13,12 +13,12 @@ export const LocationIcon = memo(
         <path
           d="M3.26259 8.39417L17 0.436594L30.7375 8.39417V24.3115L17 32.2691L3.26259 24.3115V8.39417Z"
           stroke="#1D1818"
-          stroke-width="0.755576"
+          strokeWidth="0.755576"
         />
         <mask id="path-2-inside-1_1232_824" fill="white">
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M16.9999 29.3179L19.7122 26.5957L20.2381 27.1236L16.9999 30.3736L13.7617 27.1236L14.2877 26.5957L16.9999 29.3179Z"
           />
         </mask>
@@ -29,8 +29,8 @@ export const LocationIcon = memo(
         />
         <mask id="path-4-inside-2_1232_824" fill="white">
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M17 3.56825L14.2877 6.29039L13.7618 5.76252L17 2.51251L20.2381 5.76253L19.7122 6.29039L17 3.56825Z"
           />
         </mask>
@@ -42,12 +42,12 @@ export const LocationIcon = memo(
         <path
           d="M16.9999 3.4389L16.9999 29.4842"
           stroke="#1D1818"
-          stroke-width="0.755576"
+          strokeWidth="0.755576"
         />
         <mask id="path-7-inside-3_1232_824" fill="white">
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M28.1499 22.8805L27.1486 19.1706L27.8687 18.9791L29.0642 23.4084L24.6305 24.5878L24.4363 23.8683L28.1499 22.8805Z"
           />
         </mask>
@@ -58,8 +58,8 @@ export const LocationIcon = memo(
         />
         <mask id="path-9-inside-4_1232_824" fill="white">
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M5.85004 10.0057L6.85136 13.7156L6.13124 13.9072L4.93574 9.47782L9.36943 8.29847L9.5636 9.01789L5.85004 10.0057Z"
           />
         </mask>
@@ -71,12 +71,12 @@ export const LocationIcon = memo(
         <path
           d="M5.73804 9.9411L28.2939 22.9637"
           stroke="#1D1818"
-          stroke-width="0.755576"
+          strokeWidth="0.755576"
         />
         <mask id="path-12-inside-5_1232_824" fill="white">
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M28.1499 10.0056L24.4363 9.01782L24.6305 8.29841L29.0642 9.47775L27.8687 13.9071L27.1485 13.7156L28.1499 10.0056Z"
           />
         </mask>
@@ -87,8 +87,8 @@ export const LocationIcon = memo(
         />
         <mask id="path-14-inside-6_1232_824" fill="white">
           <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M5.85001 22.8805L9.56358 23.8683L9.3694 24.5877L4.93572 23.4084L6.13122 18.979L6.85134 19.1706L5.85001 22.8805Z"
           />
         </mask>
@@ -100,7 +100,7 @@ export const LocationIcon = memo(
         <path
           d="M5.73804 22.9451L28.2939 9.92248"
           stroke="#1D1818"
-          stroke-width="0.755576"
+          strokeWidth="0.755576"
         />
       </svg>
     );

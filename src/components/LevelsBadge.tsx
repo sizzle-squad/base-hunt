@@ -9,7 +9,7 @@ import Svg5 from '@public/images/levels/5.svg';
 import Svg6 from '@public/images/levels/6.svg';
 import { type Level } from '@/hooks/types';
 
-type LevelNumber = Level['level'];
+export type LevelNumber = Level['level'];
 
 const Levels: {
   [key in LevelNumber]: typeof Svg1;
@@ -29,6 +29,7 @@ type SvgSwitcherProps = {
 } & Omit<ComponentProps<typeof Image>, 'src'>;
 
 const SvgSwitcher = ({ level, ...imageProps }: SvgSwitcherProps) => {
+  console.log('level', level);
   let SvgComponent = null;
   if (level === null) {
     return null;

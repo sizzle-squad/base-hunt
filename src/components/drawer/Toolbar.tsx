@@ -15,8 +15,8 @@ const CloseIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect width="24" height="24" rx="12" fill="black" fill-opacity="0.2" />
-    <path d="M16 8L8 16M8 8L16 16" stroke="white" stroke-width="2" />
+    <rect width="24" height="24" rx="12" fill="black" fillOpacity="0.2" />
+    <path d="M16 8L8 16M8 8L16 16" stroke="white" strokeWidth="2" />
   </svg>
 );
 

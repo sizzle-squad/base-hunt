@@ -1,4 +1,5 @@
 'use client';
+
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
@@ -9,111 +10,43 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
 import { PointsPill } from '@/components/Pill';
+import { useLevels } from '@/hooks/useLevels';
+import { GAME_ID } from '@/constants/gameId';
+import SvgSwitcher, { LevelNumber } from '@/components/LevelsBadge';
+import { Level } from '@/hooks/types';
+
+const EllipsisIcon = memo(() => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+  >
+    <g opacity="0.4">
+      <circle cx="3" cy="8" r="1" fill="#1D1818" />
+      <circle cx="8" cy="8" r="1" fill="#1D1818" />
+      <circle cx="13" cy="8" r="1" fill="#1D1818" />
+    </g>
+  </svg>
+));
+EllipsisIcon.displayName = 'ellipsisIcon';
 
 type ListCardPropsWithDescription = ListCardProps & {
   description: string;
-  boost?: string;
 };
-
-const collection = [
-  {
-    title: 'Level 1',
-    subtitle: '4 points required',
-    description:
-      'Get a 40% discount on any three items of merchandise from Art Basel and Base.',
-    startContent: (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M2.64359 8.28868L16 0.57735L29.3564 8.28868V23.7113L16 31.4227L2.64359 23.7113V8.28868Z"
-          fill="white"
-          stroke="#1D1818"
-        />
-        <path
-          d="M12.0795 13.7044V18.2247L15.954 20.4855L19.8297 18.2247V13.7044L15.954 11.4436L12.0795 13.7044Z"
-          stroke="#1D1818"
-        />
-      </svg>
-    ),
-    endContent: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-      >
-        <g opacity="0.4">
-          <circle cx="3" cy="8" r="1" fill="#1D1818" />
-          <circle cx="8" cy="8" r="1" fill="#1D1818" />
-          <circle cx="13" cy="8" r="1" fill="#1D1818" />
-        </g>
-      </svg>
-    ),
-  },
-  {
-    title: 'Level 2',
-    subtitle: '8 points required',
-    description: 'Get a 40% discount on any three items of merchandise.',
-    startContent: (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M2.64359 8.28868L16 0.57735L29.3564 8.28868V23.7113L16 31.4227L2.64359 23.7113V8.28868Z"
-          fill="#1D1818"
-          stroke="white"
-        />
-        <path
-          d="M8.26489 11.5853V16.1056L12.1394 18.3664L16.0151 16.1056V11.5853L12.1394 9.32446L8.26489 11.5853Z"
-          stroke="white"
-        />
-        <path
-          d="M16 16.1417V20.662L19.8745 22.9228L23.7502 20.662V16.1417L19.8745 13.8809L16 16.1417Z"
-          stroke="white"
-        />
-        <path d="M12.1854 13.8809L19.8146 18.4372" stroke="white" />
-      </svg>
-    ),
-    endContent: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-      >
-        <g opacity="0.4">
-          <circle cx="3" cy="8" r="1" fill="#1D1818" />
-          <circle cx="8" cy="8" r="1" fill="#1D1818" />
-          <circle cx="13" cy="8" r="1" fill="#1D1818" />
-        </g>
-      </svg>
-    ),
-  },
-] as ListCardPropsWithDescription[];
 
 const PageConsts = {
   navTitle: 'Levels' as const,
   drawerTitle: 'Rewards' as const,
-  drawerSubtitle: 'Level up boost' as const,
-  drawerSubtitlePoints: 100 as const,
-  drawerSubtitleUnit: 'pts' as const,
   drawerButtonText: 'Visit merch store' as const,
   drawerType: 'levelsAction' as DrawerType,
   drawerAnchor: 'bottom' as const,
 } as const;
 
 export default function LevelsPageClient() {
+  const { data: collection, isLoading, error } = useLevels({ gameId: GAME_ID });
+
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
   const { drawerStates, toggleDrawer } = useDrawer();
@@ -138,7 +71,11 @@ export default function LevelsPageClient() {
     }: {
       item: ListCardPropsWithDescription;
       onClick: (item: ListCardPropsWithDescription) => void;
-    }) => <Box onClick={() => onClick(item)}>{item.endContent}</Box>
+    }) => (
+      <Box onClick={() => onClick(item)}>
+        <EllipsisIcon />
+      </Box>
+    )
   );
 
   const ToolbarWithClose = memo(
@@ -172,17 +109,7 @@ export default function LevelsPageClient() {
           <Text variant="h4">{item.title}</Text>
         </>
       )}
-
       <Text>{item.description}</Text>
-
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Text>{PageConsts.drawerSubtitle}</Text>
-        <PointsPill
-          points={PageConsts.drawerSubtitlePoints}
-          unit={PageConsts.drawerSubtitleUnit}
-        />
-      </Stack>
-
       <Button
         variant="contained"
         color="primary"
@@ -199,22 +126,41 @@ export default function LevelsPageClient() {
     </Stack>
   );
 
+  // TODO: better loading UX
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <>
       <DetailsPageNavbar title={PageConsts.navTitle} />
       <NoSsr>
         <Stack gap={2}>
-          {collection.map((item, index) => (
-            <ListCard
-              key={index}
-              title={item.title}
-              subtitle={item.subtitle}
-              startContent={item.startContent}
-              endContent={
-                <ToggleDrawerButton item={item} onClick={handleToggleDrawer} />
-              }
-            />
-          ))}
+          {collection.map((item: Level, index: number) => {
+            const content: ListCardPropsWithDescription = {
+              title: `Level ${item.level}`,
+              subtitle: `${item.thresholdPoints} points required`,
+              startContent: (
+                <SvgSwitcher
+                  alt={`Level ${item.level}`}
+                  level={index.toString() as LevelNumber}
+                  width={32}
+                  height={32}
+                />
+              ),
+              description: item.description,
+            };
+            return (
+              <ListCard
+                key={index}
+                {...content}
+                endContent={
+                  <ToggleDrawerButton
+                    item={content}
+                    onClick={handleToggleDrawer}
+                  />
+                }
+              />
+            );
+          })}
         </Stack>
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}
