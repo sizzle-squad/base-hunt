@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { VerifyWebhookSecret } from '@/utils/webhook';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -7,6 +8,10 @@ const supabase = createClient(
 );
 
 export async function POST(req: Request) {
+  if (!VerifyWebhookSecret(req)) {
+    return NextResponse.json({ status: 'unknown' });
+  }
+
   const body = await req.json();
   console.log('[level transfer] body:', body);
   const levelData = await supabase
