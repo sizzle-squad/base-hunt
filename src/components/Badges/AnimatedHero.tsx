@@ -1,6 +1,7 @@
 import React from 'react';
 import Lottie from 'react-lottie';
-import animationData from './Base-Hunt_Wb_12_transparent.json';
+import animationData from './BaseHunt_Stacked.json'; // Update with the path to your Lottie file
+import { Box, Card } from '@mui/material';
 
 const BaseHuntAnimated = ({
   width,

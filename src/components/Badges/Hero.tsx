@@ -3,7 +3,6 @@ import { memo } from 'react';
 import dynamic from 'next/dynamic';
 import HeroSVG from '@/components/assets/HeroSVG';
 import Text from '@/components/Text';
-import BaseHuntAnimated from './AnimatedHero';
 
 const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
   ssr: false,
@@ -28,8 +27,7 @@ const Hero = () => {
           width="100%"
           paddingY="48px"
         >
-          {/* <HeroSVG /> */}
-          <BaseHuntAnimated width="100%" height="100%" />
+          <HeroSVG />
           <Text fontSize={20} fontWeight={400}>
             See art. Mint art. Reveal art.
           </Text>
