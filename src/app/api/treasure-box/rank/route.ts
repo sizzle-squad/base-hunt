@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
   const rank = rankData.data;
   if (rank.length === 0) {
     return NextResponse.json({
-      rank: '0',
+      rank: null,
       userAddress: userAddress,
     });
   }
