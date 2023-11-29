@@ -12,7 +12,6 @@ import { useCBProfile } from '@/hooks/useCBProfile';
 import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { ProgressCard } from '@/components/assets/ProgressCard';
 import { useScore } from '@/hooks/useScore';
-import Footer from '@/components/navigation/footer';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import ArtRevealClient from './ArtRevealClient';
@@ -216,14 +215,7 @@ export default function ArtReveal() {
         )}
       </Stack>
     );
-  }, [
-    handleCTAPress,
-    isLoading,
-    score,
-    treasureBox?.currentHitpoints,
-    treasureBox?.isOpen,
-    treasureBox?.totalHitpoints,
-  ]);
+  }, [CardContent, isLoading, treasureBox?.isOpen]);
 
   if (!isClient || !treasureBox) return null;
 
