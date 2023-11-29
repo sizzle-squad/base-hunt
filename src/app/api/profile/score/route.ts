@@ -84,9 +84,9 @@ export async function GET(req: NextRequest) {
       currentLevel = {
         id: '',
         gameId: gameId,
-        name: '0 level',
+        name: 'level-0',
         thresholdPoints: 0,
-        level: '0 level',
+        level: '0',
       };
       nextLevel = levels[0];
     }
