@@ -33,7 +33,6 @@ export default function RootLayout({
       direction="column"
       overflow={'hidden'}
       position={'relative'}
-      marginBottom="80px"
     >
       {children}
     </Stack>
