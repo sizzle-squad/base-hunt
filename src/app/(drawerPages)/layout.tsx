@@ -1,3 +1,4 @@
+import Footer from '@/components/navigation/footer';
 import { DrawerProvider } from '@/context/DrawerContext';
 
 export default function ArtRevealLayout({
@@ -5,5 +6,10 @@ export default function ArtRevealLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <DrawerProvider>{children}</DrawerProvider>;
+  return (
+    <DrawerProvider>
+      {children}
+      <Footer />
+    </DrawerProvider>
+  );
 }
