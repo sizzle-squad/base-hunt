@@ -1,12 +1,12 @@
 import { memo } from 'react';
 
-export const ArtRevealIcon = memo(({ color }: { color?: string }) => {
+export const ArtRevealIcon = memo(() => {
   return (
     <svg
       width="34"
       height="33"
       viewBox="0 0 34 33"
-      fill={color ?? 'none'}
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
