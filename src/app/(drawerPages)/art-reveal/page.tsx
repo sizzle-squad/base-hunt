@@ -42,7 +42,8 @@ const TreasureChestInfo = [
 ] as const;
 
 export default function ArtReveal() {
-  const [activeInfoStep, setActiveInfoStep] = useState(() => {
+  const [activeInfoStep, setActiveInfoStep] = useState(0);
+  useState(() => {
     const savedStep = window.localStorage.getItem('artRevealInfoStep');
     return savedStep ? Number(savedStep) : 0; // Provide a default value if not found
   });
