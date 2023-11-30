@@ -11,6 +11,7 @@ import Text from '@/components/Text';
 import Circle from '@/components/Circle';
 import { PointsPill } from '@/components/PointsPill';
 import { UNIT } from '@/constants/unit';
+import Link from '@/components/AnimatedLink';
 
 export const NavbarClient = () => {
   const { address, isDisconnected, isConnecting } = useAccount();
@@ -56,6 +57,7 @@ export const NavbarClient = () => {
             borderRadius: '6.25rem',
             padding: '0.25rem 0.5rem 0.25rem 0.5rem',
             backgroundColor: 'white',
+            cursor: 'pointer',
           }}
         >
           {isDisconnected ? (
@@ -69,12 +71,14 @@ export const NavbarClient = () => {
           )}
         </Stack>
       </Stack>
-      <PointsPill
-        backgroundColor="var(--CB-Blue, #0052FF)"
-        points={score as number}
-        unit={UNIT}
-        isLoading={isLoading}
-      />
+      <Link href="/boosts">
+        <PointsPill
+          backgroundColor="var(--CB-Blue, #0052FF)"
+          points={score as number}
+          unit={UNIT}
+          isLoading={isLoading}
+        />
+      </Link>
     </>
   );
 };
