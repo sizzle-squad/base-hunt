@@ -24,7 +24,7 @@ class Blockscout {
           }
           const response = await fetch(url);
           if (!response.ok) {
-          throw new Error('Network response was not ok');
+            throw new Error('Network response was not ok');
           }
           const data = await response.json();
           return data;
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
 
   if (boostData.error) {
     console.error(boostData.error);
-    throw new Error(boostData.error.message);
+    return new Response(`Unable to claim boost for boostId: ${boostId}, gameId: ${gameId}.`, { status: 400 });
   }
 
   const boost = boostData.data;
@@ -193,9 +193,6 @@ export async function POST(request: NextRequest) {
   .single();
 
   if (error) {
-    if (error.code === '23505') {
-      return new Response(`Boost already claimed for boostId: ${boostId}, gameId: ${gameId}.`, { status: 400 });
-    }
     return new Response(`Unable to claim boost for boostId: ${boostId}, gameId: ${gameId}.`, { status: 400 });
   }
 

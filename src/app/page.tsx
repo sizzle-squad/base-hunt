@@ -52,8 +52,6 @@ export default function Home() {
     }
   }, [isConnected, handleStartExploring, isClient]);
 
-
-
   return (
     <>
       <Head>
