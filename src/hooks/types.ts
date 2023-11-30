@@ -87,3 +87,7 @@ export type Rank = {
   totalHitpoints: number;
   userAddress: string;
 };
+
+export type ExtendedDocument = {
+  startViewTransition?: any;
+} & Document;

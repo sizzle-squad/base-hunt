@@ -1,7 +1,7 @@
 import { Skeleton, Stack } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '../Text';
-import Link from 'next/link';
+import Link from '@/components/AnimatedLink';
 
 type Props = {
   currentRank?: string | null;

@@ -1,10 +1,10 @@
 import { type Level } from '@/hooks/types';
-import { Box, Stack, Skeleton } from '@mui/material';
+import { Box, Stack, Skeleton, NoSsr } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '@/components/Text';
 
 import SvgSwitcher from '../LevelsBadge';
-import Link from 'next/link';
+import Link from '@/components/AnimatedLink';
 
 type Props = {
   currentLevel?: Level | null;

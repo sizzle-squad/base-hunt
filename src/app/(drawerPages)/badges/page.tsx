@@ -25,10 +25,6 @@ import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 
-const Footer = dynamic(() => import('@/components/navigation/footer'), {
-  ssr: false,
-});
-
 export default function Badges() {
   const isClient = useClientCheck();
   const router = useRouter();
@@ -304,7 +300,12 @@ export default function Badges() {
 
   return (
     <>
-      <Stack paddingX="1.25rem" gap="12px" paddingBottom="6rem">
+      <Stack
+        paddingX="1.25rem"
+        gap="12px"
+        paddingBottom="6rem"
+        className="pageContent"
+      >
         <Hero />
         <TreasureChest />
         <Stack
@@ -314,13 +315,11 @@ export default function Badges() {
           gap="10px"
           alignSelf="stretch"
         >
-          <NoSsr>
-            <Level
-              currentLevel={score?.currentLevel}
-              isLoading={isScoreLoading}
-            />
-            <Rank currentRank={rank?.rank} isLoading={isRankLoading} />
-          </NoSsr>
+          <Level
+            currentLevel={score?.currentLevel}
+            isLoading={isScoreLoading}
+          />
+          <Rank currentRank={rank?.rank} isLoading={isRankLoading} />
         </Stack>
         {BadgesWrapper}
         <Box>

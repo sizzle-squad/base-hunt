@@ -5,7 +5,7 @@
   font-family: CoinbaseDisplay;
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/Coinbase_Display-Regular.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Display-Regular.woff2') format('woff2');
 }
 
 @font-face {
@@ -13,7 +13,7 @@
   font-family: CoinbaseDisplay;
   font-style: normal;
   font-weight: 500;
-  src: url("/fonts/Coinbase_Display-Medium.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Display-Medium.woff2') format('woff2');
 }
 
 @font-face {
@@ -21,7 +21,7 @@
   font-family: CoinbaseMono;
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/Coinbase_Mono-Regular.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Mono-Regular.woff2') format('woff2');
 }
 
 @font-face {
@@ -29,7 +29,7 @@
   font-family: CoinbaseMono;
   font-style: normal;
   font-weight: 500;
-  src: url("/fonts/Coinbase_Mono-Medium.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Mono-Medium.woff2') format('woff2');
 }
 
 @font-face {
@@ -37,7 +37,7 @@
   font-family: CoinbaseSans;
   font-style: normal;
   font-weight: 700;
-  src: url("/fonts/Coinbase_Sans-Bold.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Sans-Bold.woff2') format('woff2');
 }
 
 @font-face {
@@ -45,7 +45,7 @@
   font-family: CoinbaseSans;
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/Coinbase_Sans-Regular.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Sans-Regular.woff2') format('woff2');
 }
 
 @font-face {
@@ -53,7 +53,7 @@
   font-family: CoinbaseSans;
   font-style: normal;
   font-weight: 500;
-  src: url("/fonts/Coinbase_Sans-Medium.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Sans-Medium.woff2') format('woff2');
 }
 
 @font-face {
@@ -61,7 +61,7 @@
   font-family: CoinbaseSans;
   font-style: italic;
   font-weight: 400;
-  src: url("/fonts/Coinbase_Sans-Regular_Italic.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Sans-Regular_Italic.woff2') format('woff2');
 }
 
 @font-face {
@@ -69,7 +69,7 @@
   font-family: CoinbaseSans;
   font-style: italic;
   font-weight: 500;
-  src: url("/fonts/Coinbase_Sans-Medium_Italic.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Sans-Medium_Italic.woff2') format('woff2');
 }
 
 @font-face {
@@ -77,7 +77,7 @@
   font-family: CoinbaseText;
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/Coinbase_Text-Regular.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Text-Regular.woff2') format('woff2');
 }
 
 @font-face {
@@ -85,7 +85,7 @@
   font-family: CoinbaseText;
   font-style: normal;
   font-weight: 500;
-  src: url("/fonts/Coinbase_Text-Medium.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Text-Medium.woff2') format('woff2');
 }
 
 @font-face {
@@ -93,7 +93,7 @@
   font-family: CoinbaseText;
   font-style: italic;
   font-weight: 400;
-  src: url("/fonts/Coinbase_Text-Regular_Italic.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Text-Regular_Italic.woff2') format('woff2');
 }
 
 @font-face {
@@ -101,7 +101,7 @@
   font-family: CoinbaseText;
   font-style: italic;
   font-weight: 500;
-  src: url("/fonts/Coinbase_Text-Medium_Italic.woff2") format("woff2");
+  src: url('/fonts/Coinbase_Text-Medium_Italic.woff2') format('woff2');
 }
 
 html,
@@ -136,4 +136,41 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
   }
+}
+
+@keyframes hide {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.pageHeader {
+  view-transition-name: page-header;
+}
+
+.pageContent {
+  view-transition-name: page-content;
+}
+
+/* Views Animation */
+::view-transition-old(page-content) {
+  animation: hide 0.5s ease-in 1 forwards;
+}
+
+::view-transition-new(page-content) {
+  animation: fade-in 0.5s ease-in 1 forwards;
 }
