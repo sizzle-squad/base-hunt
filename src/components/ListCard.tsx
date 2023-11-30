@@ -9,6 +9,7 @@ export type ListCardProps = {
   endContent?: ReactNode;
   title?: string;
   subtitle?: string;
+  titleDecoration?: ReactNode;
 };
 
 function ListCard({
@@ -16,6 +17,7 @@ function ListCard({
   title,
   subtitle,
   endContent,
+  titleDecoration,
 }: ListCardProps) {
   // Component implementation remains the same
   return (
@@ -26,7 +28,7 @@ function ListCard({
         alignSelf: 'stretch',
       }}
     >
-      <Stack direction="row" alignItems="flex-start" gap="12px">
+      <Stack direction="row" alignItems="flex-start">
         <>
           {/* Start Content */}
           {startContent && <Stack flexDirection="column">{startContent}</Stack>}
@@ -34,9 +36,16 @@ function ListCard({
             {/* Title */}
             <Stack flexDirection="row" justifyContent="space-between">
               {title && (
-                <Text lineHeight="19.2px" fontSize="16px" noWrap>
-                  {title}
-                </Text>
+                <Stack flexDirection={'row'} gap="8px" alignItems={'center'}>
+                  <Text lineHeight="19.2px" fontSize="16px" noWrap>
+                    {title}
+                  </Text>
+                  {titleDecoration && (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      {titleDecoration}
+                    </Box>
+                  )}
+                </Stack>
               )}
               {/* End Content */}
               {endContent && (
