@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
         gameId: gameId,
         name: 'level-0',
         thresholdPoints: 0,
-        level: '0',
+        level: '1',
       };
       nextLevel = levels[0];
     }

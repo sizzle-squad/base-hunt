@@ -5,11 +5,10 @@ import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
-import { Box, Button, NoSsr, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { ReactElement, memo, useCallback, useMemo, useState } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
-import { PointsPill } from '@/components/PointsPill';
 import { useLevels } from '@/hooks/useLevels';
 import { GAME_ID } from '@/constants/gameId';
 import SvgSwitcher, { LevelNumber } from '@/components/LevelsBadge';
@@ -134,7 +133,7 @@ export default function LevelsPageClient() {
               handleToggleDrawer(item);
             };
             const currentLevel = parseInt(score?.currentLevel?.level as string);
-            const itemLevel = parseInt(item.level) - 1;
+            const itemLevel = parseInt(item.level);
             const levelMatch = currentLevel === itemLevel;
             const content: ListCardPropsWithDescription = {
               title: `Level ${item.level}`,
@@ -142,7 +141,7 @@ export default function LevelsPageClient() {
               startContent: (
                 <SvgSwitcher
                   alt={`Level ${item.level}`}
-                  level={index.toString() as LevelNumber}
+                  level={item.level as LevelNumber}
                   width={32}
                   height={32}
                 />

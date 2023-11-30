@@ -1,5 +1,5 @@
 import { type Level } from '@/hooks/types';
-import { Box, Stack, Skeleton, NoSsr } from '@mui/material';
+import { Box, Stack, Skeleton } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '@/components/Text';
 
@@ -22,16 +22,13 @@ export function Level({ currentLevel, isLoading }: Props) {
 
   return (
     <Stack
+      justifyContent="space-between"
       sx={{
-        display: 'flex',
         alignItems: 'flex-start',
         borderRadius: '8px',
         backgroundColor: 'var(--White, #fff)',
         padding: '12px 16px',
-        justifyContent: 'space-between',
         height: '44px',
-        width: '100%',
-        flexDirection: 'column',
         position: 'relative',
         flex: 1,
         overflow: 'hidden',
@@ -39,23 +36,25 @@ export function Level({ currentLevel, isLoading }: Props) {
       }}
     >
       <Link href="/levels">
-        {content}
-        {currentLevel?.level && (
-          <Box
-            sx={{
-              position: 'absolute',
-              right: '-16.5px',
-              top: '-10px',
-            }}
-          >
-            <SvgSwitcher
-              alt={`Level ${currentLevel.level || 'Level badge'} Badge`}
-              level={(currentLevel?.level as Level['level']) || null}
-              width={64}
-              height={64}
-            />
-          </Box>
-        )}
+        <Stack width="144px">
+          {content}
+          {currentLevel?.level && (
+            <Box
+              sx={{
+                position: 'absolute',
+                right: '-16.5px',
+                top: '-10px',
+              }}
+            >
+              <SvgSwitcher
+                alt={`Level ${currentLevel.level || 'Level badge'} Badge`}
+                level={(currentLevel?.level as Level['level']) || null}
+                width={64}
+                height={64}
+              />
+            </Box>
+          )}
+        </Stack>
       </Link>
     </Stack>
   );

@@ -14,13 +14,12 @@ export type LevelNumber = Level['level'];
 const Levels: {
   [key in LevelNumber]: typeof Svg1;
 } = {
-  0: Svg1,
-  1: Svg2,
-  2: Svg3,
-  3: Svg4,
-  4: Svg5,
-  5: Svg6,
-  6: null,
+  1: Svg1,
+  2: Svg2,
+  3: Svg3,
+  4: Svg4,
+  5: Svg5,
+  6: Svg6,
   7: null,
 };
 
