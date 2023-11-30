@@ -12,6 +12,8 @@ const supabase = createClient(
 export type BoostType = {
   id: bigint;
   name: string;
+  icon: string;
+  description: string;
   contract_addresses: string[];
   image_url: string | null;
   game_id: bigint;
@@ -27,6 +29,8 @@ export type Boost = {
   id: bigint;
   name: string;
   contractAddresses: string[];
+  icon: string;
+  description: string;
   imageUrl: string | null;
   gameId: bigint;
   ctaUrl: string | null;
@@ -44,6 +48,8 @@ async function mapBoostState(
     id: boost.id as bigint,
     name: boost.name,
     contractAddresses: boost.contract_addresses,
+    icon: boost.icon,
+    description: boost.description,
     imageUrl: boost.image_url,
     gameId: boost.game_id as bigint,
     ctaUrl: boost.cta_url,
