@@ -5,16 +5,25 @@ import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
-import { Box, Button, NoSsr, Stack } from '@mui/material';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { Alert, Box, Button, NoSsr, Snackbar, Stack } from '@mui/material';
+import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
 import { PointsPill } from '@/components/Pill';
+import { useBoosts } from '@/hooks/useBoosts';
+import { useClaimBoost } from '@/hooks/useClaimBoost';
+import { GAME_ID } from '@/constants/gameId';
+import { useAccount } from 'wagmi';
 
 type ListCardPropsForBoosts = ListCardProps & {
   explanation?: string;
   points: number;
+  id: string;
+  description: string;
+  contractAddress: string;
   cta: string;
+  claimed: boolean;
+  claimable: boolean;
   completed: {
     times: number;
     maxTimes: number;
@@ -32,16 +41,23 @@ const PageConsts = {
   drawerAnchor: 'bottom' as const,
 } as const;
 
-const BoostsCollection = [
-  {
-    title: 'Buy Merch',
-    subtitle: '4 points required',
-    cta: 'Visit merch store',
-    points: 30,
-    completed: {
-      times: 3,
-      maxTimes: 5,
-    },
+export default function BoostsPageClient() {
+
+  const { address } = useAccount();
+  const { data: boosts, isLoading } = useBoosts({userAddress: address, gameId: GAME_ID});
+  const { claimBoost } = useClaimBoost();
+
+  const boostsCollection = boosts?.filter((boost) => boost.isEnabled).map((boost) => { return {
+    id: boost.id,
+    title: boost.name,
+    description: boost.description,
+    type: boost.boostType,
+    contractAddress: boost.contractAddresses[0],
+    subtitle: '',
+    cta: boost.ctaText,
+    points: boost.points,
+    claimed: boost.claimed,
+    claimable: !boost.claimed,
     startContent: (
       <svg
         width="24"
@@ -59,53 +75,13 @@ const BoostsCollection = [
         />
       </svg>
     ),
-    endContent: <Text>30 pts</Text>,
-  },
-  {
-    title: 'Buy coffee from Base Cafe',
-    subtitle: '8 points required',
-    cta: 'Visit Base Cafe',
-    points: 100,
-    explanation: 'Max 5 times',
-    completed: {
-      times: 3,
-      maxTimes: 5,
-    },
-    startContent: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M6 6V3H12L18 5V6H6Z" stroke="black" stroke-width="1.5" />
-        <rect
-          x="5"
-          y="6"
-          width="14"
-          height="3"
-          rx="1.5"
-          stroke="black"
-          stroke-width="1.5"
-        />
-        <path
-          d="M7.88 21L6.5 9H18L16.16 21H7.88Z"
-          stroke="black"
-          stroke-width="1.5"
-        />
-        <path d="M7 11.5H17.5" stroke="black" stroke-width="1.5" />
-        <path d="M8 17.5H16" stroke="black" stroke-width="1.5" />
-      </svg>
-    ),
-    endContent: <Text>100 pts</Text>,
-  },
-] as ListCardPropsForBoosts[];
+    endContent: <Text>{boost.points.toString()} pts</Text>,
+  }});
 
-export default function BoostsPageClient() {
   const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
     null
   );
+
   const { drawerStates, toggleDrawer } = useDrawer();
 
   const isOpen = useMemo(
@@ -121,6 +97,36 @@ export default function BoostsPageClient() {
     [isOpen, toggleDrawer]
   );
 
+  const handleCTAPress = useCallback(() => {
+    claimBoost.mutate({
+      gameId: GAME_ID,
+      userAddress: address,
+      boostId: activeItem!.id,
+      contractAddress: activeItem?.contractAddress
+    });
+  }, [GAME_ID, address, activeItem]);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleClose = (event: any, reason: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+  useEffect(() => {
+    if (claimBoost.isSuccess) {
+      setSnackbarMessage("Boost was successfully claimed.");
+      setSnackbarOpen(true);
+    }
+    if (claimBoost.isError) {
+      setSnackbarMessage("Unable to claim boost.");
+      setSnackbarOpen(true);
+    }
+  }, [claimBoost.isSuccess, claimBoost.isError]);
+
   const ToggleDrawerButton = memo(
     ({
       item,
@@ -128,7 +134,9 @@ export default function BoostsPageClient() {
     }: {
       item: ListCardPropsForBoosts;
       onClick: (item: ListCardPropsForBoosts) => void;
-    }) => <Box onClick={() => onClick(item)}>{item.endContent}</Box>
+    }) => <Box sx={{
+      color: 'blue',
+    }} onClick={() => onClick(item)}>{'Claim Boost'}</Box>
   );
 
   const ToolbarWithClose = memo(
@@ -159,7 +167,7 @@ export default function BoostsPageClient() {
           {item.title && (
             <>
               <Text variant="h4">{item.title}</Text>
-              <Text>{PageConsts.drawerSubtitle}</Text>
+              <Text>{item.description}</Text>
               {item?.explanation && (
                 <Text fontSize="14px">{item?.explanation}</Text>
               )}
@@ -179,8 +187,10 @@ export default function BoostsPageClient() {
           bgcolor: 'black',
           color: 'white',
         }}
+        disabled={claimBoost.isLoading}
+        onClick={handleCTAPress}
       >
-        {item.cta}
+        { item.claimable ? 'Claim boost' : item.cta }
       </Button>
     </Stack>
   );
@@ -190,15 +200,13 @@ export default function BoostsPageClient() {
       <DetailsPageNavbar title={PageConsts.navTitle} />
       <NoSsr>
         <Stack gap={2}>
-          {BoostsCollection.map((item, index) => (
+          {boostsCollection?.map((item, index) => (
             <ListCard
               key={index}
               title={item.title}
-              subtitle={item.subtitle}
+              subtitle={item.claimed ? (item.type === 'TRANSFER_NFT' ? 'Auto-claimed' : 'Claimed') : <ToggleDrawerButton item={item} onClick={handleToggleDrawer} />}
               startContent={item.startContent}
-              endContent={
-                <ToggleDrawerButton item={item} onClick={handleToggleDrawer} />
-              }
+              endContent={item.endContent}
             />
           ))}
         </Stack>
@@ -211,6 +219,13 @@ export default function BoostsPageClient() {
           {activeItem && <BoostDrawerContent item={activeItem} />}
         </SwipeUpDrawer>
       </NoSsr>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        message={snackbarMessage}
+        />
     </>
   );
 }

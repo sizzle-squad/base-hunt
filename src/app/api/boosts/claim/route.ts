@@ -3,10 +3,74 @@ import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { Network, Alchemy, TokenBalance } from "alchemy-sdk";
 import { hoursToMilliseconds } from 'date-fns';
+import { toBigInt } from '@/utils/toBigInt';
+
+class Blockscout {
+  apiKey: string | undefined;
+  domain: string;
+  network: string;
+
+  constructor(settings: { apiKey: string | undefined; domain: string; network: string; }) {
+      this.apiKey = settings.apiKey;
+      this.domain = settings.domain;
+      this.network = settings.network;
+  }
+
+  async fetch(action: string, params = { startblock: 0, endblock: 99999999, sort: 'desc' }) {
+      try {
+          let url = `https://${this.network}.${this.domain}/api?module=account&action=${action}&apikey=${this.apiKey}`;
+          for (const [key, value] of Object.entries(params)) {
+              url += value ? `&${key}=${value}` : '';
+          }
+          const response = await fetch(url);
+          if (!response.ok) {
+          throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          return data;
+      } catch (error) {
+          console.log(error);
+      }
+  }
+
+  async getExternalTransfers(params: { startblock: number; endblock: number; sort: string; } | undefined) {
+      // params = { address, page, offset, startblock, endblock, sort }
+      return await this.fetch('txlist', params);
+  }
+
+  async getERC20Transfers(params: { startblock: number; endblock: number; sort: string; } | undefined) {
+      // params = { address, contractAddress, page, offset, startblock, endblock, sort }
+      return await this.fetch('tokentx', params);
+  }
+
+  async getAssetTransfers(params: { categories: string[]; startblock: number; endblock: number; sort: string; }) {
+      // params = { address, contractAddress, page, offset, startblock, endblock, sort, categories }
+      const { categories } = params;
+      let transfers: any[] = [];
+      for (const category of categories) {
+          if (category === 'external') {
+              const externalTransfers = await this.getExternalTransfers(params);
+              transfers = [...transfers, ...externalTransfers.result];
+          } else if (category === 'erc20') {
+              const erc20Transfers = await this.getERC20Transfers(params);
+              transfers = [...transfers, ...erc20Transfers.result];
+          }
+      }
+      return transfers;
+  }
+}
+
+const blockscoutSettings = {
+  apiKey: process.env.BLOCKSCOUT_API_KEY,
+  domain: 'blockscout.com',
+  network: 'base',
+};
+
+const blockscout = new Blockscout(blockscoutSettings);
 
 const settings = {
-    apiKey: process.env.ALCHEMY_ID,
-    network: Network.BASE_MAINNET,
+  apiKey: process.env.ALCHEMY_ID,
+  network: Network.BASE_MAINNET,
 };
 
 const alchemy = new Alchemy(settings);
@@ -16,10 +80,21 @@ async function ownsNFT(userAddress: string, contract: string) {
     return response;
 }
 
-async function hasToken(userAddress: string, contract: string) {
+async function hasToken(userAddress: string, contract: string, threshold: number) {
     const tokenBalanceRes = await alchemy.core.getTokenBalances(userAddress, [contract]);
-    const filterByBalance = tokenBalanceRes.tokenBalances.filter((balance: TokenBalance) => Number(balance.tokenBalance) > 0);
+    const filterByBalance = tokenBalanceRes.tokenBalances.filter((balance: TokenBalance) => Number(balance.tokenBalance) >= threshold);
     return filterByBalance.length > 0;
+}
+
+export async function verifyTransactions(toAddress: string, fromAddress: string, contractAddress: string) {
+  const params = {
+      address: fromAddress,
+      contractAddress,
+      categories: ['external', 'erc20'],
+  }
+  const response = await blockscout.getAssetTransfers(params as any);
+  const transfers =  response.filter((transfer) => transfer.to.toLowerCase() === toAddress.toLowerCase());
+  return transfers.length > 0;
 }
 
 const supabase = createClient(
@@ -48,8 +123,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const gameIdInBigInt = BigInt(gameId as string);
-  const boostIdInBigInt = BigInt(boostId as string);
+  const gameIdInBigInt = toBigInt(gameId as string);
+  const boostIdInBigInt = toBigInt(boostId as string);
+
+  const now = new Date().toISOString();
 
   const boostData = await supabase
   .from('boost_configuration')
@@ -63,6 +140,7 @@ export async function POST(request: NextRequest) {
   .eq('id', boostIdInBigInt)
   .eq('game_id', gameIdInBigInt)
   .eq('is_enabled', true)
+  .or(`available_time.is.null,available_time.lte.${now}`)
   .single();
 
   if (boostData.error) {
@@ -77,16 +155,16 @@ export async function POST(request: NextRequest) {
         status: 400,
       });
   }
-  
+
   if (boost.boost_type === 'NFT' || boost.boost_type === 'NFT_PER_MINT' || boost.boost_type === 'TOKEN') {
     if (!contractAddress) {
-        return new Response(
-          `Missing parameters: contractAddress: ${contractAddress} for boost type ${boost.boost_type}`,
-          {
-            status: 400,
-          }
-        );
-      }
+      return new Response(
+        `Missing parameters: contractAddress: ${contractAddress} for boost type ${boost.boost_type}`,
+        {
+          status: 400,
+        }
+      );
+    }
   }
 
   let verified = false;
@@ -96,15 +174,13 @@ export async function POST(request: NextRequest) {
         verified = await ownsNFT(userAddress, contractAddress);
         break;
     case 'TOKEN':
-        verified = await hasToken(userAddress, contractAddress);
+        verified = await hasToken(userAddress, contractAddress, boost.transaction_value_threshold);
         break;
-    case 'RECURRING':
-        const activeClaims = boost.claimed_boost.filter(c => {
-            const refreshHours = boost.refresh_time ? boost.refresh_time.getHours() : 24;
-            const expirationTime = new Date(c.updated_at.getTime() + hoursToMilliseconds(refreshHours));
-            return new Date() < expirationTime;
-        });
-        verified = activeClaims.length == 0;
+    case 'TRANSACTION':
+        verified = await verifyTransactions(boost.transaction_to, userAddress, contractAddress);
+        break;
+    case 'DEFAULT':
+        verified = true;
         break;
   }
 

@@ -4,11 +4,11 @@ import axios from 'axios';
 
 export type BoostsClaimData = {
     gameId: string;
-    userAddress: string;
+    userAddress: `0x${string}` | undefined;
     boostId: string;
     contractAddress?: string;
   };
-  
+
 export function useClaimBoost() {
     const claimBoost = useMutation({
       mutationFn: (data: BoostsClaimData) => { 

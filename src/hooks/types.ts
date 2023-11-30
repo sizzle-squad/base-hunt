@@ -88,4 +88,5 @@ export type Boost = {
   isEnabled: boolean;
   points: bigint;
   nftAmount: bigint | null;
+  claimed: boolean;
 };

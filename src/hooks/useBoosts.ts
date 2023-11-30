@@ -5,16 +5,12 @@ import { Boost } from './types';
 import { useMemo } from 'react';
 
 type Props = {
-  userAddress: `0x${string}` | string;
+  userAddress: `0x${string}` | undefined;
   gameId: string;
 };
 
-type BoostsReturnType = {
-    data: Boost[];
-  };
-
 export function useBoosts({ userAddress, gameId }: Props) {
-  const { data, isLoading, error } = useQuery<BoostsReturnType>(
+  const { data, isLoading, error } = useQuery<Boost[]>(
     ['boosts', userAddress, gameId],
     async () => {
       const boosts = await axios({

@@ -8,7 +8,7 @@ export type ListCardProps = {
   startContent?: ReactNode;
   endContent?: ReactNode;
   title?: string;
-  subtitle?: string;
+  subtitle?: string | ReactNode;
 };
 
 const ListCard: FC<ListCardProps> = ({
@@ -40,7 +40,7 @@ const ListCard: FC<ListCardProps> = ({
               )}
               {/* End Content */}
               {endContent && (
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
                   {endContent}
                 </Box>
               )}
