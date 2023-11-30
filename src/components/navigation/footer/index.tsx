@@ -1,22 +1,22 @@
 'use client';
 
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
-import { useCallback, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { ArtIcon } from '@/components/assets/icons/ArtIcon';
 import { LocationIcon } from '@/components/assets/icons/LocationIcon';
 import { ArtRevealIcon } from '@/components/assets/icons/ArtRevealIcon';
+import Link from 'next/link';
+import { ActiveArtRevealIcon } from '@/components/assets/icons/ActiveArtRevealIcon';
 
 export default function Footer() {
+  const pathname = usePathname();
   const router = useRouter();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(pathname);
 
-  const handleActionPress = useCallback(
-    (route: string) => {
-      return () => router.push(`/${route}/`);
-    },
-    [router]
-  );
+  useEffect(() => {
+    setValue(pathname);
+  }, [pathname]);
 
   return (
     <Paper
@@ -25,7 +25,7 @@ export default function Footer() {
         bottom: 0,
         left: 0,
         right: 0,
-        maxWidth: 1290,
+        maxWidth: 500,
         margin: 'auto',
         paddingY: '12px',
       }}
@@ -35,23 +35,46 @@ export default function Footer() {
         showLabels
         value={value}
         onChange={(_, newValue) => {
-          setValue(newValue);
+          router.push(newValue);
         }}
       >
         <BottomNavigationAction
+          sx={{
+            '.Mui-selected': {
+              color: '#000',
+            },
+          }}
           label="Art"
-          onClick={handleActionPress('badges')}
-          icon={<ArtIcon />}
+          value="/badges"
+          icon={<ArtIcon color={value === '/badges' ? '#E1FF67' : 'none'} />}
         />
         <BottomNavigationAction
+          sx={{
+            '.Mui-selected': {
+              color: '#000',
+            },
+          }}
           label="Locations"
-          onClick={handleActionPress('')}
-          icon={<LocationIcon />}
+          value="/locations"
+          icon={
+            <LocationIcon color={value === '/locations' ? '#E1FF67' : 'none'} />
+          }
         />
         <BottomNavigationAction
+          sx={{
+            '.Mui-selected': {
+              color: '#000',
+            },
+          }}
           label="Grand Reveal"
-          onClick={handleActionPress('art-reveal')}
-          icon={<ArtRevealIcon />}
+          value="/art-reveal"
+          icon={
+            value === '/art-reveal' ? (
+              <ActiveArtRevealIcon />
+            ) : (
+              <ArtRevealIcon />
+            )
+          }
         />
       </BottomNavigation>
     </Paper>

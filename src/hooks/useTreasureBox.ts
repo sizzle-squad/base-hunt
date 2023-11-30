@@ -17,10 +17,10 @@ type TreasureBoxType = {
   };
 };
 
-type TreasureBotReturnType = Omit<TreasureBoxType, 'gameId'>;
+type TreasureBoxReturnType = Omit<TreasureBoxType, 'gameId'>;
 
 export function useTreasureBox({ gameId }: Props) {
-  const { data, isLoading, error } = useQuery<TreasureBotReturnType>(
+  const { data, isLoading, error } = useQuery<TreasureBoxReturnType>(
     ['treasure-box', gameId],
     async () => {
       return await axios({
@@ -37,6 +37,7 @@ export function useTreasureBox({ gameId }: Props) {
         console.error(error);
         // Handle error appropriately
       },
+      staleTime: 1000 * 30, // 30 seconds
     }
   );
 

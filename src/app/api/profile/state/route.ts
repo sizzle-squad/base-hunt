@@ -3,6 +3,7 @@ import '@/utils/helper';
 import { Badge, BadgeTypeEnum } from '../../../../hooks/types';
 
 import { createClient } from '@supabase/supabase-js';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -21,16 +22,27 @@ type QueryData = {
   token_id: bigint;
   cta_text: string;
   cta_url: string;
+  lat_lng: string;
+  description: string;
 };
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
-  const gameId = BigInt(searchParams.get('gameId') as string);
+  const gameId = toBigInt(searchParams.get('gameId') as string);
+  if (!userAddress || gameId === null) {
+    return new Response(
+      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
+  }
 
   const { data, error } = await supabase.rpc('getbadgestate', {
     _game_id: gameId,
     _user_address: userAddress,
   });
+
   if (error) {
     console.error(error);
     throw new Error(error.message);
@@ -55,7 +67,6 @@ function mapToBadge(b: QueryData): Badge {
   return {
     id: b.id.toString(),
     name: b.name,
-    description: '',
     imageUrl: new URL(b.image_url),
     isCompleted: b.to_address != null,
     type: b.type,
@@ -65,6 +76,8 @@ function mapToBadge(b: QueryData): Badge {
     tokenId: b.token_id,
     ctaText: b.cta_text,
     ctaUrl: b.cta_url,
+    latLng: b.lat_lng,
+    description: b.description,
   };
 }
 

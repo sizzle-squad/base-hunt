@@ -1,6 +1,7 @@
-import { AirdropNft } from '@/utils/walletapi';
+import { airdropNft } from '@/utils/walletapi';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { verifyWebhookSecret } from '@/utils/webhook';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -30,6 +31,10 @@ curl -X POST 'http://localhost:3000/api/webhook/airdrop' -d '{
 */
 
 export async function POST(req: Request) {
+  if (!verifyWebhookSecret(req)) {
+    return NextResponse.json({ status: 'unknown' });
+  }
+
   console.log('[webhook airdrop]');
   const body = await req.json();
 
@@ -52,8 +57,10 @@ export async function POST(req: Request) {
   }
 
   if (levelData.data && levelData.data.length > 0) {
-    const level = levelData.data[0];
-    await AirdropNft(body.record.user_address, level.airdrop_command);
+    for (let i = 0; i < levelData.data.length; i++) {
+      const level = levelData.data[i];
+      await airdropNft(body.record.user_address, level.airdrop_command);
+    }
   } else {
     console.log(
       '[webhook airdrop] no level found',

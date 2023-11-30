@@ -1,5 +1,6 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import Image from 'next/image';
+import Text from '@/components/Text';
 
 type Props = {
   owned: boolean;
@@ -27,15 +28,14 @@ function OwnershipPill({ owned = false }: Props) {
         height={24}
         width={24}
       />
-      <Typography
+      <Text
+        fontSize={14}
         sx={{
-          fontFamily: 'CoinbaseSans',
-          fontSize: '14px',
           color: owned ? '#FFFFFF' : '#1D1818',
         }}
       >
         {owned ? 'You own this!' : 'Not yet found'}
-      </Typography>
+      </Text>
     </Stack>
   );
 }

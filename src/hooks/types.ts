@@ -41,6 +41,7 @@ export type Badge = {
   tokenId: bigint;
   ctaText: string;
   ctaUrl: string;
+  latLng: string;
 };
 
 export type Level = {
@@ -48,7 +49,8 @@ export type Level = {
   gameId: string;
   name: string;
   thresholdPoints: bigint;
-  level: string;
+  level: '1' | '2' | '3' | '4' | '5' | '6' | '7';
+  description: string;
 };
 
 export type Score = {
@@ -90,3 +92,18 @@ export type Boost = {
   nftAmount: bigint | null;
   claimed: boolean;
 };
+
+export type Rank = {
+  cbid: string | null;
+  createdAt: string;
+  ensName: string | null;
+  gameId: number;
+  id: number;
+  tapCount: number;
+  totalHitpoints: number;
+  userAddress: string;
+};
+
+export type ExtendedDocument = {
+  startViewTransition?: any;
+} & Document;

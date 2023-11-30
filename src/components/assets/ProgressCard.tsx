@@ -7,23 +7,18 @@ import { UNIT } from '@/constants/unit';
 
 type Props = {
   ctaText: string;
-  currentPoints?: bigint;
-  totalPoints?: bigint;
+  isCTADisabled?: boolean;
   onPress: () => void;
 };
 
-export function ProgressCard({
-  ctaText,
-  currentPoints,
-  totalPoints,
-  onPress,
-}: Props) {
-  if (!currentPoints || !totalPoints) return null;
-
+export function ProgressCard({ ctaText, onPress, isCTADisabled }: Props) {
   return (
     <Card>
       <ArtRevealProgressBar />
-      <Button onClick={onPress}>{ctaText}</Button>
+      {/* TODO: add a tooltip on users with 0 pt cannot make a request */}
+      <Button onClick={onPress} disabled={isCTADisabled}>
+        {ctaText}
+      </Button>
     </Card>
   );
 }

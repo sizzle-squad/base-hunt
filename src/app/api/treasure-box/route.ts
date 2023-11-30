@@ -3,6 +3,7 @@ import { verifyTreasureBoxRequest } from '@/utils/verifyTreasureBoxRequest';
 import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { createClient } from '@supabase/supabase-js';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -33,9 +34,8 @@ export type TreasureBoxStateType = {
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const gameId = searchParams.get('gameId');
-
-  if (!gameId) {
+  const gameId = toBigInt(searchParams.get('gameId') as string);
+  if (gameId === null) {
     return new Response('Missing parameters: gameId', { status: 400 });
   }
   const treasureBoxData = await supabase
@@ -107,7 +107,32 @@ export async function POST(request: NextRequest) {
   if (!score) {
     return new Response('Error: score not found', { status: 400 });
   }
-  // const pointInBigInt = BigInt(points as string);
+
+  let tbeData = (await supabase
+    .from('treasure_box_entries')
+    .select()
+    .ilike('user_address', user.address)
+    .eq('game_id', gameId)) as any;
+  if (tbeData.error) {
+    return new Response('Error: treasure box entry not found', { status: 400 });
+  }
+
+  if (tbeData.data.length > 0) {
+    const now = new Date();
+    const nowHash = `${now.getFullYear()}:${now.getMonth()}:${now.getDate()}:${now.getHours()}`;
+    const updatedAt = new Date(tbeData.data[0].updated_at);
+
+    const updatedAtHash = `${updatedAt.getFullYear()}:${updatedAt.getMonth()}:${updatedAt.getDate()}:${updatedAt.getHours()}`;
+    if (nowHash === updatedAtHash) {
+      return new Response(
+        `Error: tap count exceeded for now:${nowHash} updatedAt:${updatedAtHash}`,
+        {
+          status: 400,
+        }
+      );
+    }
+  }
+
   const params = {
     _game_id: gameIdInBigInt,
     _user_address: user.address,

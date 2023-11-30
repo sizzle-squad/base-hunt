@@ -33,10 +33,9 @@ export default function BadgeDetails({ params }: Props) {
     return badges.find((badge) => badge.id === id);
   }, [badges, id]);
 
-  const isOwned =
-    useMemo(() => {
-      return currentBadge?.isCompleted;
-    }, [currentBadge]) ?? false;
+  const isOwned = useMemo(() => {
+    return Boolean(currentBadge?.isCompleted);
+  }, [currentBadge]);
 
   if (!isClient) return null;
 
@@ -56,11 +55,12 @@ export default function BadgeDetails({ params }: Props) {
           }}
         >
           <Box marginTop="24px" width="100%">
-            <DetailsPageNavbar title="View Badge" />
+            <DetailsPageNavbar title="View Badge" owned={isOwned} />
           </Box>
           <Box
             sx={{
               filter: isOwned ? 'grayscale(0)' : 'grayscale(1)',
+              background: 'var(--Gray, #E3E3E3);',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -72,29 +72,20 @@ export default function BadgeDetails({ params }: Props) {
             }}
           >
             <Image
-              src={currentBadge?.imageUrl.toString() ?? ''}
-              alt={currentBadge?.name ?? ''}
+              src={currentBadge.imageUrl.toString()}
+              alt={currentBadge.name}
               width={256}
               height={256}
             />
           </Box>
-
           <OwnershipPill owned={isOwned} />
-
           <SwipeUpDrawer
             type="badgeActions"
             owned={isOwned}
-            title={currentBadge?.name ?? 'Some NFT Title'}
-            completedOn={currentBadge?.completedTimestamp}
-            mapURL={
-              currentBadge?.ctaUrl ??
-              'https://maps.app.goo.gl/51g9q5AzvsQQUPan9'
-            }
-            // todo: add labels
-            labels={[]}
-            description={
-              currentBadge?.description || 'In the bustling heart of Miami.'
-            }
+            title={currentBadge.name}
+            completedOn={currentBadge.completedTimestamp}
+            latLng={currentBadge.latLng}
+            description={currentBadge.description}
           />
         </Stack>
       )}

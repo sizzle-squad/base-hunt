@@ -1,6 +1,7 @@
 'use client';
 import { Stack } from '@mui/material';
 import { getDefaultConfig } from 'connectkit';
+import { ReactNode } from 'react';
 import { base } from 'viem/chains';
 import { createConfig } from 'wagmi';
 
@@ -19,17 +20,18 @@ const config = createConfig(
   })
 );
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+type Props = {
+  noPadding?: boolean;
+  children: ReactNode;
+};
+
+export default function RootLayout({ noPadding = false, children }: Props) {
   return (
     <Stack
       alignItems="center"
       justifyContent="center"
-      paddingY="24px"
-      paddingX="20px"
+      paddingY={noPadding ? '0' : '24px'}
+      paddingX={noPadding ? '0' : '20px'}
       direction="column"
       overflow={'hidden'}
       position={'relative'}

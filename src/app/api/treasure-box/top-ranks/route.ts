@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/utils/database.types';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -11,9 +12,9 @@ const supabase = createClient<Database>(
 // return top 10 ranks
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const gameId = searchParams.get('gameId');
+  const gameId = toBigInt(searchParams.get('gameId') as string);
 
-  if (!gameId) {
+  if (gameId === null) {
     return new Response(`Missing parameters: gameId: ${gameId}`, {
       status: 400,
     });
@@ -31,5 +32,15 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  return NextResponse.json(data);
+  const result = data.map((entry) => ({
+    cbid: entry.cbid,
+    createdAt: entry.created_at,
+    gameId: entry.game_id,
+    totalHitpoints: entry.total_hitpoints,
+    userAddress: entry.user_address,
+    tapCount: entry.tap_count,
+    ensName: entry.ens_name,
+  }));
+
+  return NextResponse.json(result);
 }
