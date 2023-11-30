@@ -21,6 +21,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
       width="100%"
       justifyContent="space-between"
       alignItems="center"
+      className="pageContent"
     >
       <Link href={backHref}>
         <IconButton

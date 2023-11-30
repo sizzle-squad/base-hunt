@@ -174,6 +174,7 @@ export default function ArtReveal() {
   const content = useMemo(() => {
     return (
       <Stack
+        className="pageContent"
         direction="column"
         sx={{ width: '100%' }}
         alignItems="center"
