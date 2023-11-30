@@ -33,10 +33,9 @@ export default function BadgeDetails({ params }: Props) {
     return badges.find((badge) => badge.id === id);
   }, [badges, id]);
 
-  const isOwned =
-    useMemo(() => {
-      return currentBadge?.isCompleted;
-    }, [currentBadge]) ?? false;
+  const isOwned = useMemo(() => {
+    return Boolean(currentBadge?.isCompleted);
+  }, [currentBadge]);
 
   if (!isClient) return null;
 
@@ -56,11 +55,12 @@ export default function BadgeDetails({ params }: Props) {
           }}
         >
           <Box marginTop="24px" width="100%">
-            <DetailsPageNavbar title="View Badge" />
+            <DetailsPageNavbar title="View Badge" owned={isOwned} />
           </Box>
           <Box
             sx={{
               filter: isOwned ? 'grayscale(0)' : 'grayscale(1)',
+              background: 'var(--Gray, #E3E3E3);',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
