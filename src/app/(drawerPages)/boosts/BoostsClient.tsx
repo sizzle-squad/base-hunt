@@ -108,7 +108,7 @@ export default function BoostsPageClient() {
     CLICKAWAY: 'clickaway',
   };
 
-  const handleClose = (event: any, reason: string) => {
+  const handleClose = (_event, reason: string) => {
     if (reason === Reason.CLICKAWAY) {
       return;
     }
