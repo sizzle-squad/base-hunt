@@ -167,9 +167,6 @@ export default function BoostsPageClient() {
             <>
               <Text variant="h4">{item.title}</Text>
               <Text>{item.description}</Text>
-              {item?.explanation && (
-                <Text fontSize="14px">{item?.explanation}</Text>
-              )}
             </>
           )}
         </Stack>
