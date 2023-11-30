@@ -22,6 +22,7 @@ export function Button({
       loading={isLoading}
       variant={variant}
       onClick={onClick}
+      fullWidth
       sx={{
         px: '20px',
         py: '16px',

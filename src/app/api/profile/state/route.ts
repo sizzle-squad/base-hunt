@@ -22,6 +22,8 @@ type QueryData = {
   token_id: bigint;
   cta_text: string;
   cta_url: string;
+  lat_lng: string;
+  description: string;
 };
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -40,6 +42,7 @@ export async function GET(req: NextRequest) {
     _game_id: gameId,
     _user_address: userAddress,
   });
+
   if (error) {
     console.error(error);
     throw new Error(error.message);
@@ -64,7 +67,6 @@ function mapToBadge(b: QueryData): Badge {
   return {
     id: b.id.toString(),
     name: b.name,
-    description: '',
     imageUrl: new URL(b.image_url),
     isCompleted: b.to_address != null,
     type: b.type,
@@ -74,6 +76,8 @@ function mapToBadge(b: QueryData): Badge {
     tokenId: b.token_id,
     ctaText: b.cta_text,
     ctaUrl: b.cta_url,
+    latLng: b.lat_lng,
+    description: b.description,
   };
 }
 

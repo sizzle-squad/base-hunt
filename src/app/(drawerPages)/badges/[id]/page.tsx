@@ -12,6 +12,8 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
+const defaultDescription = `In the bustling heart of Miami, there's a quaint, vintage bookstore nestled among the modern skyscrapers. Its wooden shelves are filled with old tomes and rare manuscripts, and there's a faint aroma of aged paper and leather.`;
+
 type Props = {
   params: { id: string };
 };
@@ -72,29 +74,20 @@ export default function BadgeDetails({ params }: Props) {
             }}
           >
             <Image
-              src={currentBadge?.imageUrl.toString() ?? ''}
-              alt={currentBadge?.name ?? ''}
+              src={currentBadge.imageUrl.toString()}
+              alt={currentBadge.name}
               width={256}
               height={256}
             />
           </Box>
-
           <OwnershipPill owned={isOwned} />
-
           <SwipeUpDrawer
             type="badgeActions"
             owned={isOwned}
-            title={currentBadge?.name ?? 'Some NFT Title'}
-            completedOn={currentBadge?.completedTimestamp}
-            mapURL={
-              currentBadge?.ctaUrl ??
-              'https://maps.app.goo.gl/51g9q5AzvsQQUPan9'
-            }
-            // todo: add labels
-            labels={[]}
-            description={
-              currentBadge?.description || 'In the bustling heart of Miami.'
-            }
+            title={currentBadge.name}
+            completedOn={currentBadge.completedTimestamp}
+            latLng={currentBadge.latLng}
+            description={currentBadge.description}
           />
         </Stack>
       )}

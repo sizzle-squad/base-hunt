@@ -1,12 +1,22 @@
 import { DrawerType, useDrawer } from '@/context/DrawerContext';
 import { Global } from '@emotion/react';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { format } from 'date-fns';
-import { memo } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
+import Text from '@/components/Text';
+import { BadgeLocationMap } from '../Map/BadgeLocationMap';
+import ToolBar from '../drawer/Toolbar';
+import { Button } from '@/components/assets/Button';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';
+
+const googleMapNavigationUrl = `https://www.google.com/maps/dir/?api=1`;
+
+function getNavigationUrl(latLng: string) {
+  return `${googleMapNavigationUrl}&destination_place_id=${latLng}`;
+}
 
 const Puller = memo(() => (
   <Box
@@ -37,7 +47,7 @@ const Label = memo(({ title, color }: LabelProps) => (
       borderRadius: '100px',
     }}
   >
-    <Typography
+    <Text
       sx={{
         fontFamily: 'CoinbaseMono',
         fontSize: '14px',
@@ -47,7 +57,7 @@ const Label = memo(({ title, color }: LabelProps) => (
       }}
     >
       {title}
-    </Typography>
+    </Text>
   </Box>
 ));
 Label.displayName = 'Label';
@@ -56,32 +66,79 @@ type SwipeUpDrawerProps = {
   type: DrawerType;
   title: string;
   description: string;
-  mapURL: string;
-  labels?: {
-    title: string;
-    color: string;
-  }[];
   owned: boolean;
   completedOn: Date | null;
+  latLng: string;
 };
 
 function SwipeUpDrawer({
   type,
   title,
   description,
-  labels,
-  mapURL,
   owned,
   completedOn,
+  latLng,
 }: SwipeUpDrawerProps) {
   const { drawerStates, toggleDrawer } = useDrawer();
+  const [isMapOpen, setIsMapOpen] = useState(false);
+
+  const handleViewOnMapPress = useCallback(() => {
+    setIsMapOpen(true);
+  }, []);
+
+  const content = useMemo(() => {
+    if (isMapOpen) {
+      const [lat, lng] = latLng.split(',').map((coord) => parseFloat(coord));
+
+      return (
+        <>
+          <ToolBar title={title} onDismiss={() => setIsMapOpen(false)} />
+          <BadgeLocationMap
+            height="350px"
+            width="100%"
+            lat={lat}
+            lng={lng}
+            roundedBorder
+          />
+          <Button variant="contained">Get direction</Button>
+        </>
+      );
+    }
+
+    return (
+      <Stack direction="column" gap={4}>
+        <Text fontWeight={400} fontSize="20px">
+          {title}
+        </Text>
+        <Text>{description}</Text>
+        {owned && completedOn && (
+          <Text fontWeight={700}>
+            Badge found {format(new Date(completedOn), 'do MMMM yyyy')}
+          </Text>
+        )}
+        {!owned && (
+          <Button variant="contained" onClick={handleViewOnMapPress}>
+            View on map
+          </Button>
+        )}
+      </Stack>
+    );
+  }, [
+    completedOn,
+    description,
+    handleViewOnMapPress,
+    isMapOpen,
+    latLng,
+    owned,
+    title,
+  ]);
 
   return (
     <>
       <Global
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {
-            height: `calc(${owned ? '40%' : '60%'} - ${drawerBleeding}px)`,
+            height: isMapOpen ? '500px' : '200px',
             overflow: 'visible',
             backgroundColor: 'var(--sheet-white, rgba(255, 255, 255))',
           },
@@ -97,75 +154,27 @@ function SwipeUpDrawer({
         onOpen={() => toggleDrawer(type, anchor, true)}
         swipeAreaWidth={drawerBleeding}
         disableSwipeToOpen={false}
-        PaperProps={{
-          style: {
-            width: '390px',
-            left: 'calc(50% - 195px)', // 50% - half of width
-          },
-        }}
         ModalProps={{
           keepMounted: true,
         }}
       >
-        <Box
+        <Stack
+          direction="column"
+          gap="16px"
+          width="100%"
+          height="100%"
           sx={{
             px: '20px',
-            pt: '24px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
+            py: '24px',
             position: 'absolute',
-            top: -drawerBleeding,
+            top: isMapOpen ? 0 : -drawerBleeding,
             visibility: 'visible',
             backgroundColor: 'var(--sheet-white, rgba(255, 255, 255))',
-            width: '100%',
           }}
         >
           <Puller />
-          <Typography
-            sx={{
-              fontFamily: 'CoinbaseDisplay',
-              fontWeight: 400,
-              fontSize: '1.25rem',
-            }}
-          >
-            {title}
-          </Typography>
-          <Stack direction="row" gap={1} flexWrap="wrap">
-            {labels?.map((label) => (
-              <Label
-                key={label.title}
-                title={label.title}
-                color={label.color}
-              />
-            ))}
-          </Stack>
-          <Typography sx={{}}>{description}</Typography>
-          {owned && completedOn && (
-            <Typography fontWeight={700}>
-              Badge found {format(new Date(completedOn), 'do MMMM yyyy')}
-            </Typography>
-          )}
-          {!owned && (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                py: '20px',
-                px: 3,
-                fontSize: '16px',
-                backgroundColor: '#000000',
-                width: '100%',
-                borderRadius: '12px',
-                fontFamily: 'CoinbaseMono',
-                fontWeight: 400,
-              }}
-              href={mapURL}
-            >
-              View on map
-            </Button>
-          )}
-        </Box>
+          {content}
+        </Stack>
       </SwipeableDrawer>
     </>
   );

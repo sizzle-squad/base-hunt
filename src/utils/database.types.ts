@@ -14,6 +14,7 @@ export interface Database {
           contract_address: string;
           cta_text: string | null;
           cta_url: string | null;
+          lat_long: string | null;
           game_id: number;
           id: number;
           image_url: string | null;
@@ -28,6 +29,7 @@ export interface Database {
           contract_address: string;
           cta_text?: string | null;
           cta_url?: string | null;
+          lat_long: string | null;
           game_id?: number;
           id?: number;
           image_url?: string | null;
@@ -42,6 +44,7 @@ export interface Database {
           contract_address?: string;
           cta_text?: string | null;
           cta_url?: string | null;
+          lat_long: string | null;
           game_id?: number;
           id?: number;
           image_url?: string | null;

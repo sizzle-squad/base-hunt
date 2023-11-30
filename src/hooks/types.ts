@@ -41,6 +41,7 @@ export type Badge = {
   tokenId: bigint;
   ctaText: string;
   ctaUrl: string;
+  latLng: string;
 };
 
 export type Level = {
