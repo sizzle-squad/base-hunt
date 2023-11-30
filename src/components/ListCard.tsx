@@ -8,7 +8,7 @@ export type ListCardProps = {
   startContent?: ReactNode;
   endContent?: ReactNode;
   title?: string;
-  subtitle?: string;
+  subtitle?: string | ReactNode;
   titleDecoration?: ReactNode;
   isLoading?: boolean;
 };
@@ -56,7 +56,7 @@ function ListCard({
               )}
               {/* End Content */}
               {endContent && !isLoading && (
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
                   {endContent}
                 </Box>
               )}

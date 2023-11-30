@@ -78,6 +78,33 @@ export type TreasureBoxState = {
   isOpen: boolean;
 };
 
+export enum BoostIconEnum {
+  WALLET = 'WALLET',
+  COFFEE = 'COFFEE',
+  BAG = 'BAG',
+  GRID = 'GRID',
+  CIRCLE = 'CIRCLE',
+  LINK = 'LINK',
+  USERS = 'USERS',
+}
+
+export type Boost = {
+  icon: BoostIconEnum;
+  description: string;
+  id: bigint;
+  name: string;
+  contractAddresses: string[];
+  imageUrl: string | null;
+  gameId: bigint;
+  ctaUrl: string | null;
+  ctaText: string | null;
+  boostType: string;
+  isEnabled: boolean;
+  points: bigint;
+  nftAmount: bigint | null;
+  claimed: boolean;
+};
+
 export type Rank = {
   cbid: string | null;
   createdAt: string;
