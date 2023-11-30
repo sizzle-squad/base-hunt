@@ -33,12 +33,12 @@ export const PointsPill = ({
       fontWeight: 400,
     }}
   >
-    <Text sx={{ color: '#fff' }} align="center">
+    <Text sx={{ color: '#151515' }} align="center">
       {!isLoading && points}
       {isLoading && <Skeleton variant="text" width={30} />}
     </Text>
     <Stack direction="row" alignItems="center" justifyContent="center" gap={1}>
-      <Text sx={{ color: '#fff' }} align="center">
+      <Text sx={{ color: '#151515' }} align="center">
         {!isLoading && unit && unit}{' '}
         {isLoading && <Skeleton variant="text" width={30} />}
       </Text>
