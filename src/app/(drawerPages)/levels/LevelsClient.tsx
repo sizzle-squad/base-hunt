@@ -54,10 +54,6 @@ export default function LevelsPageClient() {
     userAddress: address ?? '',
     gameId: GAME_ID,
   });
-  console.log(
-    '🚀 ~ file: LevelsClient.tsx:57 ~ LevelsPageClient ~ score:',
-    score
-  );
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
