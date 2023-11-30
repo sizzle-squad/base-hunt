@@ -256,7 +256,9 @@ export default function Badges() {
             alignItems="center"
             justifyContent="space-between"
             width="100%"
+            onClick={handleDisconnect}
             sx={{
+              cursor: 'pointer',
               borderRadius: '0.75rem',
               backgroundColor: '#0A25A5',
               padding: '1.25rem 1.5rem',
@@ -270,12 +272,7 @@ export default function Badges() {
             >
               Disconnect wallet
             </Text>
-            <Box
-              onClick={handleDisconnect}
-              sx={{
-                cursor: 'pointer',
-              }}
-            >
+            <Box>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={24}
