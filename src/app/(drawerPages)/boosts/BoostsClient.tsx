@@ -36,10 +36,6 @@ type ListCardPropsForBoosts = ListCardProps & {
   cta: string;
   claimed: boolean;
   claimable: boolean;
-  completed: {
-    times: number;
-    maxTimes: number;
-  };
 };
 
 const PageConsts = {
