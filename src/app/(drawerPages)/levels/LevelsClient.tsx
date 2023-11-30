@@ -76,20 +76,6 @@ export default function LevelsPageClient() {
     [isOpen, toggleDrawer]
   );
 
-  const ToggleDrawerButton = memo(
-    ({
-      item,
-      onClick,
-    }: {
-      item: ListCardPropsWithDescription;
-      onClick: (item: ListCardPropsWithDescription) => void;
-    }) => (
-      <Box onClick={() => onClick(item)}>
-        <EllipsisIcon />
-      </Box>
-    )
-  );
-
   const ToolbarWithClose = memo(
     ({
       title,
@@ -102,7 +88,6 @@ export default function LevelsPageClient() {
     }) => <ToolBar title={title} onDismiss={() => onClick(item)} />
   );
 
-  ToggleDrawerButton.displayName = 'ToggleDrawerButton';
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
   const LevelDrawerContent = ({
@@ -147,6 +132,9 @@ export default function LevelsPageClient() {
       <NoSsr>
         <Stack gap={2}>
           {collection.map((item: Level, index: number) => {
+            const toggleDrawer = () => {
+              handleToggleDrawer(item);
+            };
             const currentLevel = parseInt(score?.currentLevel?.level as string);
             const itemLevel = parseInt(item.level) - 1;
             const levelMatch = currentLevel === itemLevel;
@@ -175,16 +163,17 @@ export default function LevelsPageClient() {
             }
 
             return (
-              <ListCard
+              <Box
+                sx={{
+                  ':hover': {
+                    cursor: 'pointer',
+                  },
+                }}
                 key={index}
-                {...content}
-                endContent={
-                  <ToggleDrawerButton
-                    item={content}
-                    onClick={handleToggleDrawer}
-                  />
-                }
-              />
+                onClick={toggleDrawer}
+              >
+                <ListCard {...content} endContent={<EllipsisIcon />} />
+              </Box>
             );
           })}
         </Stack>
