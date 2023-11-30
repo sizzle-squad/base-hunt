@@ -10,6 +10,7 @@ import '@fontsource/open-sans';
 import '@/globals.css';
 import { CssBaseline } from '@mui/material';
 import { MobileProvider } from '@/context/MobileContext';
+import { DesiredNetworkContextProvider } from '@/context/DesiredNetworkContext';
 
 type Props = {
   children: React.ReactNode;
@@ -50,10 +51,12 @@ const Providers = ({ children }: Props) => {
     <MobileProvider>
       <QueryClientProvider client={queryClient}>
         <WagmiConfig config={config}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
-          </ThemeProvider>
+          <DesiredNetworkContextProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
+            </ThemeProvider>
+          </DesiredNetworkContextProvider>
         </WagmiConfig>
       </QueryClientProvider>
     </MobileProvider>
