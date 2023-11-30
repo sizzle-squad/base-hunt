@@ -170,7 +170,7 @@ export default function BoostsPageClient() {
             </>
           )}
         </Stack>
-        <PointsPill points={item.points} unit={PageConsts.drawerSubtitleUnit} />
+        <PointsPill points={Number(item.points)} unit={PageConsts.drawerSubtitleUnit} />
       </Stack>
 
       <Button
