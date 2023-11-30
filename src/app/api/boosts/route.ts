@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { hoursToMilliseconds } from 'date-fns';
 import { toBigInt } from '@/utils/toBigInt';
+import { BoostTypeEnum } from '@/hooks/types';
 
 const supabase = createClient(
     process.env.SUPABASE_URL as string,
@@ -100,16 +101,18 @@ export async function GET(request: NextRequest) {
   const boostsFormatted = boosts.map(async boost => {
     let isClaimed = false;
     let autoClaimed = false;
-    const claimedAddresses = boost.claimed_boost.filter((b: { contract_address: string; }) => b.contract_address).map((b: { contract_address: string; }) => b.contract_address);
+    const claimedAddresses = boost.claimed_boost
+      .filter((b: { contract_address: string; }) => b.contract_address)
+      .map((b: { contract_address: string; }) => b.contract_address);
     switch (boost.boost_type) {
-        case 'NFT':
-        case 'NFT_PER_MINT':
+        case BoostTypeEnum.NFT:
+        case BoostTypeEnum.NFT_PER_MINT:
             isClaimed = boost.contract_addresses.every((a: string) => claimedAddresses.includes(a));
             break;
-        case 'TOKEN':
-        case 'TRANSACTION':
-        case 'TRANSFER_NFT':
-        case 'DEFAULT':
+        case BoostTypeEnum.TOKEN:
+        case BoostTypeEnum.TRANSACTION:
+        case BoostTypeEnum.TRANSFER_NFT:
+        case BoostTypeEnum.DEFAULT:
           isClaimed = boost.claimed_boost.every((c: { boost_id: any; }) => c.boost_id === boost.id);
           break;
     }
@@ -128,8 +131,8 @@ export async function GET(request: NextRequest) {
         return 0;
       });
       const boostsResponse = formattedBoosts.filter(boost => {
-        const isTransferNftAndClaimed = boost.boostType === 'TRANSFER_NFT' && boost.claimed;
-        const isNotTransferNft = boost.boostType !== 'TRANSFER_NFT';
+        const isTransferNftAndClaimed = boost.boostType === BoostTypeEnum.TRANSFER_NFT && boost.claimed;
+        const isNotTransferNft = boost.boostType !== BoostTypeEnum.TRANSFER_NFT;
       
         return isTransferNftAndClaimed || isNotTransferNft;
       });

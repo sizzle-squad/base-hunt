@@ -4,6 +4,7 @@ import '@/utils/helper';
 import { Network, Alchemy, TokenBalance } from "alchemy-sdk";
 import { hoursToMilliseconds } from 'date-fns';
 import { toBigInt } from '@/utils/toBigInt';
+import { BoostTypeEnum } from '@/hooks/types';
 
 class Blockscout {
   apiKey: string | undefined;
@@ -123,8 +124,6 @@ export async function POST(request: NextRequest) {
   const gameIdInBigInt = toBigInt(gameId as string);
   const boostIdInBigInt = toBigInt(boostId as string);
 
-  const now = new Date().toISOString();
-
   const boostData = await supabase
   .from('boost_configuration')
   .select(`
@@ -137,7 +136,7 @@ export async function POST(request: NextRequest) {
   .eq('id', boostIdInBigInt)
   .eq('game_id', gameIdInBigInt)
   .eq('is_enabled', true)
-  .or(`available_time.is.null,available_time.lte.${now}`)
+  .or(`available_time.is.null,available_time.lte.${new Date().toISOString()}`)
   .single();
 
   if (boostData.error) {
@@ -153,7 +152,9 @@ export async function POST(request: NextRequest) {
       });
   }
 
-  if (boost.boost_type === 'NFT' || boost.boost_type === 'NFT_PER_MINT' || boost.boost_type === 'TOKEN') {
+  if (boost.boost_type === BoostTypeEnum.NFT ||
+      boost.boost_type === BoostTypeEnum.NFT_PER_MINT ||
+      boost.boost_type === BoostTypeEnum.TOKEN) {
     if (!contractAddress) {
       return new Response(
         `Missing parameters: contractAddress: ${contractAddress} for boost type ${boost.boost_type}`,
@@ -166,17 +167,17 @@ export async function POST(request: NextRequest) {
 
   let verified = false;
   switch (boost.boost_type) {
-    case 'NFT':
-    case 'NFT_PER_MINT':
+    case BoostTypeEnum.NFT:
+    case BoostTypeEnum.NFT_PER_MINT:
         verified = await ownsNFT(userAddress, contractAddress);
         break;
-    case 'TOKEN':
+    case BoostTypeEnum.TOKEN:
         verified = await hasToken(userAddress, contractAddress, boost.transaction_value_threshold);
         break;
-    case 'TRANSACTION':
+    case BoostTypeEnum.TRANSACTION:
         verified = await verifyTransactions(boost.transaction_to, userAddress, contractAddress);
         break;
-    case 'DEFAULT':
+    case BoostTypeEnum.DEFAULT:
         verified = true;
         break;
   }

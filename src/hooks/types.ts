@@ -88,6 +88,15 @@ export enum BoostIconEnum {
   USERS = 'USERS',
 }
 
+export enum BoostTypeEnum {
+  TRANSFER_NFT = 'TRANSFER_NFT',
+  NFT = 'NFT',
+  NFT_PER_MINT ='NFT_PER_MINT',
+  TOKEN = 'TOKEN',
+  TRANSACTION = 'TRANSACTION',
+  DEFAULT = 'DEFAULT',
+};
+
 export type Boost = {
   icon: BoostIconEnum;
   description: string;
