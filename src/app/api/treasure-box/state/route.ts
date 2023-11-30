@@ -67,7 +67,7 @@ function mapToEntry(b: QueryData): TreasureBoxEntry {
     gameId: b.game_id,
     tapCount: b.tap_count,
     createdAt: new Date(b.created_at),
-    isClickable: !eqDateWithTimeKey(new Date(b.updated_at), new Date()),
+    isCTAEligible: !eqDateWithTimeKey(new Date(b.updated_at), new Date()),
   };
 }
 
