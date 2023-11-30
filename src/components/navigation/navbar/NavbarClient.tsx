@@ -11,6 +11,7 @@ import Text from '@/components/Text';
 import Circle from '@/components/Circle';
 import { PointsPill } from '@/components/PointsPill';
 import { UNIT } from '@/constants/unit';
+import Link from '@/components/AnimatedLink';
 
 export const NavbarClient = () => {
   const { address, isDisconnected, isConnecting } = useAccount();
@@ -69,12 +70,14 @@ export const NavbarClient = () => {
           )}
         </Stack>
       </Stack>
+      <Link href="/boosts">
       <PointsPill
         backgroundColor="var(--CB-Blue, #0052FF)"
         points={score as number}
         unit={UNIT}
         isLoading={isLoading}
       />
+      </Link>
     </>
   );
 };
