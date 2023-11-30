@@ -52,6 +52,12 @@ export default function Home() {
     }
   }, [isConnected, handleStartExploring, isClient]);
 
+  useEffect(() => {
+    if (isClient && isConnected) {
+      router.push('/badges');
+    }
+  }, [isClient, isConnected]);
+
   return (
     <>
       <Head>
