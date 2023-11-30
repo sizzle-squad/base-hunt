@@ -43,10 +43,6 @@ const TreasureChestInfo = [
 
 export default function ArtReveal() {
   const [activeInfoStep, setActiveInfoStep] = useState(0);
-  useState(() => {
-    const savedStep = window.localStorage.getItem('artRevealInfoStep');
-    return savedStep ? Number(savedStep) : 0; // Provide a default value if not found
-  });
   const router = useRouter();
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
@@ -91,6 +87,16 @@ export default function ArtReveal() {
       handleCTAPress.cancel();
     };
   }, [handleCTAPress]);
+
+  useEffect(() => {
+    const savedStep = window.localStorage.getItem('artRevealInfoStep');
+    if (
+      savedStep &&
+      savedStep < TreasureChestInfo[TreasureChestInfo.length - 1].title
+    ) {
+      setActiveInfoStep(Number(savedStep));
+    }
+  }, []);
 
   const handleLearnMorePress = useCallback(() => {
     // TODO: link to NFT or artist
