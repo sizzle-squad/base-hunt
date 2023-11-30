@@ -14,17 +14,19 @@ const commonStyles = {
   lineHeight: 'normal',
 } as const;
 
-const Text: FC<CustomTypographyProps> = ({
+const Text: FC<CustomTypographyProps & { useMonoFont?: boolean }> = ({
   children,
   variant,
   fontSize,
   color,
+  useMonoFont,
   ...props
 }) => {
+  const fontStyle = useMonoFont ? { fontFamily: 'CoinbaseMono' } : {};
   return (
     <Typography
       variant={variant}
-      sx={{ ...commonStyles, fontSize: fontSize, color }}
+      sx={{ ...commonStyles, ...fontStyle, fontSize, color }}
       {...props}
     >
       {children}

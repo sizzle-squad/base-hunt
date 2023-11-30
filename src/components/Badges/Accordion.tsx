@@ -34,6 +34,9 @@ export default function CustomAccordion({
       sx={{
         background: 'transparent',
         boxShadow: 'none',
+        ':hover': {
+          cursor: 'pointer',
+        },
       }}
     >
       <AccordionSummary

@@ -37,6 +37,7 @@ export function useTreasureBox({ gameId }: Props) {
         console.error(error);
         // Handle error appropriately
       },
+      staleTime: 1000 * 30, // 30 seconds
     }
   );
 

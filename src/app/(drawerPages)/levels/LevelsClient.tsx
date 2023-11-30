@@ -6,14 +6,17 @@ import ToolBar from '@/components/drawer/Toolbar';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
 import { Box, Button, NoSsr, Stack } from '@mui/material';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { ReactElement, memo, useCallback, useMemo, useState } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
-import { PointsPill } from '@/components/Pill';
+import { PointsPill } from '@/components/PointsPill';
 import { useLevels } from '@/hooks/useLevels';
 import { GAME_ID } from '@/constants/gameId';
 import SvgSwitcher, { LevelNumber } from '@/components/LevelsBadge';
 import { Level } from '@/hooks/types';
+import Pill from '@/components/Pill';
+import { useScore } from '@/hooks/useScore';
+import { useAccount } from 'wagmi';
 
 const EllipsisIcon = memo(() => (
   <svg
@@ -33,7 +36,7 @@ const EllipsisIcon = memo(() => (
 EllipsisIcon.displayName = 'ellipsisIcon';
 
 type ListCardPropsWithDescription = ListCardProps & {
-  description: string;
+  description: string | ReactElement;
 };
 
 const PageConsts = {
@@ -47,6 +50,11 @@ const PageConsts = {
 export default function LevelsPageClient() {
   const { data: collection, isLoading, error } = useLevels({ gameId: GAME_ID });
   const loadingCollection = useMemo(() => [null, null, null, null], []);
+  const { address, isConnected } = useAccount();
+  const { data: score, isLoading: isScoreLoading } = useScore({
+    userAddress: address ?? '',
+    gameId: GAME_ID,
+  });
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
@@ -65,20 +73,6 @@ export default function LevelsPageClient() {
     [isOpen, toggleDrawer]
   );
 
-  const ToggleDrawerButton = memo(
-    ({
-      item,
-      onClick,
-    }: {
-      item: ListCardPropsWithDescription;
-      onClick: (item: ListCardPropsWithDescription) => void;
-    }) => (
-      <Box onClick={() => onClick(item)}>
-        <EllipsisIcon />
-      </Box>
-    )
-  );
-
   const ToolbarWithClose = memo(
     ({
       title,
@@ -91,7 +85,6 @@ export default function LevelsPageClient() {
     }) => <ToolBar title={title} onDismiss={() => onClick(item)} />
   );
 
-  ToggleDrawerButton.displayName = 'ToggleDrawerButton';
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
   const LevelDrawerContent = ({
@@ -127,9 +120,6 @@ export default function LevelsPageClient() {
     </Stack>
   );
 
-  // TODO: better loading UX
-  // if (isLoading) return <div>Loading...</div>;
-
   return (
     <>
       <DetailsPageNavbar title={PageConsts.navTitle} />
@@ -140,6 +130,12 @@ export default function LevelsPageClient() {
           ))}
         {collection &&
           collection.map((item: Level, index: number) => {
+            const toggleDrawer = () => {
+              handleToggleDrawer(item);
+            };
+            const currentLevel = parseInt(score?.currentLevel?.level as string);
+            const itemLevel = parseInt(item.level) - 1;
+            const levelMatch = currentLevel === itemLevel;
             const content: ListCardPropsWithDescription = {
               title: `Level ${item.level}`,
               subtitle: `${item.thresholdPoints} points required`,
@@ -153,18 +149,29 @@ export default function LevelsPageClient() {
               ),
               description: item.description,
             };
+
+            if (levelMatch) {
+              content.titleDecoration = (
+                <Pill>
+                  <Text useMonoFont fontSize="14px">
+                    Current
+                  </Text>
+                </Pill>
+              );
+            }
+
             return (
-              <ListCard
+              <Box
+                sx={{
+                  ':hover': {
+                    cursor: 'pointer',
+                  },
+                }}
                 key={index}
-                {...content}
-                endContent={
-                  <ToggleDrawerButton
-                    item={content}
-                    onClick={handleToggleDrawer}
-                  />
-                }
-                isLoading={isLoading}
-              />
+                onClick={toggleDrawer}
+              >
+                <ListCard {...content} endContent={<EllipsisIcon />} />
+              </Box>
             );
           })}
       </Stack>

@@ -27,6 +27,9 @@ function BadgeStack({ panel, toggleFunction, hide }: Props) {
         display: 'flex',
         gap: '20px',
         padding: '0 16px',
+        ':hover': {
+          cursor: 'pointer',
+        },
       }}
     >
       <Image

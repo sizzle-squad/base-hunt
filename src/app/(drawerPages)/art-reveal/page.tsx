@@ -1,7 +1,5 @@
 'use client';
 
-import { useClientCheck } from '@/hooks/useClientCheck';
-import dynamic from 'next/dynamic';
 import Layout from '@/components/layout';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Button, CircularProgress, Grid, Stack } from '@mui/material';
@@ -20,13 +18,7 @@ import { UNIT } from '@/constants/unit';
 import { Card } from '@/components/assets/Card';
 import Text from '@/components/Text';
 import Stepper from '@/components/Reveal/Stepper';
-
-const imageUrl = '@/assets/images/map.png';
-
-// hydration issue without dynamic import
-const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
-  ssr: false,
-});
+import debounce from 'lodash.debounce';
 
 const TreasureChestInfo = [
   {
@@ -50,8 +42,7 @@ const TreasureChestInfo = [
 ] as const;
 
 export default function ArtReveal() {
-  const [activeInfoStep, setActiveInfoStep] = useState<number>(0);
-  const isClient = useClientCheck();
+  const [activeInfoStep, setActiveInfoStep] = useState(0);
   const router = useRouter();
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
@@ -72,6 +63,31 @@ export default function ArtReveal() {
 
   const { data: treasureBox, isLoading } = useTreasureBox({ gameId: GAME_ID });
 
+  const handleCTAPress = useCallback(
+    debounce(() => {
+      attackBox.mutate({
+        gameId: GAME_ID,
+        user: {
+          address: address!,
+          cbId: userPublicProfile?.subdomainProfile?.name,
+          ensName: userPublicProfile?.ensDomainProfile?.name,
+        },
+      });
+    }, 500),
+    [
+      address,
+      // attackBox,
+      userPublicProfile?.ensDomainProfile?.name,
+      userPublicProfile?.subdomainProfile?.name,
+    ]
+  );
+
+  useEffect(() => {
+    return () => {
+      handleCTAPress.cancel();
+    };
+  }, [handleCTAPress]);
+
   useEffect(() => {
     const savedStep = window.localStorage.getItem('artRevealInfoStep');
     if (
@@ -81,22 +97,6 @@ export default function ArtReveal() {
       setActiveInfoStep(Number(savedStep));
     }
   }, []);
-
-  const handleCTAPress = useCallback(() => {
-    attackBox.mutate({
-      gameId: GAME_ID,
-      user: {
-        address: address!,
-        cbId: userPublicProfile?.subdomainProfile?.name,
-        ensName: userPublicProfile?.ensDomainProfile?.name,
-      },
-    });
-  }, [
-    address,
-    attackBox,
-    userPublicProfile?.ensDomainProfile?.name,
-    userPublicProfile?.subdomainProfile?.name,
-  ]);
 
   const handleLearnMorePress = useCallback(() => {
     // TODO: link to NFT or artist
@@ -218,7 +218,7 @@ export default function ArtReveal() {
     );
   }, [CardContent, isLoading, treasureBox?.isOpen]);
 
-  if (!isClient || !treasureBox) return null;
+  if (!treasureBox) return null;
 
   return (
     <Layout>
