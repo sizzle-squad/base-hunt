@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
 
   const params = {
     _game_id: gameIdInBigInt,
-    _user_address: user.address,
+    _user_address: user.address.toLowerCase(),
     _cbid: user.cbId || '',
     _ens_name: user.ensName || '',
     _increment: score.current_score,
