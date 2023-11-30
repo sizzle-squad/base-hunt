@@ -4,6 +4,7 @@ import '@/utils/helper';
 import { Network, Alchemy, TokenBalance } from "alchemy-sdk";
 import { hoursToMilliseconds } from 'date-fns';
 import { toBigInt } from '@/utils/toBigInt';
+import { BoostTypeEnum } from '@/hooks/types';
 
 class Blockscout {
   apiKey: string | undefined;
@@ -153,7 +154,9 @@ export async function POST(request: NextRequest) {
       });
   }
 
-  if (boost.boost_type === 'NFT' || boost.boost_type === 'NFT_PER_MINT' || boost.boost_type === 'TOKEN') {
+  if (boost.boost_type === BoostTypeEnum.NFT ||
+      boost.boost_type === BoostTypeEnum.NFT_PER_MINT ||
+      boost.boost_type === BoostTypeEnum.TOKEN) {
     if (!contractAddress) {
       return new Response(
         `Missing parameters: contractAddress: ${contractAddress} for boost type ${boost.boost_type}`,
@@ -166,17 +169,17 @@ export async function POST(request: NextRequest) {
 
   let verified = false;
   switch (boost.boost_type) {
-    case 'NFT':
-    case 'NFT_PER_MINT':
+    case BoostTypeEnum.NFT:
+    case BoostTypeEnum.NFT_PER_MINT:
         verified = await ownsNFT(userAddress, contractAddress);
         break;
-    case 'TOKEN':
+    case BoostTypeEnum.TOKEN:
         verified = await hasToken(userAddress, contractAddress, boost.transaction_value_threshold);
         break;
-    case 'TRANSACTION':
+    case BoostTypeEnum.TRANSACTION:
         verified = await verifyTransactions(boost.transaction_to, userAddress, contractAddress);
         break;
-    case 'DEFAULT':
+    case BoostTypeEnum.DEFAULT:
         verified = true;
         break;
   }
@@ -185,10 +188,10 @@ export async function POST(request: NextRequest) {
   const { data: claimedBoost, error } = await supabase
   .from('claimed_boost')
   .insert([{
-    user_address: userAddress,
+    user_address: userAddress.toLowerCase(),
     boost_id: boost.id,
     game_id: gameIdInBigInt,
-    contract_address: contractAddress ? contractAddress : null
+    contract_address: contractAddress ? contractAddress.toLowerCase() : null
   }])
   .single();
 
