@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
+import { eqDateWithTimeKey } from '@/utils/timeKey';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -119,13 +120,10 @@ export async function POST(request: NextRequest) {
 
   if (tbeData.data.length > 0) {
     const now = new Date();
-    const nowHash = `${now.getFullYear()}:${now.getMonth()}:${now.getDate()}:${now.getHours()}`;
     const updatedAt = new Date(tbeData.data[0].updated_at);
-
-    const updatedAtHash = `${updatedAt.getFullYear()}:${updatedAt.getMonth()}:${updatedAt.getDate()}:${updatedAt.getHours()}`;
-    if (nowHash === updatedAtHash) {
+    if (eqDateWithTimeKey(updatedAt, now)) {
       return new Response(
-        `Error: tap count exceeded for now:${nowHash} updatedAt:${updatedAtHash}`,
+        `Error: tap count exceeded for now:${now} updatedAt:${updatedAt}`,
         {
           status: 400,
         }
