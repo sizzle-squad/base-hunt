@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
@@ -17,13 +18,13 @@ import { useAccount } from 'wagmi';
 import { WalletIcon, CoffeeIcon, BagIcon, GridIcon, CircleIcon, LinkIcon, UsersIcon } from '@/components/assets/icons/BoostIcon';
 
 const iconMapping = {
-  'WALLET': WalletIcon,
-  'COFFEE': CoffeeIcon,
-  'BAG': BagIcon,
-  'GRID': GridIcon,
-  'CIRCLE': CircleIcon,
-  'LINK': LinkIcon,
-  'USERS': UsersIcon
+  'WALLET': <WalletIcon />,
+  'COFFEE': <CoffeeIcon />,
+  'BAG': <BagIcon />,
+  'GRID': <GridIcon />,
+  'CIRCLE': <CircleIcon />,
+  'LINK': <LinkIcon />,
+  'USERS': <UsersIcon />
 };
 
 type ListCardPropsForBoosts = ListCardProps & {

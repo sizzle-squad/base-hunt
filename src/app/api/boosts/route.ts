@@ -75,8 +75,6 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const now = new Date().toISOString();
-
   const boostsData = await supabase
   .from('boost_configuration')
   .select(`
@@ -90,7 +88,7 @@ export async function GET(request: NextRequest) {
   .eq('game_id', gameId)
   .eq('is_enabled', true)
   .filter('claimed_boost.user_address', 'eq', userAddress)
-  .or(`available_time.is.null,available_time.lte.${now}`);
+  .or(`available_time.is.null,available_time.lte.${new Date().toISOString()}`);
 
   if (boostsData.error) {
     console.error(boostsData.error);
