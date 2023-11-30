@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
   `)
   .eq('game_id', gameId)
   .eq('is_enabled', true)
-  .filter('claimed_boost.user_address', 'eq', userAddress)
+  .filter('claimed_boost.user_address', 'eq', userAddress.toLowerCase())
   .or(`available_time.is.null,available_time.lte.${new Date().toISOString()}`);
 
   if (boostsData.error) {
