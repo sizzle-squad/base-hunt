@@ -4,7 +4,7 @@ import { TreasureBoxEntry } from '../../../../hooks/types';
 
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
-import { compareDatesWithTimeKey, eqDateWithTimeKey } from '@/utils/timeKey';
+import { eqDateWithTimeKey } from '@/utils/timeKey';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
