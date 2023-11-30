@@ -9,7 +9,7 @@ import { Alert, Box, Button, NoSsr, Snackbar, Stack, SvgIcon } from '@mui/materi
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
-import { PointsPill } from '@/components/Pill';
+import { PointsPill } from '@/components/PointsPill';
 import { useBoosts } from '@/hooks/useBoosts';
 import { useClaimBoost } from '@/hooks/useClaimBoost';
 import { GAME_ID } from '@/constants/gameId';
