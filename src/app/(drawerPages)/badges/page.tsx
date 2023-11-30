@@ -21,13 +21,13 @@ import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
 import { Box, Drawer, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { Fragment, useCallback, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 
 export default function Badges() {
   const isClient = useClientCheck();
   const router = useRouter();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isDisconnected } = useAccount();
   const { drawerStates, toggleDrawer } = useDrawer();
   const { data: userPublicProfile } = useCBProfile({ address });
   const userName = useUserName({ address, userPublicProfile });
@@ -78,6 +78,12 @@ export default function Badges() {
       setVirtualAccordionExpanded((prev) => !prev);
     }
   }, []);
+
+  useEffect(() => {
+    if (isDisconnected) {
+      router.push('/');
+    }
+  }, [isDisconnected]);
 
   const BadgesWrapper = useMemo(() => {
     if (isClient) {
