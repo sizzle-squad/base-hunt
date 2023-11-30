@@ -34,17 +34,14 @@ class Blockscout {
   }
 
   async getExternalTransfers(params: { startblock: number; endblock: number; sort: string; } | undefined) {
-      // params = { address, page, offset, startblock, endblock, sort }
       return await this.fetch('txlist', params);
   }
 
   async getERC20Transfers(params: { startblock: number; endblock: number; sort: string; } | undefined) {
-      // params = { address, contractAddress, page, offset, startblock, endblock, sort }
       return await this.fetch('tokentx', params);
   }
 
   async getAssetTransfers(params: { categories: string[]; startblock: number; endblock: number; sort: string; }) {
-      // params = { address, contractAddress, page, offset, startblock, endblock, sort, categories }
       const { categories } = params;
       let transfers: any[] = [];
       for (const category of categories) {
