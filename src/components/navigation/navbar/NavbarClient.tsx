@@ -57,6 +57,7 @@ export const NavbarClient = () => {
             borderRadius: '6.25rem',
             padding: '0.25rem 0.5rem 0.25rem 0.5rem',
             backgroundColor: 'white',
+            cursor: 'pointer',
           }}
         >
           {isDisconnected ? (
@@ -71,12 +72,12 @@ export const NavbarClient = () => {
         </Stack>
       </Stack>
       <Link href="/boosts">
-      <PointsPill
-        backgroundColor="var(--CB-Blue, #0052FF)"
-        points={score as number}
-        unit={UNIT}
-        isLoading={isLoading}
-      />
+        <PointsPill
+          backgroundColor="var(--CB-Blue, #0052FF)"
+          points={score as number}
+          unit={UNIT}
+          isLoading={isLoading}
+        />
       </Link>
     </>
   );
