@@ -6,14 +6,17 @@ import ToolBar from '@/components/drawer/Toolbar';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
 import { Box, Button, NoSsr, Stack } from '@mui/material';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { ReactElement, memo, useCallback, useMemo, useState } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
-import { PointsPill } from '@/components/Pill';
+import { PointsPill } from '@/components/PointsPill';
 import { useLevels } from '@/hooks/useLevels';
 import { GAME_ID } from '@/constants/gameId';
 import SvgSwitcher, { LevelNumber } from '@/components/LevelsBadge';
 import { Level } from '@/hooks/types';
+import Pill from '@/components/Pill';
+import { useScore } from '@/hooks/useScore';
+import { useAccount } from 'wagmi';
 
 const EllipsisIcon = memo(() => (
   <svg
@@ -33,7 +36,7 @@ const EllipsisIcon = memo(() => (
 EllipsisIcon.displayName = 'ellipsisIcon';
 
 type ListCardPropsWithDescription = ListCardProps & {
-  description: string;
+  description: string | ReactElement;
 };
 
 const PageConsts = {
@@ -46,6 +49,15 @@ const PageConsts = {
 
 export default function LevelsPageClient() {
   const { data: collection, isLoading, error } = useLevels({ gameId: GAME_ID });
+  const { address, isConnected } = useAccount();
+  const { data: score, isLoading: isScoreLoading } = useScore({
+    userAddress: address ?? '',
+    gameId: GAME_ID,
+  });
+  console.log(
+    '🚀 ~ file: LevelsClient.tsx:57 ~ LevelsPageClient ~ score:',
+    score
+  );
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
@@ -135,6 +147,9 @@ export default function LevelsPageClient() {
       <NoSsr>
         <Stack gap={2}>
           {collection.map((item: Level, index: number) => {
+            const currentLevel = parseInt(score?.currentLevel?.level as string);
+            const itemLevel = parseInt(item.level) - 1;
+            const levelMatch = currentLevel === itemLevel;
             const content: ListCardPropsWithDescription = {
               title: `Level ${item.level}`,
               subtitle: `${item.thresholdPoints} points required`,
@@ -148,6 +163,17 @@ export default function LevelsPageClient() {
               ),
               description: item.description,
             };
+
+            if (levelMatch) {
+              content.titleDecoration = (
+                <Pill>
+                  <Text useMonoFont fontSize="14px">
+                    Current
+                  </Text>
+                </Pill>
+              );
+            }
+
             return (
               <ListCard
                 key={index}

@@ -9,7 +9,7 @@ import { useMemo, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import Text from '@/components/Text';
 import Circle from '@/components/Circle';
-import { PointsPill } from '@/components/Pill';
+import { PointsPill } from '@/components/PointsPill';
 import { UNIT } from '@/constants/unit';
 
 export const NavbarClient = () => {

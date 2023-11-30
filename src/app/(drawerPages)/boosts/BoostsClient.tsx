@@ -9,7 +9,7 @@ import { Box, Button, NoSsr, Stack } from '@mui/material';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
-import { PointsPill } from '@/components/Pill';
+import { PointsPill } from '@/components/PointsPill';
 
 type ListCardPropsForBoosts = ListCardProps & {
   explanation?: string;
