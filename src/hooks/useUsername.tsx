@@ -16,10 +16,10 @@ type Props = {
 export const useUserName = ({ address, userPublicProfile }: Props) => {
   return useMemo(() => {
     if (userPublicProfile) {
-      if (userPublicProfile.subdomainProfile) {
-        return userPublicProfile.subdomainProfile.name;
-      } else if (userPublicProfile.ensDomainProfile) {
+      if (userPublicProfile.ensDomainProfile) {
         return userPublicProfile.ensDomainProfile.name;
+      } else if (userPublicProfile.subdomainProfile) {
+        return userPublicProfile.subdomainProfile.name;
       }
     }
 
