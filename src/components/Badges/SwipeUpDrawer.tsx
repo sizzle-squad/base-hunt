@@ -8,6 +8,8 @@ import Text from '@/components/Text';
 import { BadgeLocationMap } from '../Map/BadgeLocationMap';
 import ToolBar from '../drawer/Toolbar';
 import { Button } from '@/components/assets/Button';
+import Link from '@/components/AnimatedLink';
+import { useMobileCheck } from '@/context/MobileContext';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';
@@ -15,7 +17,7 @@ const anchor = 'bottom';
 const googleMapNavigationUrl = `https://www.google.com/maps/dir/?api=1`;
 
 function getNavigationUrl(latLng: string) {
-  return `${googleMapNavigationUrl}&destination_place_id=${latLng}`;
+  return `${googleMapNavigationUrl}&destination=${latLng}&dir_action=navigate`;
 }
 
 const Puller = memo(() => (
@@ -81,6 +83,7 @@ function SwipeUpDrawer({
 }: SwipeUpDrawerProps) {
   const { drawerStates, toggleDrawer } = useDrawer();
   const [isMapOpen, setIsMapOpen] = useState(false);
+  const isMobile = useMobileCheck();
 
   const handleViewOnMapPress = useCallback(() => {
     setIsMapOpen(true);
@@ -100,7 +103,15 @@ function SwipeUpDrawer({
             lng={lng}
             roundedBorder
           />
-          <Button variant="contained">Get direction</Button>
+          {isMobile ? (
+            <Link href={getNavigationUrl(latLng)}>
+              <Button variant="contained">Get direction</Button>
+            </Link>
+          ) : (
+            <Button variant="contained" disabled>
+              Get direction
+            </Button>
+          )}
         </>
       );
     }
@@ -128,6 +139,7 @@ function SwipeUpDrawer({
     description,
     handleViewOnMapPress,
     isMapOpen,
+    isMobile,
     latLng,
     owned,
     title,

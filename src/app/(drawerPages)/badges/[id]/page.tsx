@@ -12,8 +12,6 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
-const defaultDescription = `In the bustling heart of Miami, there's a quaint, vintage bookstore nestled among the modern skyscrapers. Its wooden shelves are filled with old tomes and rare manuscripts, and there's a faint aroma of aged paper and leather.`;
-
 type Props = {
   params: { id: string };
 };

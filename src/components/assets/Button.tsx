@@ -6,7 +6,7 @@ type Props = {
   onClick?: () => void;
   children: ReactNode;
   isLoading?: boolean;
-  isDisabled?: boolean;
+  disabled?: boolean;
 };
 
 export function Button({
@@ -14,11 +14,11 @@ export function Button({
   onClick,
   variant = 'contained',
   isLoading,
-  isDisabled,
+  disabled,
 }: Props) {
   return (
     <LoadingButton
-      disabled={isDisabled}
+      disabled={disabled}
       loading={isLoading}
       variant={variant}
       onClick={onClick}
