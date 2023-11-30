@@ -72,29 +72,20 @@ export default function BadgeDetails({ params }: Props) {
             }}
           >
             <Image
-              src={currentBadge?.imageUrl.toString() ?? ''}
-              alt={currentBadge?.name ?? ''}
+              src={currentBadge.imageUrl.toString()}
+              alt={currentBadge.name}
               width={256}
               height={256}
             />
           </Box>
-
           <OwnershipPill owned={isOwned} />
-
           <SwipeUpDrawer
             type="badgeActions"
             owned={isOwned}
-            title={currentBadge?.name ?? 'Some NFT Title'}
-            completedOn={currentBadge?.completedTimestamp}
-            mapURL={
-              currentBadge?.ctaUrl ??
-              'https://maps.app.goo.gl/51g9q5AzvsQQUPan9'
-            }
-            // todo: add labels
-            labels={[]}
-            description={
-              currentBadge?.description || 'In the bustling heart of Miami.'
-            }
+            title={currentBadge.name}
+            completedOn={currentBadge.completedTimestamp}
+            latLng={currentBadge.latLng}
+            description={currentBadge.description}
           />
         </Stack>
       )}
