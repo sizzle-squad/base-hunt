@@ -28,12 +28,13 @@ const iconMapping = {
 };
 
 type ListCardPropsForBoosts = ListCardProps & {
-  explanation?: string;
-  points: number;
-  id: string;
+  points: bigint;
+  id: bigint;
+  title: string
   description: string;
+  type: string;
   contractAddress: string;
-  cta: string;
+  cta: string | null;
   claimed: boolean;
   claimable: boolean;
 };
@@ -103,8 +104,12 @@ export default function BoostsPageClient() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  const Reason = {
+    CLICKAWAY: 'clickaway',
+  };
+
   const handleClose = (event: any, reason: string) => {
-    if (reason === 'clickaway') {
+    if (reason === Reason.CLICKAWAY) {
       return;
     }
     setSnackbarOpen(false);
