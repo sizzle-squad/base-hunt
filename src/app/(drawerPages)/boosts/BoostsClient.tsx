@@ -96,7 +96,7 @@ export default function BoostsPageClient() {
     claimBoost.mutate({
       gameId: GAME_ID,
       userAddress: address,
-      boostId: activeItem!.id,
+      boostId: activeItem!.id.toString(),
       contractAddress: activeItem?.contractAddress
     });
   }, [GAME_ID, address, activeItem]);
