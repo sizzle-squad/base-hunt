@@ -1,13 +1,19 @@
 'use client';
 
-import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Icon,
+  Paper,
+} from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ArtIcon } from '@/components/assets/icons/ArtIcon';
 import { LocationIcon } from '@/components/assets/icons/LocationIcon';
 import { ArtRevealIcon } from '@/components/assets/icons/ArtRevealIcon';
-import Link from 'next/link';
 import { ActiveArtRevealIcon } from '@/components/assets/icons/ActiveArtRevealIcon';
+import Link from '@/components/AnimatedLink';
+import Text from '@/components/Text';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -60,22 +66,23 @@ export default function Footer() {
             <LocationIcon color={value === '/locations' ? '#E1FF67' : 'none'} />
           }
         />
-        <BottomNavigationAction
-          sx={{
-            '.Mui-selected': {
-              color: '#000',
-            },
-          }}
-          label="Grand Reveal"
-          value="/art-reveal"
-          icon={
-            value === '/art-reveal' ? (
+        <Link href="/art-reveal">
+          <Icon
+            sx={{
+              '.Mui-selected': {
+                color: '#000',
+              },
+              width: '100%',
+            }}
+          >
+            {value === '/art-reveal' ? (
               <ActiveArtRevealIcon />
             ) : (
               <ArtRevealIcon />
-            )
-          }
-        />
+            )}
+          </Icon>
+          <Text>Grand Reveal</Text>
+        </Link>
       </BottomNavigation>
     </Paper>
   );

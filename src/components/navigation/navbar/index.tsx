@@ -1,11 +1,19 @@
-import { Stack } from '@mui/material';
-import { memo } from 'react';
+import { Box, LinearProgress, Stack } from '@mui/material';
+import { memo, useEffect, useState } from 'react';
 import { NavbarClient } from '@/components/navigation/navbar/NavbarClient';
+import { useProgress } from '@/context/NavigationContext';
+import { NavigationProgressBar } from './NavigationProgress';
 
 const Navbar = () => {
+  const { isProgressing } = useProgress();
+  const [progress, setProgress] = useState(0);
+
   return (
-    <Stack direction="row" spacing={2} alignItems={'center'} width="100%">
-      <NavbarClient />
+    <Stack gap={1}>
+      <NavigationProgressBar />
+      <Stack direction="row" spacing={2} alignItems={'center'} width="100%">
+        <NavbarClient />
+      </Stack>
     </Stack>
   );
 };

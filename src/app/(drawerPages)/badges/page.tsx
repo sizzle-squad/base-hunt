@@ -12,6 +12,7 @@ import Text from '@/components/Text';
 import BadgeContainer from '@/components/assets/BadgeContainer';
 import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
+import { useProgress } from '@/context/NavigationContext';
 import { BadgeTypeEnum } from '@/hooks/types';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useClientCheck } from '@/hooks/useClientCheck';
@@ -26,6 +27,7 @@ import { useAccount, useDisconnect } from 'wagmi';
 
 export default function Badges() {
   const isClient = useClientCheck();
+  const { setIsProgressing } = useProgress();
   const router = useRouter();
   const { address, isConnected, isDisconnected } = useAccount();
   const { drawerStates, toggleDrawer } = useDrawer();
@@ -35,6 +37,11 @@ export default function Badges() {
   const [irlAccordionExpanded, setIrlAccordionExpanded] = useState(false);
   const [virtualAccordionExpanded, setVirtualAccordionExpanded] =
     useState(false);
+
+  useEffect(() => {
+    setIsProgressing(false);
+  }, []);
+
   const {
     data: badges,
     isLoading,

@@ -3,7 +3,7 @@
 import Layout from '@/components/layout';
 import { Jumbotron } from '@/components/assets/Jumbotron';
 import Head from 'next/head';
-import { Box, Button, Icon, Link, Stack } from '@mui/material';
+import { Box, Button, Icon, LinearProgress, Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Color } from '@/constants/color';
 import { ConnectButton } from '@/components/assets/ConnectButton';

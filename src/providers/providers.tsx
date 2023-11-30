@@ -11,6 +11,7 @@ import '@/globals.css';
 import { CssBaseline } from '@mui/material';
 import { MobileProvider } from '@/context/MobileContext';
 import { DesiredNetworkContextProvider } from '@/context/DesiredNetworkContext';
+import { ProgressProvider } from '@/context/NavigationContext';
 
 type Props = {
   children: React.ReactNode;
@@ -48,18 +49,20 @@ const theme = createTheme({
 const Providers = ({ children }: Props) => {
   const queryClient = new QueryClient();
   return (
-    <MobileProvider>
-      <QueryClientProvider client={queryClient}>
-        <WagmiConfig config={config}>
-          <DesiredNetworkContextProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
-            </ThemeProvider>
-          </DesiredNetworkContextProvider>
-        </WagmiConfig>
-      </QueryClientProvider>
-    </MobileProvider>
+    <ProgressProvider>
+      <MobileProvider>
+        <QueryClientProvider client={queryClient}>
+          <WagmiConfig config={config}>
+            <DesiredNetworkContextProvider>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
+              </ThemeProvider>
+            </DesiredNetworkContextProvider>
+          </WagmiConfig>
+        </QueryClientProvider>
+      </MobileProvider>
+    </ProgressProvider>
   );
 };
 
