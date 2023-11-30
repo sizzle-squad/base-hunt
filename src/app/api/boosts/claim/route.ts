@@ -83,7 +83,7 @@ async function hasToken(userAddress: string, contract: string, threshold: number
     return filterByBalance.length > 0;
 }
 
-export async function verifyTransactions(toAddress: string, fromAddress: string, contractAddress: string) {
+async function verifyTransactions(toAddress: string, fromAddress: string, contractAddress: string) {
   const params = {
       address: fromAddress,
       contractAddress,
