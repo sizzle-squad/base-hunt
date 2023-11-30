@@ -7,6 +7,7 @@ import { ArtIcon } from '@/components/assets/icons/ArtIcon';
 import { LocationIcon } from '@/components/assets/icons/LocationIcon';
 import { ArtRevealIcon } from '@/components/assets/icons/ArtRevealIcon';
 import Link from 'next/link';
+import { ActiveArtRevealIcon } from '@/components/assets/icons/ActiveArtRevealIcon';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -38,11 +39,21 @@ export default function Footer() {
         }}
       >
         <BottomNavigationAction
+          sx={{
+            '.Mui-selected': {
+              color: '#000',
+            },
+          }}
           label="Art"
           value="/badges"
           icon={<ArtIcon color={value === '/badges' ? '#E1FF67' : 'none'} />}
         />
         <BottomNavigationAction
+          sx={{
+            '.Mui-selected': {
+              color: '#000',
+            },
+          }}
           label="Locations"
           value="/locations"
           icon={
@@ -50,12 +61,19 @@ export default function Footer() {
           }
         />
         <BottomNavigationAction
+          sx={{
+            '.Mui-selected': {
+              color: '#000',
+            },
+          }}
           label="Grand Reveal"
           value="/art-reveal"
           icon={
-            <ArtRevealIcon
-              color={value === '/art-reveal' ? '#E1FF67' : 'none'}
-            />
+            value === '/art-reveal' ? (
+              <ActiveArtRevealIcon />
+            ) : (
+              <ArtRevealIcon />
+            )
           }
         />
       </BottomNavigation>
