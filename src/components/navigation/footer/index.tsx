@@ -3,8 +3,10 @@
 import {
   BottomNavigation,
   BottomNavigationAction,
+  Box,
   Icon,
   Paper,
+  Stack,
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -43,31 +45,43 @@ export default function Footer() {
         onChange={(_, newValue) => {
           router.push(newValue);
         }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+        }}
       >
-        <BottomNavigationAction
-          sx={{
-            '.Mui-selected': {
-              color: '#000',
-            },
-          }}
-          label="Art"
-          value="/badges"
-          icon={<ArtIcon color={value === '/badges' ? '#E1FF67' : 'none'} />}
-        />
-        <BottomNavigationAction
-          sx={{
-            '.Mui-selected': {
-              color: '#000',
-            },
-          }}
-          label="Locations"
-          value="/locations"
-          icon={
+        <Link href="/badges">
+          <Stack
+            alignItems={'center'}
+            sx={{
+              '.Mui-selected': {
+                color: '#000',
+              },
+              width: '100%',
+            }}
+          >
+            <ArtIcon color={value === '/art' ? '#E1FF67' : 'none'} />
+          </Stack>
+          <Text>Art</Text>
+        </Link>
+        <Link href="/locations">
+          <Stack
+            alignItems={'center'}
+            sx={{
+              '.Mui-selected': {
+                color: '#000',
+              },
+              width: '100%',
+            }}
+          >
             <LocationIcon color={value === '/locations' ? '#E1FF67' : 'none'} />
-          }
-        />
+          </Stack>
+          <Text>Locations</Text>
+        </Link>
         <Link href="/art-reveal">
-          <Icon
+          <Stack
+            alignItems={'center'}
             sx={{
               '.Mui-selected': {
                 color: '#000',
@@ -80,7 +94,7 @@ export default function Footer() {
             ) : (
               <ArtRevealIcon />
             )}
-          </Icon>
+          </Stack>
           <Text>Grand Reveal</Text>
         </Link>
       </BottomNavigation>

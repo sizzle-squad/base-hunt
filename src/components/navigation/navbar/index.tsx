@@ -10,7 +10,6 @@ const Navbar = () => {
 
   return (
     <Stack gap={1}>
-      <NavigationProgressBar />
       <Stack direction="row" spacing={2} alignItems={'center'} width="100%">
         <NavbarClient />
       </Stack>

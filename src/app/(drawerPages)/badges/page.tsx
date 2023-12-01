@@ -27,7 +27,6 @@ import { useAccount, useDisconnect } from 'wagmi';
 
 export default function Badges() {
   const isClient = useClientCheck();
-  const { setIsProgressing } = useProgress();
   const router = useRouter();
   const { address, isConnected, isDisconnected } = useAccount();
   const { drawerStates, toggleDrawer } = useDrawer();
@@ -37,10 +36,6 @@ export default function Badges() {
   const [irlAccordionExpanded, setIrlAccordionExpanded] = useState(false);
   const [virtualAccordionExpanded, setVirtualAccordionExpanded] =
     useState(false);
-
-  useEffect(() => {
-    setIsProgressing(false);
-  }, []);
 
   const {
     data: badges,

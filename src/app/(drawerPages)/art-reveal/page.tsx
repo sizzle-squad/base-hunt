@@ -19,6 +19,7 @@ import { Card } from '@/components/assets/Card';
 import Text from '@/components/Text';
 import Stepper from '@/components/Reveal/Stepper';
 import debounce from 'lodash.debounce';
+import { useProgress } from '@/context/NavigationContext';
 
 const TreasureChestInfo = [
   {
@@ -43,6 +44,7 @@ const TreasureChestInfo = [
 
 export default function ArtReveal() {
   const [activeInfoStep, setActiveInfoStep] = useState(0);
+  const { setProgress } = useProgress();
   const router = useRouter();
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
@@ -50,6 +52,10 @@ export default function ArtReveal() {
     userAddress: address ?? '',
     gameId: GAME_ID,
   });
+
+  useEffect(() => {
+    setProgress(0);
+  }, []);
 
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {

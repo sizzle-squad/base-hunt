@@ -8,20 +8,39 @@ import {
 import { usePathname, useSearchParams } from 'next/navigation';
 
 const ProgressContext = createContext({
-  isProgressing: false,
-  setIsProgressing: (isProgressing: boolean) => {},
+  progress: 0,
+  setProgress: (progress: number) => {},
+  startProgress: () => {},
 });
 
 export const ProgressProvider = ({ children }: PropsWithChildren) => {
-  const [isProgressing, setIsProgressing] = useState(false);
+  // const [isProgressing, setIsProgressing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  useEffect(() => {
-    setIsProgressing(false);
-    console.log('isProgressing', isProgressing);
-  }, []);
+  // useEffect(() => {
+  //   setProgress(0);
+  // }, [pathname, searchParams]);
+
+  const startProgress = () => {
+    let progress = 0;
+    const interval = 30; // Milliseconds between each increment
+
+    const timer = setInterval(() => {
+      progress += 100 / (3000 / interval); // Increment progress
+
+      if (progress >= 100) {
+        clearInterval(timer);
+        progress = 100; // Ensure progress does not exceed 100
+      }
+
+      setProgress(progress); // Update progress state
+    }, interval);
+  };
 
   return (
-    <ProgressContext.Provider value={{ isProgressing, setIsProgressing }}>
+    <ProgressContext.Provider value={{ progress, startProgress, setProgress }}>
       {children}
     </ProgressContext.Provider>
   );

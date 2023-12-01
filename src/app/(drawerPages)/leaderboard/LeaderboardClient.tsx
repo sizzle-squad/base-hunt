@@ -7,8 +7,9 @@ import { GAME_ID } from '@/constants/gameId';
 import { Rank } from '@/hooks/types';
 import { useTopRanks } from '@/hooks/useTopRanks';
 import { Box, NoSsr, Stack } from '@mui/material';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import Text from '@/components/Text';
+import { useProgress } from '@/context/NavigationContext';
 
 type RankMock = Rank & {
   isMock: boolean;
@@ -16,6 +17,10 @@ type RankMock = Rank & {
 
 export default function LeaderboardClient() {
   const { data: topRanks, isLoading } = useTopRanks({ gameId: GAME_ID });
+  const { setProgress } = useProgress();
+  useEffect(() => {
+    setProgress(0);
+  }, []);
 
   const generateMockData = useCallback((count: number) => {
     // Function to generate 'count' number of mock leaderboard entries
