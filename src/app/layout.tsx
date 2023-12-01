@@ -9,7 +9,7 @@ import {
 import clsx from 'clsx';
 import '@/globals.css';
 import Providers from '@/providers/providers';
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 
 export const metadata: Metadata = {
   title: 'Base Hunt',
@@ -33,14 +33,9 @@ export default function RootLayout({
             inter.variable
           )}
         >
-          <Box
-            style={{
-              margin: '0 auto',
-            }}
-            maxWidth={390}
-          >
+          <Stack flexDirection="row" justifyContent="center">
             {children}
-          </Box>
+          </Stack>
         </body>
       </Providers>
     </html>
