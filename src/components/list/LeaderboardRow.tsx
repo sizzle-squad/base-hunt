@@ -19,8 +19,8 @@ export default function LeaderBoardRow({
   isLast,
 }: Props) {
   const displayName = useMemo(() => {
-    if (rank.cbid) return rank.cbid;
     if (rank.ensName) return rank.ensName;
+    if (rank.cbid) return rank.cbid;
 
     return getTruncatedAddress(rank.userAddress);
   }, [rank.cbid, rank.ensName, rank.userAddress]);
