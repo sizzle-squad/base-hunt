@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { BadgeTypeEnum } from '../../../../hooks/types';
+import { BadgeTypeEnum, Level } from '../../../../hooks/types';
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
 
@@ -43,9 +43,32 @@ export async function GET(req: NextRequest) {
     console.error(error);
     throw new Error(error.message);
   }
-  console.log(data);
-  return NextResponse.json(data.map((d: any) => d.j));
+
+  const levels = data.map((d: any) => {
+    return { ...d.j, isClaimed: d.j.transaction_hash !== null };
+  });
+
+  levels.sort((a: any, b: any) => {
+    return a.level - b.level;
+  });
+  let currentLevelIdx = null;
+  for (var i = levels.length - 1; i >= 0; i--) {
+    if (levels[i].isClaimed) {
+      currentLevelIdx = i;
+      break;
+    }
+  }
+
+  return NextResponse.json({
+    levels: levels,
+    currentLevelIdx: currentLevelIdx,
+  } as LevelData);
 }
+
+export type LevelData = {
+  levels: [];
+  currentLevelIdx: number | null;
+};
 
 /*
 database function:
