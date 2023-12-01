@@ -128,3 +128,9 @@ export type Rank = {
 export type ExtendedDocument = {
   startViewTransition?: any;
 } & Document;
+
+export type LevelState = Level & {
+  imageUrl: string;
+  transactionHash: string;
+  isClaimed: boolean;
+};
