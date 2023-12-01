@@ -2,9 +2,11 @@ import axios from 'axios';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { Level } from './types';
+import { routes } from '@/constants/routes';
 
 type Props = {
   gameId: string;
+  address: string;
 };
 
 type LevelsReturnType = {
@@ -13,13 +15,13 @@ type LevelsReturnType = {
   };
 };
 
-export function useLevels({ gameId }: Props) {
+export function useLevels({ gameId, address }: Props) {
   const { data, isLoading, error } = useQuery(
     ['levels', gameId],
     async () => {
       return await axios({
         method: 'GET',
-        url: `/api/levels?gameId=${gameId}`,
+        url: `${routes.levels}?gameId=${gameId}&userAddress=${address}`,
       });
     },
     {
