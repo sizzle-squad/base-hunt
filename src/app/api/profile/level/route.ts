@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { BadgeTypeEnum, Level } from '../../../../hooks/types';
+import { BadgeTypeEnum, Level, LevelState } from '../../../../hooks/types';
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
 
@@ -44,8 +44,17 @@ export async function GET(req: NextRequest) {
     throw new Error(error.message);
   }
 
-  const levels = data.map((d: any) => {
-    return { ...d.j, isClaimed: d.j.transaction_hash !== null };
+  const levels: LevelState[] = data.map((d: any) => {
+    return {
+      gameId: gameId,
+      level: d.j.level,
+      name: d.j.name,
+      description: d.j.description,
+      thresholdPoints: d.j.threshold_points,
+      transactionHash: d.j.transaction_hash,
+      isClaimed: d.j.transaction_hash !== null,
+      imageUrl: d.j.image_url,
+    };
   });
 
   levels.sort((a: any, b: any) => {
@@ -66,7 +75,7 @@ export async function GET(req: NextRequest) {
 }
 
 export type LevelData = {
-  levels: [];
+  levels: LevelState[];
   currentLevelIdx: number | null;
 };
 
