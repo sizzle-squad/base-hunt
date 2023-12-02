@@ -80,7 +80,9 @@ async function ownsNFT(userAddress: string, contract: string) {
 
 async function hasToken(userAddress: string, contract: string, threshold: number) {
     const tokenBalanceRes = await alchemy.core.getTokenBalances(userAddress, [contract]);
-    const filterByBalance = tokenBalanceRes.tokenBalances.filter((balance: TokenBalance) => Number(balance.tokenBalance) >= threshold);
+    const metadata = await alchemy.core.getTokenMetadata(contract);
+    const filterByBalance = tokenBalanceRes.tokenBalances
+        .filter((balance) => (Number(balance.tokenBalance)/Math.pow(10, metadata.decimals as number)) >= threshold);
     return filterByBalance.length > 0;
 }
 
