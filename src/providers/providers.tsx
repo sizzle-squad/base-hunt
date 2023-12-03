@@ -3,8 +3,10 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { base } from 'viem/chains';
-import { WagmiConfig, createConfig } from 'wagmi';
-import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
+import { WagmiConfig, createConfig, configureChains } from 'wagmi';
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { publicProvider } from 'wagmi/providers/public';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import '@fontsource/open-sans';
 import '@/globals.css';
@@ -16,20 +18,26 @@ type Props = {
   children: React.ReactNode;
 };
 
-const alchemyId = process.env.ALCHEMY_ID;
+const alchemyId = process.env.ALCHEMY_ID!;
 
 const walletConnectProjectId = process.env.WALLETCONNECT_PROJECT_ID!;
 
-const chains = [base];
-
-const config = createConfig(
-  getDefaultConfig({
-    appName: 'Base Hunt',
-    alchemyId,
-    walletConnectProjectId,
-    chains,
-  })
+const { chains, publicClient } = configureChains(
+  [base],
+  [alchemyProvider({ apiKey: alchemyId }), publicProvider()]
 );
+
+const { connectors } = getDefaultWallets({
+  appName: 'Base Hunt',
+  projectId: 'base-hunt',
+  chains,
+});
+
+const config = createConfig({
+  autoConnect: true,
+  connectors,
+  publicClient,
+});
 
 const theme = createTheme({
   typography: {
@@ -50,14 +58,16 @@ const Providers = ({ children }: Props) => {
   return (
     <MobileProvider>
       <QueryClientProvider client={queryClient}>
-        <WagmiConfig config={config}>
-          <DesiredNetworkContextProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <ConnectKitProvider mode="dark">{children}</ConnectKitProvider>
-            </ThemeProvider>
-          </DesiredNetworkContextProvider>
-        </WagmiConfig>
+        <ThemeProvider theme={theme}>
+          <WagmiConfig config={config}>
+            <RainbowKitProvider chains={chains}>
+              <DesiredNetworkContextProvider>
+                <CssBaseline />
+                {children}
+              </DesiredNetworkContextProvider>
+            </RainbowKitProvider>
+          </WagmiConfig>
+        </ThemeProvider>
       </QueryClientProvider>
     </MobileProvider>
   );

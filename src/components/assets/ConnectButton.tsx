@@ -1,5 +1,7 @@
+'use client';
+
 import { Button } from '@mui/material';
-import { ConnectKitButton } from 'connectkit';
+import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 import { useMemo } from 'react';
 
 type Props = {
@@ -18,8 +20,10 @@ export function ConnectButton({
   }, [variant]);
 
   return (
-    <ConnectKitButton.Custom>
-      {({ isConnected, isConnecting, show }) => {
+    <RainbowConnectButton.Custom>
+      {({ openConnectModal, mounted, account, chain }) => {
+        const connected = mounted && account && chain;
+
         return (
           <Button
             variant={variant}
@@ -34,16 +38,12 @@ export function ConnectButton({
               fontFamily: 'CoinbaseMono',
               fontWeight: 400,
             }}
-            onClick={show}
+            onClick={openConnectModal}
           >
-            {isConnected
-              ? 'Disconnect'
-              : isConnecting
-              ? 'Connecting...'
-              : 'Connect Wallet'}
+            {!connected ? 'Connect Wallet' : 'Disconntect'}
           </Button>
         );
       }}
-    </ConnectKitButton.Custom>
+    </RainbowConnectButton.Custom>
   );
 }
