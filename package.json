@@ -27,7 +27,6 @@
     "alchemy-sdk": "^3.0.0",
     "axios": "^1.6.0",
     "clsx": "^2.0.0",
-    "connectkit": "^1.5.3",
     "date-fns": "^2.30.0",
     "encoding": "^0.1.13",
     "eslint": "8.42.0",

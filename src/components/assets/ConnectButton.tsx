@@ -2,7 +2,6 @@
 
 import { Button } from '@mui/material';
 import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
-import { useMemo } from 'react';
 
 type Props = {
   variant?: 'text' | 'outlined' | 'contained';
@@ -15,10 +14,6 @@ export function ConnectButton({
   fontSize = '22px',
   px = 5,
 }: Props) {
-  const backgroundColor = useMemo(() => {
-    return variant === 'contained' ? '#000000' : undefined;
-  }, [variant]);
-
   return (
     <RainbowConnectButton.Custom>
       {({ openConnectModal, mounted, account, chain }) => {

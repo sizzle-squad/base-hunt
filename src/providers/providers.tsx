@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { base } from 'viem/chains';
 import { WagmiConfig, createConfig, configureChains } from 'wagmi';
@@ -19,9 +20,6 @@ type Props = {
 };
 
 const alchemyId = process.env.ALCHEMY_ID!;
-
-const walletConnectProjectId = process.env.WALLETCONNECT_PROJECT_ID!;
-
 const { chains, publicClient } = configureChains(
   [base],
   [alchemyProvider({ apiKey: alchemyId }), publicProvider()]
