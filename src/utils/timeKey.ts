@@ -1,5 +1,8 @@
+import { format } from 'date-fns';
+
+const DATE_KEY_FORMAT = process.env.DATE_KEY_FORMAT || 'yyyy:MM:dd:HH';
 export function timeKey(dt: Date): string {
-  return `${dt.getFullYear()}:${dt.getMonth()}:${dt.getDate()}:${dt.getHours()}`;
+  return format(dt, DATE_KEY_FORMAT);
 }
 
 export function eqDateWithTimeKey(a: Date, b: Date): boolean {
