@@ -9,7 +9,8 @@ import { useGameState } from '@/hooks/useGameState';
 import { Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
 type Props = {
@@ -18,7 +19,8 @@ type Props = {
 
 export default function BadgeDetails({ params }: Props) {
   const { id } = params;
-  const { address } = useAccount();
+  const { address, isDisconnected } = useAccount();
+  const router = useRouter();
 
   const isClient = useClientCheck();
   const { data, isLoading, error } = useGameState({
@@ -36,6 +38,12 @@ export default function BadgeDetails({ params }: Props) {
   const isOwned = useMemo(() => {
     return Boolean(currentBadge?.isCompleted);
   }, [currentBadge]);
+
+  useEffect(() => {
+    if (isDisconnected) {
+      router.push('/');
+    }
+  }, [isDisconnected, router]);
 
   if (!isClient) return null;
 
