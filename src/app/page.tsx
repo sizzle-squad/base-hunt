@@ -1,11 +1,8 @@
 'use client';
 
-import Layout from '@/components/layout';
-import { Jumbotron } from '@/components/assets/Jumbotron';
 import Head from 'next/head';
-import { Box, Button, Icon, Link, Stack } from '@mui/material';
+import { Box, Button, Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { Color } from '@/constants/color';
 import { ConnectButton } from '@/components/assets/ConnectButton';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -56,7 +53,7 @@ export default function Home() {
     if (isClient && isConnected) {
       router.push('/badges');
     }
-  }, [isClient, isConnected]);
+  }, [isClient, isConnected, router]);
 
   return (
     <>
