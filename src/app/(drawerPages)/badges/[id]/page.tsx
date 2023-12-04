@@ -94,6 +94,8 @@ export default function BadgeDetails({ params }: Props) {
             completedOn={currentBadge.completedTimestamp}
             latLng={currentBadge.latLng}
             description={currentBadge.description}
+            badgeType={currentBadge.type}
+            ctaLink={currentBadge.ctaUrl}
           />
         </Stack>
       )}

@@ -10,6 +10,7 @@ import ToolBar from '../drawer/Toolbar';
 import { Button } from '@/components/assets/Button';
 import Link from '@/components/AnimatedLink';
 import { useMobileCheck } from '@/context/MobileContext';
+import { BadgeTypeEnum } from '@/hooks/types';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';
@@ -71,6 +72,8 @@ type SwipeUpDrawerProps = {
   owned: boolean;
   completedOn: Date | null;
   latLng: string;
+  badgeType: BadgeTypeEnum;
+  ctaLink?: string;
 };
 
 function SwipeUpDrawer({
@@ -80,6 +83,8 @@ function SwipeUpDrawer({
   owned,
   completedOn,
   latLng,
+  badgeType,
+  ctaLink,
 }: SwipeUpDrawerProps) {
   const { drawerStates, toggleDrawer } = useDrawer();
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -88,6 +93,24 @@ function SwipeUpDrawer({
   const handleViewOnMapPress = useCallback(() => {
     setIsMapOpen(true);
   }, []);
+
+  const ctaButton = useMemo(() => {
+    if (owned) return null;
+
+    if (badgeType === BadgeTypeEnum.IRL) {
+      return (
+        <Button variant="contained" onClick={handleViewOnMapPress}>
+          View on map
+        </Button>
+      );
+    } else if (badgeType === BadgeTypeEnum.Online) {
+      return (
+        <Button variant="contained" href={ctaLink}>
+          Mint
+        </Button>
+      );
+    }
+  }, [badgeType, ctaLink, handleViewOnMapPress, owned]);
 
   const content = useMemo(() => {
     if (isMapOpen) {
@@ -127,17 +150,13 @@ function SwipeUpDrawer({
             Badge found {format(new Date(completedOn), 'do MMMM yyyy')}
           </Text>
         )}
-        {!owned && (
-          <Button variant="contained" onClick={handleViewOnMapPress}>
-            View on map
-          </Button>
-        )}
+        {ctaButton}
       </Stack>
     );
   }, [
     completedOn,
+    ctaButton,
     description,
-    handleViewOnMapPress,
     isMapOpen,
     isMobile,
     latLng,
