@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
     .select('*')
     .eq('game_id', BigInt(gameId))
     .order('total_hitpoints', { ascending: false })
+    .order('updated_at', { ascending: true })
     .limit(10);
 
   if (error) {
