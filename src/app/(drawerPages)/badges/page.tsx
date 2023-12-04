@@ -340,12 +340,11 @@ export default function Badges() {
                 anchor={anchor}
                 open={drawerStates.walletOperations[anchor]}
                 onClose={() => handleToggleDrawer(anchor)}
-                PaperProps={{
-                  style: {
-                    width: '390px',
-                    left: 'calc(50% - 195px)', // 50% - half of width
-                  },
-                }}
+                // PaperProps={{
+                //   style: {
+                //     left: 'calc(50% - 195px)', // 50% - half of width
+                //   },
+                // }}
               >
                 {list(anchor)}
               </Drawer>

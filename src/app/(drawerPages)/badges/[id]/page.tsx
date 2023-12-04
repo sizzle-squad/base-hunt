@@ -54,7 +54,7 @@ export default function BadgeDetails({ params }: Props) {
         <Stack
           sx={{
             height: '100vh',
-            widows: '100vw',
+            width: '100vw',
             color: 'white',
             background: isOwned
               ? 'linear-gradient(180deg, #0A0B0D 0%, #26292F 100%)'
