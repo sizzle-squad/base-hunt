@@ -141,15 +141,15 @@ export async function POST(request: NextRequest) {
   if (iykRef) {
     console.log('got iykRef:', iykRef);
     const result = await getTapRef(iykRef as string);
-    if (result === null || !result.isValidRef) {
-      console.warn(`Invalid tapRef: ${iykRef}`);
-    } else {
+    if (result && result.isValidRef) {
       console.log(
         'applying phyiscal tap multiplier:',
         currentScore,
         PHYSICAL_TAP_MULTIPLIER
       );
       currentScore = Math.round(currentScore * PHYSICAL_TAP_MULTIPLIER);
+    } else {
+      console.warn(`Invalid tapRef: ${iykRef}`);
     }
   }
 
