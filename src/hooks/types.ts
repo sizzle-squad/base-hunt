@@ -48,7 +48,7 @@ export type Level = {
   id: string;
   gameId: string;
   name: string;
-  threshold_points: bigint;
+  thresholdPoints: bigint;
   level: '1' | '2' | '3' | '4' | '5' | '6' | '7';
   description: string;
 };

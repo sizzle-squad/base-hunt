@@ -142,7 +142,7 @@ export default function LevelsPageClient() {
             const levelMatch = currentLevel === itemLevel;
             const content: ListCardPropsWithDescription = {
               title: `Level ${item.level}`,
-              subtitle: `${item.threshold_points} points required`,
+              subtitle: `${item.thresholdPoints} points required`,
               startContent: (
                 <SvgSwitcher
                   alt={`Level ${item.level}`}
