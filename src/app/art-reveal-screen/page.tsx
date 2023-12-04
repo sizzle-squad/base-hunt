@@ -29,7 +29,7 @@ function Boxx(props: any) {
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
   // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta));
+  //useFrame((state, delta) => (meshRef.current.rotation.x += delta));
   // Return view, these are regular three.js elements expressed in JSX
   const config = {
     meshPhysicalMaterial: false,
@@ -61,11 +61,11 @@ function Boxx(props: any) {
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}
     >
-      <boxGeometry args={[1, 1, 1]} />
-      {/* <MeshTransmissionMaterial
+      <boxGeometry args={[4, 4, 1]} />
+      <MeshTransmissionMaterial
         background={new THREE.Color(config.bg)}
         {...config}
-      /> */}
+      />
       {/* <meshStandardMaterial
         color="red"
         emissive="red"
@@ -229,8 +229,7 @@ export default function ArtRevealScreen() {
         <Canvas>
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
-          <Boxx position={[-1.2, 0, -2]} />
-          <Boxx position={[1.2, 0, -2]} />
+          <Boxx position={[0, 0, -2]} />
           if(data && data?.totalHitpoints)
           {
             <TextData
