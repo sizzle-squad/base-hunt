@@ -79,6 +79,15 @@ export function Badge({ imageUrl, isCompleted, badge }: Props) {
     >
       <Link href={`/badges/${badge.id}`}>
         <Stack flexDirection="column" gap=".75rem">
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+            }}
+          >
+            {isCompleted ? <CompletedSvg /> : <IncompleteSvg />}
+          </Box>
           <Image
             src={imageUrl as string}
             alt="jumbotron"
@@ -106,15 +115,6 @@ export function Badge({ imageUrl, isCompleted, badge }: Props) {
             {badge.name}
           </Text>
         </Stack>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-          }}
-        >
-          {isCompleted ? <CompletedSvg /> : <IncompleteSvg />}
-        </Box>
       </Link>
     </Box>
   );
