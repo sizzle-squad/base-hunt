@@ -47,9 +47,13 @@ const PageConsts = {
 } as const;
 
 export default function LevelsPageClient() {
-  const { data: collection, isLoading, error } = useLevels({ gameId: GAME_ID });
   const loadingCollection = useMemo(() => [null, null, null, null], []);
   const { address, isConnected } = useAccount();
+  const {
+    data: collection,
+    isLoading,
+    error,
+  } = useLevels({ gameId: GAME_ID, address: address ?? '' });
   const { data: score, isLoading: isScoreLoading } = useScore({
     userAddress: address ?? '',
     gameId: GAME_ID,
@@ -128,11 +132,12 @@ export default function LevelsPageClient() {
             <ListCard key={index} isLoading={isLoading} />
           ))}
         {collection &&
-          collection.map((item: Level, index: number) => {
+          collection.levels &&
+          collection.levels.map((item: Level, index: number) => {
             const toggleDrawer = () => {
               handleToggleDrawer(item);
             };
-            const currentLevel = parseInt(score?.currentLevel?.level as string);
+            const currentLevel = collection.currentLevelIdx;
             const itemLevel = parseInt(item.level);
             const levelMatch = currentLevel === itemLevel;
             const content: ListCardPropsWithDescription = {

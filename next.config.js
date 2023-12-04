@@ -19,6 +19,10 @@ module.exports = {
         protocol: 'https',
         hostname: 'media.contextcdn.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'mint.fun',
+      },
     ],
   },
   async headers() {
