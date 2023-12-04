@@ -139,15 +139,6 @@ export default function ArtReveal() {
     }
   }, []);
 
-  useEffect(() => {
-    if (attackBox.data) {
-      console.log(
-        '🚀 ~ file: page.tsx:144 ~ useEffect ~ attackBox.data:',
-        attackBox.data
-      );
-    }
-  }, [attackBox.data]);
-
   const handleLearnMorePress = useCallback(() => {
     // TODO: link to NFT or artist
     router.push('/art-reveal');
