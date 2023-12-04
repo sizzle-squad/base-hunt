@@ -5,10 +5,15 @@ import '@/utils/helper';
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
 import { eqDateWithTimeKey } from '@/utils/timeKey';
+import { getTapRef } from '@/utils/iyk';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
+);
+
+const PHYSICAL_TAP_MULTIPLIER = parseFloat(
+  process.env.PHYSICAL_TAP_MULTIPLIER || '1'
 );
 
 export type UserPublicProfileType = {
@@ -20,6 +25,7 @@ export type UserPublicProfileType = {
 export type TreasureBoxType = {
   gameId: string;
   user: UserPublicProfileType;
+  iykRef?: string;
 };
 
 export type TreasureBoxStateType = {
@@ -89,7 +95,7 @@ export async function POST(request: NextRequest) {
 
   verifyTreasureBoxRequest(body);
 
-  const { gameId, user } = body;
+  const { gameId, user, iykRef } = body;
 
   const gameIdInBigInt = BigInt(gameId as string);
 
@@ -131,14 +137,31 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  let currentScore = score.current_score;
+  if (iykRef) {
+    console.log('got iykRef:', iykRef);
+    const result = await getTapRef(iykRef as string);
+    if (result && result.isValidRef) {
+      console.log(
+        'applying phyiscal tap multiplier:',
+        currentScore,
+        PHYSICAL_TAP_MULTIPLIER
+      );
+      currentScore = Math.round(currentScore * PHYSICAL_TAP_MULTIPLIER);
+    } else {
+      console.warn(`Invalid tapRef: ${iykRef}`);
+    }
+  }
+
   const params = {
     _game_id: gameIdInBigInt,
     _user_address: user.address.toLowerCase(),
     _cbid: user.cbId || '',
     _ens_name: user.ensName || '',
-    _increment: score.current_score,
+    _increment: currentScore,
     _tap_count: BigInt(1),
   };
+
   console.log(params);
   const { error } = await supabase.rpc('upserttreasurebox', params);
   if (error) {

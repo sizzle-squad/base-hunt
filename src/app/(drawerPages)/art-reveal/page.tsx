@@ -11,7 +11,7 @@ import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { ProgressCard } from '@/components/assets/ProgressCard';
 import { useScore } from '@/hooks/useScore';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import ArtRevealClient from './ArtRevealClient';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { UNIT } from '@/constants/unit';
@@ -62,7 +62,8 @@ export default function ArtReveal() {
   const { attackBox } = useMutateTreasureBox();
 
   const { data: treasureBox, isLoading } = useTreasureBox({ gameId: GAME_ID });
-
+  const searchParams = useSearchParams();
+  const iykRef = searchParams.get('iykRef');
   const handleCTAPress = useCallback(
     debounce(() => {
       attackBox.mutate({
@@ -72,6 +73,7 @@ export default function ArtReveal() {
           cbId: userPublicProfile?.subdomainProfile?.name,
           ensName: userPublicProfile?.ensDomainProfile?.name,
         },
+        ...(iykRef && { iykRef }),
       });
     }, 500),
     [
