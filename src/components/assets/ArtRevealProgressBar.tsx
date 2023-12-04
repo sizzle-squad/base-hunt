@@ -1,3 +1,5 @@
+'use client';
+
 import { GAME_ID } from '@/constants/gameId';
 import { UNIT } from '@/constants/unit';
 import { useTreasureBox } from '@/hooks/useTreasureBox';

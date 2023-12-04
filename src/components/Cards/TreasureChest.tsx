@@ -1,16 +1,38 @@
+'use client';
+
 import { Stack, Card, CardMedia } from '@mui/material';
 import Text from '@/components/Text';
 import { ArtRevealProgressBar } from '../assets/ArtRevealProgressBar';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../assets/Button';
+import { RevealedCard } from '../assets/RevealedCard';
 
-export function TreasureChest() {
+type Props = {
+  isOpen?: boolean;
+  ctaUrl?: string;
+};
+
+export function TreasureChest({ isOpen, ctaUrl }: Props) {
   const router = useRouter();
 
   const handleCTAPress = useCallback(() => {
     router.push('/art-reveal');
   }, [router]);
+
+  const progressContent = useMemo(() => {
+    if (!isOpen) {
+      return (
+        <>
+          <ArtRevealProgressBar />
+          <Button onClick={handleCTAPress}>
+            <Text color="#fff">Tap to reveal</Text>
+          </Button>
+        </>
+      );
+    }
+    return <RevealedCard ctaLink={ctaUrl} />;
+  }, [ctaUrl, handleCTAPress, isOpen]);
 
   return (
     <Card
@@ -47,13 +69,11 @@ export function TreasureChest() {
               width: 72,
               objectFit: 'contain',
               flexShrink: 0,
+              display: isOpen ? 'none' : 'block',
             }}
           />
         </Stack>
-        <ArtRevealProgressBar />
-        <Button onClick={handleCTAPress}>
-          <Text color="#fff">Tap to reveal</Text>
-        </Button>
+        {progressContent}
       </Stack>
     </Card>
   );

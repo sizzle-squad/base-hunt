@@ -1,27 +1,28 @@
+'use client';
+
 import { Stack } from '@mui/material';
-import { Card } from './Card';
 import Text from '../Text';
 import { Button } from './Button';
-import { RevealedArtListCard } from '@/app/(drawerPages)/art-reveal/ArtRevealClient';
 
 type Props = {
   onClick?: (args?: any) => void;
+  ctaLink?: string;
 };
 
-export function RevealedCard({ onClick }: Props) {
+export function RevealedCard({ onClick, ctaLink }: Props) {
   return (
-    <Card>
-      <Stack gap="16px" justifyContent="center" direction="column">
-        <Stack justifyContent="center" direction="column">
-          <Text variant="h6" align="center">
-            The art reveal has finished
-          </Text>
-          <Text variant="body2" align="center" sx={{ lineHeight: '150%' }}>
-            Thank you for your contribution
-          </Text>
-        </Stack>
-        <Button onClick={onClick}>Learn more</Button>
+    <Stack gap="16px" justifyContent="center" direction="column">
+      <Stack justifyContent="center" direction="column">
+        <Text variant="h6" align="center">
+          The art reveal has finished
+        </Text>
+        <Text variant="body2" align="center" sx={{ lineHeight: '150%' }}>
+          Thank you for your contribution
+        </Text>
       </Stack>
-    </Card>
+      <Button href={ctaLink} onClick={onClick}>
+        Learn more
+      </Button>
+    </Stack>
   );
 }
