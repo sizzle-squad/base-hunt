@@ -19,6 +19,7 @@ import { Card } from '@/components/assets/Card';
 import Text from '@/components/Text';
 import Stepper from '@/components/Reveal/Stepper';
 import debounce from 'lodash.debounce';
+import { useIsGameLive } from '@/hooks/useIsGameLive';
 
 const TreasureChestInfo = [
   {
@@ -44,6 +45,7 @@ const TreasureChestInfo = [
 export default function ArtReveal() {
   const [activeInfoStep, setActiveInfoStep] = useState(0);
   const router = useRouter();
+  const isGameLive = useIsGameLive();
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
   const { data } = useScore({
@@ -58,6 +60,12 @@ export default function ArtReveal() {
 
     return 0;
   }, [data]);
+
+  useEffect(() => {
+    if (!isGameLive) {
+      return router.push('/');
+    }
+  }, [isGameLive, router]);
 
   const { attackBox } = useMutateTreasureBox();
 

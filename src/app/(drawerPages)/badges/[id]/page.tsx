@@ -6,6 +6,7 @@ import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { GAME_ID } from '@/constants/gameId';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
+import { useIsGameLive } from '@/hooks/useIsGameLive';
 import { Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import Image from 'next/image';
@@ -21,6 +22,7 @@ export default function BadgeDetails({ params }: Props) {
   const { id } = params;
   const { address, isDisconnected } = useAccount();
   const router = useRouter();
+  const isGameLive = useIsGameLive();
 
   const isClient = useClientCheck();
   const { data, isLoading, error } = useGameState({
@@ -40,10 +42,10 @@ export default function BadgeDetails({ params }: Props) {
   }, [currentBadge]);
 
   useEffect(() => {
-    if (isDisconnected) {
+    if (isDisconnected || !isGameLive) {
       router.push('/');
     }
-  }, [isDisconnected, router]);
+  }, [isDisconnected, isGameLive, router]);
 
   if (!isClient) return null;
 
