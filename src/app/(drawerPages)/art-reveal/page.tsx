@@ -163,7 +163,7 @@ export default function ArtReveal() {
     <>
       {activeInfoStep && activeInfoStep >= 3 ? (
         <ProgressCard
-          // isCTADisabled={score === 0}
+          isCTADisabled={score === 0}
           ctaText={`Tap to reveal (${score} ${UNIT})`}
           onPress={handleCTAPress}
           isLoading={attackBox.isLoading}
