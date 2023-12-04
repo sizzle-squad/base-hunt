@@ -8,6 +8,7 @@ import { Box, NoSsr, Stack } from '@mui/material';
 import { memo, useCallback, useMemo, useState } from 'react';
 import Text from '@/components/Text';
 import { RevealedCard } from '@/components/assets/RevealedCard';
+import { Card } from '@/components/assets/Card';
 
 const PageConsts = {
   navTitle: 'Art Reveal' as const,
@@ -94,7 +95,9 @@ export default function ArtRevealClient() {
 
   return (
     <>
-      <RevealedCard onClick={handleToggleDrawer} />
+      <Card>
+        <RevealedCard onClick={handleToggleDrawer} />
+      </Card>
       <NoSsr>
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}

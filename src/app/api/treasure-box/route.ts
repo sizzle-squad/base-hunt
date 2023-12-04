@@ -37,6 +37,7 @@ export type TreasureBoxStateType = {
   location: string;
   current_hitpoints: bigint | null;
   is_open: boolean | null;
+  cta_url: string;
 };
 
 export async function GET(request: NextRequest) {
@@ -87,6 +88,7 @@ async function mapTreasureBoxState(
     totalHitpoints: treasureBox.total_hitpoints,
     currentHitpoints: treasureBox.current_hitpoints as bigint,
     isOpen: treasureBox.is_open === true,
+    ctaUrl: treasureBox.cta_url,
   };
 }
 

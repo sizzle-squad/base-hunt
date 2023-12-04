@@ -76,6 +76,7 @@ export type TreasureBoxState = {
   location: string;
   currentHitpoints: bigint;
   isOpen: boolean;
+  ctaUrl: string;
 };
 
 export enum BoostIconEnum {

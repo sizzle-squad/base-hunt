@@ -14,6 +14,7 @@ type TreasureBoxType = {
     isOpen: boolean;
     location?: string;
     currentHitpoints: bigint;
+    ctaUrl: string;
   };
 };
 

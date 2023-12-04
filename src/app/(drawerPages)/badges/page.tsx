@@ -18,11 +18,14 @@ import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
 import { useRank } from '@/hooks/useRank';
 import { useScore } from '@/hooks/useScore';
+import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { useUserName } from '@/hooks/useUsername';
 import { Box, Drawer, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
+
+type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export default function Badges() {
   const isClient = useClientCheck();
@@ -44,6 +47,11 @@ export default function Badges() {
     userAddress: address ?? '',
     gameId: GAME_ID,
   });
+  const { data: treasureBox, isLoading: isTreasureBoxLoading } = useTreasureBox(
+    {
+      gameId: GAME_ID,
+    }
+  );
 
   const { data: rank, isLoading: isRankLoading } = useRank({
     userAddress: address ?? '',
@@ -169,8 +177,6 @@ export default function Badges() {
     virtualAccordionExpanded,
     handleToggleAccordion,
   ]);
-
-  type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
   const list = (anchor: Anchor) => (
     <Box
@@ -309,7 +315,10 @@ export default function Badges() {
         className="pageContent"
       >
         <Hero />
-        <TreasureChest />
+        <TreasureChest
+          isOpen={treasureBox?.isOpen}
+          ctaUrl={treasureBox?.ctaUrl}
+        />
         <Stack
           flexDirection="row"
           justifyContent="center"
