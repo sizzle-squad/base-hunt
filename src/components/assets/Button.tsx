@@ -7,6 +7,7 @@ type Props = {
   children: ReactNode;
   isLoading?: boolean;
   disabled?: boolean;
+  href?: string;
 };
 
 export function Button({
@@ -15,9 +16,11 @@ export function Button({
   variant = 'contained',
   isLoading,
   disabled,
+  href,
 }: Props) {
   return (
     <LoadingButton
+      href={href}
       disabled={disabled}
       loading={isLoading}
       variant={variant}
