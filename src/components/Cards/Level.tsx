@@ -17,7 +17,11 @@ export function Level({ currentLevel, isLoading }: Props) {
       return <Skeleton variant="text" width={100} height={20} />;
     }
 
-    return <Text whiteSpace="nowrap">Level {currentLevel.level}</Text>;
+    return (
+      <Text fontSize="16px" whiteSpace="nowrap">
+        Level {currentLevel.level}
+      </Text>
+    );
   }, [currentLevel, isLoading]);
 
   return (

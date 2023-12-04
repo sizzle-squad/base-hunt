@@ -44,6 +44,7 @@ export function Rank({ currentRank, isLoading }: Props) {
       padding="12px 12px 12px 16px"
       sx={{ width: '100%', cursor: 'pointer' }}
       flex={1}
+      height="44px"
     >
       <Link href="/leaderboard">{content}</Link>
     </Stack>

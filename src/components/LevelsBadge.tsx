@@ -24,7 +24,7 @@ const Levels: {
 };
 
 type SvgSwitcherProps = {
-  level: keyof typeof Levels | null;
+  level: keyof typeof Levels | null | '0';
 } & Omit<ComponentProps<typeof Image>, 'src'>;
 
 const SvgSwitcher = ({ level, ...imageProps }: SvgSwitcherProps) => {
@@ -38,6 +38,8 @@ const SvgSwitcher = ({ level, ...imageProps }: SvgSwitcherProps) => {
   } else {
     SvgComponent = Levels[level];
   }
+
+  if (!SvgComponent || level === '0') return null;
 
   return (
     <Image
