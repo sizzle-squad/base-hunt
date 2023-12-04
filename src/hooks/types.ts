@@ -134,3 +134,13 @@ export type LevelState = Level & {
   transactionHash: string;
   isClaimed: boolean;
 };
+
+export type TreasureBoxEntry = {
+  userAddress: string;
+  totalHitpoints: bigint;
+  gameId: bigint;
+  tapCount: bigint;
+  updatedAt: Date;
+  createdAt: Date;
+  isCTAEligible: boolean;
+};
