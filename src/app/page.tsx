@@ -9,36 +9,60 @@ import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
+import { useIsGameLive } from '@/hooks/useIsGameLive';
+
+const btnStyle = {
+  py: '20px',
+  px: 3,
+  fontSize: '16px',
+  backgroundColor: '#000000',
+  width: '100%',
+  borderRadius: '12px',
+  fontFamily: 'CoinbaseMono',
+  fontWeight: 400,
+};
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
+  const isGameLive = useIsGameLive();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
   const { isConnected } = useAccount();
   const router = useRouter();
 
   const handleStartExploring = useCallback(() => {
+    if (!isGameLive) return;
     return router.push('/badges');
-  }, [router]);
+  }, [isGameLive, router]);
 
   const ctaButton = useMemo(() => {
     if (isClient) {
+      if (!isGameLive) {
+        return (
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              ...btnStyle,
+              cursor: 'not-allowed',
+              ':hover': {
+                backgroundColor: '#000000',
+              },
+            }}
+          >
+            Coming Soon
+          </Button>
+        );
+      }
+
       return isConnected ? (
         <Button
           variant="contained"
           color="primary"
-          sx={{
-            py: '20px',
-            px: 3,
-            fontSize: '16px',
-            backgroundColor: '#000000',
-            width: '100%',
-            borderRadius: '12px',
-            fontFamily: 'CoinbaseMono',
-            fontWeight: 400,
-          }}
+          sx={btnStyle}
           onClick={handleStartExploring}
         >
           Start Exploring
@@ -47,13 +71,15 @@ export default function Home() {
         <ConnectButton />
       );
     }
-  }, [isConnected, handleStartExploring, isClient]);
+  }, [isClient, isGameLive, isConnected, handleStartExploring]);
 
   useEffect(() => {
     if (isClient && isConnected) {
+      if (isGameLive) return;
+
       router.push('/badges');
     }
-  }, [isClient, isConnected, router]);
+  }, [isClient, isConnected, isGameLive, router]);
 
   return (
     <>
