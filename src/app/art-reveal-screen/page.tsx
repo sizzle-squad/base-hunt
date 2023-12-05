@@ -4,7 +4,14 @@ import { Box, Grid, Skeleton, Stack } from '@mui/material';
 import { CountdownTimer } from '@/components/ArtRevealScreen/Countdown';
 import { useTreasureBoxForRevealScreen } from '@/hooks/useTreasureBoxForRevealScreen';
 import { useEffect, useState, useRef, Suspense } from 'react';
-import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
+import {
+  Canvas,
+  useFrame,
+  useLoader,
+  useThree,
+  extend,
+  ReactThreeFiber,
+} from '@react-three/fiber';
 import {
   Bloom,
   EffectComposer,
@@ -22,10 +29,25 @@ import {
   OrthographicCamera,
   Center,
   Float,
+  Effects,
 } from '@react-three/drei';
 import { useControls } from 'leva';
 import { BlendFunction } from 'postprocessing';
-
+import axios from 'axios';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass';
+extend({ GlitchPass, UnrealBloomPass });
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      unrealBloomPass: ReactThreeFiber.Node<
+        UnrealBloomPass,
+        typeof UnrealBloomPass
+      >;
+      glitchPass: ReactThreeFiber.Node<GlitchPass, typeof GlitchPass>;
+    }
+  }
+}
 function Boxx(props: any) {
   // This reference will give us direct access to the mesh
   const meshRef = useRef();
@@ -52,9 +74,9 @@ function Boxx(props: any) {
     temporalDistortion: { value: 0.5, min: 0, max: 1, step: 0.01 },
     clearcoat: { value: 1, min: 0, max: 1 },
     attenuationDistance: { value: 0.5, min: 0, max: 10, step: 0.01 },
-    attenuationColor: '#ffffff',
-    color: '#c9ffa1',
-    bg: '#e6f8a9',
+    attenuationColor: '#fff5f5',
+    color: '#c4c4c4',
+    bg: '#3a4124',
   });
   return (
     <mesh
@@ -78,53 +100,6 @@ function Boxx(props: any) {
     </mesh>
   );
 }
-
-function Model(props: any) {
-  const {
-    camera,
-    size: { width, height },
-  } = useThree();
-  const r = useRef();
-  const gltf = useGLTF('/models/frame/scene.gltf');
-  const child = gltf.scene.getObjectByName('Sketchfab_model');
-  const mesh = child?.getObjectByProperty('type', 'Mesh') as THREE.Mesh;
-  const config = {
-    meshPhysicalMaterial: false,
-    transmissionSampler: false,
-    backside: false,
-    samples: 10,
-    resolution: 2048,
-    transmission: 1,
-    roughness: 0.7,
-    thickness: 3.5,
-    ior: 1.5,
-    chromaticAberration: 0.15,
-    anisotropy: 0.1,
-    distortion: 0.02,
-    distortionScale: 0.3,
-    temporalDistortion: 0.5,
-    clearcoat: 1,
-    attenuationDistance: 0.5,
-    attenuationColor: '#ffffff',
-    color: '#c9ffa1',
-    bg: '#e6f8a9',
-  };
-  //console.log(mesh.geometry);
-  //camera.zoom = width / (1.5 * 10);
-  return (
-    <primitive
-      ref={r}
-      object={mesh}
-      //scale={0.05}
-      position={[0, 0, 0]}
-      rotation-x={Math.PI * 0.5}
-      dispose={null}
-    ></primitive>
-    // <primitive object={gltf.scene} dispose={null} {...props} />
-  );
-}
-
-useGLTF.preload('/models/frame/scene.gltf');
 
 function TextData({
   animatedHitpoints = 100000,
@@ -153,7 +128,7 @@ function TextData({
             />
           </Text3D>
         </Center>
-        <Center bottom position={[margin, -height / 2 + margin + 1, 0]}>
+        <Center bottom position={[-margin, -height / 2 + margin + 1, 0]}>
           <Text3D font={'/fonts/Coinbase_Sans_Bold.json'} size={0.9}>
             {animatedHitpoints}/{totalHitpoints}
             {/* <MeshTransmissionMaterial
@@ -172,12 +147,13 @@ function TextData({
 }
 export default function ArtRevealScreen() {
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
+
   const { data } = useTreasureBoxForRevealScreen({
     gameId,
   });
 
   const lerp = (start: number, end: number, alpha: number) =>
-    start + (end - start) * alpha;
+    Math.floor(start + (end - start) * alpha);
 
   const [animatedHitpoints, setAnimatedHitpoints] = useState<number>(0);
 
@@ -203,40 +179,28 @@ export default function ArtRevealScreen() {
       animate();
     }
   }, [data?.currentHitpoints]);
+
   return (
-    <Stack width="100%" margin="auto" background-color="black">
-      {/* <Stack>
-        <CountdownTimer />
-      </Stack> */}
-      {/* <Stack flexDirection="row" justifyContent="center">
-        <Stack
-          width="100%"
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <>
-            <Text useMonoFont fontSize="180px">
-              {Math.round(animatedHitpoints) || 0}
-            </Text>
-            <Text fontSize="180px">/</Text>
-            <Text useMonoFont fontSize="180px">
-              {(data && data?.totalHitpoints) || 0}
-            </Text>
-          </>
-        </Stack>
-      </Stack> */}
+    <Stack width="100%" margin="auto">
       <Stack height="100vh">
         <Canvas>
+          <Effects>
+            <glitchPass
+              // @ts-ignore
+              attachArray="passes"
+            />
+            <unrealBloomPass
+              // @ts-ignore
+              attachArray="passes"
+            />
+          </Effects>
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
           <Boxx position={[0, 0, -4]} />
-          if(data && data?.totalHitpoints)
+          if(data?.currentHitpoints != null && data.totalHitpoints != null)
           {
             <TextData
-              animatedHitpoints={
-                Math.round(animatedHitpoints) || data?.totalHitpoints
-              }
+              animatedHitpoints={animatedHitpoints}
               totalHitpoints={data?.totalHitpoints}
             />
           }
@@ -251,18 +215,19 @@ export default function ArtRevealScreen() {
             far={20}
             position={[0, 0, 10]}
           />
-          <EffectComposer>
-            {/* <ChromaticAberration
-              // @ts-expect-error: Let's ignore a compile error
-              offset={[0.005, 0.002]} // color offset
-            /> */}
+          {/* <Effects>
+              <Glitch />
+              <ChromaticAberration
+                // @ts-expect-error: Let's ignore a compile error
+                offset={[0.005, 0.002]} // color offset
+              />
 
-            <Bloom
-              luminanceThreshold={0.1}
-              luminanceSmoothing={0.9}
-              intensity={0.8}
-            />
-          </EffectComposer>
+              <Bloom
+                luminanceThreshold={0.1}
+                luminanceSmoothing={0.9}
+                intensity={0.8}
+              />
+            </Effects> */}
         </Canvas>
       </Stack>
     </Stack>
