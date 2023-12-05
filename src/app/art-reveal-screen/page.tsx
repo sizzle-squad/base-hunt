@@ -167,7 +167,7 @@ export default function ArtRevealScreen() {
     <Stack width="100%" margin="auto">
       <Stack height="100vh">
         <Canvas>
-          {/* <Effects>
+          <Effects>
             <glitchPass
               // @ts-ignore
               attachArray="passes"
@@ -176,7 +176,7 @@ export default function ArtRevealScreen() {
               // @ts-ignore
               attachArray="passes"
             />
-          </Effects> */}
+          </Effects>
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
           <Cube position={[0, 0, -4]} />
