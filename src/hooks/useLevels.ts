@@ -24,13 +24,6 @@ export function useLevels({ gameId, address }: Props) {
         url: `${routes.levels}?gameId=${gameId}&userAddress=${address}`,
       });
 
-      return {
-        ...result.data,
-        currentLevelIdx: result.data.currentLevelIdx
-          ? result.data.currentLevelIdx
-          : '0',
-      };
-
       return result.data;
     },
     {
