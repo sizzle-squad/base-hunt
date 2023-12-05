@@ -8,7 +8,9 @@ import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import {
   Bloom,
   EffectComposer,
+  Scanline,
   ChromaticAberration,
+  Glitch,
 } from '@react-three/postprocessing';
 import {
   Text3D,
@@ -19,8 +21,10 @@ import {
   MeshTransmissionMaterial,
   OrthographicCamera,
   Center,
+  Float,
 } from '@react-three/drei';
 import { useControls } from 'leva';
+import { BlendFunction } from 'postprocessing';
 
 function Boxx(props: any) {
   // This reference will give us direct access to the mesh
@@ -130,32 +134,40 @@ function TextData({
   const { width, height } = useThree((state) => state.viewport);
 
   return (
-    <group position-z={-6}>
-      <Center
-        bottom
-        right
-        position={[-width / 2 + margin, height / 2 - margin, 0]}
-      >
-        <Text3D
-          lineHeight={0.75}
-          font={'/fonts/Coinbase_Sans_Bold.json'}
-          size={2}
+    <Float floatIntensity={6} speed={0.9}>
+      <group position-z={-6}>
+        <Center
+          bottom
+          right
+          position={[-width / 2 + margin, height / 2 - margin, 0]}
         >
-          {`5d 6h 4min 6sec`.split(' ').join('\n')}
-          <meshStandardMaterial color={new THREE.Color('black')} />
-        </Text3D>
-      </Center>
-      <Center bottom position={[margin, -height / 2 + margin + 1, 0]}>
-        <Text3D font={'/fonts/Coinbase_Sans_Bold.json'} size={0.9}>
-          {animatedHitpoints}/{totalHitpoints}
-          {/* <MeshTransmissionMaterial
+          <Text3D
+            lineHeight={0.75}
+            font={'/fonts/Coinbase_Sans_Bold.json'}
+            size={2}
+          >
+            {`5d 6h 4min 6sec`.split(' ').join('\n')}
+            <meshStandardMaterial
+              color={new THREE.Color('black')}
+              // emissive={new THREE.Color('white')}
+            />
+          </Text3D>
+        </Center>
+        <Center bottom position={[margin, -height / 2 + margin + 1, 0]}>
+          <Text3D font={'/fonts/Coinbase_Sans_Bold.json'} size={0.9}>
+            {animatedHitpoints}/{totalHitpoints}
+            {/* <MeshTransmissionMaterial
             background={new THREE.Color(config.bg)}
             {...config}
           /> */}
-          <meshStandardMaterial color={new THREE.Color('black')} />
-        </Text3D>
-      </Center>
-    </group>
+            <meshStandardMaterial
+              color={new THREE.Color('black')}
+              // emissive={new THREE.Color('white')}
+            />
+          </Text3D>
+        </Center>
+      </group>
+    </Float>
   );
 }
 export default function ArtRevealScreen() {
