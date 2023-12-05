@@ -83,23 +83,19 @@ export default function ArtReveal() {
 
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {
-      if (iykRef) {
-        return Number(data.score.currentScore) * physicalTapMulitplier;
-      }
       return data.score.currentScore;
     }
 
     return 0;
-  }, [data, iykRef, physicalTapMulitplier]);
+  }, [data]);
 
   const boostedLabel = useMemo(() => {
-    if (score === 0) {
-      return '';
-    }
     if (iykRef) {
-      return ' boosted';
+      return ` x ${physicalTapMulitplier} boost`;
     }
-  }, [iykRef, score]);
+
+    return '';
+  }, [iykRef, physicalTapMulitplier]);
 
   const handleCTAPress = useCallback(
     debounce(() => {
