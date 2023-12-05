@@ -5,6 +5,7 @@ type Props = {
   points: number | string;
   unit?: 'pts' | 'points';
   backgroundColor?: string;
+  textColor?: string;
   isLoading?: boolean;
 };
 
@@ -12,6 +13,7 @@ export const PointsPill = ({
   points,
   unit,
   backgroundColor = '#fff',
+  textColor= 'white',
   isLoading = false,
 }: Props) => (
   <Stack
@@ -33,12 +35,12 @@ export const PointsPill = ({
       fontWeight: 400,
     }}
   >
-    <Text sx={{ color: 'white' }} align="center">
+    <Text sx={{ color: textColor }} align="center">
       {!isLoading && points}
       {isLoading && <Skeleton variant="text" width={30} />}
     </Text>
     <Stack direction="row" alignItems="center" justifyContent="center" gap={1}>
-      <Text sx={{ color: 'white' }} align="center">
+      <Text sx={{ color: textColor }} align="center">
         {!isLoading && unit && unit}{' '}
         {isLoading && <Skeleton variant="text" width={30} />}
       </Text>

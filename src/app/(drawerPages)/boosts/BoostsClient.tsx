@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
+import { useQueryClient } from 'react-query';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
-import { Alert, Box, Button, NoSsr, Snackbar, Stack, SvgIcon } from '@mui/material';
+import { Box, Button, NoSsr, Snackbar, Stack } from '@mui/material';
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
@@ -25,6 +26,21 @@ const iconMapping = {
   'CIRCLE': <CircleIcon />,
   'LINK': <LinkIcon />,
   'USERS': <UsersIcon />
+};
+
+type BoostEntry = {
+  id: bigint;
+  title: string;
+  description: string;
+  type: string;
+  contractAddress: string;
+  subtitle: string;
+  cta: string | null;
+  points: bigint;
+  claimed: boolean;
+  claimable: boolean;
+  startContent: React.JSX.Element;
+  endContent: React.JSX.Element;
 };
 
 type ListCardPropsForBoosts = ListCardProps & {
@@ -53,29 +69,52 @@ const PageConsts = {
 export default function BoostsPageClient() {
 
   const { address } = useAccount();
+  const loadingCollection = useMemo(() => [null, null, null, null], []);
   const { data: boosts, isLoading } = useBoosts({userAddress: address, gameId: GAME_ID});
   const { claimBoost } = useClaimBoost();
+  const queryClient = useQueryClient();
+  const [boostList, setBoostList] = useState<BoostEntry[]>();
 
-  const boostsCollection = boosts?.filter((boost) => boost.isEnabled).map((boost) => { return {
-    id: boost.id,
-    title: boost.name,
-    description: boost.description,
-    type: boost.boostType,
-    contractAddress: boost.contractAddresses[0],
-    subtitle: '',
-    cta: boost.ctaText,
-    points: boost.points,
-    claimed: boost.claimed,
-    claimable: !boost.claimed,
-    startContent: (
-      iconMapping[boost.icon]
-    ),
-    endContent: <Text>{boost.points.toString()} pts</Text>,
-  }});
+  const processBoosts = () => {
+    const boostsCollection =
+    boosts?.filter((boost) => boost.isEnabled).map((boost) => {
+      return {
+        id: boost.id,
+        title: boost.name,
+        description: boost.description,
+        type: boost.boostType,
+        contractAddress: boost.contractAddresses[0],
+        subtitle: '',
+        cta: boost.ctaText,
+        points: boost.points,
+        claimed: boost.claimed,
+        claimable: !boost.claimed,
+        startContent: (
+          iconMapping[boost.icon]
+        ),
+        endContent: <Text>{boost.points.toString()} pts</Text>,
+      } as BoostEntry;
+    }) as BoostEntry[];
+    setBoostList(boostsCollection);
+  }
 
-  const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
-    null
-  );
+  useEffect(() => {
+    processBoosts();
+  }, [boosts]);
+
+  const refetchBoosts = () => {
+    queryClient.invalidateQueries(['boosts', address, GAME_ID]);
+    processBoosts();
+  };
+
+  useEffect(() => {
+    if (claimBoost.isSuccess || claimBoost.isError) {
+      refetchBoosts();
+    }
+  }, [claimBoost.isSuccess, claimBoost.isError, queryClient]);
+
+  const [activeItem, setActiveItem] =
+    useState<ListCardPropsForBoosts | null>(null);
 
   const { drawerStates, toggleDrawer } = useDrawer();
 
@@ -119,10 +158,12 @@ export default function BoostsPageClient() {
     if (claimBoost.isSuccess) {
       setSnackbarMessage("Boost was successfully claimed.");
       setSnackbarOpen(true);
+      handleToggleDrawer(activeItem!);
     }
     if (claimBoost.isError) {
       setSnackbarMessage("Unable to claim boost.");
       setSnackbarOpen(true);
+      handleToggleDrawer(activeItem!);
     }
   }, [claimBoost.isSuccess, claimBoost.isError]);
 
@@ -170,7 +211,7 @@ export default function BoostsPageClient() {
             </>
           )}
         </Stack>
-        <PointsPill points={Number(item.points)} unit={PageConsts.drawerSubtitleUnit} />
+        <PointsPill points={Number(item.points)} unit={PageConsts.drawerSubtitleUnit} textColor='#151515'/>
       </Stack>
 
       <Button
@@ -183,7 +224,7 @@ export default function BoostsPageClient() {
           bgcolor: 'black',
           color: 'white',
         }}
-        disabled={claimBoost.isLoading}
+        disabled={claimBoost && claimBoost.isLoading}
         onClick={handleCTAPress}
       >
         { item.claimable ? 'Claim boost' : item.cta }
@@ -196,15 +237,20 @@ export default function BoostsPageClient() {
       <DetailsPageNavbar title={PageConsts.navTitle} />
       <NoSsr>
         <Stack gap={2}>
-          {boostsCollection?.map((item, index) => (
-            <ListCard
-              key={index}
-              title={item.title}
-              subtitle={item.claimed ? (item.type === 'TRANSFER_NFT' ? 'Auto-claimed' : 'Claimed') : <ToggleDrawerButton item={item} onClick={handleToggleDrawer} />}
-              startContent={item.startContent}
-              endContent={item.endContent}
-            />
-          ))}
+          {isLoading &&
+            loadingCollection.map((_, index) => (
+              <ListCard key={index} isLoading={isLoading} />
+            ))}
+          {boostList && 
+            boostList?.map((item, index) => (
+              <ListCard
+                key={index}
+                title={item.title}
+                subtitle={item.claimed ? (item.type === 'TRANSFER_NFT' ? 'Auto-claimed' : 'Claimed') : <ToggleDrawerButton item={item} onClick={handleToggleDrawer} />}
+                startContent={item.startContent}
+                endContent={item.endContent}
+              />
+            ))}
         </Stack>
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}
