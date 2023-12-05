@@ -1,4 +1,4 @@
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { routes } from '@/constants/routes';
 import axios from 'axios';
 
@@ -10,6 +10,8 @@ export type BoostsClaimData = {
 };
 
 export function useClaimBoost() {
+    const queryClient = useQueryClient();
+
     const claimBoost = useMutation(
       (data: BoostsClaimData) => { 
         const { gameId, userAddress, boostId } = data;
@@ -19,6 +21,11 @@ export function useClaimBoost() {
         }
         
         return axios.post(routes.boosts.claim, data);
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(['boosts']);
+        },
       }
     );
     return { claimBoost };
