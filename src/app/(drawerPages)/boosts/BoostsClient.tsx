@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { UseMutationResult, useQueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
-import { Alert, Box, Button, NoSsr, Snackbar, Stack, SvgIcon } from '@mui/material';
+import { Box, Button, NoSsr, Snackbar, Stack } from '@mui/material';
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
@@ -17,8 +17,6 @@ import { useClaimBoost } from '@/hooks/useClaimBoost';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
 import { WalletIcon, CoffeeIcon, BagIcon, GridIcon, CircleIcon, LinkIcon, UsersIcon } from '@/components/assets/icons/BoostIcon';
-import { BoostsClaimData } from '@/hooks/useClaimBoost';
-import { AxiosResponse } from 'axios';
 
 const iconMapping = {
   'WALLET': <WalletIcon />,
@@ -28,6 +26,21 @@ const iconMapping = {
   'CIRCLE': <CircleIcon />,
   'LINK': <LinkIcon />,
   'USERS': <UsersIcon />
+};
+
+type BoostEntry = {
+  id: bigint;
+  title: string;
+  description: string;
+  type: string;
+  contractAddress: string;
+  subtitle: string;
+  cta: string | null;
+  points: bigint;
+  claimed: boolean;
+  claimable: boolean;
+  startContent: React.JSX.Element;
+  endContent: React.JSX.Element;
 };
 
 type ListCardPropsForBoosts = ListCardProps & {
@@ -59,10 +72,11 @@ export default function BoostsPageClient() {
   const loadingCollection = useMemo(() => [null, null, null, null], []);
   const { data: boosts, isLoading } = useBoosts({userAddress: address, gameId: GAME_ID});
   const { claimBoost } = useClaimBoost();
-  const [claimBoostData, setClaimBoostData] = useState<UseMutationResult<AxiosResponse<any, any>, unknown, BoostsClaimData, unknown>>();
   const queryClient = useQueryClient();
+  const [boostList, setBoostList] = useState<BoostEntry[]>();
 
-  const boostsCollection =
+  const processBoosts = () => {
+    const boostsCollection =
     boosts?.filter((boost) => boost.isEnabled).map((boost) => {
       return {
         id: boost.id,
@@ -79,11 +93,18 @@ export default function BoostsPageClient() {
           iconMapping[boost.icon]
         ),
         endContent: <Text>{boost.points.toString()} pts</Text>,
-      }
-    });
+      } as BoostEntry;
+    }) as BoostEntry[];
+    setBoostList(boostsCollection);
+  }
+
+  useEffect(() => {
+    processBoosts();
+  }, [boosts]);
 
   const refetchBoosts = () => {
     queryClient.invalidateQueries(['boosts', address, GAME_ID]);
+    processBoosts();
   };
 
   useEffect(() => {
@@ -92,15 +113,8 @@ export default function BoostsPageClient() {
     }
   }, [claimBoost.isSuccess, claimBoost.isError, queryClient]);
 
-  useEffect(() => {
-    if (claimBoost.isSuccess || claimBoost.isError) {
-      setClaimBoostData(claimBoost);
-    }
-  }, [claimBoost]);
-
-  const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
-    null
-  );
+  const [activeItem, setActiveItem] =
+    useState<ListCardPropsForBoosts | null>(null);
 
   const { drawerStates, toggleDrawer } = useDrawer();
 
@@ -210,7 +224,7 @@ export default function BoostsPageClient() {
           bgcolor: 'black',
           color: 'white',
         }}
-        disabled={claimBoostData && claimBoostData.isLoading}
+        disabled={claimBoost && claimBoost.isLoading}
         onClick={handleCTAPress}
       >
         { item.claimable ? 'Claim boost' : item.cta }
@@ -227,8 +241,8 @@ export default function BoostsPageClient() {
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
             ))}
-          {boostsCollection && 
-            boostsCollection?.map((item, index) => (
+          {boostList && 
+            boostList?.map((item, index) => (
               <ListCard
                 key={index}
                 title={item.title}
