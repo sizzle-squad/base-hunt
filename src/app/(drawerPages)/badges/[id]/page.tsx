@@ -62,7 +62,7 @@ export default function BadgeDetails({ params }: Props) {
             alignItems: 'center',
           }}
         >
-          <Box marginTop="24px" width="100%">
+          <Box marginTop="24px" width="100%" paddingY="24px" paddingX="20px">
             <DetailsPageNavbar title="View Badge" owned={isOwned} />
           </Box>
           <Box

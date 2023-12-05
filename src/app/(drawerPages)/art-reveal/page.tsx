@@ -59,7 +59,7 @@ type StatusToast = {
 export default function ArtReveal() {
   const [activeInfoStep, setActiveInfoStep] = useState(0);
   const [statusToast, setStatusToast] = useState<StatusToast>({
-    show: true,
+    show: false,
     type: 'success',
     message: 'Your tap was successful!',
   });
@@ -228,7 +228,8 @@ export default function ArtReveal() {
         sx={{ width: '100%' }}
         alignItems="center"
         gap={2}
-        paddingY={6}
+        paddingTop={6}
+        paddingBottom={8}
       >
         {isLoading ? (
           <Box sx={{ display: 'flex' }}>
