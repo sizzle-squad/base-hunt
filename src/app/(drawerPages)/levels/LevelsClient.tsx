@@ -86,6 +86,17 @@ export default function LevelsPageClient() {
 
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
+  const calculateCurrentLevel = useCallback(
+    (index: Level['level'] | null) => {
+      if (!index) {
+        return index;
+      }
+      const currentLevelIndex = parseInt(index);
+      return parseInt(collection.levels[currentLevelIndex].level);
+    },
+    [collection?.levels]
+  );
+
   const LevelDrawerContent = ({
     item,
   }: {
@@ -133,9 +144,8 @@ export default function LevelsPageClient() {
             const toggleDrawer = () => {
               handleToggleDrawer(item);
             };
-            const currentLevel = parseInt(collection.currentLevelIdx ?? '0');
-            const itemLevel = parseInt(item.level);
-            const levelMatch = currentLevel === itemLevel;
+            const levelMatch =
+              calculateCurrentLevel(collection.currentLevelIdx) === index;
             const content: ListCardPropsWithDescription = {
               title: `Level ${item.level}`,
               subtitle: `${item.thresholdPoints} points required`,
