@@ -24,6 +24,7 @@ type QueryData = {
   cta_url: string;
   lat_lng: string;
   description: string;
+  artist_name: string;
 };
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -77,6 +78,7 @@ function mapToBadge(b: QueryData): Badge {
     ctaUrl: b.cta_url,
     latLng: b.lat_lng,
     description: b.description,
+    artistName: b.artist_name,
   };
 }
 

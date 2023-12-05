@@ -42,6 +42,7 @@ export type Badge = {
   ctaText: string;
   ctaUrl: string;
   latLng: string;
+  artistName: string;
 };
 
 export type Level = {

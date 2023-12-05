@@ -74,6 +74,7 @@ type SwipeUpDrawerProps = {
   latLng: string;
   badgeType: BadgeTypeEnum;
   ctaLink?: string;
+  artistName?: string;
 };
 
 function SwipeUpDrawer({
@@ -85,6 +86,7 @@ function SwipeUpDrawer({
   latLng,
   badgeType,
   ctaLink,
+  artistName,
 }: SwipeUpDrawerProps) {
   const { drawerStates, toggleDrawer } = useDrawer();
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -140,10 +142,13 @@ function SwipeUpDrawer({
     }
 
     return (
-      <Stack direction="column" gap={4}>
-        <Text fontWeight={400} fontSize="20px">
-          {title}
-        </Text>
+      <Stack direction="column" gap={3}>
+        <Stack direction="column" gap={1}>
+          <Text fontWeight={400} fontSize="24px">
+            {title}
+          </Text>
+          {artistName && <Text fontWeight={400}>{artistName}</Text>}
+        </Stack>
         <Text>{description}</Text>
         {owned && completedOn && (
           <Text fontWeight={700}>
@@ -154,6 +159,7 @@ function SwipeUpDrawer({
       </Stack>
     );
   }, [
+    artistName,
     completedOn,
     ctaButton,
     description,

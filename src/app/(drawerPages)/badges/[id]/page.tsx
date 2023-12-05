@@ -96,6 +96,7 @@ export default function BadgeDetails({ params }: Props) {
             description={currentBadge.description}
             badgeType={currentBadge.type}
             ctaLink={currentBadge.ctaUrl}
+            artistName={currentBadge.artistName}
           />
         </Stack>
       )}
