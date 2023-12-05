@@ -72,7 +72,6 @@ export async function GET(request: NextRequest) {
     });
   }
   const tb = await mapTreasureBoxState({ ...treasureBoxState, ...treasureBox });
-  console.log(tb);
   return NextResponse.json(tb);
 }
 
