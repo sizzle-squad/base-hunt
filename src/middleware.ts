@@ -22,5 +22,6 @@ export const config = {
     '/leaderboard/:path*',
     '/levels/:path*',
     '/locations/:path*',
+    '/art-reveal-screen/:path*',
   ],
 };
