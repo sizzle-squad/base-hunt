@@ -17,8 +17,8 @@ export function useBoosts({ userAddress, gameId }: Props) {
         method: 'GET',
         url: `${routes.boosts.default}`,
         params: {
-            userAddress: userAddress,
-            gameId: gameId
+          userAddress: userAddress,
+          gameId: gameId,
         },
       });
       return boosts.data;
