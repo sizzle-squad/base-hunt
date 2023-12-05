@@ -11,14 +11,14 @@ type Props = {
 
 export function useBoosts({ userAddress, gameId }: Props) {
   const { data, isLoading, error } = useQuery<Boost[]>(
-    ['boosts', userAddress, gameId],
+    ['boosts'],
     async () => {
       const boosts = await axios({
         method: 'GET',
         url: `${routes.boosts.default}`,
         params: {
-            userAddress: userAddress,
-            gameId: gameId
+          userAddress: userAddress,
+          gameId: gameId,
         },
       });
       return boosts.data;
