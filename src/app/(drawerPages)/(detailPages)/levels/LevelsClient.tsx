@@ -49,11 +49,10 @@ const PageConsts = {
 export default function LevelsPageClient() {
   const loadingCollection = useMemo(() => [null, null, null, null], []);
   const { address, isConnected } = useAccount();
-  const {
-    data: collection,
-    isLoading,
-    error,
-  } = useLevels({ gameId: GAME_ID, address: address ?? '' });
+  const { data: collection, isLoading } = useLevels({
+    gameId: GAME_ID,
+    address: address ?? '',
+  });
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
@@ -85,17 +84,6 @@ export default function LevelsPageClient() {
   );
 
   ToolbarWithClose.displayName = 'ToolbarWithClose';
-
-  const calculateCurrentLevel = useCallback(
-    (index: Level['level'] | null) => {
-      if (!index) {
-        return index;
-      }
-      const currentLevelIndex = parseInt(index);
-      return parseInt(collection.levels[currentLevelIndex].level);
-    },
-    [collection?.levels]
-  );
 
   const LevelDrawerContent = ({
     item,
@@ -144,8 +132,10 @@ export default function LevelsPageClient() {
             const toggleDrawer = () => {
               handleToggleDrawer(item);
             };
-            const levelMatch =
-              calculateCurrentLevel(collection.currentLevelIdx) === index;
+            const isCurrent =
+              collection.currentLevelIdx === null
+                ? false
+                : parseInt(collection.currentLevelIdx) === index;
             const content: ListCardPropsWithDescription = {
               title: `Level ${item.level}`,
               subtitle: `${item.thresholdPoints} points required`,
@@ -160,7 +150,7 @@ export default function LevelsPageClient() {
               description: item.description,
             };
 
-            if (levelMatch) {
+            if (isCurrent) {
               content.titleDecoration = (
                 <Pill>
                   <Text useMonoFont fontSize="14px">
