@@ -4,7 +4,13 @@ import accurateInterval from 'accurate-interval';
 import Text from '@/components/Text';
 import { Stack } from '@mui/material';
 
-export const CountdownTimer = () => {
+export const CountdownTimer = ({
+  fontSize = '100px',
+  color = 'black',
+}: {
+  fontSize?: string;
+  color?: string;
+}) => {
   const targetDate = new Date('December 10, 2023 17:00:00').getTime();
   const calculateInitialCount = () => {
     const currentTime = new Date().getTime();
@@ -38,7 +44,7 @@ export const CountdownTimer = () => {
 
   return (
     <Stack width="100%" gap={8} textAlign="center">
-      <Text fontSize="100px" useMonoFont>
+      <Text fontSize={fontSize} useMonoFont color={color}>
         {formatCountdown}
       </Text>
     </Stack>
