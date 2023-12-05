@@ -48,7 +48,6 @@ export async function GET(req: NextRequest) {
     throw new Error(error.message);
   }
 
-  console.log(data);
   //Note: remove duplicate badges from the same contract:tokenId
   const addressSet: Set<string> = new Set();
   let results: Badge[] = [];

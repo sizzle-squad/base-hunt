@@ -44,8 +44,6 @@ export async function GET(req: NextRequest) {
       .select()
       .eq('game_id', gameId)) as any;
 
-    console.log(levelsData);
-
     const levelsError = levelsData.error;
     let levels = levelsData.data as any[];
     if (levelsError) {
