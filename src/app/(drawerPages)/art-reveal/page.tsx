@@ -250,7 +250,7 @@ export default function ArtReveal() {
               }}
             >
               <Image
-                src={'/images/blurred-art-reveal.png' as string}
+                src={'/images/blurred-art-reveal.gif' as string}
                 alt="jumbotron"
                 sizes="100vw"
                 fill
