@@ -49,11 +49,10 @@ const PageConsts = {
 export default function LevelsPageClient() {
   const loadingCollection = useMemo(() => [null, null, null, null], []);
   const { address, isConnected } = useAccount();
-  const {
-    data: collection,
-    isLoading,
-    error,
-  } = useLevels({ gameId: GAME_ID, address: address ?? '' });
+  const { data: collection, isLoading } = useLevels({
+    gameId: GAME_ID,
+    address: address ?? '',
+  });
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
@@ -85,17 +84,6 @@ export default function LevelsPageClient() {
   );
 
   ToolbarWithClose.displayName = 'ToolbarWithClose';
-
-  const currentLevel = useMemo(() => {
-    if (collection.currentLevelIdx === null) return null;
-    const currentLevelIndex = parseInt(collection?.currentLevelIdx);
-    return currentLevelIndex;
-  }, [collection.currentLevelIdx]);
-
-  const deriveLevelFromName = useCallback((name: string) => {
-    const level = name.split('-')[1];
-    return parseInt(level);
-  }, []);
 
   const LevelDrawerContent = ({
     item,
@@ -144,7 +132,10 @@ export default function LevelsPageClient() {
             const toggleDrawer = () => {
               handleToggleDrawer(item);
             };
-            const isCurrent = currentLevel === deriveLevelFromName(item.name);
+            const isCurrent =
+              collection.currentLevelIdx === null
+                ? false
+                : parseInt(collection.currentLevelIdx) === index;
             const content: ListCardPropsWithDescription = {
               title: `Level ${item.level}`,
               subtitle: `${item.thresholdPoints} points required`,
