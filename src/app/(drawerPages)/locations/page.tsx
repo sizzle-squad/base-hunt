@@ -1,22 +1,29 @@
 'use client';
 
 import Layout from '@/components/layout';
-import { BadgeLocationMap } from '@/components/Map/BadgeLocationMap';
-
-const miamiConventionCenter = {
-  lat: 25.79487,
-  lng: -80.134697,
-};
+import { Stack } from '@mui/material';
+import Image from 'next/image';
 
 export default function Map() {
   return (
     <Layout noPadding>
-      <BadgeLocationMap
-        height="90vh"
-        width="100%"
-        lat={miamiConventionCenter.lat}
-        lng={miamiConventionCenter.lng}
-      />
+      <Stack
+        sx={{
+          height: '95vh',
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'var(--Black, #151515)',
+        }}
+      >
+        <Image
+          src="/images/badge-location-map.jpg"
+          alt="Badge locations map"
+          width="400"
+          height={600}
+          objectFit="cover"
+        />
+      </Stack>
     </Layout>
   );
 }
