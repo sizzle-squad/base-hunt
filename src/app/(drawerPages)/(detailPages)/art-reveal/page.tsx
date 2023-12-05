@@ -32,20 +32,17 @@ import debounce from 'lodash.debounce';
 const TreasureChestInfo = [
   {
     title: 'A collaborative challenge',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit.',
+    description: `All players use their points from boosts and art colleciton to reveal the secret artwork by clicking "Tap to Reveal".`,
     cta: 'Next',
   },
   {
     title: 'Once per day',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit.',
+    description: `Collect points throughout the day and click "Tap to Reveal" once per day to contribute your points to the reveal.`,
     cta: 'Next',
   },
   {
     title: 'Exclusive art from secret artist',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit.',
+    description: `If enough points are contributed throughout the game, the secret artwork will be revealed. All contributers can mint the secret artwork once revealed.`,
     cta: 'Dismiss',
   },
 ] as const;
