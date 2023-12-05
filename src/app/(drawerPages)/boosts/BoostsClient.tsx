@@ -15,16 +15,24 @@ import { useBoosts } from '@/hooks/useBoosts';
 import { useClaimBoost } from '@/hooks/useClaimBoost';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
-import { WalletIcon, CoffeeIcon, BagIcon, GridIcon, CircleIcon, LinkIcon, UsersIcon } from '@/components/assets/icons/BoostIcon';
+import {
+  WalletIcon,
+  CoffeeIcon,
+  BagIcon,
+  GridIcon,
+  CircleIcon,
+  LinkIcon,
+  UsersIcon,
+} from '@/components/assets/icons/BoostIcon';
 
 const iconMapping = {
-  'WALLET': <WalletIcon />,
-  'COFFEE': <CoffeeIcon />,
-  'BAG': <BagIcon />,
-  'GRID': <GridIcon />,
-  'CIRCLE': <CircleIcon />,
-  'LINK': <LinkIcon />,
-  'USERS': <UsersIcon />
+  WALLET: <WalletIcon />,
+  COFFEE: <CoffeeIcon />,
+  BAG: <BagIcon />,
+  GRID: <GridIcon />,
+  CIRCLE: <CircleIcon />,
+  LINK: <LinkIcon />,
+  USERS: <UsersIcon />,
 };
 
 type BoostEntry = {
@@ -45,7 +53,7 @@ type BoostEntry = {
 type ListCardPropsForBoosts = ListCardProps & {
   points: bigint;
   id: bigint;
-  title: string
+  title: string;
   description: string;
   type: string;
   contractAddress: string;
@@ -66,35 +74,38 @@ const PageConsts = {
 } as const;
 
 export default function BoostsPageClient() {
-
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
-  const { data: boosts, isLoading } = useBoosts({userAddress: address, gameId: GAME_ID});
+  const { data: boosts, isLoading } = useBoosts({
+    userAddress: address,
+    gameId: GAME_ID,
+  });
   const { claimBoost } = useClaimBoost();
 
   const boostList = useMemo(() => {
-    return boosts?.filter((boost) => boost.isEnabled).map((boost) => {
-      return {
-        id: boost.id,
-        title: boost.name,
-        description: boost.description,
-        type: boost.boostType,
-        contractAddress: boost.contractAddresses[0],
-        subtitle: '',
-        cta: boost.ctaText,
-        points: boost.points,
-        claimed: boost.claimed,
-        claimable: !boost.claimed,
-        startContent: (
-          iconMapping[boost.icon]
-        ),
-        endContent: <Text>{boost.points.toString()} pts</Text>,
-      } as BoostEntry;
-    }) as BoostEntry[];
+    return boosts
+      ?.filter((boost) => boost.isEnabled)
+      .map((boost) => {
+        return {
+          id: boost.id,
+          title: boost.name,
+          description: boost.description,
+          type: boost.boostType,
+          contractAddress: boost.contractAddresses[0],
+          subtitle: '',
+          cta: boost.ctaText,
+          points: boost.points,
+          claimed: boost.claimed,
+          claimable: !boost.claimed,
+          startContent: iconMapping[boost.icon],
+          endContent: <Text>{boost.points.toString()} pts</Text>,
+        } as BoostEntry;
+      }) as BoostEntry[];
   }, [boosts]);
 
-  const [activeItem, setActiveItem] =
-    useState<ListCardPropsForBoosts | null>(null);
+  const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
+    null
+  );
 
   const { drawerStates, toggleDrawer } = useDrawer();
 
@@ -116,12 +127,12 @@ export default function BoostsPageClient() {
       gameId: GAME_ID,
       userAddress: address,
       boostId: activeItem!.id.toString(),
-      contractAddress: activeItem?.contractAddress
+      contractAddress: activeItem?.contractAddress,
     });
   }, [GAME_ID, address, activeItem]);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const Reason = {
     CLICKAWAY: 'clickaway',
@@ -136,12 +147,12 @@ export default function BoostsPageClient() {
 
   useEffect(() => {
     if (claimBoost.isSuccess) {
-      setSnackbarMessage("Boost was successfully claimed.");
+      setSnackbarMessage('Boost was successfully claimed.');
       setSnackbarOpen(true);
       handleToggleDrawer(activeItem!);
     }
     if (claimBoost.isError) {
-      setSnackbarMessage("Unable to claim boost.");
+      setSnackbarMessage('Unable to claim boost.');
       setSnackbarOpen(true);
       handleToggleDrawer(activeItem!);
     }
@@ -154,9 +165,7 @@ export default function BoostsPageClient() {
     }: {
       item: ListCardPropsForBoosts;
       onClick: (item: ListCardPropsForBoosts) => void;
-    }) => <Box sx={{
-      color: 'blue',
-    }} onClick={() => onClick(item)}>{'Claim Boost'}</Box>
+    }) => <></>
   );
 
   const ToolbarWithClose = memo(
@@ -191,7 +200,11 @@ export default function BoostsPageClient() {
             </>
           )}
         </Stack>
-        <PointsPill points={Number(item.points)} unit={PageConsts.drawerSubtitleUnit} textColor='#151515'/>
+        <PointsPill
+          points={Number(item.points)}
+          unit={PageConsts.drawerSubtitleUnit}
+          textColor="#151515"
+        />
       </Stack>
 
       <Button
@@ -207,7 +220,7 @@ export default function BoostsPageClient() {
         disabled={claimBoost && claimBoost.isLoading}
         onClick={handleCTAPress}
       >
-        { item.claimable ? 'Claim boost' : item.cta }
+        {item.claimable ? 'Claim boost' : item.cta}
       </Button>
     </Stack>
   );
@@ -221,12 +234,25 @@ export default function BoostsPageClient() {
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
             ))}
-          {boostList && 
+          {boostList &&
             boostList?.map((item, index) => (
               <ListCard
                 key={index}
                 title={item.title}
-                subtitle={item.claimed ? (item.type === 'TRANSFER_NFT' ? 'Auto-claimed' : 'Claimed') : <ToggleDrawerButton item={item} onClick={handleToggleDrawer} />}
+                subtitle={
+                  item.claimed ? (
+                    item.type === 'TRANSFER_NFT' ? (
+                      'Auto-claimed'
+                    ) : (
+                      'Claimed'
+                    )
+                  ) : (
+                    <ToggleDrawerButton
+                      item={item}
+                      onClick={handleToggleDrawer}
+                    />
+                  )
+                }
                 startContent={item.startContent}
                 endContent={item.endContent}
               />
@@ -247,7 +273,7 @@ export default function BoostsPageClient() {
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         message={snackbarMessage}
-        />
+      />
     </>
   );
 }
