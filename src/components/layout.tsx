@@ -19,6 +19,7 @@ export default function RootLayout({ noPadding = false, children }: Props) {
       direction="column"
       overflow={'hidden'}
       position={'relative'}
+      width="100%"
     >
       {children}
     </Stack>
