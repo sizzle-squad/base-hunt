@@ -34,7 +34,7 @@ export function ArtRevealProgressBar() {
         ) : (
           <>
             <Text variant="h5">{`${treasureBox?.currentHitpoints.toString()}`}</Text>
-            <Box>/</Box>
+
             <Text variant="body2" noWrap>
               {`${treasureBox?.totalHitpoints.toString()} ${UNIT}`}
             </Text>
@@ -44,29 +44,5 @@ export function ArtRevealProgressBar() {
     );
   }, [isLoading, treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
 
-  return (
-    <>
-      {numericProgress}
-      <Box
-        sx={{
-          borderRadius: '6.25rem',
-          width: '100%',
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        }}
-      >
-        <LinearProgress
-          variant="determinate"
-          value={progress}
-          sx={{
-            borderRadius: '6.25rem',
-            height: '10px',
-            backgroundColor: '#D5D5D5', // To make the unused part of the progress bar transparent
-            '& .MuiLinearProgress-bar': {
-              backgroundColor: 'var(--CB-Blue, #0052FF)', // Color for the progress indicator
-            },
-          }}
-        />
-      </Box>
-    </>
-  );
+  return <></>;
 }
