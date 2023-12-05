@@ -229,36 +229,7 @@ export default function ArtReveal() {
         alignItems="center"
         gap={2}
         paddingY={6}
-      >
-        {isLoading ? (
-          <Box sx={{ display: 'flex' }}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            <Box
-              sx={{
-                width: '311px',
-                height: '373px',
-                padding: '20px',
-                position: 'relative',
-                boxShadow:
-                  '0px 0.5px 0.5px 0px rgba(0, 0, 0, 0.04), 0px 1px 1px 0px rgba(0, 0, 0, 0.05), 0px 2px 2px 0px rgba(0, 0, 0, 0.06), 0px 4px 4px 0px rgba(0, 0, 0, 0.07), 0px 8px 8px 0px rgba(0, 0, 0, 0.08), 0px 16px 16px 0px rgba(0, 0, 0, 0.10)',
-                marginBottom: '20px',
-                marginTop: '25px',
-              }}
-            >
-              <Image
-                src={'/images/blurred-art-reveal.png' as string}
-                alt="jumbotron"
-                sizes="100vw"
-                fill
-              />
-            </Box>
-            {treasureBox?.isOpen ? <ArtRevealClient /> : <CardContent />}
-          </>
-        )}
-      </Stack>
+      ></Stack>
     );
   }, [CardContent, isLoading, treasureBox?.isOpen]);
 

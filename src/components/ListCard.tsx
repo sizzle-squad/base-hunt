@@ -42,11 +42,6 @@ function ListCard({
                   <Text lineHeight="19.2px" fontSize="16px" noWrap>
                     {title}
                   </Text>
-                  {titleDecoration && (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      {titleDecoration}
-                    </Box>
-                  )}
                 </Stack>
               )}
               {isLoading && (

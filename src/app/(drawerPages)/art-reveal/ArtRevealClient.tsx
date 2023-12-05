@@ -57,7 +57,7 @@ export default function ArtRevealClient() {
     }: {
       item: RevealedArtListCard;
       onClick: (item: RevealedArtListCard) => void;
-    }) => <Box onClick={() => onClick(item)}>{item.endContent}</Box>
+    }) => <></>
   );
   ToggleDrawerButton.displayName = 'ToggleDrawerButton';
 
