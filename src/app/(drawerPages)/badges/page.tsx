@@ -12,7 +12,7 @@ import Text from '@/components/Text';
 import BadgeContainer from '@/components/assets/BadgeContainer';
 import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
-import { BadgeTypeEnum } from '@/hooks/types';
+import { BadgeTypeEnum, type Level as LevelType } from '@/hooks/types';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
@@ -329,7 +329,12 @@ export default function Badges() {
           alignSelf="stretch"
         >
           <Level
-            currentLevel={collection.currentLevelIdx}
+            currentLevel={
+              collection.currentLevelIdx !== null
+                ? collection.levels[collection.currentLevelIdx]?.level ??
+                  undefined
+                : null
+            }
             isLoading={isLevelsLoading}
           />
           <Rank currentRank={rank?.rank} isLoading={isRankLoading} />
