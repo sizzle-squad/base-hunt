@@ -7,12 +7,5 @@ export default function ArtRevealLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <DrawerProvider>
-      <Box sx={{ margin: '0 auto', width: '100%' }}>
-        {children}
-        <Footer />
-      </Box>
-    </DrawerProvider>
-  );
+  return <></>;
 }
