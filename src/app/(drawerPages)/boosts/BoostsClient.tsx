@@ -86,10 +86,6 @@ export default function BoostsPageClient() {
     queryClient.invalidateQueries(['boosts', address, GAME_ID]);
   };
 
-  const resetClaimState = () => {
-    queryClient.invalidateQueries(['boosts', address, GAME_ID]);
-  };
-
   useEffect(() => {
     if (claimBoost.isSuccess || claimBoost.isError) {
       refetchBoosts();
@@ -153,6 +149,7 @@ export default function BoostsPageClient() {
     if (claimBoost.isError) {
       setSnackbarMessage("Unable to claim boost.");
       setSnackbarOpen(true);
+      handleToggleDrawer(activeItem!);
     }
   }, [claimBoost.isSuccess, claimBoost.isError]);
 
