@@ -240,7 +240,6 @@ export default function ArtReveal() {
               sx={{
                 width: '311px',
                 height: '373px',
-                border: '8px solid var(--White, #FFF)',
                 padding: '20px',
                 position: 'relative',
                 boxShadow:
@@ -250,14 +249,10 @@ export default function ArtReveal() {
               }}
             >
               <Image
-                src={'/images/map.png' as string}
+                src={'/images/blurred-art-reveal.png' as string}
                 alt="jumbotron"
                 sizes="100vw"
                 fill
-                style={{
-                  padding: '10px',
-                  filter: !treasureBox?.isOpen ? 'blur(8px)' : 'none',
-                }}
               />
             </Box>
             {treasureBox?.isOpen ? <ArtRevealClient /> : <CardContent />}
