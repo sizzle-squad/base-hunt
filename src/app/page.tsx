@@ -69,7 +69,6 @@ export default function Home() {
           position: 'absolute',
           px: '20px',
           py: '35px',
-          maxWidth: '390px',
           width: '100vw',
           height: '100vh',
           backgroundImage: `url('/images/landing-bg.svg')`,

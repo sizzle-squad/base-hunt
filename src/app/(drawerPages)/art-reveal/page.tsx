@@ -2,7 +2,16 @@
 
 import Layout from '@/components/layout';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Box, Button, CircularProgress, Grid, Stack } from '@mui/material';
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Snackbar,
+  Stack,
+} from '@mui/material';
 import { useMutateTreasureBox } from '@/hooks/useMutateTreasureBox';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
@@ -41,8 +50,20 @@ const TreasureChestInfo = [
   },
 ] as const;
 
+type StatusToast = {
+  show: boolean;
+  type: AlertColor;
+  message: string;
+};
+
 export default function ArtReveal() {
   const [activeInfoStep, setActiveInfoStep] = useState(0);
+  const [statusToast, setStatusToast] = useState<StatusToast>({
+    show: true,
+    type: 'success',
+    message: 'Your tap was successful!',
+  });
+
   const router = useRouter();
   const { address } = useAccount();
   const { data: userPublicProfile } = useCBProfile({ address });
@@ -59,7 +80,7 @@ export default function ArtReveal() {
     return 0;
   }, [data]);
 
-  const { attackBox } = useMutateTreasureBox();
+  const { attackBox } = useMutateTreasureBox({ gameId: GAME_ID });
 
   const { data: treasureBox, isLoading } = useTreasureBox({ gameId: GAME_ID });
   const searchParams = useSearchParams();
@@ -91,6 +112,24 @@ export default function ArtReveal() {
   }, [handleCTAPress]);
 
   useEffect(() => {
+    if (attackBox.isSuccess) {
+      setStatusToast({
+        show: true,
+        type: 'success',
+        message: 'Your tap was successful!',
+      });
+    }
+
+    if (attackBox.isError) {
+      setStatusToast({
+        show: true,
+        type: 'error',
+        message: 'Your tap was unsuccessful.',
+      });
+    }
+  }, [attackBox.isLoading, attackBox.isSuccess, attackBox.isError]);
+
+  useEffect(() => {
     const savedStep = window.localStorage.getItem('artRevealInfoStep');
     if (
       savedStep &&
@@ -113,6 +152,13 @@ export default function ArtReveal() {
     window.localStorage.setItem('artRevealInfoStep', String(step));
   }, []);
 
+  const handleClose = useCallback(() => {
+    setStatusToast((prev) => ({
+      ...prev,
+      show: false,
+    }));
+  }, []);
+
   const CardContent = memo(() => (
     <>
       {activeInfoStep && activeInfoStep >= 3 ? (
@@ -120,6 +166,7 @@ export default function ArtReveal() {
           isCTADisabled={score === 0}
           ctaText={`Tap to reveal (${score} ${UNIT})`}
           onPress={handleCTAPress}
+          isLoading={attackBox.isLoading}
         />
       ) : (
         <Card>
@@ -226,6 +273,15 @@ export default function ArtReveal() {
     <Layout>
       <DetailsPageNavbar title="Art Reveal" />
       {content}
+      <Snackbar
+        open={statusToast.show}
+        autoHideDuration={2000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity={statusToast.type}>
+          {statusToast.message}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 }

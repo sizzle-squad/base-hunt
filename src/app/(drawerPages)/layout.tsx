@@ -9,7 +9,7 @@ export default function ArtRevealLayout({
 }) {
   return (
     <DrawerProvider>
-      <Box maxWidth={390} sx={{ margin: '0 auto' }}>
+      <Box sx={{ margin: '0 auto' }}>
         {children}
         <Footer />
       </Box>
