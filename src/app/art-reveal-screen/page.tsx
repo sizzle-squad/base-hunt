@@ -4,6 +4,8 @@ import Text from '@/components/Text';
 import { CountdownTimer } from '@/components/ArtRevealScreen/Countdown';
 import { useTreasureBoxForRevealScreen } from '@/hooks/useTreasureBoxForRevealScreen';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import RevealGif from '@public/images/blurred-art-reveal.gif';
 
 export default function ArtRevealScreen() {
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
@@ -39,10 +41,27 @@ export default function ArtRevealScreen() {
     }
   }, [data?.currentHitpoints]);
   return (
-    <Stack width="100%" margin="auto">
+    <Stack
+      width="100%"
+      margin="auto"
+      alignItems="center"
+      p="20px"
+      gap="20px"
+      bgcolor="black"
+      height="100vh"
+      justifyContent="center"
+    >
       <Stack>
-        <CountdownTimer />
+        <CountdownTimer fontSize="40px" color="white" />
       </Stack>
+      <Image
+        alt="art reveal gif"
+        unoptimized
+        src={RevealGif}
+        width={600}
+        height={1000}
+        sizes="100vw"
+      />
       <Stack flexDirection="row" justifyContent="center">
         <Stack
           width="100%"
@@ -51,11 +70,13 @@ export default function ArtRevealScreen() {
           justifyContent="center"
         >
           <>
-            <Text useMonoFont fontSize="180px">
+            <Text useMonoFont fontSize="40px" color="white">
               {Math.round(animatedHitpoints) || 0}
             </Text>
-            <Text fontSize="180px">/</Text>
-            <Text useMonoFont fontSize="180px">
+            <Text fontSize="40px" color="white">
+              /
+            </Text>
+            <Text useMonoFont fontSize="40px" color="white">
               {(data && data?.totalHitpoints) || 0}
             </Text>
           </>
