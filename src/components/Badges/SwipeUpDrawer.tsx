@@ -184,35 +184,42 @@ function SwipeUpDrawer({
           },
         }}
       />
-      <SwipeableDrawer
-        anchor={anchor}
-        open={drawerStates.badgeActions[anchor]}
-        onClose={() => toggleDrawer(type, anchor, false)}
-        onOpen={() => toggleDrawer(type, anchor, true)}
-        swipeAreaWidth={drawerBleeding}
-        disableSwipeToOpen={false}
-        ModalProps={{
-          keepMounted: true,
-        }}
+      <Box
+        onClick={() =>
+          toggleDrawer(type, anchor, !drawerStates.badgeActions[anchor])
+        }
       >
-        <Stack
-          direction="column"
-          gap="16px"
-          width="100%"
-          height="100%"
-          sx={{
-            px: '20px',
-            py: '24px',
-            position: 'absolute',
-            top: isMapOpen ? 0 : -drawerBleeding,
-            visibility: 'visible',
-            backgroundColor: 'var(--sheet-white, rgba(255, 255, 255))',
+        <SwipeableDrawer
+          allowSwipeInChildren
+          anchor={anchor}
+          open={drawerStates.badgeActions[anchor]}
+          onClose={() => toggleDrawer(type, anchor, false)}
+          onOpen={() => toggleDrawer(type, anchor, true)}
+          swipeAreaWidth={100}
+          disableSwipeToOpen={false}
+          ModalProps={{
+            keepMounted: true,
           }}
         >
-          <Puller />
-          {content}
-        </Stack>
-      </SwipeableDrawer>
+          <Stack
+            direction="column"
+            gap="16px"
+            width="100%"
+            height="100%"
+            sx={{
+              px: '20px',
+              py: '24px',
+              position: 'absolute',
+              top: isMapOpen ? 0 : -drawerBleeding,
+              visibility: 'visible',
+              backgroundColor: 'var(--sheet-white, rgba(255, 255, 255))',
+            }}
+          >
+            <Puller />
+            {content}
+          </Stack>
+        </SwipeableDrawer>
+      </Box>
     </>
   );
 }
