@@ -39,7 +39,6 @@ function BadgeStack({ panel, toggleFunction, hide }: Props) {
           objectPosition: 'center',
           width: '80px',
           overflow: 'hidden',
-          // marginTop: '16px',
           maxWidth: '100%',
         }}
         src="/images/badges.svg"
