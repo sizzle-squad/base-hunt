@@ -25,8 +25,10 @@ export function useClaimBoost() {
       return axios.post(routes.boosts.claim, data);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['boosts']);
+      onSuccess: (_, variables) => {
+        const { gameId, userAddress } = variables;
+
+        queryClient.invalidateQueries(['boosts', gameId, userAddress]);
         queryClient.invalidateQueries(['levels']);
       },
     }
