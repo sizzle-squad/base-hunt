@@ -34,7 +34,9 @@ type BoostEntry = {
   type: string;
   contractAddress: string;
   subtitle: string;
-  cta: string | null;
+  ctaUrl: string | null;
+  ctaText: string | null;
+  ctaButtonText: string | null;
   points: bigint;
   claimed: boolean;
   claimable: boolean;
@@ -43,13 +45,15 @@ type BoostEntry = {
 };
 
 type ListCardPropsForBoosts = ListCardProps & {
-  points: bigint;
   id: bigint;
   title: string
   description: string;
   type: string;
   contractAddress: string;
-  cta: string | null;
+  ctaUrl: string | null;
+  ctaText: string | null;
+  ctaButtonText: string | null;
+  points: bigint;
   claimed: boolean;
   claimable: boolean;
 };
@@ -81,7 +85,9 @@ export default function BoostsPageClient() {
         type: boost.boostType,
         contractAddress: boost.contractAddresses[0],
         subtitle: '',
-        cta: boost.ctaText,
+        ctaUrl: boost.ctaUrl,
+        ctaText: boost.ctaText,
+        ctaButtonText: boost.ctaButtonText,
         points: boost.points,
         claimed: boost.claimed,
         claimable: !boost.claimed,
@@ -94,6 +100,8 @@ export default function BoostsPageClient() {
   }, [boosts]);
 
   const [activeItem, setActiveItem] =
+    useState<ListCardPropsForBoosts | null>(null);
+  const [eligibleItem, setEligibleItem] =
     useState<ListCardPropsForBoosts | null>(null);
 
   const { drawerStates, toggleDrawer } = useDrawer();
@@ -111,7 +119,7 @@ export default function BoostsPageClient() {
     [isOpen, toggleDrawer]
   );
 
-  const handleCTAPress = useCallback(() => {
+  const handleClaimPress = useCallback(() => {
     claimBoost.mutate({
       gameId: GAME_ID,
       userAddress: address,
@@ -119,6 +127,10 @@ export default function BoostsPageClient() {
       contractAddress: activeItem?.contractAddress
     });
   }, [GAME_ID, address, activeItem]);
+
+  const handleCTAPress = (ctaUrl: string) => {
+    window.open(ctaUrl, "_blank");
+  }
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -141,9 +153,7 @@ export default function BoostsPageClient() {
       handleToggleDrawer(activeItem!);
     }
     if (claimBoost.isError) {
-      setSnackbarMessage("Unable to claim boost.");
-      setSnackbarOpen(true);
-      handleToggleDrawer(activeItem!);
+      setEligibleItem(activeItem);
     }
   }, [claimBoost.isSuccess, claimBoost.isError]);
 
@@ -154,9 +164,13 @@ export default function BoostsPageClient() {
     }: {
       item: ListCardPropsForBoosts;
       onClick: (item: ListCardPropsForBoosts) => void;
-    }) => <Box sx={{
-      color: 'blue',
-    }} onClick={() => onClick(item)}>{'Claim Boost'}</Box>
+    }) => (
+      <Box
+        sx={{ color: 'blue' }}
+        onClick={() => onClick(item)}>
+          {'Claim Boost'}
+      </Box>
+    )
   );
 
   const ToolbarWithClose = memo(
@@ -174,43 +188,66 @@ export default function BoostsPageClient() {
   ToggleDrawerButton.displayName = 'ToggleDrawerButton';
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
-  const BoostDrawerContent = ({ item }: { item: ListCardPropsForBoosts }) => (
-    <Stack gap="24px">
-      <ToolbarWithClose
-        item={item}
-        onClick={handleToggleDrawer}
-        title={PageConsts.drawerTitle}
-      />
+  const BoostDrawerContent = ({ item }: { item: ListCardPropsForBoosts }) => {
 
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Stack gap="8px">
-          {item.title && (
-            <>
-              <Text variant="h4">{item.title}</Text>
-              <Text>{item.description}</Text>
-            </>
-          )}
+    const isEligible = eligibleItem && eligibleItem.id === item.id;
+    const ctaText = isEligible && item.ctaText ? item.ctaText : 'Unable to claim this boost.';
+    const ctaButtonText = isEligible && item.ctaButtonText ? item.ctaButtonText : 'Claim boost';
+    const ctaUrl = item.ctaUrl;
+
+    const handleButtonAction = () => {
+      if (isEligible && ctaUrl) {
+        handleCTAPress(ctaUrl);
+      } else {
+        handleClaimPress();
+      }
+    };
+
+    return (
+      <Stack gap="24px">
+          <ToolbarWithClose
+            item={item}
+            onClick={handleToggleDrawer}
+            title={PageConsts.drawerTitle}
+          />
+
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack gap="8px">
+              {!(isEligible && ctaText) && item.title && (
+                <>
+                  <Text variant="h4">{item.title}</Text>
+                  <Text>{item.description}</Text>
+                </>
+              )}
+              {isEligible && ctaText && (
+                <>
+                    <Text variant="h4">{item.title}</Text>
+                    <Text color="red">You are not eligible to claim this boost.</Text>
+                    <Text>{ctaText}</Text>
+                </>
+              )}
+            </Stack>
+            <PointsPill points={Number(item.points)} unit={PageConsts.drawerSubtitleUnit} textColor='#151515'/>
+          </Stack>
+
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              py: 2,
+              px: 3,
+              borderRadius: 2,
+              bgcolor: 'black',
+              color: 'white',
+            }}
+            disabled={(isEligible && ctaButtonText === 'Claim boost') || claimBoost.isLoading}
+            onClick={handleButtonAction}
+          >
+            {ctaButtonText}
+          </Button>
         </Stack>
-        <PointsPill points={Number(item.points)} unit={PageConsts.drawerSubtitleUnit} textColor='#151515'/>
-      </Stack>
-
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{
-          py: 2,
-          px: 3,
-          borderRadius: 2,
-          bgcolor: 'black',
-          color: 'white',
-        }}
-        disabled={claimBoost && claimBoost.isLoading}
-        onClick={handleCTAPress}
-      >
-        { item.claimable ? 'Claim boost' : item.cta }
-      </Button>
-    </Stack>
-  );
+    )
+  };
 
   return (
     <>
@@ -221,12 +258,16 @@ export default function BoostsPageClient() {
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
             ))}
-          {boostList && 
+          {boostList &&
             boostList?.map((item, index) => (
               <ListCard
                 key={index}
                 title={item.title}
-                subtitle={item.claimed ? (item.type === 'TRANSFER_NFT' ? 'Auto-claimed' : 'Claimed') : <ToggleDrawerButton item={item} onClick={handleToggleDrawer} />}
+                subtitle={item.claimed ?
+                  (item.type === 'TRANSFER_NFT' ? 'Auto-claimed' : 'Claimed') :
+                  <ToggleDrawerButton 
+                    item={item}
+                    onClick={handleToggleDrawer} />}
                 startContent={item.startContent}
                 endContent={item.endContent}
               />

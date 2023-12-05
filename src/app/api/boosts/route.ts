@@ -19,6 +19,7 @@ export type BoostType = {
   game_id: bigint;
   cta_url: string | null;
   cta_text: string | null;
+  cta_button_text: string | null;
   boost_type: string;
   is_enabled: boolean;
   points: bigint;
@@ -35,6 +36,7 @@ export type Boost = {
   gameId: bigint;
   ctaUrl: string | null;
   ctaText: string | null;
+  ctaButtonText: string | null;
   boostType: string;
   isEnabled: boolean;
   points: bigint;
@@ -54,6 +56,7 @@ async function mapBoostState(
     gameId: boost.game_id as bigint,
     ctaUrl: boost.cta_url,
     ctaText: boost.cta_text,
+    ctaButtonText: boost.cta_button_text,
     boostType: boost.boost_type,
     isEnabled: boost.is_enabled,
     points: boost.points,

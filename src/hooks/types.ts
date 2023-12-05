@@ -99,6 +99,7 @@ export type Boost = {
   gameId: bigint;
   ctaUrl: string | null;
   ctaText: string | null;
+  ctaButtonText: string | null;
   boostType: string;
   isEnabled: boolean;
   points: bigint;
