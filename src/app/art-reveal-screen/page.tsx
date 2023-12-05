@@ -31,37 +31,36 @@ function Boxx(props: any) {
   // Subscribe this component to the render-loop, rotate the mesh every frame
   //useFrame((state, delta) => (meshRef.current.rotation.x += delta));
   // Return view, these are regular three.js elements expressed in JSX
-  const config = {
+  const config = useControls({
     meshPhysicalMaterial: false,
     transmissionSampler: false,
     backside: false,
-    samples: 10,
-    resolution: 2048,
-    transmission: 1,
-    roughness: 0.3,
-    thickness: 3.5,
-    ior: 1.5,
-    chromaticAberration: 0.06,
-    anisotropy: 0.1,
-    distortion: 0.02,
-    distortionScale: 0.3,
-    temporalDistortion: 0.5,
-    clearcoat: 1,
-    attenuationDistance: 0.5,
+    samples: { value: 10, min: 1, max: 32, step: 1 },
+    resolution: { value: 2048, min: 256, max: 2048, step: 256 },
+    transmission: { value: 1, min: 0, max: 1 },
+    roughness: { value: 0.07, min: 0, max: 1, step: 0.01 },
+    thickness: { value: 3.5, min: 0, max: 10, step: 0.01 },
+    ior: { value: 1.5, min: 1, max: 5, step: 0.01 },
+    chromaticAberration: { value: 0.16, min: 0, max: 1 },
+    anisotropy: { value: 0.1, min: 0, max: 1, step: 0.01 },
+    distortion: { value: 0.0, min: 0, max: 1, step: 0.01 },
+    distortionScale: { value: 0.3, min: 0.01, max: 1, step: 0.01 },
+    temporalDistortion: { value: 0.5, min: 0, max: 1, step: 0.01 },
+    clearcoat: { value: 1, min: 0, max: 1 },
+    attenuationDistance: { value: 0.5, min: 0, max: 10, step: 0.01 },
     attenuationColor: '#ffffff',
     color: '#c9ffa1',
-    bg: '#839681',
-  };
+    bg: '#e6f8a9',
+  });
   return (
     <mesh
       {...props}
       ref={meshRef}
       scale={active ? 1.5 : 1}
-      onClick={(event) => setActive(!active)}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}
     >
-      <boxGeometry args={[4, 4, 1]} />
+      <boxGeometry args={[20, 40, 4]} />
       <MeshTransmissionMaterial
         background={new THREE.Color(config.bg)}
         {...config}
@@ -92,10 +91,10 @@ function Model(props: any) {
     samples: 10,
     resolution: 2048,
     transmission: 1,
-    roughness: 0.3,
+    roughness: 0.7,
     thickness: 3.5,
     ior: 1.5,
-    chromaticAberration: 0.06,
+    chromaticAberration: 0.15,
     anisotropy: 0.1,
     distortion: 0.02,
     distortionScale: 0.3,
@@ -104,7 +103,7 @@ function Model(props: any) {
     attenuationDistance: 0.5,
     attenuationColor: '#ffffff',
     color: '#c9ffa1',
-    bg: '#839681',
+    bg: '#e6f8a9',
   };
   //console.log(mesh.geometry);
   //camera.zoom = width / (1.5 * 10);
@@ -123,47 +122,37 @@ function Model(props: any) {
 
 useGLTF.preload('/models/frame/scene.gltf');
 
-function TextData({ animatedHitpoints = 100000, totalHitpoints = 100000 }) {
+function TextData({
+  animatedHitpoints = 100000,
+  totalHitpoints = 100000,
+  margin = 0.5,
+}) {
   const { width, height } = useThree((state) => state.viewport);
-  const config = useControls({
-    meshPhysicalMaterial: false,
-    transmissionSampler: false,
-    backside: false,
-    samples: { value: 10, min: 1, max: 32, step: 1 },
-    resolution: { value: 2048, min: 256, max: 2048, step: 256 },
-    transmission: { value: 1, min: 0, max: 1 },
-    roughness: { value: 0.0, min: 0, max: 1, step: 0.01 },
-    thickness: { value: 3.5, min: 0, max: 10, step: 0.01 },
-    ior: { value: 1.5, min: 1, max: 5, step: 0.01 },
-    chromaticAberration: { value: 0.06, min: 0, max: 1 },
-    anisotropy: { value: 0.1, min: 0, max: 1, step: 0.01 },
-    distortion: { value: 0.0, min: 0, max: 1, step: 0.01 },
-    distortionScale: { value: 0.3, min: 0.01, max: 1, step: 0.01 },
-    temporalDistortion: { value: 0.5, min: 0, max: 1, step: 0.01 },
-    clearcoat: { value: 1, min: 0, max: 1 },
-    attenuationDistance: { value: 0.5, min: 0, max: 10, step: 0.01 },
-    attenuationColor: '#ffffff',
-    color: '#c9ffa1',
-    bg: '#839681',
-  });
+
   return (
-    <group>
-      <Center top>
-        <Text3D font={'/fonts/Coinbase_Sans_Bold.json'} size={2}>
-          {animatedHitpoints}
-          <MeshTransmissionMaterial
-            background={new THREE.Color(config.bg)}
-            {...config}
-          />
+    <group position-z={-6}>
+      <Center
+        bottom
+        right
+        position={[-width / 2 + margin, height / 2 - margin, 0]}
+      >
+        <Text3D
+          lineHeight={0.75}
+          font={'/fonts/Coinbase_Sans_Bold.json'}
+          size={2}
+        >
+          {`5d 6h 4min 6sec`.split(' ').join('\n')}
+          <meshStandardMaterial color={new THREE.Color('black')} />
         </Text3D>
       </Center>
-      <Center bottom>
-        <Text3D font={'/fonts/Coinbase_Sans_Bold.json'} size={2}>
-          /{totalHitpoints}
-          <MeshTransmissionMaterial
+      <Center bottom position={[margin, -height / 2 + margin + 1, 0]}>
+        <Text3D font={'/fonts/Coinbase_Sans_Bold.json'} size={0.9}>
+          {animatedHitpoints}/{totalHitpoints}
+          {/* <MeshTransmissionMaterial
             background={new THREE.Color(config.bg)}
             {...config}
-          />
+          /> */}
+          <meshStandardMaterial color={new THREE.Color('black')} />
         </Text3D>
       </Center>
     </group>
@@ -204,9 +193,9 @@ export default function ArtRevealScreen() {
   }, [data?.currentHitpoints]);
   return (
     <Stack width="100%" margin="auto" background-color="black">
-      <Stack>
+      {/* <Stack>
         <CountdownTimer />
-      </Stack>
+      </Stack> */}
       {/* <Stack flexDirection="row" justifyContent="center">
         <Stack
           width="100%"
@@ -225,11 +214,11 @@ export default function ArtRevealScreen() {
           </>
         </Stack>
       </Stack> */}
-      <Stack height="80vh">
+      <Stack height="100vh">
         <Canvas>
           <ambientLight />
           <pointLight position={[1, 1, 1]} />
-          <Boxx position={[0, 0, -2]} />
+          <Boxx position={[0, 0, -4]} />
           if(data && data?.totalHitpoints)
           {
             <TextData
@@ -239,9 +228,9 @@ export default function ArtRevealScreen() {
               totalHitpoints={data?.totalHitpoints}
             />
           }
-          <Suspense fallback={null}>
+          {/* <Suspense fallback={null}>
             <Model />
-          </Suspense>
+          </Suspense> */}
           <OrbitControls />
           <OrthographicCamera
             makeDefault
@@ -254,7 +243,7 @@ export default function ArtRevealScreen() {
             {/* <ChromaticAberration
               // @ts-expect-error: Let's ignore a compile error
               offset={[0.005, 0.002]} // color offset
-        />*/}
+            /> */}
 
             <Bloom
               luminanceThreshold={0.1}
