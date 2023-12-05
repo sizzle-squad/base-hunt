@@ -55,16 +55,6 @@ function ListCard({
                 </Text>
               )}
               {/* End Content */}
-              {endContent && !isLoading && (
-                <Box sx={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
-                  {endContent}
-                </Box>
-              )}
-              {isLoading && (
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Skeleton variant="text" width={20} height={20} />
-                </Box>
-              )}
             </Stack>
             {/* Subtitle */}
             {subtitle && !isLoading && (
