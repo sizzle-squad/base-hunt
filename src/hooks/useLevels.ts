@@ -17,7 +17,7 @@ type LevelsReturnType = {
 
 export function useLevels({ gameId, address }: Props) {
   const { data, isLoading, error } = useQuery<LevelsReturnType>(
-    ['levels', gameId],
+    ['levels'],
     async () => {
       const result = await axios({
         method: 'GET',
