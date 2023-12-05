@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useQueryClient } from 'react-query';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
@@ -72,12 +71,9 @@ export default function BoostsPageClient() {
   const loadingCollection = useMemo(() => [null, null, null, null], []);
   const { data: boosts, isLoading } = useBoosts({userAddress: address, gameId: GAME_ID});
   const { claimBoost } = useClaimBoost();
-  const queryClient = useQueryClient();
-  const [boostList, setBoostList] = useState<BoostEntry[]>();
 
-  const processBoosts = () => {
-    const boostsCollection =
-    boosts?.filter((boost) => boost.isEnabled).map((boost) => {
+  const boostList = useMemo(() => {
+    return boosts?.filter((boost) => boost.isEnabled).map((boost) => {
       return {
         id: boost.id,
         title: boost.name,
@@ -95,23 +91,7 @@ export default function BoostsPageClient() {
         endContent: <Text>{boost.points.toString()} pts</Text>,
       } as BoostEntry;
     }) as BoostEntry[];
-    setBoostList(boostsCollection);
-  }
-
-  useEffect(() => {
-    processBoosts();
   }, [boosts]);
-
-  const refetchBoosts = () => {
-    queryClient.invalidateQueries(['boosts', address, GAME_ID]);
-    processBoosts();
-  };
-
-  useEffect(() => {
-    if (claimBoost.isSuccess || claimBoost.isError) {
-      refetchBoosts();
-    }
-  }, [claimBoost.isSuccess, claimBoost.isError, queryClient]);
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsForBoosts | null>(null);
