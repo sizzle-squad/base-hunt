@@ -16,8 +16,8 @@ import { BadgeTypeEnum } from '@/hooks/types';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
+import { useLevels } from '@/hooks/useLevels';
 import { useRank } from '@/hooks/useRank';
-import { useScore } from '@/hooks/useScore';
 import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { useUserName } from '@/hooks/useUsername';
 import { Box, Drawer, Stack } from '@mui/material';
@@ -43,10 +43,12 @@ export default function Badges() {
     isLoading,
     error,
   } = useGameState({ userAddress: address, gameId: GAME_ID });
-  const { data: score, isLoading: isScoreLoading } = useScore({
-    userAddress: address ?? '',
-    gameId: GAME_ID,
-  });
+  const {
+    data: collection,
+    isLoading: isLevelsLoading,
+    error: levelsError,
+  } = useLevels({ gameId: GAME_ID, address: address ?? '' });
+
   const { data: treasureBox, isLoading: isTreasureBoxLoading } = useTreasureBox(
     {
       gameId: GAME_ID,
@@ -327,8 +329,8 @@ export default function Badges() {
           alignSelf="stretch"
         >
           <Level
-            currentLevel={score?.currentLevel}
-            isLoading={isScoreLoading}
+            currentLevel={collection.currentLevelIdx}
+            isLoading={isLevelsLoading}
           />
           <Rank currentRank={rank?.rank} isLoading={isRankLoading} />
         </Stack>

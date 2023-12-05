@@ -3,21 +3,25 @@ import { Box, Stack, Skeleton } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '@/components/Text';
 
-import SvgSwitcher from '../LevelsBadge';
+import SvgSwitcher, { LevelNumber } from '../LevelsBadge';
 import Link from '@/components/AnimatedLink';
 
 type Props = {
-  currentLevel?: Level | null;
+  currentLevel: LevelNumber | null;
   isLoading?: boolean;
 };
 
 export function Level({ currentLevel, isLoading }: Props) {
   const content = useMemo(() => {
-    if (isLoading || !currentLevel) {
+    if (isLoading) {
       return <Skeleton variant="text" width={100} height={20} />;
     }
 
-    return <Text whiteSpace="nowrap">Level {currentLevel.level}</Text>;
+    return (
+      <Text fontSize="16px" whiteSpace="nowrap">
+        Level {currentLevel}
+      </Text>
+    );
   }, [currentLevel, isLoading]);
 
   return (
@@ -38,7 +42,7 @@ export function Level({ currentLevel, isLoading }: Props) {
       <Link href="/levels">
         <Stack width="144px">
           {content}
-          {currentLevel?.level && (
+          {currentLevel && (
             <Box
               sx={{
                 position: 'absolute',
@@ -47,8 +51,8 @@ export function Level({ currentLevel, isLoading }: Props) {
               }}
             >
               <SvgSwitcher
-                alt={`Level ${currentLevel.level || 'Level badge'} Badge`}
-                level={(currentLevel?.level as Level['level']) || null}
+                alt={`Level ${currentLevel || 'Level badge'} Badge`}
+                level={currentLevel || null}
                 width={64}
                 height={64}
               />

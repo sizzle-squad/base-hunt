@@ -14,6 +14,7 @@ export type LevelNumber = Level['level'];
 const Levels: {
   [key in LevelNumber]: typeof Svg1;
 } = {
+  0: null,
   1: Svg1,
   2: Svg2,
   3: Svg3,
@@ -38,6 +39,8 @@ const SvgSwitcher = ({ level, ...imageProps }: SvgSwitcherProps) => {
   } else {
     SvgComponent = Levels[level];
   }
+
+  if (!SvgComponent || level === '0') return null;
 
   return (
     <Image

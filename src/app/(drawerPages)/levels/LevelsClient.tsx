@@ -54,10 +54,6 @@ export default function LevelsPageClient() {
     isLoading,
     error,
   } = useLevels({ gameId: GAME_ID, address: address ?? '' });
-  const { data: score, isLoading: isScoreLoading } = useScore({
-    userAddress: address ?? '',
-    gameId: GAME_ID,
-  });
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsWithDescription | null>(null);
@@ -137,7 +133,7 @@ export default function LevelsPageClient() {
             const toggleDrawer = () => {
               handleToggleDrawer(item);
             };
-            const currentLevel = collection.currentLevelIdx;
+            const currentLevel = parseInt(collection.currentLevelIdx ?? '0');
             const itemLevel = parseInt(item.level);
             const levelMatch = currentLevel === itemLevel;
             const content: ListCardPropsWithDescription = {
