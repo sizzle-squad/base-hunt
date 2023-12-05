@@ -1,7 +1,6 @@
 'use client';
 import * as THREE from 'three';
 import { Box, Grid, Skeleton, Stack } from '@mui/material';
-import { CountdownTimer } from '@/components/ArtRevealScreen/Countdown';
 import { useTreasureBoxForRevealScreen } from '@/hooks/useTreasureBoxForRevealScreen';
 import { useEffect, useState, useRef, Suspense } from 'react';
 import {

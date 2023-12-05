@@ -21,19 +21,7 @@ function getNavigationUrl(latLng: string) {
   return `${googleMapNavigationUrl}&destination=${latLng}&dir_action=navigate`;
 }
 
-const Puller = memo(() => (
-  <Box
-    sx={{
-      width: 48,
-      height: 4,
-      backgroundColor: 'rgba(255, 255, 255, 0.50)',
-      borderRadius: 3,
-      position: 'absolute',
-      top: -10,
-      left: 'calc(50% - 15px)',
-    }}
-  />
-));
+const Puller = memo(() => <></>);
 Puller.displayName = 'Puller';
 
 type LabelProps = {
@@ -41,28 +29,7 @@ type LabelProps = {
   color: string;
 };
 
-const Label = memo(({ title, color }: LabelProps) => (
-  <Box
-    sx={{
-      padding: '4px 8px',
-      backgroundColor: `${color}`,
-      width: 'fit-content',
-      borderRadius: '100px',
-    }}
-  >
-    <Text
-      sx={{
-        fontFamily: 'CoinbaseMono',
-        fontSize: '14px',
-        fontWeight: 400,
-        color: 'var(--Black, #151515)',
-        lineHeight: '120%',
-      }}
-    >
-      {title}
-    </Text>
-  </Box>
-));
+const Label = memo(({ title, color }: LabelProps) => <></>);
 Label.displayName = 'Label';
 
 type SwipeUpDrawerProps = {
