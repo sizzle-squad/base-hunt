@@ -128,7 +128,7 @@ export default function BoostsPageClient() {
     });
   }, [GAME_ID, address, activeItem]);
 
-  const handleCTAPress = (ctaUrl) => {
+  const handleCTAPress = (ctaUrl: string) => {
     window.open(ctaUrl, "_blank");
   }
 
