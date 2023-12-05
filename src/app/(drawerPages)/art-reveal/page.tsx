@@ -58,6 +58,9 @@ type StatusToast = {
 
 export default function ArtReveal() {
   const [activeInfoStep, setActiveInfoStep] = useState(0);
+  const physicalTapMulitplier = parseFloat(
+    process.env.NEXT_PUBLIC_PHYSICAL_TAP_MULTIPLIER ?? '1'
+  );
   const [statusToast, setStatusToast] = useState<StatusToast>({
     show: false,
     type: 'success',
@@ -72,19 +75,32 @@ export default function ArtReveal() {
     gameId: GAME_ID,
   });
 
-  const score = useMemo(() => {
-    if (data && data.score?.currentScore) {
-      return data.score.currentScore;
-    }
-
-    return 0;
-  }, [data]);
-
   const { attackBox } = useMutateTreasureBox({ gameId: GAME_ID });
 
   const { data: treasureBox, isLoading } = useTreasureBox({ gameId: GAME_ID });
   const searchParams = useSearchParams();
   const iykRef = searchParams.get('iykRef');
+
+  const score = useMemo(() => {
+    if (data && data.score?.currentScore) {
+      if (iykRef) {
+        return Number(data.score.currentScore) * physicalTapMulitplier;
+      }
+      return data.score.currentScore;
+    }
+
+    return 0;
+  }, [data, iykRef, physicalTapMulitplier]);
+
+  const boostedLabel = useMemo(() => {
+    if (score === 0) {
+      return '';
+    }
+    if (iykRef) {
+      return ' boosted';
+    }
+  }, [iykRef, score]);
+
   const handleCTAPress = useCallback(
     debounce(() => {
       attackBox.mutate({
@@ -164,7 +180,7 @@ export default function ArtReveal() {
       {activeInfoStep && activeInfoStep >= 3 ? (
         <ProgressCard
           isCTADisabled={score === 0}
-          ctaText={`Tap to reveal (${score} ${UNIT})`}
+          ctaText={`Tap to reveal (${score} ${UNIT}${boostedLabel})`}
           onPress={handleCTAPress}
           isLoading={attackBox.isLoading}
         />
