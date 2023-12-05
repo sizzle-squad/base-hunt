@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { Level } from './types';
 import { routes } from '@/constants/routes';
+import { LevelNumber } from '@/components/LevelsBadge';
 
 type Props = {
   gameId: string;
@@ -10,19 +11,27 @@ type Props = {
 };
 
 type LevelsReturnType = {
-  data: {
-    data: Level[];
-  };
+  currentLevelIdx: LevelNumber | null;
+  levels: Level[];
 };
 
 export function useLevels({ gameId, address }: Props) {
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error } = useQuery<LevelsReturnType>(
     ['levels', gameId],
     async () => {
-      return await axios({
+      const result = await axios({
         method: 'GET',
         url: `${routes.levels}?gameId=${gameId}&userAddress=${address}`,
       });
+
+      return {
+        ...result.data,
+        currentLevelIdx: result.data.currentLevelIdx
+          ? result.data.currentLevelIdx
+          : '0',
+      };
+
+      return result.data;
     },
     {
       enabled: gameId !== undefined,
@@ -35,7 +44,10 @@ export function useLevels({ gameId, address }: Props) {
 
   return useMemo(
     () => ({
-      data: data?.data ?? [],
+      data: data ?? {
+        currentLevelIdx: null,
+        levels: [],
+      },
       isLoading,
       error,
     }),
