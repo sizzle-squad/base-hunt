@@ -131,7 +131,7 @@ export default function LevelsPageClient() {
   );
 
   return (
-    <>
+    <Stack gap="24px">
       <DetailsPageNavbar title={PageConsts.navTitle} />
       <Stack gap={2} className="pageContent">
         {isLoading &&
@@ -193,6 +193,6 @@ export default function LevelsPageClient() {
       >
         {activeItem && <LevelDrawerContent item={activeItem} />}
       </SwipeUpDrawer>
-    </>
+    </Stack>
   );
 }

@@ -1,10 +1,13 @@
 import { Stack } from '@mui/material';
-import BoostsPageClient from './BoostsClient';
 
-export default function Page() {
+export default function PaddedLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <Stack gap="24px" paddingY="24px" paddingX="20px">
-      <BoostsPageClient />
+      {children}
     </Stack>
   );
 }
