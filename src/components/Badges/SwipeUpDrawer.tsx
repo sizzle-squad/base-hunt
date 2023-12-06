@@ -96,6 +96,14 @@ function SwipeUpDrawer({
     setIsMapOpen(true);
   }, []);
 
+  const handleToggleDrawer = useCallback(() => {
+    if (!isMapOpen) {
+      toggleDrawer(type, anchor, !drawerStates.badgeActions[anchor]);
+    } else {
+      setIsMapOpen(false);
+    }
+  }, [isMapOpen]);
+
   const ctaButton = useMemo(() => {
     if (owned) return null;
 
@@ -184,7 +192,7 @@ function SwipeUpDrawer({
           },
         }}
       />
-      <Box onClick={() => toggleDrawer(type, anchor, true)}>
+      <Box onClick={handleToggleDrawer}>
         <SwipeableDrawer
           allowSwipeInChildren
           anchor={anchor}
@@ -193,6 +201,7 @@ function SwipeUpDrawer({
           onOpen={() => toggleDrawer(type, anchor, true)}
           swipeAreaWidth={100}
           disableSwipeToOpen={false}
+          keepMounted
           ModalProps={{
             keepMounted: true,
           }}
