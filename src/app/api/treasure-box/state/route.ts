@@ -62,7 +62,6 @@ export async function GET(req: NextRequest) {
 function mapToEntry(b: QueryData): TreasureBoxEntry {
   const isCTAEligible = !eqDateWithTimeKey(new Date(b.updated_at), new Date());
   let net;
-  console.log('isCTAEligible:', isCTAEligible);
   if (!isCTAEligible) {
     console.log('current date:', new Date(b.updated_at));
     net = nextEligibleTime(new Date(b.updated_at));
