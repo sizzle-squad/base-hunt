@@ -2,6 +2,7 @@ import { Skeleton, Stack } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '../Text';
 import Link from '@/components/AnimatedLink';
+import { HideIfOverflows } from '../HideIfOverflow';
 
 type Props = {
   currentRank?: string | null;
@@ -29,11 +30,31 @@ export function Rank({ currentRank, isLoading, score }: Props) {
         }}
         gap={3}
       >
-        <Stack flexDirection="row" gap={1}>
-          <Text fontSize="16px">Rank</Text>
+        <Stack flexDirection="row" gap="4px">
+          <Text
+            fontSize="16px"
+            sx={{
+              display: ['none', 'block'],
+            }}
+          >
+            Rank
+          </Text>
           <Text fontSize="16px">{position}</Text>
         </Stack>
-        <Text fontSize="16px">{score} points</Text>
+        <Stack flexDirection="row" alignItems="center" gap="4px">
+          <Text fontSize="16px" noWrap>
+            {score}
+          </Text>
+          <Text
+            fontSize="16px"
+            noWrap
+            sx={{
+              display: ['none', 'block'],
+            }}
+          >
+            points
+          </Text>
+        </Stack>
       </Stack>
     );
   }, [isLoading, position]);

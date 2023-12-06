@@ -18,9 +18,26 @@ export function Level({ currentLevel, isLoading }: Props) {
     }
 
     return (
-      <Text fontSize="16px" whiteSpace="nowrap">
-        Reward Level {currentLevel}
-      </Text>
+      <Stack flexDirection="row" alignItems="center" gap="4px">
+        <Text
+          fontSize="16px"
+          noWrap
+          sx={{
+            display: ['none', 'block'],
+          }}
+        >
+          Reward
+        </Text>
+        <Text
+          fontSize="16px"
+          noWrap
+          sx={{
+            textOverflow: 'ellipsis',
+          }}
+        >
+          Level {currentLevel}
+        </Text>
+      </Stack>
     );
   }, [currentLevel, isLoading]);
 
