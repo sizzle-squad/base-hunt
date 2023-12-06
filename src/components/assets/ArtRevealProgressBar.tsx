@@ -6,10 +6,13 @@ import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { Box, LinearProgress, Skeleton, Stack } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '@/components/Text';
+import { useAccount } from 'wagmi';
 
 export function ArtRevealProgressBar() {
+  const { address } = useAccount();
   const { data: treasureBox, isLoading } = useTreasureBox({
     gameId: GAME_ID,
+    userAddress: address ?? '',
   });
 
   const progress = useMemo(() => {
