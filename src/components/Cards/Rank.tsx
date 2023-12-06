@@ -53,6 +53,15 @@ export function Rank({ currentRank, isLoading, score }: Props) {
           >
             points
           </Text>
+          <Text
+            fontSize="16px"
+            noWrap
+            sx={{
+              display: ['block', 'none'],
+            }}
+          >
+            pts
+          </Text>
         </Stack>
       </Stack>
     );
