@@ -52,7 +52,8 @@ export async function GET(req: NextRequest) {
       gameId: gameId,
       tapCount: 0,
       createdAt: null,
-      isClickable: true,
+      isCTAEligible: true,
+      nextEligibleDate: new Date(),
     });
   }
 
