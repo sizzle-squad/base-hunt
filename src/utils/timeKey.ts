@@ -6,6 +6,9 @@ import {
   parse,
   nextDay,
   startOfTomorrow,
+  endOfDay,
+  startOfDay,
+  addDays,
 } from 'date-fns';
 
 const DATE_KEY_FORMAT = 'yyyy:MM:dd';
@@ -19,5 +22,7 @@ export function eqDateWithTimeKey(a: Date, b: Date): boolean {
 }
 
 export function nextEligibleTime(a: Date): Date {
-  return startOfTomorrow();
+  const b = startOfDay(a);
+  const r = addDays(b, 1);
+  return r;
 }
