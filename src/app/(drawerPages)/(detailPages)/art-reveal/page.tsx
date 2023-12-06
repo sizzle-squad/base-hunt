@@ -28,6 +28,7 @@ import { Card } from '@/components/assets/Card';
 import Text from '@/components/Text';
 import Stepper from '@/components/Reveal/Stepper';
 import debounce from 'lodash.debounce';
+import accurateInterval from 'accurate-interval';
 
 const TreasureChestInfo = [
   {
@@ -55,6 +56,20 @@ type StatusToast = {
 
 export default function ArtReveal() {
   const [activeInfoStep, setActiveInfoStep] = useState(0);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = accurateInterval(
+      () => {
+        setCurrentTime(new Date());
+      },
+      1000,
+      { aligned: true, immediate: true }
+    ); // Update every second
+
+    return () => interval.clear(); // Clean up the interval
+  }, []);
+
   const physicalTapMulitplier = parseFloat(
     process.env.NEXT_PUBLIC_PHYSICAL_TAP_MULTIPLIER ?? '1'
   );
@@ -179,14 +194,36 @@ export default function ArtReveal() {
     }));
   }, []);
 
+  const nextClick = useMemo(() => {
+    if (stateData?.nextEligibleDate) {
+      const nextEligibleDate = new Date(stateData.nextEligibleDate);
+      const timeLeft = nextEligibleDate.getTime() - currentTime.getTime();
+      if (timeLeft > 0) {
+        // Calculate hours, minutes, seconds
+        const hours = Math.floor(timeLeft / 3600000); // 1 hour = 3600000 milliseconds
+        const minutes = Math.floor((timeLeft % 3600000) / 60000); // 1 minute = 60000 milliseconds
+        const seconds = Math.floor((timeLeft % 60000) / 1000); // 1 second = 1000 milliseconds
+
+        // Format to "HH:mm:ss"
+        const formattedTime = [hours, minutes, seconds]
+          .map((unit) => String(unit).padStart(2, '0'))
+          .join(':');
+        return formattedTime;
+      } else {
+        return null;
+      }
+    }
+    return null;
+  }, [stateData, currentTime]);
   const CardContent = memo(() => (
     <>
       {activeInfoStep && activeInfoStep >= 3 ? (
         <ProgressCard
-          isCTADisabled={score === 0 || stateData?.isClickable === false}
+          isCTADisabled={score === 0 || stateData?.isCTAEligible === false}
           ctaText={`Tap to reveal (${score} ${UNIT}${boostedLabel})`}
           onPress={handleCTAPress}
           isLoading={attackBox.isLoading}
+          nextClick={nextClick}
         />
       ) : (
         <Card>
