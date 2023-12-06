@@ -58,8 +58,8 @@ export default function ArtRevealScreen() {
         alt="art reveal gif"
         unoptimized
         src={RevealGif}
-        width={600}
-        height={1000}
+        width={150}
+        height={250}
         sizes="100vw"
       />
       <Stack flexDirection="row" justifyContent="center">
