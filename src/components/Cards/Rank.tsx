@@ -29,12 +29,11 @@ export function Rank({ currentRank, isLoading, score }: Props) {
         }}
         gap={3}
       >
-        <Stack flexDirection="row" gap={2}>
+        <Stack flexDirection="row" gap={1}>
           <Text fontSize="16px">Rank</Text>
-          <Text fontSize="16px">|</Text>
-          <Text fontSize="16px">{score} points</Text>
+          <Text fontSize="16px">{position}</Text>
         </Stack>
-        <Text fontSize="16px">{position}</Text>
+        <Text fontSize="16px">{score} points</Text>
       </Stack>
     );
   }, [isLoading, position]);
