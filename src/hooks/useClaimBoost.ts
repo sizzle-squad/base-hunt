@@ -26,9 +26,9 @@ export function useClaimBoost() {
     },
     {
       onSuccess: (_, variables) => {
-        const { gameId, userAddress } = variables;
+        const { userAddress, gameId } = variables;
 
-        queryClient.invalidateQueries(['boosts', gameId, userAddress]);
+        queryClient.invalidateQueries(['boosts', userAddress, gameId]);
         queryClient.invalidateQueries(['levels']);
       },
     }
