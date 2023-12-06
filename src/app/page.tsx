@@ -9,6 +9,8 @@ import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
+import Text from '@/components/Text';
+import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -76,10 +78,25 @@ export default function Home() {
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
         }}
+        gap="2rem"
       >
-        <Stack width="100%" justifyContent="center" marginTop="5rem">
-          <BaseHuntAnimated width="20rem" height="" />
+        <Stack width="100%" justifyContent="center" alignItems="center">
+          <BaseHuntAnimated width="100%" />
+          <Stack
+            width="100%"
+            justifyContent="center"
+            alignItems="center"
+            gap=".6rem"
+          >
+            <HomePageSVGRow />
+            <Text textAlign="center" fontSize="1rem">
+              See Art. Mint Art. Reveal Art.
+            </Text>
+          </Stack>
         </Stack>
+        <Text fontSize="1.2rem" textAlign="center">
+          Collect onchain art across Miami and exchange it for exclusive merch.
+        </Text>
         <Box>
           <Stack paddingTop={5} alignItems="center" width="100%">
             {ctaButton}
@@ -107,7 +124,7 @@ export default function Home() {
               <Typography fontSize={14}>
                 Coinbase Wallet{' '}
                 <Box component="span" fontWeight="bold">
-                  Recommended
+                  Required
                 </Box>
               </Typography>
             </Stack>
