@@ -72,8 +72,8 @@ const settings = {
 
 const alchemy = new Alchemy(settings);
 
-async function ownsNFT(userAddress: string, contract: string) {
-    const response = await alchemy.nft.verifyNftOwnership(userAddress, contract);
+async function verifyNftOwnership(userAddress: string, contracts: string[]) {
+    const response = await alchemy.nft.verifyNftOwnership(userAddress, contracts);
     return response;
 }
 
@@ -105,13 +105,13 @@ export type BoostsClaimRequest = {
   gameId: string;
   userAddress: string;
   boostId: string;
-  contractAddress: string;
+  contractAddresses: string[];
 };
 
 export async function POST(request: NextRequest) {
   const body: BoostsClaimRequest = await request.json();
 
-  const { gameId, userAddress, boostId, contractAddress } = body;
+  const { gameId, userAddress, boostId, contractAddresses } = body;
 
   if (!userAddress || !gameId || !boostId) {
     return new Response(
@@ -155,16 +155,20 @@ export async function POST(request: NextRequest) {
       });
   }
 
+  let contractAddress;
   if (boost.boost_type === BoostTypeEnum.NFT ||
       boost.boost_type === BoostTypeEnum.NFT_PER_MINT ||
-      boost.boost_type === BoostTypeEnum.TOKEN) {
-    if (!contractAddress) {
+      boost.boost_type === BoostTypeEnum.TOKEN ||
+      boost.boost_type === BoostTypeEnum.TRANSACTION) {
+    if (!contractAddresses || contractAddresses.length < 1) {
       return new Response(
-        `Missing parameters: contractAddress: ${contractAddress} for boost type ${boost.boost_type}`,
+        `Missing parameters: contractAddress: ${contractAddresses} for boost type ${boost.boost_type}`,
         {
           status: 400,
         }
       );
+    } else {
+      contractAddress = contractAddresses[0];
     }
   }
 
@@ -172,13 +176,22 @@ export async function POST(request: NextRequest) {
   switch (boost.boost_type) {
     case BoostTypeEnum.NFT:
     case BoostTypeEnum.NFT_PER_MINT:
-        verified = await ownsNFT(userAddress, contractAddress);
+        const response = await verifyNftOwnership(userAddress, contractAddresses);
+        let verifiedContractAddress = null;
+        for (let key in response) {
+          if (response.hasOwnProperty(key) && response[key] === true) {
+            verifiedContractAddress = key;
+            break;
+          }
+        }
+        verified = verifiedContractAddress !== null;
+        contractAddress = verifiedContractAddress;
         break;
     case BoostTypeEnum.TOKEN:
-        verified = await hasToken(userAddress, contractAddress, boost.transaction_value_threshold);
+        verified = await hasToken(userAddress, contractAddress!, boost.transaction_value_threshold);
         break;
     case BoostTypeEnum.TRANSACTION:
-        verified = await verifyTransactions(boost.transaction_to, userAddress, contractAddress);
+        verified = await verifyTransactions(boost.transaction_to, userAddress, contractAddress!);
         break;
     case BoostTypeEnum.DEFAULT:
         verified = true;
