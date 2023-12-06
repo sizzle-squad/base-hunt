@@ -56,7 +56,7 @@ export function Rank({ currentRank, isLoading, score }: Props) {
         </Stack>
       </Stack>
     );
-  }, [isLoading, position]);
+  }, [isLoading, position, score]);
 
   return (
     <Stack
