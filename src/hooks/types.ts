@@ -154,4 +154,5 @@ export type TreasureBoxEntry = {
   updatedAt: Date;
   createdAt: Date;
   isCTAEligible: boolean;
+  nextEligibleDate: Date;
 };

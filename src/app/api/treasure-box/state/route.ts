@@ -4,7 +4,7 @@ import { TreasureBoxEntry } from '../../../../hooks/types';
 
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
-import { eqDateWithTimeKey } from '@/utils/timeKey';
+import { eqDateWithTimeKey, nextEligibleTime } from '@/utils/timeKey';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -60,6 +60,15 @@ export async function GET(req: NextRequest) {
 }
 
 function mapToEntry(b: QueryData): TreasureBoxEntry {
+  const isCTAEligible = !eqDateWithTimeKey(new Date(b.updated_at), new Date());
+  let net;
+  console.log('isCTAEligible:', isCTAEligible);
+  if (!isCTAEligible) {
+    console.log('current date:', new Date(b.updated_at));
+    net = nextEligibleTime(new Date(b.updated_at));
+  } else {
+    net = new Date();
+  }
   return {
     userAddress: b.user_address,
     totalHitpoints: b.total_hitpoints,
@@ -67,7 +76,8 @@ function mapToEntry(b: QueryData): TreasureBoxEntry {
     gameId: b.game_id,
     tapCount: b.tap_count,
     createdAt: new Date(b.created_at),
-    isCTAEligible: !eqDateWithTimeKey(new Date(b.updated_at), new Date()),
+    isCTAEligible: isCTAEligible,
+    nextEligibleDate: net,
   };
 }
 
