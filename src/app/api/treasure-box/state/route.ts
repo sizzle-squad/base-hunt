@@ -64,7 +64,6 @@ function mapToEntry(b: QueryData): TreasureBoxEntry {
   const isCTAEligible = !eqDateWithTimeKey(new Date(b.updated_at), new Date());
   let net;
   if (!isCTAEligible) {
-    console.log('current date:', new Date(b.updated_at));
     net = nextEligibleTime(new Date(b.updated_at));
   } else {
     net = new Date();
