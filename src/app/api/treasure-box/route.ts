@@ -125,19 +125,6 @@ export async function POST(request: NextRequest) {
     return new Response('Error: treasure box entry not found', { status: 400 });
   }
 
-  if (tbeData.data.length > 0) {
-    const now = new Date();
-    const updatedAt = new Date(tbeData.data[0].updated_at);
-    if (eqDateWithTimeKey(updatedAt, now)) {
-      return new Response(
-        `Error: tap count exceeded for now:${now} updatedAt:${updatedAt}`,
-        {
-          status: 400,
-        }
-      );
-    }
-  }
-
   let currentScore = score.current_score;
   if (iykRef) {
     console.log('got iykRef:', iykRef);
