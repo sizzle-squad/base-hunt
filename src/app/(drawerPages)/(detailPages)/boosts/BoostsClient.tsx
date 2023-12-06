@@ -168,7 +168,7 @@ export default function BoostsPageClient() {
       <Box
         sx={{ color: 'blue' }}
         onClick={() => onClick(item)}>
-          {'Claim Boost'}
+          {'Check claim'}
       </Box>
     )
   );
@@ -192,7 +192,7 @@ export default function BoostsPageClient() {
 
     const isEligible = eligibleItem && eligibleItem.id === item.id;
     const ctaText = isEligible && item.ctaText ? item.ctaText : 'Unable to claim this boost.';
-    const ctaButtonText = isEligible && item.ctaButtonText ? item.ctaButtonText : 'Claim boost';
+    const ctaButtonText = isEligible && item.ctaButtonText ? item.ctaButtonText : 'Check claim';
     const ctaUrl = item.ctaUrl;
 
     const handleButtonAction = () => {
@@ -240,7 +240,7 @@ export default function BoostsPageClient() {
               bgcolor: 'black',
               color: 'white',
             }}
-            disabled={(isEligible && ctaButtonText === 'Claim boost') || claimBoost.isLoading}
+            disabled={(isEligible && ctaButtonText === 'Check claim') || claimBoost.isLoading}
             onClick={handleButtonAction}
           >
             {ctaButtonText}
