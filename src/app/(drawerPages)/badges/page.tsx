@@ -355,7 +355,7 @@ export default function Badges() {
           <Rank
             currentRank={rank?.rank}
             isLoading={isRankLoading}
-            score={score}
+            score={score as number}
           />
         </Stack>
         {BadgesWrapper}
