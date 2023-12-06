@@ -30,6 +30,7 @@ import Stepper from '@/components/Reveal/Stepper';
 import debounce from 'lodash.debounce';
 import accurateInterval from 'accurate-interval';
 import Blurred from '@public/images/blurred-art-reveal.gif';
+import { differenceInMilliseconds, isToday, startOfTomorrow } from 'date-fns';
 
 const imageUrl =
   'https://go.wallet.coinbase.com/static/base-hunt/badges/Itsallagame.gif';
@@ -204,31 +205,38 @@ export default function ArtReveal() {
   }, []);
 
   const nextClick = useMemo(() => {
-    if (stateData?.nextEligibleDate) {
-      const nextEligibleDate = new Date(stateData.nextEligibleDate);
-      const timeLeft = nextEligibleDate.getTime() - currentTime.getTime();
-      if (timeLeft > 0) {
-        // Calculate hours, minutes, seconds
-        const hours = Math.floor(timeLeft / 3600000); // 1 hour = 3600000 milliseconds
-        const minutes = Math.floor((timeLeft % 3600000) / 60000); // 1 minute = 60000 milliseconds
-        const seconds = Math.floor((timeLeft % 60000) / 1000); // 1 second = 1000 milliseconds
+    if (stateData?.updatedAt) {
+      const updatedDate = new Date(stateData.updatedAt);
+      if (isToday(updatedDate)) {
+        const timeLeft = differenceInMilliseconds(
+          startOfTomorrow(),
+          new Date()
+        );
 
-        // Format to "HH:mm:ss"
-        const formattedTime = [hours, minutes, seconds]
-          .map((unit) => String(unit).padStart(2, '0'))
-          .join(':');
-        return formattedTime;
+        if (timeLeft > 0) {
+          // Calculate hours, minutes, seconds
+          const hours = Math.floor(timeLeft / 3600000); // 1 hour = 3600000 milliseconds
+          const minutes = Math.floor((timeLeft % 3600000) / 60000); // 1 minute = 60000 milliseconds
+          const seconds = Math.floor((timeLeft % 60000) / 1000); // 1 second = 1000 milliseconds
+
+          // Format to "HH:mm:ss"
+          const formattedTime = [hours, minutes, seconds]
+            .map((unit) => String(unit).padStart(2, '0'))
+            .join(':');
+          return formattedTime;
+        }
       } else {
         return null;
       }
     }
+
     return null;
-  }, [stateData, currentTime]);
+  }, [stateData]);
   const CardContent = memo(() => (
     <>
       {activeInfoStep && activeInfoStep >= 3 ? (
         <ProgressCard
-          isCTADisabled={score === 0 || stateData?.isCTAEligible === false}
+          isCTADisabled={score === 0 || !!nextClick}
           ctaText={`Tap to reveal (${score} ${UNIT}${boostedLabel})`}
           onPress={handleCTAPress}
           isLoading={attackBox.isLoading}

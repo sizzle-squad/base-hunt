@@ -43,6 +43,7 @@ export default function LeaderBoardRow({
     if (isLoading) {
       return <Skeleton variant="text" width={150} height={24} />;
     }
+
     return (
       <Text variant="body1" noWrap>
         {displayName}
