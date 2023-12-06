@@ -12,6 +12,7 @@ import Circle from '@/components/Circle';
 import { PointsPill } from '@/components/PointsPill';
 import { UNIT } from '@/constants/unit';
 import Link from '@/components/AnimatedLink';
+import Pill from '@/components/Pill';
 
 export const NavbarClient = () => {
   const { address, isDisconnected, isConnecting } = useAccount();
@@ -72,12 +73,20 @@ export const NavbarClient = () => {
         </Stack>
       </Stack>
       <Link href="/boosts">
-        <PointsPill
-          backgroundColor="var(--CB-Blue, #0052FF)"
-          points={score as number}
-          unit={UNIT}
-          isLoading={isLoading}
-        />
+        <Pill backgroundColor="blue">
+          <Text color="white" fontSize="14px" fontWeight="bold">
+            Boosts
+          </Text>
+          <svg
+            width="5"
+            height="9"
+            viewBox="0 0 5 9"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M1 8.5L4 4.5L1 0.5" stroke="white" strokeWidth="1.5" />
+          </svg>
+        </Pill>
       </Link>
     </>
   );
