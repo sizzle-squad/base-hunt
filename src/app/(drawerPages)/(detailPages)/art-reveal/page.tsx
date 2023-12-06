@@ -74,7 +74,16 @@ export default function ArtReveal() {
 
   const { attackBox } = useMutateTreasureBox({ gameId: GAME_ID });
 
-  const { data: treasureBox, isLoading } = useTreasureBox({ gameId: GAME_ID });
+  const {
+    data: treasureBox,
+    isLoading,
+    stateData,
+    stateDataIsLoading,
+    stateError,
+  } = useTreasureBox({
+    gameId: GAME_ID,
+    userAddress: address ?? '',
+  });
   const searchParams = useSearchParams();
   const iykRef = searchParams.get('iykRef');
 
@@ -133,7 +142,9 @@ export default function ArtReveal() {
       setStatusToast({
         show: true,
         type: 'error',
-        message: 'Your tap was unsuccessful.',
+        message:
+          attackBox.error.response.data.error ??
+          'Tap was unsuccessful. Please try again.',
       });
     }
   }, [attackBox.isLoading, attackBox.isSuccess, attackBox.isError]);
@@ -172,7 +183,7 @@ export default function ArtReveal() {
     <>
       {activeInfoStep && activeInfoStep >= 3 ? (
         <ProgressCard
-          isCTADisabled={score === 0}
+          isCTADisabled={score === 0 || stateData?.isClickable === false}
           ctaText={`Tap to reveal (${score} ${UNIT}${boostedLabel})`}
           onPress={handleCTAPress}
           isLoading={attackBox.isLoading}

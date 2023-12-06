@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 
 type Props = {
   gameId: string;
+  userAddress: string;
 };
 
 type TreasureBoxType = {
@@ -19,8 +20,13 @@ type TreasureBoxType = {
 };
 
 type TreasureBoxReturnType = Omit<TreasureBoxType, 'gameId'>;
+type TreasureBoxStateReturnType = {
+  data: {
+    isClickable: boolean;
+  };
+};
 
-export function useTreasureBox({ gameId }: Props) {
+export function useTreasureBox({ gameId, userAddress }: Props) {
   const { data, isLoading, error } = useQuery<TreasureBoxReturnType>(
     ['treasure-box', gameId],
     async () => {
@@ -42,12 +48,48 @@ export function useTreasureBox({ gameId }: Props) {
     }
   );
 
+  const {
+    data: stateData,
+    isLoading: stateDataIsLoading,
+    error: stateError,
+  } = useQuery<TreasureBoxStateReturnType>(
+    ['treasure-box-state', gameId],
+    async () => {
+      return await axios({
+        method: 'GET',
+        url: routes.treasureBox.state,
+        params: {
+          gameId: gameId,
+          userAddress,
+        },
+      });
+    },
+    {
+      enabled: gameId !== undefined,
+      onError: (error) => {
+        console.error(error);
+        // Handle error appropriately
+      },
+      staleTime: 1000 * 30, // 30 seconds
+    }
+  );
+
   return useMemo(
     () => ({
       data: data?.data,
       isLoading,
       error,
+      stateData: stateData?.data,
+      stateDataIsLoading,
+      stateError,
     }),
-    [data?.data, error, isLoading]
+    [
+      data?.data,
+      error,
+      isLoading,
+      stateData?.data,
+      stateDataIsLoading,
+      stateError,
+    ]
   );
 }
