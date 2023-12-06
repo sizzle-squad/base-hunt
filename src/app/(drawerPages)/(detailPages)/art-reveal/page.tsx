@@ -29,6 +29,10 @@ import Text from '@/components/Text';
 import Stepper from '@/components/Reveal/Stepper';
 import debounce from 'lodash.debounce';
 import accurateInterval from 'accurate-interval';
+import Blurred from '@public/images/blurred-art-reveal.gif';
+
+const imageUrl =
+  'https://go.wallet.coinbase.com/static/base-hunt/badges/Itsallagame.gif';
 
 const TreasureChestInfo = [
   {
@@ -234,7 +238,7 @@ export default function ArtReveal() {
                 onClick={handleInfoStepChange}
               />
             </Grid>
-          </Grid>
+          </Grid>{' '}
           <Text color="#1D1818" variant="h6" fontSize="20px">
             {TreasureChestInfo[activeInfoStep].title}
           </Text>
@@ -278,6 +282,8 @@ export default function ArtReveal() {
   CardContent.displayName = 'CardContent';
 
   const content = useMemo(() => {
+    const image = treasureBox?.isOpen ? imageUrl : Blurred;
+
     return (
       <Stack
         className="pageContent"
@@ -306,12 +312,7 @@ export default function ArtReveal() {
                 marginTop: '25px',
               }}
             >
-              <Image
-                src={'/images/blurred-art-reveal.gif' as string}
-                alt="jumbotron"
-                sizes="100vw"
-                fill
-              />
+              <Image src={image} alt="jumbotron" sizes="100vw" fill />
             </Box>
             {treasureBox?.isOpen ? <ArtRevealClient /> : <CardContent />}
           </>

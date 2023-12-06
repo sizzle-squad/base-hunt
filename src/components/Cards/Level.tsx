@@ -19,7 +19,7 @@ export function Level({ currentLevel, isLoading }: Props) {
 
     return (
       <Text fontSize="16px" whiteSpace="nowrap">
-        Level {currentLevel}
+        Reward Level {currentLevel}
       </Text>
     );
   }, [currentLevel, isLoading]);

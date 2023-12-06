@@ -19,10 +19,9 @@ const PageConsts = {
 } as const;
 
 const artwork = {
-  title: 'TITLE OF THE ARTWORK',
-  description:
-    'Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. ',
-  artistName: 'Artist Name',
+  title: `It's all a game, 2023`,
+  description: `16 Frames // 1024 x 1024 Pixels // 14,437,928 Bytes`,
+  artistName: 'Patrick Amadon',
 };
 
 export type RevealedArtListCard = ListCardProps & {

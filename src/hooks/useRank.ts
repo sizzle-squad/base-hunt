@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
+import { PlayerRank } from './types';
 
 type Props = {
   userAddress: `0x${string}` | string;
@@ -8,19 +9,16 @@ type Props = {
 };
 
 type RankReturnType = {
-  data: {
-    rank: string;
-    userAddress: string;
-  };
+  data: PlayerRank;
 };
 
 export function useRank({ userAddress, gameId }: Props) {
   const { data, isLoading, error } = useQuery<RankReturnType>(
-    ['treasure-box/rank', userAddress, gameId],
+    ['leaderboard/rank', userAddress, gameId],
     async () => {
       return await axios({
         method: 'GET',
-        url: `/api/treasure-box/rank?userAddress=${userAddress}&gameId=${gameId}`,
+        url: `/api/leaderboard/rank?userAddress=${userAddress}&gameId=${gameId}`,
       });
     },
     {

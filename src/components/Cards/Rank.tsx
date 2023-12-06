@@ -10,7 +10,7 @@ type Props = {
 
 export function Rank({ currentRank, isLoading }: Props) {
   const position = useMemo(() => {
-    return currentRank ? `#${currentRank}` : 'N/A';
+    return currentRank ? `#${currentRank}` : 'Unranked';
   }, [currentRank]);
 
   const content = useMemo(() => {

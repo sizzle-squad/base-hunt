@@ -125,6 +125,12 @@ export enum BoostTypeEnum {
   DEFAULT = 'DEFAULT',
 }
 
+export type PlayerRank = {
+  rank: string;
+  userAddress: string;
+  currentScore: number;
+};
+
 export type Rank = {
   cbid: string | null;
   createdAt: string;
@@ -132,7 +138,7 @@ export type Rank = {
   gameId: number;
   id: number;
   tapCount: number;
-  totalHitpoints: number;
+  currentScore: number;
   userAddress: string;
 };
 
