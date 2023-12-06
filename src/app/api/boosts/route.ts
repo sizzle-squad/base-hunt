@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
     switch (boost.boost_type) {
         case BoostTypeEnum.NFT:
         case BoostTypeEnum.NFT_PER_MINT:
-            isClaimed = boost.contract_addresses.every((a: string) => claimedAddresses.includes(a));
+            isClaimed = boost.contract_addresses.some((a: string) => claimedAddresses.includes(a));
             break;
         case BoostTypeEnum.TOKEN:
         case BoostTypeEnum.TRANSACTION:
