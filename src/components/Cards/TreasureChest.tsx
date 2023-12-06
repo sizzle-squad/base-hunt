@@ -7,6 +7,8 @@ import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../assets/Button';
 import { RevealedCard } from '../assets/RevealedCard';
+import { useScore } from '@/hooks/useScore';
+import { useAccount } from 'wagmi';
 
 type Props = {
   isOpen?: boolean;
@@ -15,24 +17,42 @@ type Props = {
 
 export function TreasureChest({ isOpen, ctaUrl }: Props) {
   const router = useRouter();
+  // Copied from NavBarClient
+  const { address, isDisconnected, isConnecting } = useAccount();
+  const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
+
+  const { data, isLoading: isScoreLoading } = useScore({
+    userAddress: address ?? '',
+    gameId,
+  });
+
+  const score = useMemo(() => {
+    if (data && data.score?.currentScore) {
+      return data.score.currentScore;
+    }
+
+    return 0;
+  }, [data]);
 
   const handleCTAPress = useCallback(() => {
     router.push('/art-reveal');
   }, [router]);
 
   const progressContent = useMemo(() => {
+    const contribution = score && score > 0 ? ` (${score} pts) ` : ' ';
+
     if (!isOpen) {
       return (
         <>
           <ArtRevealProgressBar />
           <Button onClick={handleCTAPress}>
-            <Text color="#fff">Tap to reveal</Text>
+            <Text color="#fff">{`Contribute${contribution}to reveal`}</Text>
           </Button>
         </>
       );
     }
     return <RevealedCard ctaLink={ctaUrl} />;
-  }, [ctaUrl, handleCTAPress, isOpen]);
+  }, [ctaUrl, handleCTAPress, isOpen, score]);
 
   return (
     <Card
