@@ -10,6 +10,7 @@ type Props = {
   isCTADisabled?: boolean;
   isLoading?: boolean;
   onPress: () => void;
+  nextClick: string | null;
 };
 
 export function ProgressCard({
@@ -17,13 +18,14 @@ export function ProgressCard({
   onPress,
   isCTADisabled,
   isLoading,
+  nextClick,
 }: Props) {
   return (
     <Card>
       <ArtRevealProgressBar />
       {/* TODO: add a tooltip on users with 0 pt cannot make a request */}
       <Button onClick={onPress} disabled={isCTADisabled} isLoading={isLoading}>
-        {ctaText}
+        {nextClick ? `Next tap ${nextClick}` : ctaText}
       </Button>
     </Card>
   );
