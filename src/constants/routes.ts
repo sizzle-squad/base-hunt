@@ -7,6 +7,7 @@ export const routes = {
   treasureBox: {
     rank: '/api/treasure-box/rank',
     topRanks: '/api/treasure-box/top-ranks',
+    state: '/api/treasure-box/state',
     default: '/api/treasure-box',
   },
   boosts: {

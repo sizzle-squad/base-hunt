@@ -52,6 +52,7 @@ export default function Badges() {
   const { data: treasureBox, isLoading: isTreasureBoxLoading } = useTreasureBox(
     {
       gameId: GAME_ID,
+      userAddress: address ?? '',
     }
   );
 
