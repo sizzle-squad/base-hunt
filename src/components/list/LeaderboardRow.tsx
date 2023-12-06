@@ -43,7 +43,11 @@ export default function LeaderBoardRow({
     if (isLoading) {
       return <Skeleton variant="text" width={150} height={24} />;
     }
-    return <Text variant="body1">{displayName}</Text>;
+    return (
+      <Text variant="body1" noWrap>
+        {displayName}
+      </Text>
+    );
   }, [displayName, isLoading]);
 
   return (
@@ -89,7 +93,13 @@ export default function LeaderBoardRow({
           {content}
         </Stack>
       </Stack>
-      <Text variant="body1" fontWeight={500}>{`${rank.currentScore} pts`}</Text>
+      <Text
+        textAlign="right"
+        width={80}
+        variant="body1"
+        fontWeight={500}
+        noWrap
+      >{`${rank.currentScore} pts`}</Text>
     </Stack>
   );
 }
