@@ -28,6 +28,7 @@ export function useMutateTreasureBox({ gameId }: { gameId: string }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['treasure-box', gameId]);
+      queryClient.invalidateQueries(['treasure-box-state', gameId]);
     },
   });
 
