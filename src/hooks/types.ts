@@ -127,7 +127,7 @@ export enum BoostTypeEnum {
 
 export type PlayerRank = {
   rank: string;
-  userAddress: string;
+  userAddress: `0x${string}`;
   currentScore: number;
 };
 
