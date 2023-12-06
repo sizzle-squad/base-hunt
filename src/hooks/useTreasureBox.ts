@@ -24,6 +24,7 @@ type TreasureBoxStateReturnType = {
   data: {
     isCTAEligible: boolean;
     nextEligibleDate: Date;
+    updatedAt: Date;
   };
 };
 
