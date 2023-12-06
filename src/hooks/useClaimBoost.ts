@@ -6,7 +6,7 @@ export type BoostsClaimData = {
   gameId: string;
   userAddress: `0x${string}` | undefined;
   boostId: string;
-  contractAddress?: string;
+  contractAddresses?: string[];
 };
 
 export function useClaimBoost() {
