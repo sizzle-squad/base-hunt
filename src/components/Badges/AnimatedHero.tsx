@@ -5,10 +5,10 @@ import { Box, Card } from '@mui/material';
 
 const BaseHuntAnimated = ({
   width,
-  height,
+  height = 'auto',
 }: {
   width: string;
-  height: string;
+  height?: string;
 }) => {
   const defaultOptions = {
     loop: true,
