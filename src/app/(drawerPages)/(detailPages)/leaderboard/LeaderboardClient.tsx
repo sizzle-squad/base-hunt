@@ -25,7 +25,7 @@ function generateMockData(count: number) {
       // gameId: 0,
       // id: 0,
       // tapCount: 0,
-      userAddress: '...',
+      userAddress: '0x...',
       isMock: true,
       currentScore: 0,
       rank: '',

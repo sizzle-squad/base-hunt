@@ -1,9 +1,10 @@
-import { Avatar, Box, Card, Stack } from '@mui/material';
+import { Avatar, Box, Skeleton, Stack } from '@mui/material';
 import Text from '@/components/Text';
-import { PlayerRank, Rank } from '@/hooks/types';
+import { PlayerRank } from '@/hooks/types';
 import { useMemo } from 'react';
-import { getTruncatedAddress } from '@/utils/truncate';
 import { stringToColor } from '@/utils/stringToColor';
+import { useCBProfile } from '@/hooks/useCBProfile';
+import { useUserName } from '@/hooks/useUsername';
 
 type Props = {
   rank: PlayerRank;
@@ -18,12 +19,14 @@ export default function LeaderBoardRow({
   offset,
   isLast,
 }: Props) {
-  const displayName = useMemo(() => {
-    // if (rank.ensName) return rank.ensName;
-    // if (rank.cbid) return rank.cbid;
-
-    return getTruncatedAddress(rank.userAddress);
-  }, [rank.userAddress]);
+  const { data: userPublicProfile, isLoading } = useCBProfile({
+    address: rank.userAddress,
+  });
+  const displayName =
+    useUserName({
+      address: rank.userAddress,
+      userPublicProfile,
+    }) ?? rank.userAddress;
 
   const borderRadiusStyle = useMemo(() => {
     // single row should have rounded corners
@@ -35,6 +38,13 @@ export default function LeaderBoardRow({
     // last row should have bottom rounded corners
     if (isLast) return '0 0 12px 12px';
   }, [isLast, position]);
+
+  const content = useMemo(() => {
+    if (isLoading) {
+      return <Skeleton variant="text" width={150} height={24} />;
+    }
+    return <Text variant="body1">{displayName}</Text>;
+  }, [displayName, isLoading]);
 
   return (
     <Stack
@@ -76,7 +86,7 @@ export default function LeaderBoardRow({
           >
             {''}
           </Avatar>
-          <Text variant="body1">{displayName}</Text>
+          {content}
         </Stack>
       </Stack>
       <Text variant="body1" fontWeight={500}>{`${rank.currentScore} pts`}</Text>

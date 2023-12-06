@@ -166,7 +166,12 @@ export default function ArtReveal() {
           'Tap was unsuccessful. Please try again.',
       });
     }
-  }, [attackBox.isLoading, attackBox.isSuccess, attackBox.isError]);
+  }, [
+    attackBox.isLoading,
+    attackBox.isSuccess,
+    attackBox.isError,
+    attackBox.error?.response.data.error,
+  ]);
 
   useEffect(() => {
     const savedStep = window.localStorage.getItem('artRevealInfoStep');
