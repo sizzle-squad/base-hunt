@@ -39,7 +39,7 @@ export const CountdownTimer = ({
     const minutes = Math.floor((count % 3600) / 60);
     const seconds = count % 60;
 
-    return `${days}d : ${hours}h : ${minutes}m : ${seconds}s`;
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }, [count]);
 
   return (
