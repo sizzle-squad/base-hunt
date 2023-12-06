@@ -1,8 +1,8 @@
-import { Rank } from '@/hooks/types';
+import { PlayerRank } from '@/hooks/types';
 import LeaderBoardRow from './LeaderboardRow';
 
 type Props = {
-  rank: Rank;
+  rank: PlayerRank;
 };
 
 export function topContributorRow({ rank }: Props) {

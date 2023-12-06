@@ -1,12 +1,12 @@
 import { Avatar, Box, Card, Stack } from '@mui/material';
 import Text from '@/components/Text';
-import { Rank } from '@/hooks/types';
+import { PlayerRank, Rank } from '@/hooks/types';
 import { useMemo } from 'react';
 import { getTruncatedAddress } from '@/utils/truncate';
 import { stringToColor } from '@/utils/stringToColor';
 
 type Props = {
-  rank: Rank;
+  rank: PlayerRank;
   position: number;
   offset: number;
   isLast?: boolean;
@@ -19,11 +19,11 @@ export default function LeaderBoardRow({
   isLast,
 }: Props) {
   const displayName = useMemo(() => {
-    if (rank.ensName) return rank.ensName;
-    if (rank.cbid) return rank.cbid;
+    // if (rank.ensName) return rank.ensName;
+    // if (rank.cbid) return rank.cbid;
 
     return getTruncatedAddress(rank.userAddress);
-  }, [rank.cbid, rank.ensName, rank.userAddress]);
+  }, [rank.userAddress]);
 
   const borderRadiusStyle = useMemo(() => {
     // single row should have rounded corners
@@ -79,10 +79,7 @@ export default function LeaderBoardRow({
           <Text variant="body1">{displayName}</Text>
         </Stack>
       </Stack>
-      <Text
-        variant="body1"
-        fontWeight={500}
-      >{`${rank.totalHitpoints} pts`}</Text>
+      <Text variant="body1" fontWeight={500}>{`${rank.currentScore} pts`}</Text>
     </Stack>
   );
 }

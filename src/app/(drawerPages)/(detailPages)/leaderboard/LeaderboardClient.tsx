@@ -4,37 +4,38 @@ import LeaderBoardRow from '@/components/list/LeaderboardRow';
 import { TopContributorTag } from '@/components/list/TopContributorTag';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { GAME_ID } from '@/constants/gameId';
-import { Rank } from '@/hooks/types';
+import { PlayerRank } from '@/hooks/types';
 import { useTopRanks } from '@/hooks/useTopRanks';
 import { Box, NoSsr, Stack } from '@mui/material';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import Text from '@/components/Text';
 
-type RankMock = Rank & {
+type RankMock = PlayerRank & {
   isMock: boolean;
 };
 
+function generateMockData(count: number) {
+  // Function to generate 'count' number of mock leaderboard entries
+  const mockData: RankMock[] = [];
+  for (let i = 0; i < count; i++) {
+    mockData.push({
+      // cbid: null,
+      // createdAt: '',
+      // ensName: null,
+      // gameId: 0,
+      // id: 0,
+      // tapCount: 0,
+      userAddress: '...',
+      isMock: true,
+      currentScore: 0,
+      rank: '',
+    });
+  }
+  return mockData;
+}
+
 export default function LeaderboardClient() {
   const { data: topRanks, isLoading } = useTopRanks({ gameId: GAME_ID });
-
-  const generateMockData = useCallback((count: number) => {
-    // Function to generate 'count' number of mock leaderboard entries
-    const mockData: RankMock[] = [];
-    for (let i = 0; i < count; i++) {
-      mockData.push({
-        cbid: null,
-        createdAt: '',
-        ensName: null,
-        gameId: 0,
-        id: 0,
-        tapCount: 0,
-        userAddress: '...',
-        isMock: true,
-        totalHitpoints: 0,
-      });
-    }
-    return mockData;
-  }, []);
 
   // Add logic to integrate mock data
   const leaderboardData = useMemo(() => {
@@ -43,7 +44,7 @@ export default function LeaderboardClient() {
     return realDataCount < 10
       ? [...topRanks, ...generateMockData(mockDataCount)]
       : topRanks;
-  }, [topRanks, generateMockData]);
+  }, [topRanks]);
 
   const topContributor = useMemo(() => leaderboardData[0], [leaderboardData]);
   const restOfRanks = useMemo(
@@ -75,14 +76,14 @@ export default function LeaderboardClient() {
             <Stack direction="column" gap={1}>
               <TopContributorTag />
               <LeaderBoardRow
-                rank={topContributor as Rank}
+                rank={topContributor as PlayerRank}
                 position={0}
                 offset={1}
                 isLast
               />
             </Stack>
             <Box>
-              {restOfRanks.map((rank: Rank | RankMock, index: number) => {
+              {restOfRanks.map((rank: PlayerRank | RankMock, index: number) => {
                 if ('isMock' in rank) {
                   // rank is treated as RankMock here
                   return (
@@ -98,7 +99,7 @@ export default function LeaderboardClient() {
                   // rank is treated as Rank here
                   return (
                     <LeaderBoardRow
-                      key={rank.createdAt}
+                      key={`${rank}-${rank.userAddress}`}
                       rank={rank}
                       position={index}
                       offset={2}
