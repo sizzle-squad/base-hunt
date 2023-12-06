@@ -128,7 +128,7 @@ export default function Home() {
               <Typography fontSize={14}>
                 Coinbase Wallet{' '}
                 <Box component="span" fontWeight="bold">
-                  Required
+                  Recommended
                 </Box>
               </Typography>
             </Stack>
