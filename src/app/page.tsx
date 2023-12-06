@@ -97,8 +97,12 @@ export default function Home() {
         <Text fontSize="1.2rem" textAlign="center">
           Collect onchain art across Miami and exchange it for exclusive merch.
         </Text>
-        <Box>
-          <Stack paddingTop={5} alignItems="center" width="100%">
+        <Stack alignItems="center">
+          <Stack
+            paddingTop={5}
+            alignItems="center"
+            width={['100%', '60%', '40%']}
+          >
             {ctaButton}
           </Stack>
           <Stack alignItems="center">
@@ -132,7 +136,7 @@ export default function Home() {
               Download now
             </Link>
           </Stack>
-        </Box>
+        </Stack>
       </Stack>
     </>
   );
