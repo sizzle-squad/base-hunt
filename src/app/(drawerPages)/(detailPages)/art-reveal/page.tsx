@@ -210,7 +210,7 @@ export default function ArtReveal() {
       if (isToday(updatedDate)) {
         const timeLeft = differenceInMilliseconds(
           startOfTomorrow(),
-          new Date()
+          currentTime.getTime()
         );
 
         if (timeLeft > 0) {
@@ -231,7 +231,7 @@ export default function ArtReveal() {
     }
 
     return null;
-  }, [stateData]);
+  }, [currentTime, stateData?.updatedAt]);
   const CardContent = memo(() => (
     <>
       {activeInfoStep && activeInfoStep >= 3 ? (
