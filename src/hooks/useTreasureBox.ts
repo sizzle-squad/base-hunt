@@ -22,7 +22,8 @@ type TreasureBoxType = {
 type TreasureBoxReturnType = Omit<TreasureBoxType, 'gameId'>;
 type TreasureBoxStateReturnType = {
   data: {
-    isClickable: boolean;
+    isCTAEligible: boolean;
+    nextEligibleDate: Date;
   };
 };
 
@@ -35,6 +36,7 @@ export function useTreasureBox({ gameId, userAddress }: Props) {
         url: routes.treasureBox.default,
         params: {
           gameId: gameId,
+          userAddress,
         },
       });
     },
