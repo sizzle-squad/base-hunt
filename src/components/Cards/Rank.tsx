@@ -6,9 +6,10 @@ import Link from '@/components/AnimatedLink';
 type Props = {
   currentRank?: string | null;
   isLoading?: boolean;
+  score: number;
 };
 
-export function Rank({ currentRank, isLoading }: Props) {
+export function Rank({ currentRank, isLoading, score }: Props) {
   const position = useMemo(() => {
     return currentRank ? `#${currentRank}` : 'Unranked';
   }, [currentRank]);
@@ -28,7 +29,11 @@ export function Rank({ currentRank, isLoading }: Props) {
         }}
         gap={3}
       >
-        <Text fontSize="16px">Rank</Text>
+        <Stack flexDirection="row" gap={2}>
+          <Text fontSize="16px">Rank</Text>
+          <Text fontSize="16px">|</Text>
+          <Text fontSize="16px">{score} points</Text>
+        </Stack>
         <Text fontSize="16px">{position}</Text>
       </Stack>
     );
