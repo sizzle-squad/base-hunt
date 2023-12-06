@@ -18,6 +18,7 @@ import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
 import { useLevels } from '@/hooks/useLevels';
 import { useRank } from '@/hooks/useRank';
+import { useScore } from '@/hooks/useScore';
 import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { useUserName } from '@/hooks/useUsername';
 import { Box, Drawer, Stack } from '@mui/material';
@@ -60,6 +61,19 @@ export default function Badges() {
     userAddress: address ?? '',
     gameId: GAME_ID,
   });
+
+  const { data, isLoading: isScoreLoading } = useScore({
+    userAddress: address ?? '',
+    gameId: GAME_ID,
+  });
+
+  const score = useMemo(() => {
+    if (data && data.score?.currentScore) {
+      return data.score.currentScore;
+    }
+
+    return 0;
+  }, [data]);
 
   const handleDisconnect = useCallback(async () => {
     await disconnectAsync();
@@ -338,7 +352,11 @@ export default function Badges() {
             }
             isLoading={isLevelsLoading}
           />
-          <Rank currentRank={rank?.rank} isLoading={isRankLoading} />
+          <Rank
+            currentRank={rank?.rank}
+            isLoading={isRankLoading}
+            score={score as number}
+          />
         </Stack>
         {BadgesWrapper}
         <Box>
