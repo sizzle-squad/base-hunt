@@ -184,11 +184,7 @@ function SwipeUpDrawer({
           },
         }}
       />
-      <Box
-        onClick={() =>
-          toggleDrawer(type, anchor, !drawerStates.badgeActions[anchor])
-        }
-      >
+      <Box onClick={() => toggleDrawer(type, anchor, true)}>
         <SwipeableDrawer
           allowSwipeInChildren
           anchor={anchor}
