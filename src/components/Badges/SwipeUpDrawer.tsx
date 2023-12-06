@@ -101,6 +101,7 @@ function SwipeUpDrawer({
       toggleDrawer(type, anchor, !drawerStates.badgeActions[anchor]);
     } else {
       setIsMapOpen(false);
+      toggleDrawer(type, anchor, !drawerStates.badgeActions[anchor]);
     }
   }, [isMapOpen]);
 
