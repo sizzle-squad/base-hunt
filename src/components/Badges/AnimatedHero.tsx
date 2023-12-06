@@ -19,7 +19,11 @@ const BaseHuntAnimated = ({
     },
   };
 
-  return <Lottie options={defaultOptions} height={height} width={width} />;
+  return (
+    <Box width={['100%', '80%', '60%']}>
+      <Lottie options={defaultOptions} height={height} width={width} />
+    </Box>
+  );
 };
 
 export default BaseHuntAnimated;
