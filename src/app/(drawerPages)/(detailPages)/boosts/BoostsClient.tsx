@@ -32,7 +32,7 @@ type BoostEntry = {
   title: string;
   description: string;
   type: string;
-  contractAddress: string;
+  contractAddresses: string[];
   subtitle: string;
   ctaUrl: string | null;
   ctaText: string | null;
@@ -49,7 +49,7 @@ type ListCardPropsForBoosts = ListCardProps & {
   title: string
   description: string;
   type: string;
-  contractAddress: string;
+  contractAddresses: string[];
   ctaUrl: string | null;
   ctaText: string | null;
   ctaButtonText: string | null;
@@ -83,7 +83,7 @@ export default function BoostsPageClient() {
         title: boost.name,
         description: boost.description,
         type: boost.boostType,
-        contractAddress: boost.contractAddresses[0],
+        contractAddresses: boost.contractAddresses,
         subtitle: '',
         ctaUrl: boost.ctaUrl,
         ctaText: boost.ctaText,
@@ -124,7 +124,7 @@ export default function BoostsPageClient() {
       gameId: GAME_ID,
       userAddress: address,
       boostId: activeItem!.id.toString(),
-      contractAddress: activeItem?.contractAddress
+      contractAddresses: activeItem?.contractAddresses
     });
   }, [GAME_ID, address, activeItem]);
 
