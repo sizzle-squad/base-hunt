@@ -64,9 +64,7 @@ export default function BadgeDetails({ params }: Props) {
   }, [currentBadge, drawerStates.badgeActions]);
 
   const ctaButton = useMemo(() => {
-    if (isOwned) return null;
-    if (!currentBadge) return null;
-    if (currentBadge.type === BadgeTypeEnum.IRL) {
+    if (isOwned || !currentBadge || currentBadge.type === BadgeTypeEnum.IRL) {
       return null;
     } else if (currentBadge.type === BadgeTypeEnum.Online) {
       return (
