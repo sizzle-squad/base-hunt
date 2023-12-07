@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
       boost.boost_type === BoostTypeEnum.TRANSACTION) {
     if (!contractAddresses || contractAddresses.length < 1) {
       return new Response(
-        `Missing parameters: contractAddress: ${contractAddresses} for boost type ${boost.boost_type}`,
+        `Missing parameters: contractAddress: ${JSON.stringify(contractAddresses)} for boost type ${boost.boost_type}`,
         {
           status: 400,
         }
