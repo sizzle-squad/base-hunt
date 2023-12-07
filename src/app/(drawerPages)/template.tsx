@@ -16,12 +16,8 @@ export default function Template({ children }: { children: ReactNode }) {
   );
 
   return (
-    <Stack
-      justifyContent="space-between"
-      width="100vw"
-      height={['100%', '100vh']}
-    >
-      <Box>{children}</Box>
+    <Stack justifyContent="space-between" width="100vw" height={['100vh']}>
+      {children}
       {showFooter && <Footer />}
     </Stack>
   );

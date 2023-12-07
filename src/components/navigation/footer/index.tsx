@@ -1,6 +1,11 @@
 'use client';
 
-import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
+  Paper,
+} from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ArtIcon } from '@/components/assets/icons/ArtIcon';
@@ -19,63 +24,65 @@ export default function Footer() {
   }, [pathname]);
 
   return (
-    <Paper
-      sx={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        margin: 'auto',
-        paddingY: '12px',
-      }}
-      elevation={3}
-    >
-      <BottomNavigation
-        showLabels
-        value={value}
-        onChange={(_, newValue) => {
-          router.push(newValue);
+    <Box position={['fixed', 'unset']} bottom="0" width="100vw">
+      <Paper
+        sx={{
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '1rem',
         }}
+        elevation={3}
       >
-        <BottomNavigationAction
-          sx={{
-            '.Mui-selected': {
-              color: '#000',
-            },
+        <BottomNavigation
+          showLabels
+          value={value}
+          onChange={(_, newValue) => {
+            router.push(newValue);
           }}
-          label="Art"
-          value="/badges"
-          icon={<ArtIcon color={value === '/badges' ? '#E1FF67' : 'none'} />}
-        />
-        <BottomNavigationAction
-          sx={{
-            '.Mui-selected': {
-              color: '#000',
-            },
-          }}
-          label="Locations"
-          value="/locations"
-          icon={
-            <LocationIcon color={value === '/locations' ? '#E1FF67' : 'none'} />
-          }
-        />
-        <BottomNavigationAction
-          sx={{
-            '.Mui-selected': {
-              color: '#000',
-            },
-          }}
-          label="Grand Reveal"
-          value="/art-reveal"
-          icon={
-            value === '/art-reveal' ? (
-              <ActiveArtRevealIcon />
-            ) : (
-              <ArtRevealIcon />
-            )
-          }
-        />
-      </BottomNavigation>
-    </Paper>
+        >
+          <BottomNavigationAction
+            sx={{
+              '.Mui-selected': {
+                color: '#000',
+              },
+            }}
+            label="Art"
+            value="/badges"
+            icon={<ArtIcon color={value === '/badges' ? '#E1FF67' : 'none'} />}
+          />
+          <BottomNavigationAction
+            sx={{
+              '.Mui-selected': {
+                color: '#000',
+              },
+            }}
+            label="Locations"
+            value="/locations"
+            icon={
+              <LocationIcon
+                color={value === '/locations' ? '#E1FF67' : 'none'}
+              />
+            }
+          />
+          <BottomNavigationAction
+            sx={{
+              '.Mui-selected': {
+                color: '#000',
+              },
+            }}
+            label="Grand Reveal"
+            value="/art-reveal"
+            icon={
+              value === '/art-reveal' ? (
+                <ActiveArtRevealIcon />
+              ) : (
+                <ArtRevealIcon />
+              )
+            }
+          />
+        </BottomNavigation>
+      </Paper>
+    </Box>
   );
 }
