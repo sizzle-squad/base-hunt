@@ -1,7 +1,6 @@
 'use client';
 
 import OwnershipPill from '@/components/Badges/OwnershipPill';
-import SwipeUpDrawer from '@/components/Badges/SwipeUpDrawer';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
