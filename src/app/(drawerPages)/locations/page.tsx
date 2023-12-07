@@ -17,7 +17,7 @@ export default function Map() {
         }}
       >
         <Image
-          src="/images/badge-location-map.jpg"
+          src="/images/map-updated.png"
           alt="Badge locations map"
           width="400"
           height={600}
