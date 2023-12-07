@@ -76,8 +76,8 @@ export default function BadgeDetails({ params }: Props) {
   }, [currentBadge, isOwned]);
 
   const content = useMemo(() => {
-    if (currentBadge) {
-      const title = currentBadge?.name;
+    const title = currentBadge?.name as string;
+    if (currentBadge && currentBadge.type !== BadgeTypeEnum.Online) {
       const [lat, lng] = currentBadge.latLng
         .split(',')
         .map((coord) => parseFloat(coord));
@@ -92,24 +92,17 @@ export default function BadgeDetails({ params }: Props) {
           }}
           marginBottom={['5rem', 'unset']}
         >
-          {/* <ToolBar title={title} onDismiss={() => setIsMapOpen(false)} /> */}
           <Stack direction="column" gap={1}>
             <Stack direction="column" gap={1}>
               <Stack flexDirection="row" justifyContent="space-between">
                 <Text color="black" fontWeight={400} fontSize="24px">
                   {title}
                 </Text>
-                {isMobile ? (
-                  <Link href={getNavigationUrl(currentBadge?.latLng)}>
-                    <Pill backgroundColor="black">
-                      <Text color="white">Get directions</Text>
-                    </Pill>
-                  </Link>
-                ) : (
+                <Link href={getNavigationUrl(currentBadge?.latLng)}>
                   <Pill backgroundColor="black">
                     <Text color="white">Get directions</Text>
                   </Pill>
-                )}
+                </Link>
               </Stack>
               {currentBadge.artistName && (
                 <Text color="black" fontWeight={400}>
@@ -138,8 +131,49 @@ export default function BadgeDetails({ params }: Props) {
           />
         </Stack>
       );
+    } else if (currentBadge && currentBadge.type === BadgeTypeEnum.Online) {
+      return (
+        <Stack
+          gap={1}
+          px="20px"
+          py="24px"
+          sx={{
+            background: 'white',
+          }}
+          marginBottom={['5rem', 'unset']}
+        >
+          <Stack direction="column" gap={1}>
+            <Stack direction="column" gap={1}>
+              <Stack flexDirection="row" justifyContent="space-between">
+                <Text color="black" fontWeight={400} fontSize="24px">
+                  {title}
+                </Text>
+              </Stack>
+              {currentBadge.artistName && (
+                <Text color="black" fontWeight={400}>
+                  {currentBadge.artistName}
+                </Text>
+              )}
+            </Stack>
+            <Text color="black">{currentBadge.description}</Text>
+            {isOwned && currentBadge.completedTimestamp && (
+              <Text color="black" fontWeight={700}>
+                Badge found{' '}
+                {format(
+                  new Date(currentBadge.completedTimestamp),
+                  'do MMMM yyyy'
+                )}
+              </Text>
+            )}
+            {ctaButton}
+          </Stack>
+        </Stack>
+      );
+    } else {
+      // TODO: we may want to error handle here
+      return null;
     }
-  }, [currentBadge]);
+  }, [currentBadge, ctaButton, isMobile, isOwned]);
 
   if (!isClient) return null;
 
