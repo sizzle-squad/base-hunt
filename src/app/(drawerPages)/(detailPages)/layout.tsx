@@ -6,7 +6,7 @@ export default function PaddedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Stack gap="24px" paddingY="24px" paddingX="20px">
+    <Stack gap="24px" paddingY="24px" paddingX="20px" marginBottom="100px">
       {children}
     </Stack>
   );
