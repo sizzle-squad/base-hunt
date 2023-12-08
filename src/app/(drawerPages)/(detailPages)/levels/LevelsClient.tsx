@@ -14,7 +14,6 @@ import { GAME_ID } from '@/constants/gameId';
 import SvgSwitcher, { LevelNumber } from '@/components/LevelsBadge';
 import { Level } from '@/hooks/types';
 import Pill from '@/components/Pill';
-import { useScore } from '@/hooks/useScore';
 import { useAccount } from 'wagmi';
 
 const merchStoreUrl = 'https://basedmerch.slice.so/';
@@ -103,7 +102,7 @@ export default function LevelsPageClient() {
           <Text variant="h4">{item.title}</Text>
         </>
       )}
-      <Text>{item.description}</Text>
+      <Text whiteSpace="pre-line">{item.description}</Text>
       <Button
         href={merchStoreUrl}
         variant="contained"
