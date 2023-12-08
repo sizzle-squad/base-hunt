@@ -264,7 +264,7 @@ export default function BadgeDetails({ params }: Props) {
             </Box>
             <Stack flexDirection="row" gap={1}>
               <OwnershipPill owned={isOwned} />
-              {SharePill}
+              {isOwned && SharePill}
             </Stack>
           </Stack>
           <Box width="100%">{content}</Box>
