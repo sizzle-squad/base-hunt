@@ -71,7 +71,7 @@ export default function Footer() {
                 color: '#000',
               },
             }}
-            label="Grand Reveal"
+            label="Reveal"
             value="/art-reveal"
             icon={
               value === '/art-reveal' ? (
