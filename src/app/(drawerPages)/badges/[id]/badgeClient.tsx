@@ -59,7 +59,12 @@ export default function BadgeDetails({ params }: Props) {
 
   const twitterShareUrl = useMemo(() => {
     const text = `Check out this badge: ${currentBadge?.name}`;
-    const url = `https://basehunt.xyz/badge/${currentBadge?.id}`; // Replace with actual badge URL
+    const host =
+      process.env.NODE_ENV === 'production'
+        ? 'https://basehunt.xyz'
+        : window.location.hostname;
+
+    const url = `${host}/${currentBadge?.id}`; // Replace with actual badge URL
     return `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       text
     )}&url=${encodeURIComponent(url)}`;
