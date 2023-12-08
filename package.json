@@ -25,6 +25,7 @@
     "@types/node": "20.2.5",
     "@types/react": "18.2.9",
     "@types/react-dom": "18.2.4",
+    "@vercel/analytics": "^1.1.1",
     "accurate-interval": "^1.0.9",
     "alchemy-sdk": "^3.0.0",
     "axios": "^1.6.0",
