@@ -168,11 +168,11 @@ export default function BoostsPageClient() {
     if (claimBoost.isError) {
       setEligibleItem(activeItem);
     }
+  // activeItem and handleToggleDrawer should not be in there
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     claimBoost.isSuccess,
     claimBoost.isError,
-    handleToggleDrawer,
-    activeItem,
   ]);
 
   const ToggleDrawerButton = memo(
