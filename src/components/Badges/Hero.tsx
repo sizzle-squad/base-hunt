@@ -11,6 +11,7 @@ const Hero = () => {
   const toggleModal = () => {
     setShowModal((prev) => !prev);
   };
+
   return (
     <Stack width="100%" flexDirection="column" mt="1rem" paddingTop={1}>
       <Navbar />

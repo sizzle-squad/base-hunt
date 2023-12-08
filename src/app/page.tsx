@@ -137,7 +137,9 @@ export default function Home() {
                 );
               }}
             </RainbowConnectButton.Custom>
-            <Text>Instant and free mints only with Coinbase Wallet</Text>
+            <Text align="center">
+              Instant and free mints only with Coinbase Wallet
+            </Text>
           </Stack>
         </Stack>
       </Stack>
