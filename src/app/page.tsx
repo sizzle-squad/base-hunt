@@ -61,7 +61,7 @@ export default function Home() {
       </Head>
       <Stack
         direction="column"
-        justifyContent="space-between"
+        justifyContent={['space-between', 'unset']}
         sx={{
           position: 'absolute',
           px: '20px',
@@ -73,7 +73,7 @@ export default function Home() {
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
         }}
-        gap="2rem"
+        gap="4rem"
       >
         <Stack width="100%" justifyContent="center" alignItems="center">
           <BaseHuntAnimated width="100%" />
