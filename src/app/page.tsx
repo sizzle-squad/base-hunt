@@ -11,6 +11,7 @@ import Image from 'next/image';
 import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
 import Text from '@/components/Text';
 import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
+import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -100,34 +101,44 @@ export default function Home() {
             {ctaButton}
           </Stack>
           <Stack alignItems="center">
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{
-                py: 1,
-                px: 2,
-                mt: 4,
-                mb: 2,
-                borderRadius: 20,
-                bgcolor: 'white',
-                gap: 1,
+            <RainbowConnectButton.Custom>
+              {({ openConnectModal, mounted, account, chain }) => {
+                return (
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                      py: 1,
+                      px: 2,
+                      mt: 4,
+                      mb: 2,
+                      borderRadius: 20,
+                      bgcolor: 'white',
+                      gap: 1,
+                      ':hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                    onClick={openConnectModal}
+                  >
+                    <Image
+                      src="/images/coinbase-wallet-logo.png"
+                      alt="Coinbase Wallet Logo"
+                      height={24}
+                      width={24}
+                    />
+                    <Typography fontSize={14}>
+                      Coinbase Wallet{' '}
+                      <Box component="span" fontWeight="bold">
+                        Recommended
+                      </Box>
+                    </Typography>
+                  </Stack>
+                );
               }}
-            >
-              <Image
-                src="/images/coinbase-wallet-logo.png"
-                alt="Coinbase Wallet Logo"
-                height={24}
-                width={24}
-              />
-              <Typography fontSize={14}>
-                Coinbase Wallet{' '}
-                <Box component="span" fontWeight="bold">
-                  Recommended
-                </Box>
-              </Typography>
-            </Stack>
+            </RainbowConnectButton.Custom>
             <Link href="/" variant="body1" color="black" underline="none">
-              Download now
+              <Text>Instant and free mints only with Coinbase Wallet</Text>
             </Link>
           </Stack>
         </Stack>
