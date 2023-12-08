@@ -43,6 +43,14 @@ export async function generateMetadata(
     openGraph: {
       images: [activeBadge?.image_url, ...previousImages],
     },
+    twitter: {
+      title: activeBadge?.name,
+      site: '@CoinbaseWallet',
+      description: activeBadge?.description,
+      creator: '@CoinbaseWallet',
+      images: [activeBadge?.image_url],
+      card: 'summary_large_image',
+    },
   };
 }
 
