@@ -58,7 +58,7 @@ export default function BadgeDetails({ params }: Props) {
   }, [currentBadge]);
 
   const twitterShareUrl = useMemo(() => {
-    const text = `I just played basehunt.xyz and collected art onchain! ${currentBadge?.name}`;
+    const text = `I just played basehunt and collected art onchain! ${currentBadge?.name}`;
     const host =
       process.env.NODE_ENV === 'production'
         ? `https://${window.location.hostname}`
