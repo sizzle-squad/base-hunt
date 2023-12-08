@@ -3,15 +3,36 @@ import { Box, Grid, Skeleton, Stack } from '@mui/material';
 import Text from '@/components/Text';
 import { CountdownTimer } from '@/components/ArtRevealScreen/Countdown';
 import { useTreasureBoxForRevealScreen } from '@/hooks/useTreasureBoxForRevealScreen';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import RevealGif from '@public/images/blurred-art-reveal.gif';
+import useScreenSize from '@/hooks/useScreenSize';
 
 export default function ArtRevealScreen() {
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
   const { data } = useTreasureBoxForRevealScreen({
     gameId,
   });
+  const screenSize = useScreenSize();
+  const imageDimensions = useMemo(() => {
+    const baseWidth = 120; // base width for small
+    const baseHeight = 200; // base height for small (3:5 aspect ratio)
+
+    let multiplier;
+    if (screenSize === 'small') {
+      multiplier = 1;
+    } else if (screenSize === 'medium') {
+      multiplier = 1.5;
+    } else {
+      // large
+      multiplier = 3;
+    }
+
+    const width = baseWidth * multiplier;
+    const height = baseHeight * multiplier;
+
+    return { width, height };
+  }, [screenSize]);
 
   const lerp = (start: number, end: number, alpha: number) =>
     start + (end - start) * alpha;
@@ -58,9 +79,8 @@ export default function ArtRevealScreen() {
         alt="art reveal gif"
         unoptimized
         src={RevealGif}
-        width={150}
-        height={250}
-        sizes="100vw"
+        width={imageDimensions.width}
+        height={imageDimensions.height}
       />
       <Stack flexDirection="row" justifyContent="center">
         <Stack
