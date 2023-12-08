@@ -13,9 +13,11 @@ import { PointsPill } from '@/components/PointsPill';
 import { UNIT } from '@/constants/unit';
 import Link from '@/components/AnimatedLink';
 import Pill from '@/components/Pill';
+import { useGameInfoContext } from '@/context/GameInfoContext';
 
 export const NavbarClient = () => {
   const { address, isDisconnected, isConnecting } = useAccount();
+  const { showModal, setShowModal } = useGameInfoContext();
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
   const { data: userPublicProfile, isLoading: isProfileLoading } = useCBProfile(
     { address }
@@ -45,9 +47,13 @@ export const NavbarClient = () => {
     return isProfileLoading || isScoreLoading || isConnecting;
   }, [isConnecting, isProfileLoading, isScoreLoading]);
 
+  const toggleModal = useCallback(() => {
+    setShowModal((prev) => !prev);
+  }, [setShowModal]);
+
   return (
-    <>
-      <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
+    <Stack direction="row" justifyContent="space-between" width="100%">
+      <Stack direction="row" gap=".5rem" alignItems={'center'}>
         <Stack
           onClick={handleDrawerToggle}
           direction="row"
@@ -72,8 +78,11 @@ export const NavbarClient = () => {
           )}
         </Stack>
       </Stack>
+      <Pill onClick={toggleModal} hover>
+        <Text>How to Play</Text>
+      </Pill>
       <Link href="/boosts">
-        <Pill backgroundColor="blue">
+        <Pill backgroundColor="blue" hover>
           <Text color="white" fontSize="14px" fontWeight="bold">
             Point boosts
           </Text>
@@ -88,6 +97,6 @@ export const NavbarClient = () => {
           </svg>
         </Pill>
       </Link>
-    </>
+    </Stack>
   );
 };
