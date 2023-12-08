@@ -15,16 +15,24 @@ import { useBoosts } from '@/hooks/useBoosts';
 import { useClaimBoost } from '@/hooks/useClaimBoost';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
-import { WalletIcon, CoffeeIcon, BagIcon, GridIcon, CircleIcon, LinkIcon, UsersIcon } from '@/components/assets/icons/BoostIcon';
+import {
+  WalletIcon,
+  CoffeeIcon,
+  BagIcon,
+  GridIcon,
+  CircleIcon,
+  LinkIcon,
+  UsersIcon,
+} from '@/components/assets/icons/BoostIcon';
 
 const iconMapping = {
-  'WALLET': <WalletIcon />,
-  'COFFEE': <CoffeeIcon />,
-  'BAG': <BagIcon />,
-  'GRID': <GridIcon />,
-  'CIRCLE': <CircleIcon />,
-  'LINK': <LinkIcon />,
-  'USERS': <UsersIcon />
+  WALLET: <WalletIcon />,
+  COFFEE: <CoffeeIcon />,
+  BAG: <BagIcon />,
+  GRID: <GridIcon />,
+  CIRCLE: <CircleIcon />,
+  LINK: <LinkIcon />,
+  USERS: <UsersIcon />,
 };
 
 type BoostEntry = {
@@ -46,7 +54,7 @@ type BoostEntry = {
 
 type ListCardPropsForBoosts = ListCardProps & {
   id: bigint;
-  title: string
+  title: string;
   description: string;
   type: string;
   contractAddresses: string[];
@@ -59,8 +67,8 @@ type ListCardPropsForBoosts = ListCardProps & {
 };
 
 const PageConsts = {
-  navTitle: 'Point Boosts' as const,
-  drawerTitle: 'Boosts' as const,
+  navTitle: 'Get more points & get more merch' as const,
+  drawerTitle: 'Points' as const,
   drawerSubtitle: 'Completed 3 times' as const,
   drawerSubtitlePoints: 100000 as const,
   drawerSubtitleUnit: 'pts' as const,
@@ -70,37 +78,40 @@ const PageConsts = {
 } as const;
 
 export default function BoostsPageClient() {
-
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
-  const { data: boosts, isLoading } = useBoosts({userAddress: address, gameId: GAME_ID});
+  const { data: boosts, isLoading } = useBoosts({
+    userAddress: address,
+    gameId: GAME_ID,
+  });
   const { claimBoost } = useClaimBoost();
 
   const boostList = useMemo(() => {
-    return boosts?.filter((boost) => boost.isEnabled).map((boost) => {
-      return {
-        id: boost.id,
-        title: boost.name,
-        description: boost.description,
-        type: boost.boostType,
-        contractAddresses: boost.contractAddresses,
-        subtitle: '',
-        ctaUrl: boost.ctaUrl,
-        ctaText: boost.ctaText,
-        ctaButtonText: boost.ctaButtonText,
-        points: boost.points,
-        claimed: boost.claimed,
-        claimable: !boost.claimed,
-        startContent: (
-          iconMapping[boost.icon]
-        ),
-        endContent: <Text>{boost.points.toString()} pts</Text>,
-      } as BoostEntry;
-    }) as BoostEntry[];
+    return boosts
+      ?.filter((boost) => boost.isEnabled)
+      .map((boost) => {
+        return {
+          id: boost.id,
+          title: boost.name,
+          description: boost.description,
+          type: boost.boostType,
+          contractAddresses: boost.contractAddresses,
+          subtitle: '',
+          ctaUrl: boost.ctaUrl,
+          ctaText: boost.ctaText,
+          ctaButtonText: boost.ctaButtonText,
+          points: boost.points,
+          claimed: boost.claimed,
+          claimable: !boost.claimed,
+          startContent: iconMapping[boost.icon],
+          endContent: <Text>{boost.points.toString()} pts</Text>,
+        } as BoostEntry;
+      }) as BoostEntry[];
   }, [boosts]);
 
-  const [activeItem, setActiveItem] =
-    useState<ListCardPropsForBoosts | null>(null);
+  const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
+    null
+  );
   const [eligibleItem, setEligibleItem] =
     useState<ListCardPropsForBoosts | null>(null);
 
@@ -124,16 +135,16 @@ export default function BoostsPageClient() {
       gameId: GAME_ID,
       userAddress: address,
       boostId: activeItem!.id.toString(),
-      contractAddresses: activeItem?.contractAddresses
+      contractAddresses: activeItem?.contractAddresses,
     });
-  }, [GAME_ID, address, activeItem]);
+  }, [claimBoost, address, activeItem]);
 
   const handleCTAPress = (ctaUrl: string) => {
-    window.open(ctaUrl, "_blank");
-  }
+    window.open(ctaUrl, '_blank');
+  };
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const Reason = {
     CLICKAWAY: 'clickaway',
@@ -148,14 +159,19 @@ export default function BoostsPageClient() {
 
   useEffect(() => {
     if (claimBoost.isSuccess) {
-      setSnackbarMessage("Boost was successfully claimed.");
+      setSnackbarMessage('Points claimed.');
       setSnackbarOpen(true);
       handleToggleDrawer(activeItem!);
     }
     if (claimBoost.isError) {
       setEligibleItem(activeItem);
     }
-  }, [claimBoost.isSuccess, claimBoost.isError]);
+  }, [
+    claimBoost.isSuccess,
+    claimBoost.isError,
+    handleToggleDrawer,
+    activeItem,
+  ]);
 
   const ToggleDrawerButton = memo(
     ({
@@ -165,10 +181,8 @@ export default function BoostsPageClient() {
       item: ListCardPropsForBoosts;
       onClick: (item: ListCardPropsForBoosts) => void;
     }) => (
-      <Box
-        sx={{ color: 'blue' }}
-        onClick={() => onClick(item)}>
-          {'Check claim'}
+      <Box sx={{ color: 'blue' }} onClick={() => onClick(item)}>
+        Claim Points
       </Box>
     )
   );
@@ -189,10 +203,11 @@ export default function BoostsPageClient() {
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
   const BoostDrawerContent = ({ item }: { item: ListCardPropsForBoosts }) => {
-
     const isEligible = eligibleItem && eligibleItem.id === item.id;
-    const ctaText = isEligible && item.ctaText ? item.ctaText : 'Unable to claim this boost.';
-    const ctaButtonText = isEligible && item.ctaButtonText ? item.ctaButtonText : 'Check claim';
+    const ctaText =
+      isEligible && item.ctaText ? item.ctaText : 'Unable to claim this boost.';
+    const ctaButtonText =
+      isEligible && item.ctaButtonText ? item.ctaButtonText : 'Claim Points';
     const ctaUrl = item.ctaUrl;
 
     const handleButtonAction = () => {
@@ -205,48 +220,61 @@ export default function BoostsPageClient() {
 
     return (
       <Stack gap="24px">
-          <ToolbarWithClose
-            item={item}
-            onClick={handleToggleDrawer}
-            title={PageConsts.drawerTitle}
-          />
+        <ToolbarWithClose
+          item={item}
+          onClick={handleToggleDrawer}
+          title={PageConsts.drawerTitle}
+        />
 
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Stack gap="8px">
-              {!(isEligible && ctaText) && item.title && (
-                <>
-                  <Text variant="h4">{item.title}</Text>
-                  <Text>{item.description}</Text>
-                </>
-              )}
-              {isEligible && ctaText && (
-                <>
-                    <Text variant="h4">{item.title}</Text>
-                    <Text color="red">You are not eligible to claim this boost.</Text>
-                    <Text>{ctaText}</Text>
-                </>
-              )}
-            </Stack>
-            <PointsPill points={Number(item.points)} unit={PageConsts.drawerSubtitleUnit} textColor='#151515'/>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Stack gap="8px">
+            {!(isEligible && ctaText) && item.title && (
+              <>
+                <Text variant="h4">{item.title}</Text>
+                <Text>{item.description}</Text>
+              </>
+            )}
+            {isEligible && ctaText && (
+              <>
+                <Text variant="h4">{item.title}</Text>
+                <Text color="red">
+                  You are not eligible to claim this boost.
+                </Text>
+                <Text>{ctaText}</Text>
+              </>
+            )}
           </Stack>
-
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              py: 2,
-              px: 3,
-              borderRadius: 2,
-              bgcolor: 'black',
-              color: 'white',
-            }}
-            disabled={(isEligible && ctaButtonText === 'Check claim') || claimBoost.isLoading}
-            onClick={handleButtonAction}
-          >
-            {ctaButtonText}
-          </Button>
+          <PointsPill
+            points={Number(item.points)}
+            unit={PageConsts.drawerSubtitleUnit}
+            textColor="#151515"
+          />
         </Stack>
-    )
+
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            py: 2,
+            px: 3,
+            borderRadius: 2,
+            bgcolor: 'black',
+            color: 'white',
+          }}
+          disabled={
+            (isEligible && ctaButtonText === 'Check claim') ||
+            claimBoost.isLoading
+          }
+          onClick={handleButtonAction}
+        >
+          {ctaButtonText}
+        </Button>
+      </Stack>
+    );
   };
 
   return (
@@ -263,11 +291,20 @@ export default function BoostsPageClient() {
               <ListCard
                 key={index}
                 title={item.title}
-                subtitle={item.claimed ?
-                  (item.type === 'TRANSFER_NFT' ? 'Auto-claimed' : 'Claimed') :
-                  <ToggleDrawerButton 
-                    item={item}
-                    onClick={handleToggleDrawer} />}
+                subtitle={
+                  item.claimed ? (
+                    item.type === 'TRANSFER_NFT' ? (
+                      'Auto-claimed'
+                    ) : (
+                      'Claimed'
+                    )
+                  ) : (
+                    <ToggleDrawerButton
+                      item={item}
+                      onClick={handleToggleDrawer}
+                    />
+                  )
+                }
                 startContent={item.startContent}
                 endContent={item.endContent}
               />
@@ -288,7 +325,7 @@ export default function BoostsPageClient() {
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         message={snackbarMessage}
-        />
+      />
     </>
   );
 }

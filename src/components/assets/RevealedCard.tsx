@@ -14,10 +14,10 @@ export function RevealedCard({ onClick, ctaLink }: Props) {
     <Stack gap="16px" justifyContent="center" direction="column">
       <Stack justifyContent="center" direction="column">
         <Text variant="h6" align="center">
-          The art reveal has finished
+          Congratulations, the Art has been revealed.
         </Text>
         <Text variant="body2" align="center" sx={{ lineHeight: '150%' }}>
-          Thank you for your contribution
+          If you contributed, it will be airdropped to you.
         </Text>
       </Stack>
       <Button href={ctaLink} onClick={onClick}>

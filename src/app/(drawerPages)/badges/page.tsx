@@ -151,7 +151,7 @@ export default function Badges() {
                 {badges && (
                   <>
                     <CustomAccordion
-                      title="Art Basel Exclusive"
+                      title="Art Basel Collection"
                       toggleFunction={handleToggleAccordion}
                       expanded={irlAccordionExpanded}
                       panel={BadgeTypeEnum.IRL}
