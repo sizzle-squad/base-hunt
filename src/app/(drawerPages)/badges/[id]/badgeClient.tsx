@@ -58,6 +58,7 @@ export default function BadgeDetails({ params }: Props) {
   }, [currentBadge]);
 
   const twitterShareUrl = useMemo(() => {
+    if (typeof window === 'undefined') return;
     const copy = process.env.NEXT_PUBLIC_SHARE_COPY ?? '';
     const badgeTitle = currentBadge?.name;
     const text = `
