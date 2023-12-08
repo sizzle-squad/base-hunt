@@ -14,11 +14,11 @@ import { useEffect, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 import Text from '@/components/Text';
 import { BadgeLocationMap } from '@/components/Map/BadgeLocationMap';
-import { useMobileCheck } from '@/context/MobileContext';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { BadgeTypeEnum } from '@/hooks/types';
 import Pill from '@/components/Pill';
+import useScreenSize from '@/hooks/useScreenSize';
 
 type Props = {
   params: { id: string };
@@ -30,7 +30,10 @@ export default function BadgeDetails({ params }: Props) {
   const { address, isDisconnected } = useAccount();
   const router = useRouter();
   const { drawerStates } = useDrawer();
-  const isMobile = useMobileCheck();
+  const screenSize = useScreenSize();
+  const imageSize = useMemo(() => {
+    return screenSize === 'small' ? 256 : screenSize === 'medium' ? 384 : 512;
+  }, [screenSize]);
 
   function getNavigationUrl(latLng: string) {
     return `${googleMapNavigationUrl}&destination=${latLng}&dir_action=navigate`;
@@ -218,8 +221,8 @@ export default function BadgeDetails({ params }: Props) {
               <Image
                 src={currentBadge.imageUrl.toString()}
                 alt={currentBadge.name}
-                width={`${isMobile ? 256 : 512}`}
-                height={`${isMobile ? 256 : 512}`}
+                width={imageSize}
+                height={imageSize}
                 sizes={`100vw`}
               />
             </Box>
