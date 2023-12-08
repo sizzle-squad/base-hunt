@@ -30,10 +30,7 @@ import {
   DialogContent,
   DialogTitle,
   Drawer,
-  Paper,
-  PaperProps,
   Stack,
-  Typography,
   styled,
 } from '@mui/material';
 import Link from 'next/link';
@@ -135,17 +132,6 @@ export default function Badges() {
       router.push('/');
     }
   }, [isDisconnected]);
-
-  function PaperComponent(props: PaperProps) {
-    return (
-      <Draggable
-        handle="#draggable-dialog-title"
-        cancel={'[class*="MuiDialogContent-root"]'}
-      >
-        <Paper {...props} />
-      </Draggable>
-    );
-  }
 
   const BadgesWrapper = useMemo(() => {
     if (isClient) {
