@@ -19,6 +19,7 @@ import { format } from 'date-fns';
 import { BadgeTypeEnum } from '@/hooks/types';
 import Pill from '@/components/Pill';
 import useScreenSize from '@/hooks/useScreenSize';
+import SendIcon from '@mui/icons-material/Send';
 
 type Props = {
   params: { id: string };
@@ -113,9 +114,17 @@ export default function BadgeDetails({ params }: Props) {
                   href={twitterShareUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    textDecoration: 'none',
+                    color: 'black',
+                  }}
                 >
                   {/* <TwitterIcon /> */}
-                  <Text color="black">Share on Twitter</Text>
+                  <Text color="black">Tweet</Text>
+                  <SendIcon color="inherit" />
                 </a>
                 <Link href={getNavigationUrl(currentBadge?.latLng)}>
                   <Pill backgroundColor="black">

@@ -1,4 +1,6 @@
+import { createClient } from '@supabase/supabase-js';
 import type { Metadata, ResolvingMetadata } from 'next';
+import BadgeClient from './badgeClient';
 
 type Props = {
   params: { id: string };
@@ -9,19 +11,41 @@ export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const supabase = createClient(
+    process.env.SUPABASE_URL as string,
+    process.env.SUPABASE_ANON_KEY as string
+  );
+  const gameId = 0;
   // read route params
   const id = params.id;
 
   // fetch data
-  const product = await fetch(`https://.../${id}`).then((res) => res.json());
+  const { data, error } = await supabase
+    .from('badge_configuration')
+    .select(
+      'description, artist_name, lat_lng, type, game_id, image_url, token_id, contract_address, name, id'
+    )
+    .eq('game_id', gameId);
+
+  if (error) {
+    throw error;
+  }
+
+  const idNumber = parseInt(id);
+  const activeBadge = data.find((badge) => badge.id === idNumber);
 
   // optionally access and extend (rather than replace) parent metadata
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: product.title,
+    title: activeBadge?.name,
+    description: activeBadge?.description,
     openGraph: {
-      images: ['/some-specific-page-image.jpg', ...previousImages],
+      images: [activeBadge?.image_url, ...previousImages],
     },
   };
+}
+
+export default async function BadgeDetails({ params, searchParams }: Props) {
+  return <BadgeClient params={params} />;
 }
