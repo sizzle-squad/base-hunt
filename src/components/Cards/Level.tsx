@@ -26,7 +26,7 @@ export function Level({ currentLevel, isLoading }: Props) {
             textOverflow: 'ellipsis',
           }}
         >
-          Merch unlocked
+          Merch unlock
         </Text>
       </Stack>
     );

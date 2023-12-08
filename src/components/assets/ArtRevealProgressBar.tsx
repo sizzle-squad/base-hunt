@@ -31,19 +31,22 @@ export function ArtRevealProgressBar() {
 
   const numericProgress = useMemo(() => {
     return (
-      <Stack direction="row" gap="2px" alignItems="center">
-        {isLoading ? (
-          <Skeleton variant="rectangular" width={73} height={35} />
-        ) : (
-          <>
-            <Text variant="h5">{`${treasureBox?.currentHitpoints.toString()}`}</Text>
-            <Box>/</Box>
-            <Text variant="body2" noWrap>
-              {`${treasureBox?.totalHitpoints.toString()} ${UNIT}`}
-            </Text>
-          </>
-        )}
-      </Stack>
+      <Box>
+        <Text>All players have contributed </Text>
+        <Stack direction="row" gap="2px" alignItems="center">
+          {isLoading ? (
+            <Skeleton variant="rectangular" width={73} height={35} />
+          ) : (
+            <>
+              <Text variant="h5">{`${treasureBox?.currentHitpoints.toString()}`}</Text>
+              <Box>/</Box>
+              <Text variant="body2" noWrap>
+                {`${treasureBox?.totalHitpoints.toString()} ${UNIT}`}
+              </Text>
+            </>
+          )}
+        </Stack>
+      </Box>
     );
   }, [isLoading, treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
 
