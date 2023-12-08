@@ -9,8 +9,6 @@ import { useMemo, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import Text from '@/components/Text';
 import Circle from '@/components/Circle';
-import { PointsPill } from '@/components/PointsPill';
-import { UNIT } from '@/constants/unit';
 import Link from '@/components/AnimatedLink';
 import Pill from '@/components/Pill';
 
@@ -46,8 +44,8 @@ export const NavbarClient = () => {
   }, [isConnecting, isProfileLoading, isScoreLoading]);
 
   return (
-    <>
-      <Stack direction="row" gap=".5rem" alignItems={'center'} width="100%">
+    <Stack direction="row" justifyContent="space-between" width="100%">
+      <Stack direction="row" gap=".5rem" alignItems={'center'}>
         <Stack
           onClick={handleDrawerToggle}
           direction="row"
@@ -72,10 +70,11 @@ export const NavbarClient = () => {
           )}
         </Stack>
       </Stack>
+
       <Link href="/boosts">
-        <Pill backgroundColor="blue">
+        <Pill backgroundColor="#0253FF" hover>
           <Text color="white" fontSize="14px" fontWeight="bold">
-            Boosts
+            Point boosts
           </Text>
           <svg
             width="5"
@@ -88,6 +87,6 @@ export const NavbarClient = () => {
           </svg>
         </Pill>
       </Link>
-    </>
+    </Stack>
   );
 };

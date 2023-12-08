@@ -1,7 +1,5 @@
-import Footer from '@/components/navigation/footer';
 import { DrawerProvider } from '@/context/DrawerContext';
 import { Box } from '@mui/material';
-import Template from './template';
 
 export default function ArtRevealLayout({
   children,
