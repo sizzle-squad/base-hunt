@@ -125,6 +125,13 @@ export async function POST(request: NextRequest) {
     return new Response('Error: treasure box entry not found', { status: 400 });
   }
 
+  if (tbeData.data && tbeData.data.length > 0) {
+    if (tbeData.data[0].tap_count >= 3) {
+      console.log('exceeded tap count');
+      return new Response('Error: exceeded tap count', { status: 400 });
+    }
+  }
+
   let currentScore = score.current_score;
   if (iykRef) {
     console.log('got iykRef:', iykRef);
