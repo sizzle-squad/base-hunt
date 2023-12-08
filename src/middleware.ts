@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   const startDate = new Date(process.env.START_DATE as string);
   const endDate = new Date(process.env.END_DATE as string);
   const now = new Date();
-  const killSwitch = process.env.KILL_SWITCH === 'true';
+  const killSwitch = process.env.NEXT_PUBLIC_KILL_SWITCH === 'true';
 
   if (killSwitch || isBefore(now, startDate) || isAfter(now, endDate)) {
     return NextResponse.redirect(new URL('/', request.url));
