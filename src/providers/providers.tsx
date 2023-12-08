@@ -14,6 +14,7 @@ import '@/globals.css';
 import { CssBaseline } from '@mui/material';
 import { MobileProvider } from '@/context/MobileContext';
 import { DesiredNetworkContextProvider } from '@/context/DesiredNetworkContext';
+import { GameInfoProvider } from '@/context/GameInfoContext';
 
 type Props = {
   children: React.ReactNode;
@@ -60,8 +61,10 @@ const Providers = ({ children }: Props) => {
           <WagmiConfig config={config}>
             <RainbowKitProvider chains={chains}>
               <DesiredNetworkContextProvider>
-                <CssBaseline />
-                {children}
+                <GameInfoProvider>
+                  <CssBaseline />
+                  {children}
+                </GameInfoProvider>
               </DesiredNetworkContextProvider>
             </RainbowKitProvider>
           </WagmiConfig>

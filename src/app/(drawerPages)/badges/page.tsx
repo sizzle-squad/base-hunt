@@ -12,6 +12,7 @@ import Text from '@/components/Text';
 import BadgeContainer from '@/components/assets/BadgeContainer';
 import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
+import { useGameInfoContext } from '@/context/GameInfoContext';
 import { BadgeTypeEnum, type Level as LevelType } from '@/hooks/types';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useClientCheck } from '@/hooks/useClientCheck';
@@ -21,7 +22,21 @@ import { useRank } from '@/hooks/useRank';
 import { useScore } from '@/hooks/useScore';
 import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { useUserName } from '@/hooks/useUsername';
-import { Box, Drawer, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Drawer,
+  Paper,
+  PaperProps,
+  Stack,
+  Typography,
+  styled,
+} from '@mui/material';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
@@ -67,6 +82,17 @@ export default function Badges() {
     gameId: GAME_ID,
   });
 
+  const { showModal, setShowModal } = useGameInfoContext();
+
+  const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialogContent-root': {
+      padding: theme.spacing(2),
+    },
+    '& .MuiDialogActions-root': {
+      padding: theme.spacing(1),
+    },
+  }));
+
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {
       return data.score.currentScore;
@@ -109,6 +135,17 @@ export default function Badges() {
       router.push('/');
     }
   }, [isDisconnected]);
+
+  function PaperComponent(props: PaperProps) {
+    return (
+      <Draggable
+        handle="#draggable-dialog-title"
+        cancel={'[class*="MuiDialogContent-root"]'}
+      >
+        <Paper {...props} />
+      </Draggable>
+    );
+  }
 
   const BadgesWrapper = useMemo(() => {
     if (isClient) {
@@ -378,6 +415,48 @@ export default function Badges() {
           ))}
         </Box>
       </Stack>
+      <BootstrapDialog
+        onClose={() => setShowModal(false)}
+        aria-labelledby="customized-dialog-title"
+        open={showModal}
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          How to Play
+        </DialogTitle>
+        <DialogContent>
+          <Text gutterBottom>
+            1. Connect your wallet, oh, you already did that
+          </Text>
+          <Text gutterBottom>
+            2. Collect art from the Base Miami collection (in-person only) or
+            the Global collection online
+          </Text>
+          <Text gutterBottom>
+            3. Get points with every art piece you collect
+          </Text>
+          <Text gutterBottom>
+            4. Level up by gaining points to get free and discounted merch {''}
+            <Link href="/boosts">
+              <Text color="#0253FF" display="inline">
+                here
+              </Text>
+            </Link>
+          </Text>
+          <Text gutterBottom>
+            5. Work together to reveal a final mystery artist {''}
+            <Link href="/art-reveal">
+              <Text color="#0253FF" display="inline">
+                here
+              </Text>
+            </Link>
+          </Text>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowModal(false)}>
+            <Text color="black">Ok!</Text>
+          </Button>
+        </DialogActions>
+      </BootstrapDialog>
     </>
   );
 }
