@@ -65,7 +65,7 @@ export default function BadgeDetails({ params }: Props) {
     //     : window.location.hostname;
     const host = window.location.hostname;
 
-    const url = `${host}/${currentBadge?.id}`; // Replace with actual badge URL
+    const url = `${host}/badges/${currentBadge?.id}`; // Replace with actual badge URL
     return `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       text
     )}&url=${encodeURIComponent(url)}`;

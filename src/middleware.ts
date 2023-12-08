@@ -25,3 +25,5 @@ export const config = {
     '/art-reveal-screen/:path*',
   ],
 };
+
+https://twitter.com/intent/tweet?text=Check%20out%20this%20badge%3A%20Satellite%20Air%20Fair&url=https%3A%2F%2Ftariff-film-blank-badly.trycloudflare.com%2Fbadge%2F44
