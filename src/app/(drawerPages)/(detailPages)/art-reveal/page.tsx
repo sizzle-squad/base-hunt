@@ -229,7 +229,7 @@ export default function ArtReveal() {
   }, [currentTime, stateData?.updatedAt]);
   const CardContent = memo(() => (
     <>
-      {activeInfoStep && activeInfoStep >= 3 ? (
+      {activeInfoStep && activeInfoStep >= TreasureChestInfo.length ? (
         <ProgressCard
           isCTADisabled={score === 0 || !!nextClick}
           ctaText={`Tap to reveal (${score} ${UNIT}${boostedLabel})`}
