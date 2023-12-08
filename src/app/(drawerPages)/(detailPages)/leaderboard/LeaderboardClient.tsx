@@ -64,10 +64,6 @@ export default function LeaderboardClient() {
     [leaderboardData]
   );
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <>
       <DetailsPageNavbar title="Leaderboard" />
