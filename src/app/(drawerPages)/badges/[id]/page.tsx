@@ -100,7 +100,7 @@ export default function BadgeDetails({ params }: Props) {
                 </Text>
                 <Link href={getNavigationUrl(currentBadge?.latLng)}>
                   <Pill backgroundColor="black">
-                    <Text color="white">Get directions</Text>
+                    <Text color="white">Get Directions</Text>
                   </Pill>
                 </Link>
               </Stack>
@@ -158,7 +158,7 @@ export default function BadgeDetails({ params }: Props) {
             <Text color="black">{currentBadge.description}</Text>
             {isOwned && currentBadge.completedTimestamp && (
               <Text color="black" fontWeight={700}>
-                Badge found{' '}
+                Art collected on{' '}
                 {format(
                   new Date(currentBadge.completedTimestamp),
                   'do MMMM yyyy'
@@ -173,7 +173,7 @@ export default function BadgeDetails({ params }: Props) {
       // TODO: we may want to error handle here
       return null;
     }
-  }, [currentBadge, ctaButton, isMobile, isOwned]);
+  }, [currentBadge, ctaButton, isOwned]);
 
   if (!isClient) return null;
 
@@ -196,8 +196,8 @@ export default function BadgeDetails({ params }: Props) {
             alignItems: 'center',
           }}
         >
-          <Box marginTop="24px" width="100%" paddingY="24px" paddingX="20px">
-            <DetailsPageNavbar title="View Badge" owned={isOwned} />
+          <Box width="100%" paddingY="24px" paddingX="20px">
+            <DetailsPageNavbar title="" owned={isOwned} />
           </Box>
           <Stack gap="24px" alignItems="center">
             <Box

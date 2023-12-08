@@ -38,7 +38,7 @@ const imageUrl =
 const TreasureChestInfo = [
   {
     title: 'A collaborative challenge',
-    description: `All players use their points from boosts and art colleciton to reveal the secret artwork by clicking "Tap to Reveal".`,
+    description: `All players use their points from boosts and art collection to reveal the secret artwork by clicking "Tap to Reveal".`,
     cta: 'Next',
   },
   {

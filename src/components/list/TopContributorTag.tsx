@@ -40,7 +40,7 @@ export function TopContributorTag() {
         color={'var(--White, #fff)'}
         variant="h6"
       >
-        Top contributor
+        Top player
       </Text>
     </Stack>
   );

@@ -11,6 +11,7 @@ import Image from 'next/image';
 import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
 import Text from '@/components/Text';
 import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
+import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -60,7 +61,7 @@ export default function Home() {
       </Head>
       <Stack
         direction="column"
-        justifyContent="space-between"
+        justifyContent={['space-between', 'unset']}
         sx={{
           position: 'absolute',
           px: '20px',
@@ -72,7 +73,7 @@ export default function Home() {
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
         }}
-        gap="2rem"
+        gap="4rem"
       >
         <Stack width="100%" justifyContent="center" alignItems="center">
           <BaseHuntAnimated width="100%" />
@@ -89,7 +90,7 @@ export default function Home() {
           </Stack>
         </Stack>
         <Text fontSize="1.2rem" textAlign="center">
-          Collect onchain art across Miami and exchange it for exclusive merch.
+          Collect onchain art, unlock exclusive Base merch.
         </Text>
         <Stack alignItems="center">
           <Stack
@@ -100,35 +101,43 @@ export default function Home() {
             {ctaButton}
           </Stack>
           <Stack alignItems="center">
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{
-                py: 1,
-                px: 2,
-                mt: 4,
-                mb: 2,
-                borderRadius: 20,
-                bgcolor: 'white',
-                gap: 1,
+            <RainbowConnectButton.Custom>
+              {({ openConnectModal, mounted, account, chain }) => {
+                return (
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    sx={{
+                      py: 1,
+                      px: 2,
+                      mt: 4,
+                      mb: 2,
+                      borderRadius: 20,
+                      bgcolor: 'white',
+                      gap: 1,
+                      ':hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                    onClick={openConnectModal}
+                  >
+                    <Image
+                      src="/images/coinbase-wallet-logo.png"
+                      alt="Coinbase Wallet Logo"
+                      height={24}
+                      width={24}
+                    />
+                    <Typography fontSize={14}>
+                      Coinbase Wallet{' '}
+                      <Box component="span" fontWeight="bold">
+                        Recommended
+                      </Box>
+                    </Typography>
+                  </Stack>
+                );
               }}
-            >
-              <Image
-                src="/images/coinbase-wallet-logo.png"
-                alt="Coinbase Wallet Logo"
-                height={24}
-                width={24}
-              />
-              <Typography fontSize={14}>
-                Coinbase Wallet{' '}
-                <Box component="span" fontWeight="bold">
-                  Recommended
-                </Box>
-              </Typography>
-            </Stack>
-            <Link href="/" variant="body1" color="black" underline="none">
-              Download now
-            </Link>
+            </RainbowConnectButton.Custom>
+            <Text>Instant and free mints only with Coinbase Wallet</Text>
           </Stack>
         </Stack>
       </Stack>

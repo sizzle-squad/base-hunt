@@ -9,6 +9,8 @@ import { useMemo, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import Text from '@/components/Text';
 import Circle from '@/components/Circle';
+import { PointsPill } from '@/components/PointsPill';
+import { UNIT } from '@/constants/unit';
 import Link from '@/components/AnimatedLink';
 import Pill from '@/components/Pill';
 
@@ -70,11 +72,10 @@ export const NavbarClient = () => {
           )}
         </Stack>
       </Stack>
-
       <Link href="/boosts">
-        <Pill backgroundColor="#0253FF" hover>
+        <Pill backgroundColor="blue">
           <Text color="white" fontSize="14px" fontWeight="bold">
-            Point boosts
+            Get Points
           </Text>
           <svg
             width="5"
