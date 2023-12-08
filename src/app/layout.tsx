@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import '@/globals.css';
 import Providers from '@/providers/providers';
 import { Box, Stack } from '@mui/material';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
   title: 'Base Hunt',
@@ -36,6 +37,7 @@ export default function RootLayout({
           <Stack flexDirection="row" justifyContent="center">
             {children}
           </Stack>
+          <Analytics />
         </body>
       </Providers>
     </html>
