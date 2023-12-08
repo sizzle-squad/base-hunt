@@ -139,11 +139,11 @@ function SwipeUpDrawer({
           />
           {isMobile ? (
             <Link href={getNavigationUrl(latLng)}>
-              <Button variant="contained">Get direction</Button>
+              <Button variant="contained">Get Direction</Button>
             </Link>
           ) : (
             <Button variant="contained" disabled>
-              Get direction
+              Get Direction
             </Button>
           )}
         </>

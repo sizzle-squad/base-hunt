@@ -137,7 +137,9 @@ export default function BoostsPageClient() {
       boostId: activeItem!.id.toString(),
       contractAddresses: activeItem?.contractAddresses,
     });
-  }, [claimBoost, address, activeItem]);
+    // claimBoost should not be in there
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, activeItem]);
 
   const handleCTAPress = (ctaUrl: string) => {
     window.open(ctaUrl, '_blank');
