@@ -21,7 +21,7 @@ export function useCBProfile({ address }: Props) {
       });
     },
     {
-      enabled: !!address,
+      enabled: !!address && address !== '0x...',
       staleTime: 1000 * 60 * 5,
       cacheTime: 1000 * 60 * 5,
       onError: (error) => {
