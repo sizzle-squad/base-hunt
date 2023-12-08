@@ -40,7 +40,7 @@ type ListCardPropsWithDescription = ListCardProps & {
 };
 
 const PageConsts = {
-  navTitle: 'Levels' as const,
+  navTitle: 'Get your exclusive merch' as const,
   drawerTitle: 'Rewards' as const,
   drawerButtonText: 'Visit merch store' as const,
   drawerType: 'levelsAction' as DrawerType,
@@ -139,7 +139,7 @@ export default function LevelsPageClient() {
                 ? false
                 : parseInt(collection.currentLevelIdx) === index;
             const content: ListCardPropsWithDescription = {
-              title: `Level ${item.level}`,
+              title: `Level ${item.level} Merch Unlocked`,
               subtitle: `${item.thresholdPoints} points required`,
               startContent: (
                 <SvgSwitcher

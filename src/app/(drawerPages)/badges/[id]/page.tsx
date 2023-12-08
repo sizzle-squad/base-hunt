@@ -200,7 +200,14 @@ export default function BadgeDetails({ params }: Props) {
           }}
         >
           <Box width="100%" paddingY="24px" paddingX="20px">
-            <DetailsPageNavbar title="" owned={isOwned} />
+            <DetailsPageNavbar
+              title={
+                isOwned
+                  ? 'Collect more art. Get merch.'
+                  : 'Collect to get merch'
+              }
+              owned={isOwned}
+            />
           </Box>
           <Stack gap="24px" alignItems="center">
             <Box
