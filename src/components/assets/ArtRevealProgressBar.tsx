@@ -32,7 +32,7 @@ export function ArtRevealProgressBar() {
   const numericProgress = useMemo(() => {
     return (
       <Box>
-        <Text>All players have contributed </Text>
+        <Text>Points from all players</Text>
         <Stack direction="row" gap="2px" alignItems="center">
           {isLoading ? (
             <Skeleton variant="rectangular" width={73} height={35} />
