@@ -156,7 +156,7 @@ export default function LeaderboardClient() {
           </Text>
           <Text gutterBottom>
             4. Get to the #1 spot on the leaderboard by 2:00 PM EST on Sunday
-            December 11 to earn $1,000 in USDC.
+            December 11 to earn <b>$1,000</b> in USDC.
           </Text>
         </DialogContent>
         <DialogActions>

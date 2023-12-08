@@ -5,7 +5,11 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { base } from 'viem/chains';
 import { WagmiConfig, createConfig, configureChains } from 'wagmi';
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import {
+  getDefaultWallets,
+  RainbowKitProvider,
+  DisclaimerComponent,
+} from '@rainbow-me/rainbowkit';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -52,6 +56,13 @@ const theme = createTheme({
   },
 });
 
+const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
+  <Text>
+    By connecting your wallet, you are agreeing to our{' '}
+    <Link href="https://basehunt.splashthat.com/">Terms of Service</Link>.
+  </Text>
+);
+
 const Providers = ({ children }: Props) => {
   const queryClient = new QueryClient();
   return (
@@ -59,7 +70,10 @@ const Providers = ({ children }: Props) => {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <WagmiConfig config={config}>
-            <RainbowKitProvider chains={chains}>
+            <RainbowKitProvider
+              chains={chains}
+              appInfo={{ disclaimer: Disclaimer }}
+            >
               <DesiredNetworkContextProvider>
                 <GameInfoProvider>
                   <CssBaseline />
