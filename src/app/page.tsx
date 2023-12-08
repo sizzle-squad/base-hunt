@@ -27,6 +27,10 @@ export default function Home() {
   }, [router]);
 
   const ctaButton = useMemo(() => {
+    const ctaText =
+      process.env.NEXT_PUBLIC_KILL_SWITCH === 'true'
+        ? 'Coming soon'
+        : 'Start Exploring';
     if (isClient) {
       return isConnected ? (
         <Button
@@ -44,7 +48,7 @@ export default function Home() {
           }}
           onClick={handleStartExploring}
         >
-          Start Exploring
+          {ctaText}
         </Button>
       ) : (
         <ConnectButton />
