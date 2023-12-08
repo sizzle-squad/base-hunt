@@ -58,8 +58,12 @@ export default function BadgeDetails({ params }: Props) {
   }, [currentBadge]);
 
   const twitterShareUrl = useMemo(() => {
-    const text = `I just played basehunt and collected art onchain! 
-    ${currentBadge?.name}
+    const copy = process.env.NEXT_PUBLIC_SHARE_COPY ?? '';
+    const badgeTitle = currentBadge?.name;
+    const text = `
+    ${copy}
+
+    ${badgeTitle}
     `;
     const host =
       process.env.NODE_ENV === 'production'
