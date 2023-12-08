@@ -15,6 +15,7 @@ import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
+  const killswitch = process.env.NEXT_PUBLIC_KILL_SWITCH === 'true';
 
   useEffect(() => {
     setIsClient(true);
@@ -43,8 +44,9 @@ export default function Home() {
             fontWeight: 400,
           }}
           onClick={handleStartExploring}
+          disabled={killswitch}
         >
-          Start Exploring
+          {killswitch ? 'Site is locked' : 'Start Exploring'}
         </Button>
       ) : (
         <ConnectButton />
