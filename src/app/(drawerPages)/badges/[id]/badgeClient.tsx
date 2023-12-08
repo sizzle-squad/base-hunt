@@ -58,7 +58,7 @@ export default function BadgeDetails({ params }: Props) {
   }, [currentBadge]);
 
   const twitterShareUrl = useMemo(() => {
-    const text = `Check out this badge: ${currentBadge?.name}`;
+    const text = `I just played basehunt.xyz and collected art onchain! ${currentBadge?.name}`;
     const host =
       process.env.NODE_ENV === 'production'
         ? `https://${window.location.hostname}`
@@ -69,6 +69,28 @@ export default function BadgeDetails({ params }: Props) {
       text
     )}&url=${encodeURIComponent(url)}`;
   }, [currentBadge]);
+
+  const SharePill = useMemo(() => {
+    return (
+      <Pill backgroundColor="black">
+        <a
+          href={twitterShareUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            textDecoration: 'none',
+            color: 'white',
+          }}
+        >
+          <Text color="white">Share</Text>
+          <SendIcon color="inherit" />
+        </a>
+      </Pill>
+    );
+  }, [twitterShareUrl]);
 
   useEffect(() => {
     if (isDisconnected) {
@@ -115,22 +137,6 @@ export default function BadgeDetails({ params }: Props) {
                 <Text color="black" fontWeight={400} fontSize="24px">
                   {title}
                 </Text>
-                <a
-                  href={twitterShareUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    textDecoration: 'none',
-                    color: 'black',
-                  }}
-                >
-                  {/* <TwitterIcon /> */}
-                  <Text color="black">Tweet</Text>
-                  <SendIcon color="inherit" />
-                </a>
                 <Link href={getNavigationUrl(currentBadge?.latLng)}>
                   <Pill backgroundColor="black">
                     <Text color="white">Get Directions</Text>
@@ -256,7 +262,10 @@ export default function BadgeDetails({ params }: Props) {
                 sizes={`100vw`}
               />
             </Box>
-            <OwnershipPill owned={isOwned} />
+            <Stack flexDirection="row" gap={1}>
+              <OwnershipPill owned={isOwned} />
+              {SharePill}
+            </Stack>
           </Stack>
           <Box width="100%">{content}</Box>
         </Stack>
