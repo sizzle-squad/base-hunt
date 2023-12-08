@@ -23,23 +23,14 @@ export function Level({ currentLevel, isLoading }: Props) {
           fontSize="16px"
           noWrap
           sx={{
-            display: ['none', 'block'],
-          }}
-        >
-          Reward
-        </Text>
-        <Text
-          fontSize="16px"
-          noWrap
-          sx={{
             textOverflow: 'ellipsis',
           }}
         >
-          Level {currentLevel}
+          Merch unlocked
         </Text>
       </Stack>
     );
-  }, [currentLevel, isLoading]);
+  }, [isLoading]);
 
   return (
     <Stack
