@@ -38,12 +38,13 @@ const imageUrl =
 const TreasureChestInfo = [
   {
     title: 'A collaborative challenge',
-    description: `All players use their points from boosts and art collection to reveal the secret artwork by clicking "Tap to Reveal".`,
+    description: `As players get points for collecting art and other onchain actions, their points are pooled together to reveal the secret art.`,
     cta: 'Next',
   },
   {
-    title: 'Once per day',
-    description: `Collect points throughout the day and click "Tap to Reveal" once per day to contribute your points to the reveal.`,
+    title: 'Exclusive art from a secret artist',
+    description: `If enough points are contributed throughout the game, the secret artwork will be revealed. All players can mint the secret artwork once revealed.
+    `,
     cta: 'Next',
   },
   {
