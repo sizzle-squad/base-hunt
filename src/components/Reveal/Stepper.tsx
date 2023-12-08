@@ -51,7 +51,6 @@ function Stepper({
     >
       <StepDiv isActive={activeStep === 0} handleClick={handleClick} step={0} />
       <StepDiv isActive={activeStep === 1} handleClick={handleClick} step={1} />
-      <StepDiv isActive={activeStep === 2} handleClick={handleClick} step={2} />
     </Box>
   );
 }
