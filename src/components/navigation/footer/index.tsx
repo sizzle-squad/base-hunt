@@ -6,12 +6,11 @@ import {
   Box,
   Paper,
 } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ArtIcon } from '@/components/assets/icons/ArtIcon';
 import { LocationIcon } from '@/components/assets/icons/LocationIcon';
 import { ArtRevealIcon } from '@/components/assets/icons/ArtRevealIcon';
-import Link from 'next/link';
 import { ActiveArtRevealIcon } from '@/components/assets/icons/ActiveArtRevealIcon';
 
 export default function Footer() {
