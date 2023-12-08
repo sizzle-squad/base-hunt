@@ -396,17 +396,14 @@ export default function Badges() {
         </DialogTitle>
         <DialogContent>
           <Text gutterBottom>
-            1. Connect your wallet, oh, you already did that
+            1. Collect art from the Art Basel Miami Collection (in-person only)
+            or the Global collection online
           </Text>
           <Text gutterBottom>
-            2. Collect art from the Base Miami collection (in-person only) or
-            the Global collection online
+            2. Get points with every art piece you collect
           </Text>
           <Text gutterBottom>
-            3. Get points with every art piece you collect
-          </Text>
-          <Text gutterBottom>
-            4. Level up by gaining points to get free and discounted merch {''}
+            3. Level up by gaining points to get free and discounted merch {''}
             <Link href="/boosts">
               <Text color="#0253FF" display="inline">
                 here
@@ -414,7 +411,7 @@ export default function Badges() {
             </Link>
           </Text>
           <Text gutterBottom>
-            5. Work together to reveal a final mystery artist {''}
+            4. Work together to reveal a final mystery artist {''}
             <Link href="/art-reveal">
               <Text color="#0253FF" display="inline">
                 here
