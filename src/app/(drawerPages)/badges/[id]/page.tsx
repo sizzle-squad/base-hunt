@@ -56,9 +56,6 @@ export async function generateMetadata(
       card: 'summary_large_image',
     },
     themeColor: '#1ca0f2',
-    alternates: {
-      canonical: `https://twitter.com/${username}/status/${id}`,
-    },
   };
 }
 
