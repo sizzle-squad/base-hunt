@@ -14,7 +14,6 @@ function OwnershipPill({ owned = false }: Props) {
       sx={{
         py: 1,
         px: 2,
-        mt: 6,
         borderRadius: 20,
         background: owned
           ? 'rgba(255, 255, 255, 0.20)'

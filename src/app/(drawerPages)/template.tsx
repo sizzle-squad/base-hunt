@@ -1,9 +1,10 @@
 'use client';
 import Footer from '@/components/navigation/footer';
+import { Box, Skeleton, Stack } from '@mui/material';
 import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 
-export default function Template(props: any) {
+export default function Template({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const noShowRoutes = useMemo(
     () => ['/levels', '/boosts', '/leaderboard'],
@@ -15,9 +16,9 @@ export default function Template(props: any) {
   );
 
   return (
-    <div>
-      {props.children}
+    <Stack justifyContent="space-between" width="100vw" height={['100vh']}>
+      {children}
       {showFooter && <Footer />}
-    </div>
+    </Stack>
   );
 }
