@@ -90,7 +90,7 @@ export default function Home() {
           </Stack>
         </Stack>
         <Text fontSize="1.2rem" textAlign="center">
-          Collect onchain art across Miami and exchange it for exclusive merch.
+          Collect onchain art, unlock exclusive Base merch.
         </Text>
         <Stack alignItems="center">
           <Stack
