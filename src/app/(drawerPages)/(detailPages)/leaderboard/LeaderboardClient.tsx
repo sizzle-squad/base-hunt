@@ -21,6 +21,7 @@ import Pill from '@/components/Pill';
 import { useGameInfoContext } from '@/context/GameInfoContext';
 import Link from 'next/link';
 import { BootstrapDialog } from '@/components/BoostrapDialog';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 type RankMock = PlayerRank & {
   isMock: boolean;
@@ -67,11 +68,25 @@ export default function LeaderboardClient() {
   return (
     <>
       <DetailsPageNavbar title="Leaderboard" />
-      <Stack alignItems="center" marginLeft="24px">
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        marginLeft="24px"
+        gap={2}
+      >
         <Pill onClick={toggleModal} hover>
           <Text align="center" sx={{ width: '75px' }}>
             Prizes
           </Text>
+        </Pill>
+        <Pill>
+          <Link href="/boosts">
+            <Stack direction="row" gap={1}>
+              <AutoAwesomeIcon />
+              <Text fontWeight={400}>Get more points</Text>
+            </Stack>
+          </Link>
         </Pill>
       </Stack>
       <NoSsr>
@@ -137,7 +152,8 @@ export default function LeaderboardClient() {
         </DialogTitle>
         <DialogContent>
           <Text gutterBottom>
-            1. Work your way up the leaderboard by collecting art and additional points{' '}
+            1. Work your way up the leaderboard by collecting art and additional
+            points{' '}
             <Link href="/boosts">
               <Text color="#0253FF" display="inline">
                 here.
