@@ -93,7 +93,6 @@ export default function BadgeDetails({ params }: Props) {
           sx={{
             background: 'white',
           }}
-          marginBottom={['5rem', 'unset']}
         >
           <Stack direction="column" gap={1}>
             <Stack direction="column" gap={1}>
