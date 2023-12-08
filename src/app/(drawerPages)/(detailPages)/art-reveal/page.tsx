@@ -42,14 +42,8 @@ const TreasureChestInfo = [
     cta: 'Next',
   },
   {
-    title: 'Exclusive art from a secret artist',
-    description: `If enough points are contributed throughout the game, the secret artwork will be revealed. All players can mint the secret artwork once revealed.
-    `,
-    cta: 'Next',
-  },
-  {
     title: 'Exclusive art from secret artist',
-    description: `If enough points are contributed throughout the game, the secret artwork will be revealed. All contributers can mint the secret artwork once revealed.`,
+    description: `If enough points are contributed throughout the game, the secret artwork will be revealed. All players can mint the secret artwork once revealed.`,
     cta: 'Dismiss',
   },
 ] as const;
