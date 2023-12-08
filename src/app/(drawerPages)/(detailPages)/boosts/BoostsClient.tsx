@@ -6,7 +6,7 @@ import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
-import { Box, Button, NoSsr, Snackbar, Stack } from '@mui/material';
+import { Box, Button, NoSsr, Snackbar, Stack, Link } from '@mui/material';
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
@@ -24,6 +24,9 @@ import {
   LinkIcon,
   UsersIcon,
 } from '@/components/assets/icons/BoostIcon';
+
+const satoshissecretLink =
+  'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
 
 const iconMapping = {
   WALLET: <WalletIcon />,
@@ -168,12 +171,9 @@ export default function BoostsPageClient() {
     if (claimBoost.isError) {
       setEligibleItem(activeItem);
     }
-  // activeItem and handleToggleDrawer should not be in there
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    claimBoost.isSuccess,
-    claimBoost.isError,
-  ]);
+    // activeItem and handleToggleDrawer should not be in there
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [claimBoost.isSuccess, claimBoost.isError]);
 
   const ToggleDrawerButton = memo(
     ({
@@ -237,7 +237,18 @@ export default function BoostsPageClient() {
             {!(isEligible && ctaText) && item.title && (
               <>
                 <Text variant="h4">{item.title}</Text>
-                <Text>{item.description}</Text>
+                <Text>
+                  {item.description}{' '}
+                  {item.title.indexOf('Secret') > -1 && (
+                    <Link
+                      href={satoshissecretLink}
+                      target="_blank"
+                      underline="none"
+                    >
+                      here
+                    </Link>
+                  )}
+                </Text>
               </>
             )}
             {isEligible && ctaText && (
