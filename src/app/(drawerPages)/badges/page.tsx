@@ -4,6 +4,7 @@ import CustomAccordion from '@/components/Badges/Accordion';
 import AccordionPill from '@/components/Badges/AccordionPill';
 import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
+import { BootstrapDialog } from '@/components/BoostrapDialog';
 import { Level } from '@/components/Cards/Level';
 import { Rank } from '@/components/Cards/Rank';
 import { TreasureChest } from '@/components/Cards/TreasureChest';
@@ -25,13 +26,11 @@ import { useUserName } from '@/hooks/useUsername';
 import {
   Box,
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Drawer,
   Stack,
-  styled,
 } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -80,15 +79,6 @@ export default function Badges() {
   });
 
   const { showModal, setShowModal } = useGameInfoContext();
-
-  const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialogContent-root': {
-      padding: theme.spacing(2),
-    },
-    '& .MuiDialogActions-root': {
-      padding: theme.spacing(1),
-    },
-  }));
 
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {
@@ -389,11 +379,6 @@ export default function Badges() {
                 anchor={anchor}
                 open={drawerStates.walletOperations[anchor]}
                 onClose={() => handleToggleDrawer(anchor)}
-                // PaperProps={{
-                //   style: {
-                //     left: 'calc(50% - 195px)', // 50% - half of width
-                //   },
-                // }}
               >
                 {list(anchor)}
               </Drawer>

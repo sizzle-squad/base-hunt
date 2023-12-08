@@ -27,7 +27,7 @@ export function TopContributorTag() {
       display="flex"
       padding="4px 8px"
       alignItems="center"
-      width="155px"
+      width="120px"
       gap={1}
     >
       <CrownIcon />
