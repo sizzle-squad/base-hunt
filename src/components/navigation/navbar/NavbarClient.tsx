@@ -75,7 +75,7 @@ export const NavbarClient = () => {
       <Link href="/boosts">
         <Pill backgroundColor="blue">
           <Text color="white" fontSize="14px" fontWeight="bold">
-            Boosts
+            Point boosts
           </Text>
           <svg
             width="5"
