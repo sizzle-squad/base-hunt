@@ -17,6 +17,8 @@ import Pill from '@/components/Pill';
 import { useScore } from '@/hooks/useScore';
 import { useAccount } from 'wagmi';
 
+const merchStoreUrl = 'https://basedmerch.slice.so/';
+
 const EllipsisIcon = memo(() => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -103,6 +105,7 @@ export default function LevelsPageClient() {
       )}
       <Text>{item.description}</Text>
       <Button
+        href={merchStoreUrl}
         variant="contained"
         color="primary"
         sx={{
