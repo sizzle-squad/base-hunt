@@ -15,10 +15,22 @@ export default function ArtRevealScreen() {
   });
   const screenSize = useScreenSize();
   const imageDimensions = useMemo(() => {
-    const width =
-      screenSize === 'small' ? 150 : screenSize === 'medium' ? 300 : 600;
-    const height =
-      screenSize === 'small' ? 250 : screenSize === 'medium' ? 500 : 1000;
+    const baseWidth = 120; // base width for small
+    const baseHeight = 200; // base height for small (3:5 aspect ratio)
+
+    let multiplier;
+    if (screenSize === 'small') {
+      multiplier = 1;
+    } else if (screenSize === 'medium') {
+      multiplier = 1.5;
+    } else {
+      // large
+      multiplier = 3;
+    }
+
+    const width = baseWidth * multiplier;
+    const height = baseHeight * multiplier;
+
     return { width, height };
   }, [screenSize]);
 
