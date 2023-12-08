@@ -41,7 +41,11 @@ export async function generateMetadata(
     title: activeBadge?.name,
     description: activeBadge?.description,
     openGraph: {
+      title: activeBadge?.name,
+      description: activeBadge?.description,
       images: [activeBadge?.image_url, ...previousImages],
+      type: 'website',
+      siteName: 'Twitter',
     },
     twitter: {
       title: activeBadge?.name,
@@ -50,6 +54,10 @@ export async function generateMetadata(
       creator: '@CoinbaseWallet',
       images: [activeBadge?.image_url],
       card: 'summary_large_image',
+    },
+    themeColor: '#1ca0f2',
+    alternates: {
+      canonical: `https://twitter.com/${username}/status/${id}`,
     },
   };
 }
