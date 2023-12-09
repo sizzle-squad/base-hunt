@@ -135,10 +135,11 @@ export async function GET(request: NextRequest) {
   return Promise.all(boostsFormatted)
     .then((formattedBoosts) => {
       if (formattedBoosts) {
-        formattedBoosts.sort((a, b) => {
-          if (a.claimed && !b.claimed) return 1;
-          if (!a.claimed && b.claimed) return -1;
-          return 0;
+        formattedBoosts.sort((a: any, b: any) => {
+          if (a.claimed === b.claimed) {
+            return a.points - b.points; // Sort by points in ascending order if isClaimed is equal
+          }
+          return a.claimed ? 1 : -1;
         });
         const boostsResponse = formattedBoosts.filter((boost) => {
           const isTransferNftAndClaimed =
