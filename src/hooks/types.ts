@@ -122,6 +122,7 @@ export enum BoostTypeEnum {
   NFT_PER_MINT = 'NFT_PER_MINT',
   TOKEN = 'TOKEN',
   TRANSACTION = 'TRANSACTION',
+  SOCIAL = 'SOCIAL',
   DEFAULT = 'DEFAULT',
 }
 

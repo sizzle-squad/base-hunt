@@ -284,7 +284,16 @@ export default function BoostsPageClient() {
           }
           onClick={handleButtonAction}
         >
-          {ctaButtonText}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              textDecoration: 'none',
+              color: 'white',
+            }}
+          >
+            {ctaButtonText}
+          </a>
         </Button>
       </Stack>
     );
