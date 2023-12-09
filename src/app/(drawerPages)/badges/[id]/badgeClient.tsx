@@ -10,7 +10,7 @@ import { Button, Stack } from '@mui/material';
 import Box from '@mui/material/Box';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 import Text from '@/components/Text';
 import { BadgeLocationMap } from '@/components/Map/BadgeLocationMap';
@@ -20,6 +20,7 @@ import { BadgeTypeEnum } from '@/hooks/types';
 import Pill from '@/components/Pill';
 import useScreenSize from '@/hooks/useScreenSize';
 import SendIcon from '@mui/icons-material/Send';
+import { useClaimBoost } from '@/hooks/useClaimBoost';
 
 type Props = {
   params: { id: string };
@@ -35,6 +36,7 @@ export default function BadgeDetails({ params }: Props) {
   const imageSize = useMemo(() => {
     return screenSize === 'small' ? 256 : screenSize === 'medium' ? 384 : 512;
   }, [screenSize]);
+  const { claimBoost } = useClaimBoost();
 
   function getNavigationUrl(latLng: string) {
     return `${googleMapNavigationUrl}&destination=${latLng}&dir_action=navigate`;
@@ -77,6 +79,17 @@ export default function BadgeDetails({ params }: Props) {
     )}&url=${encodeURIComponent(url)}`;
   }, [currentBadge]);
 
+  const handleClaimPress = useCallback(() => {
+    claimBoost.mutate({
+      gameId: GAME_ID,
+      userAddress: address,
+      boostId: process.env.NEXT_PUBLIC_SOCIAL_BOOST_ID ?? '',
+      contractAddresses: undefined,
+    });
+    // claimBoost should not be in there
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+
   const SharePill = useMemo(() => {
     return (
       <Pill backgroundColor="black">
@@ -91,13 +104,14 @@ export default function BadgeDetails({ params }: Props) {
             textDecoration: 'none',
             color: 'white',
           }}
+          onClick={handleClaimPress}
         >
           <Text color="white">Share</Text>
           <SendIcon color="inherit" />
         </a>
       </Pill>
     );
-  }, [twitterShareUrl]);
+  }, [handleClaimPress, twitterShareUrl]);
 
   useEffect(() => {
     if (isDisconnected) {
