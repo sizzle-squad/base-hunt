@@ -213,7 +213,9 @@ export default function BoostsPageClient() {
     const ctaUrl = item.ctaUrl;
 
     const handleButtonAction = () => {
-      if (isEligible && ctaUrl) {
+      if (item.type === 'SOCIAL') {
+        handleClaimPress();
+      } else if (isEligible && ctaUrl) {
         handleCTAPress(ctaUrl);
       } else {
         handleClaimPress();
@@ -267,25 +269,55 @@ export default function BoostsPageClient() {
             textColor="#151515"
           />
         </Stack>
-
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            py: 2,
-            px: 3,
-            borderRadius: 2,
-            bgcolor: 'black',
-            color: 'white',
-          }}
-          disabled={
-            (isEligible && ctaButtonText === 'Check claim') ||
-            claimBoost.isLoading
-          }
-          onClick={handleButtonAction}
-        >
-          {ctaButtonText}
-        </Button>
+        {item.type === 'SOCIAL' ? (
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              py: 2,
+              px: 3,
+              borderRadius: 2,
+              bgcolor: 'black',
+              color: 'white',
+            }}
+            disabled={
+              (isEligible && ctaButtonText === 'Check claim') ||
+              claimBoost.isLoading
+            }
+          >
+            <a
+              href={item.type === 'SOCIAL' ? item.ctaUrl ?? '' : undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleButtonAction}
+              style={{
+                textDecoration: 'none',
+                color: 'white',
+              }}
+            >
+              {ctaButtonText}
+            </a>
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              py: 2,
+              px: 3,
+              borderRadius: 2,
+              bgcolor: 'black',
+              color: 'white',
+            }}
+            disabled={
+              (isEligible && ctaButtonText === 'Check claim') ||
+              claimBoost.isLoading
+            }
+            onClick={handleButtonAction}
+          >
+            {ctaButtonText}
+          </Button>
+        )}
       </Stack>
     );
   };
