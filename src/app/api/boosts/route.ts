@@ -4,25 +4,6 @@ import '@/utils/helper';
 import { toBigInt } from '@/utils/toBigInt';
 import { BoostTypeEnum } from '@/hooks/types';
 
-const social = {
-  boostType: 'SOCIAL',
-  claimed: false,
-  contractAddresses: [],
-  ctaButtonText: 'Share on Twitter',
-  ctaText: 'Share on Twitter',
-  ctaUrl:
-    'https://twitter.com/intent/tweet?text=I%27m%20playing%20https%3A%2F%2Fbasehunt.xyz%20%40artbasel%3B%20help%20me%20reveal%20the%20secret%20artist',
-  description: 'Share basehunt on twitter and receive additional points',
-  gameId: 0,
-  icon: 'CIRCLE',
-  id: 30,
-  imageUrl: null,
-  isEnabled: true,
-  name: 'Share on social',
-  nftAmount: null,
-  points: 200,
-};
-
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
@@ -150,7 +131,7 @@ export async function GET(request: NextRequest) {
     return { ...mappedBoost, claimed: isClaimed };
   });
 
-  return Promise.all([social, ...boostsFormatted])
+  return Promise.all(boostsFormatted)
     .then((formattedBoosts) => {
       if (formattedBoosts) {
         formattedBoosts.sort((a, b) => {
