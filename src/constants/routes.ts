@@ -15,4 +15,5 @@ export const routes = {
     default: '/api/boosts',
   },
   levels: '/api/profile/level',
+  metrics: '/api/metrics',
 };
