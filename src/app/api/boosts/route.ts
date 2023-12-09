@@ -118,6 +118,7 @@ export async function GET(request: NextRequest) {
       case BoostTypeEnum.TOKEN:
       case BoostTypeEnum.TRANSACTION:
       case BoostTypeEnum.TRANSFER_NFT:
+      case BoostTypeEnum.SOCIAL:
       case BoostTypeEnum.DEFAULT:
         isClaimed = boost.claimed_boost.every(
           (c: { boost_id: any }) => c.boost_id === boost.id
