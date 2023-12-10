@@ -23,5 +23,6 @@ export const config = {
     '/levels/:path*',
     '/locations/:path*',
     '/art-reveal-screen/:path*',
+    '/api/:path*',
   ],
 };
