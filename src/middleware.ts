@@ -8,9 +8,22 @@ export function middleware(request: NextRequest) {
   const endDate = new Date(process.env.END_DATE as string);
   const now = new Date();
   const killSwitch = process.env.NEXT_PUBLIC_KILL_SWITCH === 'true';
+  const password = request.nextUrl.searchParams.get(
+    process.env.SEARCH_QUERY_NAME!
+  );
+  const hasCookie = request.cookies.has(process.env.PASSWORD_COOKIE_NAME!);
+  const url = request.nextUrl.clone();
 
-  if (killSwitch || isBefore(now, startDate) || isAfter(now, endDate)) {
-    return NextResponse.redirect(new URL('/', request.url));
+  const response = NextResponse.redirect(url);
+
+  if (hasCookie) {
+    return;
+  } else if (password === process.env.PAGE_PASSWORD && !hasCookie) {
+    // pw bypass
+    response.cookies.set(`${process.env.PASSWORD_COOKIE_NAME}`, 'true');
+    return response;
+  } else if (killSwitch || isBefore(now, startDate) || isAfter(now, endDate)) {
+    return NextResponse.redirect(new URL('/thanks', request.url));
   }
 }
 
@@ -24,5 +37,6 @@ export const config = {
     '/locations/:path*',
     '/art-reveal-screen/:path*',
     '/api/:path*',
+    '/',
   ],
 };

@@ -29,7 +29,7 @@ export default function Home() {
   const ctaButton = useMemo(() => {
     const ctaText =
       process.env.NEXT_PUBLIC_KILL_SWITCH === 'true'
-        ? 'Thanks For Playing'
+        ? 'Access Granted. Please Enter'
         : 'Start Exploring';
     if (isClient) {
       return isConnected ? (
