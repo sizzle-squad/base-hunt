@@ -8,6 +8,19 @@ export function middleware(request: NextRequest) {
   const endDate = new Date(process.env.END_DATE as string);
   const now = new Date();
   const killSwitch = process.env.NEXT_PUBLIC_KILL_SWITCH === 'true';
+  const password = request.nextUrl.searchParams.get(
+    process.env.SEARCH_QUERY_NAME!
+  );
+  const hasCookie = request.cookies.has(process.env.PASSWORD_COOKIE_NAME!);
+  const url = request.nextUrl.clone();
+
+  const response = NextResponse.redirect(url);
+
+  // PW bypass
+  if (password === process.env.PAGE_PASSWORD && !hasCookie) {
+    response.cookies.set(`${process.env.PASSWORD_COOKIE_NAME}`, 'true');
+    return response;
+  }
 
   if (killSwitch || isBefore(now, startDate) || isAfter(now, endDate)) {
     return NextResponse.redirect(new URL('/', request.url));
