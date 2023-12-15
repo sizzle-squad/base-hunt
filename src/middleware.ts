@@ -16,14 +16,14 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.redirect(url);
 
-  // PW bypass
-  if (password === process.env.PAGE_PASSWORD && !hasCookie) {
+  if (hasCookie) {
+    return;
+  } else if (password === process.env.PAGE_PASSWORD && !hasCookie) {
+    // pw bypass
     response.cookies.set(`${process.env.PASSWORD_COOKIE_NAME}`, 'true');
     return response;
-  }
-
-  if (killSwitch || isBefore(now, startDate) || isAfter(now, endDate)) {
-    return NextResponse.redirect(new URL('/', request.url));
+  } else if (killSwitch || isBefore(now, startDate) || isAfter(now, endDate)) {
+    return NextResponse.redirect(new URL('/thanks', request.url));
   }
 }
 
@@ -37,5 +37,6 @@ export const config = {
     '/locations/:path*',
     '/art-reveal-screen/:path*',
     '/api/:path*',
+    '/',
   ],
 };

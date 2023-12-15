@@ -1,6 +1,6 @@
 'use client';
 import Footer from '@/components/navigation/footer';
-import { Box, Skeleton, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { usePathname } from 'next/navigation';
 import { ReactNode, useMemo } from 'react';
 
@@ -12,6 +12,7 @@ export default function Template({ children }: { children: ReactNode }) {
       /^\/boosts$/,
       /^\/leaderboard$/,
       /^\/badges\/.+$/, // This regex will match any route starting with /badges/ followed by any characters
+      /^\/thanks$/,
     ],
     []
   );
