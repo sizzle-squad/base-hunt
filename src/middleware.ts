@@ -20,7 +20,11 @@ export function middleware(request: NextRequest) {
     return;
   } else if (password === process.env.PAGE_PASSWORD && !hasCookie) {
     // pw bypass
-    response.cookies.set(`${process.env.PASSWORD_COOKIE_NAME}`, 'true');
+    response.cookies.set(`${process.env.PASSWORD_COOKIE_NAME}`, 'true', {
+      secure: true,
+      sameSite: 'strict',
+      httpOnly: true,
+    });
     return response;
   } else if (killSwitch || isBefore(now, startDate) || isAfter(now, endDate)) {
     return NextResponse.redirect(new URL('/thanks', request.url));
