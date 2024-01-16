@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   }
   const body = await req.json();
   console.log('[webhook transfer-erc721] body:', body);
-  body.value = body.value = '0x0';
+  body.value = '0x0';
   const webhookData = await supabase
     .from('webhook_data')
     .upsert(body, { ignoreDuplicates: true })
