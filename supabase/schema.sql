@@ -97,7 +97,7 @@ declare
 
 begin
  RETURN QUERY select to_json(temp) from (select * from level_configuration as  l LEFT join level_data as d
-  on LOWER(l.contract_address) = LOWER(d.contract_address) and l.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(d.value,3)),16,'0'))::bit(64)::bigint and LOWER(l.minter) = LOWER(d.from_address)  
+  on LOWER(l.contract_address) = LOWER(d.contract_address) and l.token_id::bigint = d.value and LOWER(l.minter) = LOWER(d.from_address)  
   and d.to_address = LOWER(_user_address) where l.game_id = _game_id order by l.level ASC ) as temp;
 end; 
 $$;
@@ -157,20 +157,23 @@ ALTER FUNCTION "public"."upserttreasurebox"("_game_id" bigint, "_user_address" "
 CREATE OR REPLACE FUNCTION "public"."webhook_data_update"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$ 
+    
     DECLARE 
       _num_nfts BIGINT;
+      _game_id BIGINT;
     BEGIN 
         --SELECT count(*)+1 into _num_nfts from webhook_data where to_address = NEW.to_address;
-        PERFORM 1 from badge_configuration as b WHERE b.contract_address = NEW.contract_address and b.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(NEW.value,3)),16,'0'))::bit(64)::bigint and b.minter = NEW.from_address
-        and b.game_id = 0 and b.type != 'level';
+        select ag.game_id into _game_id from badge_configuration as b join address_gameid_configuration as ag on b.contract_address = ag.address 
+        WHERE b.contract_address = NEW.contract_address and b.token_id::bigint = NEW.value and b.minter = NEW.from_address
+        and b.type != 'level';
         IF FOUND THEN
           SELECT count(*)+1 into _num_nfts from webhook_data where to_address = NEW.to_address;
           INSERT into claimed_boost(boost_id,user_address,game_id)
-          SELECT b.id as boost_id,NEW.to_address as user_address,0 as game_id
+          SELECT b.id as boost_id,NEW.to_address as user_address,_game_id as game_id
           FROM boost_configuration AS b
           LEFT JOIN claimed_boost AS c ON b.id = c.boost_id AND c.user_address = NEW.to_address
           WHERE b.boost_type = 'TRANSFER_NFT' 
-          and b.game_id = 0
+          and b.game_id = _game_id
           AND c.boost_id IS NULL
           AND b.nft_amount <= _num_nfts 
           ON CONFLICT (boost_id,user_address,game_id)
@@ -179,6 +182,7 @@ CREATE OR REPLACE FUNCTION "public"."webhook_data_update"() RETURNS "trigger"
         END IF;
         RETURN NULL;
     END; 
+    
     $$;
 
 ALTER FUNCTION "public"."webhook_data_update"() OWNER TO "postgres";
@@ -326,7 +330,7 @@ CREATE TABLE IF NOT EXISTS "public"."level_data" (
     "event_type" character varying,
     "from_address" character varying,
     "to_address" character varying,
-    "value" character varying,
+    "value" bigint,
     "contract_address" character varying,
     "log_index" character varying DEFAULT ''::character varying,
     "is_from_address_cbw" boolean DEFAULT false,
@@ -437,7 +441,7 @@ CREATE TABLE IF NOT EXISTS "public"."webhook_data" (
     "event_type" character varying,
     "from_address" character varying,
     "to_address" character varying,
-    "value" character varying,
+    "value" bigint,
     "contract_address" character varying,
     "log_index" character varying DEFAULT ''::character varying,
     "is_from_address_cbw" boolean DEFAULT false,
@@ -511,7 +515,7 @@ CREATE UNIQUE INDEX "webhook_data_unique" ON "public"."webhook_data" USING "btre
 
 CREATE OR REPLACE TRIGGER "claimed_boost_insert_trigger" AFTER INSERT ON "public"."claimed_boost" FOR EACH ROW EXECUTE FUNCTION "public"."claimed_boost_insert"();
 
-CREATE OR REPLACE TRIGGER "score update => /api/webhook/airdrop" AFTER INSERT OR UPDATE ON "public"."score" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://base-hunt.vercel.app/api/webhook/airdrop', 'POST', '{"Content-type":"application/json","x-api-secret":"8DF49982CBF3C3D28696B63975253"}', '{}', '4000');
+CREATE OR REPLACE TRIGGER "score update => /api/webhook/airdrop" AFTER INSERT OR UPDATE ON "public"."score" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://base-hunt-eth-denver-2024.vercel.app/api/webhook/airdrop', 'POST', '{"Content-type":"application/json","x-api-secret":"8DF49982CBF3C3D28696B63975253"}', '{}', '3986');
 
 CREATE OR REPLACE TRIGGER "webhook_data_update_trigger" BEFORE INSERT ON "public"."webhook_data" FOR EACH ROW EXECUTE FUNCTION "public"."webhook_data_update"();
 

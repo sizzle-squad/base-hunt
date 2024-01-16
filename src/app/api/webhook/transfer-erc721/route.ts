@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { verifyWebhookSecret } from '@/utils/webhook';
+import { Database } from '@/utils/database.types';
 
-const supabase = createClient(
+const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
 );
@@ -14,8 +15,6 @@ export async function POST(req: Request) {
   const body = await req.json();
   console.log('[webhook transfer-erc721] body:', body);
   body.value = body.value = '0x0';
-  console.log('[webhook transfer-erc721] inserting into webhook data:', body);
-
   const webhookData = await supabase
     .from('webhook_data')
     .upsert(body, { ignoreDuplicates: true })

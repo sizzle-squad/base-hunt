@@ -257,7 +257,7 @@ export interface Database {
           network_id: string
           to_address: string | null
           transaction_hash: string
-          value: string | null
+          value: number | null
         }
         Insert: {
           block_hash?: string | null
@@ -273,7 +273,7 @@ export interface Database {
           network_id: string
           to_address?: string | null
           transaction_hash: string
-          value?: string | null
+          value?: number | null
         }
         Update: {
           block_hash?: string | null
@@ -289,7 +289,7 @@ export interface Database {
           network_id?: string
           to_address?: string | null
           transaction_hash?: string
-          value?: string | null
+          value?: number | null
         }
         Relationships: []
       }
@@ -425,7 +425,7 @@ export interface Database {
           network_id: string
           to_address: string | null
           transaction_hash: string
-          value: string | null
+          value: number | null
         }
         Insert: {
           block_hash?: string | null
@@ -441,7 +441,7 @@ export interface Database {
           network_id: string
           to_address?: string | null
           transaction_hash: string
-          value?: string | null
+          value?: number | null
         }
         Update: {
           block_hash?: string | null
@@ -457,7 +457,7 @@ export interface Database {
           network_id?: string
           to_address?: string | null
           transaction_hash?: string
-          value?: string | null
+          value?: number | null
         }
         Relationships: []
       }
