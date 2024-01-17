@@ -83,7 +83,7 @@ declare
 
 begin
  RETURN QUERY select to_json(temp) from (select b.id,b.name,b.image_url,b.contract_address,b.token_id,b.cta_url,b.cta_text,b.type,b.lat_lng,b.description,b.artist_name,w.to_address,w.transaction_hash,w.created_at,w.event_type from badge_configuration as b LEFT join webhook_data as w
-  on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(w.value,3)),16,'0'))::bit(64)::bigint and LOWER(w.from_address) = LOWER(b.minter)
+  on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = w.value and LOWER(w.from_address) = LOWER(b.minter)
   and w.to_address ILIKE _user_address where b.game_id = _game_id) as temp;
 end; 
 $$;
