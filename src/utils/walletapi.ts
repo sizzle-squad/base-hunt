@@ -12,8 +12,11 @@ const types = {
   AirdropCommandData: [
     { name: 'userAddress', type: 'address' },
     { name: 'command', type: 'string' },
+    { name: 'nonce', type: 'string' },
   ],
 };
+
+const airdropUrl = process.env.AIRDROP_URL as string;
 
 export async function airdropNft(userAddress: string, command: string) {
   const wallet = new Wallet(
@@ -25,6 +28,7 @@ export async function airdropNft(userAddress: string, command: string) {
   const message = {
     userAddress: userAddress,
     command: command,
+    nonce: ethers.hexlify(ethers.randomBytes(32)),
   };
 
   const signature = ethers.Signature.from(
@@ -43,15 +47,11 @@ export async function airdropNft(userAddress: string, command: string) {
 
   console.log('[AirdropNft] postData:', postData);
   if (process.env.AIRDROP_ENABLED) {
-    const response = await axios.post(
-      'https://api.wallet.coinbase.com/rpc/v2/bot/mint',
-      postData,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const response = await axios.post(airdropUrl, postData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     if (response.status != 200) {
       console.error('[AirdropNft] error airdropping:', response.data);
       return;
