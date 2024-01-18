@@ -36,6 +36,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
+import BoostsPageClient from '../(detailPages)/boosts/BoostsClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
@@ -91,7 +92,7 @@ export default function Badges() {
   const handleDisconnect = useCallback(async () => {
     await disconnectAsync();
     router.push('/');
-  }, [disconnectAsync]);
+  }, [disconnectAsync, router]);
 
   const handleDrawerDismiss = useCallback(() => {
     toggleDrawer('walletOperations', 'bottom', false);
@@ -121,7 +122,7 @@ export default function Badges() {
     if (isDisconnected) {
       router.push('/');
     }
-  }, [isDisconnected]);
+  }, [isDisconnected, router]);
 
   const BadgesWrapper = useMemo(() => {
     if (isClient) {
@@ -371,7 +372,6 @@ export default function Badges() {
             score={score as number}
           />
         </Stack>
-        {BadgesWrapper}
         <Box>
           {(['bottom'] as const).map((anchor) => (
             <Fragment key={anchor}>
@@ -385,7 +385,9 @@ export default function Badges() {
             </Fragment>
           ))}
         </Box>
+        <BoostsPageClient />
       </Stack>
+
       <BootstrapDialog
         onClose={() => setShowModal(false)}
         aria-labelledby="customized-dialog-title"
