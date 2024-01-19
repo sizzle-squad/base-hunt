@@ -324,7 +324,6 @@ export default function BoostsPageClient() {
 
   return (
     <>
-      <DetailsPageNavbar title={PageConsts.navTitle} />
       <NoSsr>
         <Stack gap={2}>
           {isLoading &&
