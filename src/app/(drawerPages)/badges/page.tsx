@@ -36,7 +36,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
-import BoostsPageClient from '../(detailPages)/boosts/BoostsClient';
+import ChallengePageClient from '../(detailPages)/boosts/ChallengeClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
@@ -385,7 +385,7 @@ export default function Badges() {
             </Fragment>
           ))}
         </Box>
-        <BoostsPageClient />
+        <ChallengePageClient />
       </Stack>
 
       <BootstrapDialog
