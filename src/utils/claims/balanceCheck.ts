@@ -1,8 +1,6 @@
 import { BigNumberish, ethers } from 'ethers';
+import { Network, providers } from '../ethereum';
 import { WebhookData } from '../webhook';
-import { Networks } from '../database.enums';
-import { providers } from '../ethereum';
-import { Database } from '../database.types';
 const balanceOfABI = [
   {
     constant: true,
@@ -51,45 +49,49 @@ const balanceOfTokenIdABI = [
   },
 ];
 
-export type CheckBalanceConfiguration = {
-  contract_address: string;
-  params: {
-    gte: number;
-    tokenId?: number;
-  };
-};
-
-export type CheckBalanceParams = {
-  userAddress: string;
-} & CheckBalanceConfiguration;
-
-export async function checkBalance(
-  params: CheckBalanceParams,
-  provider: ethers.JsonRpcProvider
-): Promise<boolean> {
-  const contract = new ethers.Contract(
-    params.contract_address,
-    balanceOfABI,
-    provider
-  );
-  const balance = await contract.balanceOf(params.userAddress);
-  const b = ethers.getBigInt(balance);
-  return b > ethers.toBigInt(params.params.gte);
+async function _checkBalance(
+  network: Network,
+  userAddress: string,
+  contractAddress: string
+): Promise<ethers.BigNumberish> {
+  const provider = providers[network];
+  const contract = new ethers.Contract(contractAddress, balanceOfABI, provider);
+  const balance = await contract.balanceOf(userAddress);
+  return balance;
 }
 
-export async function checkTokenIdBalance(
-  params: CheckBalanceParams,
-  provider: ethers.JsonRpcProvider
-): Promise<boolean> {
+async function _checkTokenIdBalance(
+  network: Network,
+  userAddress: string,
+  contractAddress: string,
+  tokenId: ethers.BigNumberish
+): Promise<ethers.BigNumberish> {
+  const provider = providers[network];
   const contract = new ethers.Contract(
-    params.contract_address,
+    contractAddress,
     balanceOfTokenIdABI,
     provider
   );
-  const balance = await contract.balanceOf(
-    params.userAddress,
-    params.params.tokenId
+  const balance = await contract.balanceOf(userAddress, tokenId);
+  return balance;
+}
+
+export type CheckBalanceParams = {
+  gte: string;
+};
+
+export async function checkBalance(
+  event: WebhookData,
+  params: CheckBalanceParams,
+  network: Network
+): Promise<boolean> {
+  const provider = providers[network];
+  const contract = new ethers.Contract(
+    event.contract_address,
+    balanceOfABI,
+    provider
   );
+  const balance = await contract.balanceOf(event.to_address);
   const b = ethers.getBigInt(balance);
-  return b > ethers.toBigInt(params.params.gte);
+  return b > ethers.toBigInt(params.gte);
 }

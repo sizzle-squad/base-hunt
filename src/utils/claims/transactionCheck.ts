@@ -1,17 +1,23 @@
-import { ethers } from 'ethers';
+import ethers from 'ethers';
 import { WebhookData } from '../webhook';
-import { Networks } from '../database.enums';
-import { providers } from '../ethereum';
+import { Network } from '../ethereum';
+
+async function _parseTransaction(txHash: string) {
+  let provider = new ethers.JsonRpcProvider(process.env.BASE_NODE_URL);
+  let tx = await provider.getTransaction(txHash);
+  return tx;
+}
 
 export type CheckExectionParams = {
   function: string;
-} & WebhookData;
+};
 
 export async function checkFunctionExecution(
+  webhookData: WebhookData,
   params: CheckExectionParams,
-  provider: ethers.JsonRpcProvider
+  network: Network
 ): Promise<boolean> {
   const selector = ethers.id(params.function).substring(0, 10);
-  const tx = await provider.getTransaction(params.transaction_hash);
+  let tx = await _parseTransaction(webhookData.transaction_hash);
   return tx?.data.startsWith(selector) ?? false;
 }
