@@ -36,7 +36,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
-import ChallengePageClient from './ChallengeClient';
+import BoostsPageClient from '../(detailPages)/boosts/BoostsClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
@@ -107,7 +107,6 @@ export default function Badges() {
       );
     },
     // Adding walletOperations to the dependency array causes toggleDrawer always set to true
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [toggleDrawer]
   );
 
@@ -386,7 +385,7 @@ export default function Badges() {
             </Fragment>
           ))}
         </Box>
-        <ChallengePageClient />
+        <BoostsPageClient />
       </Stack>
 
       <BootstrapDialog
