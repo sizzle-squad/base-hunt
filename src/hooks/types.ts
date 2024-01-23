@@ -98,6 +98,13 @@ export enum BoostIconEnum {
   USERS = 'USERS',
 }
 
+export enum ChallengeDifficultyEnum {
+  EASY = 'EASY',
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD',
+  EPIC = 'EPIC',
+}
+
 export type Boost = {
   icon: BoostIconEnum;
   description: string;
@@ -114,6 +121,7 @@ export type Boost = {
   points: bigint;
   nftAmount: bigint | null;
   claimed: boolean;
+  difficultyType: ChallengeDifficultyEnum | null;
 };
 
 export enum BoostTypeEnum {
