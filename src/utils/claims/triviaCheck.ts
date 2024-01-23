@@ -1,18 +1,13 @@
 import { ethers } from 'ethers';
 
-export type CheckTriviaConfiguration = {
-  params: {
-    answer: string;
-  };
-};
-export type CheckTriviaParams = {
-  userAddress: string;
-  submitted: string;
-} & CheckTriviaConfiguration;
+export interface CheckBalanceParams {
+  answer: string;
+}
 
 export async function checkTrivia(
-  params: CheckTriviaParams,
+  answer: string,
+  params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  return params.params.answer.toLowerCase() === params.submitted.toLowerCase();
+  return answer.toLocaleLowerCase() === params.answer.toLocaleLowerCase();
 }

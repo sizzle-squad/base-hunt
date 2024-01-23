@@ -7,11 +7,7 @@ import {
   ChallengeStatus,
   ChallengeType,
 } from '@/utils/database.enums';
-import {
-  CheckFunctions,
-  MapChallengeTypeUserAddress,
-} from '@/utils/claims/selectors';
-import { providers } from '@/utils/ethereum';
+import { CheckFunctions } from '@/utils/claims/selectors';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -40,67 +36,36 @@ export async function POST(req: Request) {
   for (let i = 0; i < challenges.data.length; i++) {
     try {
       const c = challenges.data[i];
-      let eventType =
-        ChallengeType[data.event_type as keyof typeof ChallengeType];
-
-      if (c.type !== eventType) {
-        console.error(
-          'skipping challenge:',
-          c.id,
-          'type:',
-          c.type,
-          'event_type:',
-          data.event_type
-        );
-        continue;
-      }
-
-      if (c.is_dynamic_points) {
-        console.warn(
-          `dynamic points not supported for streaming challenges:` + c.id
-        );
-        continue;
-      }
-
-      let checkFunc =
-        CheckFunctions[c.function_type as keyof typeof CheckFunctions];
-      if (checkFunc === undefined) {
-        throw new Error(
-          'check function is undefined:' +
-            c.function_type +
-            ' challenge id:' +
-            c.id
-        );
-      }
-
-      const network = c.network as Networks;
-      const provider = providers[network];
-
-      if (provider === undefined) {
-        throw new Error('provider is undefined for network:' + c.network);
-      }
-
-      let challengeType = ChallengeType[c.type as keyof typeof ChallengeType];
-      if (challengeType === undefined) {
-        throw new Error(`challenge type is undefined:` + c.type);
-      }
-
-      if (await checkFunc({ ...data, ...(c.params as object) }, provider)) {
-        let userAddress =
-          MapChallengeTypeUserAddress[
+      let check = false;
+      let userAddress = '';
+      const network =
+        Networks[c.network as keyof typeof Networks] ||
+        Networks.networks_base_mainnet;
+      switch (c.type) {
+        case ChallengeType.EVENT_TYPE_CONTRACT_EXECUTION:
+          check = await CheckFunctions[
             c.function_type as keyof typeof CheckFunctions
-          ](data);
-        if (userAddress === undefined) {
-          throw new Error('user address is undefined');
-        }
-
+          ](data, c.params, network);
+          userAddress = data.from_address;
+          break;
+        case ChallengeType.EVENT_TYPE_TRANSFER_ERC1155:
+        case ChallengeType.EVENT_TYPE_TRANSFER_ERC721:
+          check = await CheckFunctions[
+            c.function_type as keyof typeof CheckFunctions
+          ](data, c.params, network);
+          userAddress = data.to_address;
+          break;
+        default:
+          console.warn('unknown streaming challenge type:', c);
+      }
+      if (check) {
+        //Insert the claim
         const claim = await supabase
           .from('user_challenge_status')
           .insert({
             user_address: userAddress,
             challenge_id: c.id,
             status: ChallengeStatus.COMPLETE,
-            points: c.points as number,
           })
           .select();
         if (claim.error) {
