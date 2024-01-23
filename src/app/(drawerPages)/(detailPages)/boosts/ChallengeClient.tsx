@@ -4,17 +4,17 @@ import React from 'react';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
-import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
 import {
-  Box,
-  Button,
   NoSsr,
   Snackbar,
   Stack,
   Link,
-  Tab,
-  Tabs,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Card,
+  Grid,
 } from '@mui/material';
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
@@ -24,6 +24,7 @@ import { useBoosts } from '@/hooks/useBoosts';
 import { useClaimBoost } from '@/hooks/useClaimBoost';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
+import { Button } from '@/components/assets/Button';
 
 import {
   WalletIcon,
@@ -98,7 +99,6 @@ export default function ChallengePageClient() {
     gameId: GAME_ID,
   });
   const { claimBoost } = useClaimBoost();
-  const [activeTab, setActiveTab] = useState(0);
 
   const boostList = useMemo(() => {
     return boosts
@@ -190,14 +190,12 @@ export default function ChallengePageClient() {
     ({
       item,
       onClick,
+      cta = 'Claim Points',
     }: {
       item: ListCardPropsForBoosts;
       onClick: (item: ListCardPropsForBoosts) => void;
-    }) => (
-      <Box sx={{ color: 'blue' }} onClick={() => onClick(item)}>
-        Claim Points
-      </Box>
-    )
+      cta?: string;
+    }) => <Button onClick={() => onClick(item)}>{cta}</Button>
   );
 
   const ToolbarWithClose = memo(
@@ -283,14 +281,6 @@ export default function ChallengePageClient() {
         {item.type === 'SOCIAL' ? (
           <Button
             variant="contained"
-            color="primary"
-            sx={{
-              py: 2,
-              px: 3,
-              borderRadius: 2,
-              bgcolor: 'black',
-              color: 'white',
-            }}
             disabled={
               (isEligible && ctaButtonText === 'Check claim') ||
               claimBoost.isLoading
@@ -312,14 +302,6 @@ export default function ChallengePageClient() {
         ) : (
           <Button
             variant="contained"
-            color="primary"
-            sx={{
-              py: 2,
-              px: 3,
-              borderRadius: 2,
-              bgcolor: 'black',
-              color: 'white',
-            }}
             disabled={
               (isEligible && ctaButtonText === 'Check claim') ||
               claimBoost.isLoading
@@ -333,53 +315,49 @@ export default function ChallengePageClient() {
     );
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-  };
-
   return (
     <>
       <NoSsr>
-        <Stack gap={2}>
+        <Stack gap={2} alignItems="center">
           {isLoading &&
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
             ))}
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            aria-label="bast hunt challenge tabs"
-          >
-            <Tab label="Easy" />
-            <Tab label="Medium" />
-            <Tab label="Hard" />
-            <Tab label="Epic" />
-          </Tabs>
-          {/* TODO: challenge supports "track" type and activeTab would map to it */}
-          {boostList &&
-            activeTab === 0 &&
-            boostList?.map((item, index) => (
-              <ListCard
-                key={index}
-                title={item.title}
-                subtitle={
-                  item.claimed ? (
-                    item.type === 'TRANSFER_NFT' ? (
-                      'Auto-claimed'
-                    ) : (
-                      'Claimed'
-                    )
-                  ) : (
-                    <ToggleDrawerButton
-                      item={item}
-                      onClick={handleToggleDrawer}
+          <Grid container spacing={3} sx={{ width: '100%' }}>
+            {boostList &&
+              boostList?.map((item, index) => (
+                <Grid item key={index}>
+                  <Card
+                    sx={{
+                      width: '300px',
+                      height: '100%',
+                      p: 2,
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <CardHeader
+                      sx={{ height: '100px', fontSize: '16px', p: 0 }}
+                      title={<Text variant="h6">{item.title}</Text>}
+                      subheader={<Text>{item.points.toString() + ' pts'}</Text>}
+                      disableTypography
+                      avatar={item.startContent}
                     />
-                  )
-                }
-                startContent={item.startContent}
-                endContent={item.endContent}
-              />
-            ))}
+                    <CardMedia
+                      component="img"
+                      height="300"
+                      image="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
+                      alt="green iguana"
+                    />
+                    <CardContent>
+                      <ToggleDrawerButton
+                        item={item}
+                        onClick={handleToggleDrawer}
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+          </Grid>
         </Stack>
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}
