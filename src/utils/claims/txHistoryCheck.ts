@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { BASE_NODE_URL, Network, providers } from '../ethereum';
+import { providers } from '../ethereum';
 import { ethers } from 'ethers';
+import { Networks } from '../database.enums';
 
 const MAX_FETCH = 10;
 
@@ -32,7 +33,7 @@ export interface TxHistoryTransaction {
 }
 export async function getTxHistoryForAddress(
   userAddress: string,
-  network: Network
+  network: Networks
 ): Promise<TxHistoryTransaction[]> {
   let counter = 0;
   let transactions = [];
@@ -58,10 +59,14 @@ export async function getTxHistoryForAddress(
   return transactions;
 }
 
-export async function getTxCountBatch(
+export interface CheckTxCountBatchParams {
+  gte: string;
+}
+export async function checkTxCountBatch(
   userAddresses: string[],
-  network: Network
-): Promise<BigInt> {
+  params: CheckTxCountBatchParams,
+  provider: ethers.JsonRpcProvider
+): Promise<boolean> {
   const r = userAddresses.map((a, idx) => {
     return { id: idx, jsonrpc: '2.0', method: 'string', params: [a] };
   }) as Array<{
@@ -70,12 +75,12 @@ export async function getTxCountBatch(
     method: string;
     params: Array<any>;
   }>;
+  const results = await provider._send(r);
 
-  const results = await providers[network]._send(r);
-
-  return results
+  const rr = results
     .map((r) => {
       return ethers.toBigInt(r.result);
     })
     .reduce((a, b) => a + b, ethers.toBigInt(0));
+  return rr >= ethers.toBigInt(params.gte);
 }

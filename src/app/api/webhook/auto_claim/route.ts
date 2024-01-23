@@ -2,8 +2,12 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { WebhookData, verifyWebhookSecret } from '@/utils/webhook';
 import { Database } from '@/utils/database.types';
-import { toBigInt } from '@/utils/toBigInt';
-import { checkFunctionExecution } from '@/utils/claims/transactionCheck';
+import {
+  Networks,
+  ChallengeStatus,
+  ChallengeType,
+} from '@/utils/database.enums';
+import { CheckFunctions } from '@/utils/claims/selectors';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -33,12 +37,40 @@ export async function POST(req: Request) {
     try {
       const c = challenges.data[i];
       let check = false;
+      let userAddress = '';
+      const network =
+        Networks[c.network as keyof typeof Networks] ||
+        Networks.networks_base_mainnet;
       switch (c.type) {
-        case 'EVENT_TYPE_CONTRACT_EXECUTION':
-          check = await checkFunctionExecution(data, c.params, c.network);
+        case ChallengeType.EVENT_TYPE_CONTRACT_EXECUTION:
+          check = await CheckFunctions[
+            c.function_type as keyof typeof CheckFunctions
+          ](data, c.params, network);
+          userAddress = data.from_address;
+          break;
+        case ChallengeType.EVENT_TYPE_TRANSFER_ERC1155:
+        case ChallengeType.EVENT_TYPE_TRANSFER_ERC721:
+          check = await CheckFunctions[
+            c.function_type as keyof typeof CheckFunctions
+          ](data, c.params, network);
+          userAddress = data.to_address;
           break;
         default:
-          console.warn('unknown challenge type:', c);
+          console.warn('unknown streaming challenge type:', c);
+      }
+      if (check) {
+        //Insert the claim
+        const claim = await supabase
+          .from('user_challenge_status')
+          .insert({
+            user_address: userAddress,
+            challenge_id: c.id,
+            status: ChallengeStatus.COMPLETE,
+          })
+          .select();
+        if (claim.error) {
+          throw claim.error;
+        }
       }
     } catch (error) {
       console.error(
@@ -48,17 +80,6 @@ export async function POST(req: Request) {
         error
       );
     }
-  }
-
-  console.log('[webhook transfer] body:', body);
-  body.value = (toBigInt(body.value) ?? BigInt(0)).toString();
-  const webhookData = await supabase
-    .from('webhook_data')
-    .upsert(body, { ignoreDuplicates: true })
-    .select();
-  if (webhookData.error) {
-    console.error(webhookData);
-    throw new Error(webhookData.error.message);
   }
   return NextResponse.json({ status: 'ok' });
 }
