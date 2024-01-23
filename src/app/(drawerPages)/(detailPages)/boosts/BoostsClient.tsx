@@ -1,21 +1,12 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
-import {
-  Box,
-  Button,
-  NoSsr,
-  Snackbar,
-  Stack,
-  Link,
-  Tab,
-  Tabs,
-} from '@mui/material';
+import { Box, Button, NoSsr, Snackbar, Stack, Link } from '@mui/material';
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
@@ -24,12 +15,30 @@ import { useBoosts } from '@/hooks/useBoosts';
 import { useClaimBoost } from '@/hooks/useClaimBoost';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
-import { ChallengeDifficultyEnum } from '@/hooks/types';
+import {
+  WalletIcon,
+  CoffeeIcon,
+  BagIcon,
+  GridIcon,
+  CircleIcon,
+  LinkIcon,
+  UsersIcon,
+} from '@/components/assets/icons/BoostIcon';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
 
-export type BoostEntry = {
+const iconMapping = {
+  WALLET: <WalletIcon />,
+  COFFEE: <CoffeeIcon />,
+  BAG: <BagIcon />,
+  GRID: <GridIcon />,
+  CIRCLE: <CircleIcon />,
+  LINK: <LinkIcon />,
+  USERS: <UsersIcon />,
+};
+
+type BoostEntry = {
   id: bigint;
   title: string;
   description: string;
@@ -42,8 +51,8 @@ export type BoostEntry = {
   points: bigint;
   claimed: boolean;
   claimable: boolean;
-  startContent: ReactNode;
-  endContent: ReactNode;
+  startContent: React.JSX.Element;
+  endContent: React.JSX.Element;
 };
 
 type ListCardPropsForBoosts = ListCardProps & {
@@ -71,45 +80,37 @@ const PageConsts = {
   drawerAnchor: 'bottom' as const,
 } as const;
 
-const mapChallengeType = [
-  ChallengeDifficultyEnum.EASY,
-  ChallengeDifficultyEnum.MEDIUM,
-  ChallengeDifficultyEnum.HARD,
-  ChallengeDifficultyEnum.EPIC,
-];
-
-export default function ChallengePageClient() {
+export default function BoostsPageClient() {
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
-  const { data: challenges, isLoading } = useBoosts({
+  const { data: boosts, isLoading } = useBoosts({
     userAddress: address,
     gameId: GAME_ID,
   });
   const { claimBoost } = useClaimBoost();
-  const [activeTab, setActiveTab] = useState<number>(0);
 
-  // const boostList = useMemo(() => {
-  //   return challenges
-  //     ?.filter((boost) => boost.isEnabled)
-  //     .map((boost) => {
-  //       return {
-  //         id: boost.id,
-  //         title: boost.name,
-  //         description: boost.description,
-  //         type: boost.boostType,
-  //         contractAddresses: boost.contractAddresses,
-  //         subtitle: '',
-  //         ctaUrl: boost.ctaUrl,
-  //         ctaText: boost.ctaText,
-  //         ctaButtonText: boost.ctaButtonText,
-  //         points: boost.points,
-  //         claimed: boost.claimed,
-  //         claimable: !boost.claimed,
-  //         startContent: iconMapping[boost.icon],
-  //         endContent: <Text>{boost.points.toString()} pts</Text>,
-  //       } as BoostEntry;
-  //     }) as BoostEntry[];
-  // }, [challenges]);
+  const boostList = useMemo(() => {
+    return boosts
+      ?.filter((boost) => boost.isEnabled)
+      .map((boost) => {
+        return {
+          id: boost.id,
+          title: boost.name,
+          description: boost.description,
+          type: boost.boostType,
+          contractAddresses: boost.contractAddresses,
+          subtitle: '',
+          ctaUrl: boost.ctaUrl,
+          ctaText: boost.ctaText,
+          ctaButtonText: boost.ctaButtonText,
+          points: boost.points,
+          claimed: boost.claimed,
+          claimable: !boost.claimed,
+          startContent: iconMapping[boost.icon],
+          endContent: <Text>{boost.points.toString()} pts</Text>,
+        } as BoostEntry;
+      }) as BoostEntry[];
+  }, [boosts]);
 
   const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
     null
@@ -321,37 +322,6 @@ export default function ChallengePageClient() {
     );
   };
 
-  const handleTabChange = useCallback(
-    (_: React.SyntheticEvent, newValue: number) => {
-      setActiveTab(newValue);
-    },
-    []
-  );
-
-  const challengeCardList = useMemo(() => {
-    if (!challenges) return [];
-    const currentChallenges = challenges[mapChallengeType[activeTab]];
-    return currentChallenges.map((challenge, index) => (
-      <ListCard
-        key={index}
-        title={challenge.title}
-        subtitle={
-          challenge.claimed ? (
-            challenge.type === 'TRANSFER_NFT' ? (
-              'Auto-claimed'
-            ) : (
-              'Claimed'
-            )
-          ) : (
-            <ToggleDrawerButton item={challenge} onClick={handleToggleDrawer} />
-          )
-        }
-        startContent={challenge.startContent}
-        endContent={challenge.endContent}
-      />
-    ));
-  }, [ToggleDrawerButton, activeTab, challenges, handleToggleDrawer]);
-
   return (
     <>
       <NoSsr>
@@ -360,18 +330,29 @@ export default function ChallengePageClient() {
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
             ))}
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            aria-label="bast hunt challenge tabs"
-          >
-            <Tab label="Easy" />
-            <Tab label="Medium" />
-            <Tab label="Hard" />
-            <Tab label="Epic" />
-          </Tabs>
-          {/* TODO: challenge supports "track" type and activeTab would map to it */}
-          {challengeCardList}
+          {boostList &&
+            boostList?.map((item, index) => (
+              <ListCard
+                key={index}
+                title={item.title}
+                subtitle={
+                  item.claimed ? (
+                    item.type === 'TRANSFER_NFT' ? (
+                      'Auto-claimed'
+                    ) : (
+                      'Claimed'
+                    )
+                  ) : (
+                    <ToggleDrawerButton
+                      item={item}
+                      onClick={handleToggleDrawer}
+                    />
+                  )
+                }
+                startContent={item.startContent}
+                endContent={item.endContent}
+              />
+            ))}
         </Stack>
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}

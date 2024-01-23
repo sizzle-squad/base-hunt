@@ -24,7 +24,6 @@ export type BoostType = {
   is_enabled: boolean;
   points: bigint;
   nft_amount: bigint | null;
-  difficulty_type: string | null;
 };
 
 export type Boost = {
@@ -42,7 +41,6 @@ export type Boost = {
   isEnabled: boolean;
   points: bigint;
   nftAmount: bigint | null;
-  difficultyType: string | null;
 };
 
 async function mapBoostState(boost: BoostType): Promise<Boost> {
@@ -58,7 +56,6 @@ async function mapBoostState(boost: BoostType): Promise<Boost> {
     ctaText: boost.cta_text,
     ctaButtonText: boost.cta_button_text,
     boostType: boost.boost_type,
-    difficultyType: boost.difficulty_type,
     isEnabled: boost.is_enabled,
     points: boost.points,
     nftAmount: boost.nft_amount,
