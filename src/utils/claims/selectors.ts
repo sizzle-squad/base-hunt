@@ -1,4 +1,5 @@
-import { CheckFunctionType } from '../database.enums';
+import { ChallengeType, CheckFunctionType } from '../database.enums';
+import { WebhookData } from '../webhook';
 import { checkBalance, checkTokenIdBalance } from './balanceCheck';
 import { checkMint } from './mintCheck';
 import { checkFunctionExecution } from './transactionCheck';
@@ -14,4 +15,32 @@ export const CheckFunctions: {
   [CheckFunctionType.checkBalance]: checkBalance,
   [CheckFunctionType.checkTokenIdBalance]: checkTokenIdBalance,
   [CheckFunctionType.getTxCountBatch]: checkTxCountBatch,
+};
+
+export const MapChallengeTypeUserAddress: {
+  [key in CheckFunctionType]: (w: WebhookData) => string | undefined;
+} = {
+  [CheckFunctionType.checkMint]: (w: WebhookData) => w.to_address,
+  [CheckFunctionType.checkFunctionExecution]: (w: WebhookData) =>
+    w.from_address,
+  [CheckFunctionType.checkTokenIdBalance]: function (
+    w: WebhookData
+  ): string | undefined {
+    throw new Error('Function not implemented.');
+  },
+  [CheckFunctionType.getTxCountBatch]: function (
+    w: WebhookData
+  ): string | undefined {
+    throw new Error('Function not implemented.');
+  },
+  [CheckFunctionType.checkTrivia]: function (
+    w: WebhookData
+  ): string | undefined {
+    throw new Error('Function not implemented.');
+  },
+  [CheckFunctionType.checkBalance]: function (
+    w: WebhookData
+  ): string | undefined {
+    throw new Error('Function not implemented.');
+  },
 };
