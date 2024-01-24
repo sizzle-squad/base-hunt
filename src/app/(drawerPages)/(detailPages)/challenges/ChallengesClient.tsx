@@ -15,6 +15,7 @@ import {
   CardMedia,
   Card,
   Grid,
+  Avatar,
 } from '@mui/material';
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
@@ -35,6 +36,8 @@ import {
   LinkIcon,
   UsersIcon,
 } from '@/components/assets/icons/BoostIcon';
+import { ST } from 'next/dist/shared/lib/utils';
+import { deepOrange, green } from '@mui/material/colors';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
@@ -325,38 +328,52 @@ export default function ChallengesPageClient() {
             ))}
           <Grid container spacing={3} sx={{ width: '100%' }}>
             {boostList &&
-              boostList?.map((item, index) => (
-                <Grid item key={index}>
-                  <Card
-                    sx={{
-                      width: '300px',
-                      height: '100%',
-                      p: 2,
-                      borderRadius: '8px',
-                    }}
-                  >
-                    <CardHeader
-                      sx={{ height: '100px', fontSize: '16px', p: 0 }}
-                      title={<Text variant="h6">{item.title}</Text>}
-                      subheader={<Text>{item.points.toString() + ' pts'}</Text>}
-                      disableTypography
-                      avatar={item.startContent}
-                    />
-                    <CardMedia
-                      component="img"
-                      height="300"
-                      image="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
-                      alt="green iguana"
-                    />
-                    <CardContent>
-                      <ToggleDrawerButton
-                        item={item}
-                        onClick={handleToggleDrawer}
+              boostList?.map((item, index) => {
+                const bgColor =
+                  item.type.charAt(0) === 'T' ? deepOrange[500] : green[500];
+                return (
+                  <Grid item key={index}>
+                    <Card
+                      sx={{
+                        width: '300px',
+                        height: '100%',
+                        p: 2,
+                        borderRadius: '8px',
+                      }}
+                    >
+                      <CardContent>
+                        <Stack direction="row" gap={2}>
+                          <Stack direction={'column'} height={100} py={1}>
+                            <Text variant="h6">{item.title}</Text>
+                            <Text>{item.points.toString() + ' pts'}</Text>
+                          </Stack>
+                          <Avatar
+                            sx={{
+                              bgcolor: bgColor,
+                              height: '50px',
+                              width: '50px',
+                            }}
+                          >
+                            {item.type.charAt(0)}
+                          </Avatar>
+                        </Stack>
+                      </CardContent>
+                      <CardMedia
+                        component="img"
+                        height="300"
+                        image="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
+                        alt="green iguana"
                       />
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
+                      <CardContent>
+                        <ToggleDrawerButton
+                          item={item}
+                          onClick={handleToggleDrawer}
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })}
           </Grid>
         </Stack>
         <SwipeUpDrawer
