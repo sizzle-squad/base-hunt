@@ -43,7 +43,7 @@ export async function POST(req: Request) {
         ChallengeType[data.event_type as keyof typeof ChallengeType];
 
       if (c.type !== eventType) {
-        console.log(
+        console.error(
           'skipping challenge:',
           c.id,
           'type:',
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
 
       let challengeType = ChallengeType[c.type as keyof typeof ChallengeType];
 
-      if (await checkFunc({ data, ...(c.params as object) }, network)) {
+      if (await checkFunc({ ...data, ...(c.params as object) }, network)) {
         let userAddress =
           MapChallengeTypeUserAddress[
             c.function_type as keyof typeof CheckFunctions
