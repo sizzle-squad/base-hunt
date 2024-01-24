@@ -33,7 +33,12 @@ export async function POST(request: NextRequest) {
   };
 
   console.log(params);
-  const { error } = await supabase.rpc('upsertguild', params);
+  // const { error } = await supabase.rpc('upsertguild', params);
+  const { error } = await supabase
+    .from('guild_configuration')
+    .upsert(params)
+    .select();
+
   if (error) {
     console.error(error);
 
