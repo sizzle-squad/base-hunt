@@ -59,15 +59,15 @@ export async function getTxHistoryForAddress(
   return transactions;
 }
 
-export interface CheckTxCountBatchParams {
+export type CheckTxCountBatchParams = {
+  userAddresses: string[];
   gte: string;
-}
+};
 export async function checkTxCountBatch(
-  userAddresses: string[],
   params: CheckTxCountBatchParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  const r = userAddresses.map((a, idx) => {
+  const r = params.userAddresses.map((a, idx) => {
     return { id: idx, jsonrpc: '2.0', method: 'string', params: [a] };
   }) as Array<{
     id: number;

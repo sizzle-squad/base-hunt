@@ -51,40 +51,42 @@ const balanceOfTokenIdABI = [
 ];
 
 export type CheckTokenIdBalanceParams = {
+  contractAddress: string;
+  userAddress: string;
   tokenId: string;
   gte: string;
 };
 
 export type CheckBalanceParams = {
+  userAddress: string;
+  contractAddress: string;
   gte: string;
 };
 
 export async function checkBalance(
-  event: WebhookData,
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const contract = new ethers.Contract(
-    event.contract_address,
+    params.contractAddress,
     balanceOfABI,
     provider
   );
-  const balance = await contract.balanceOf(event.to_address);
+  const balance = await contract.balanceOf(params.userAddress);
   const b = ethers.getBigInt(balance);
   return b > ethers.toBigInt(params.gte);
 }
 
 export async function checkTokenIdBalance(
-  event: WebhookData,
   params: CheckTokenIdBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const contract = new ethers.Contract(
-    event.contract_address,
+    params.contractAddress,
     balanceOfTokenIdABI,
     provider
   );
-  const balance = await contract.balanceOf(event.to_address, params.tokenId);
+  const balance = await contract.balanceOf(params.userAddress, params.tokenId);
   const b = ethers.getBigInt(balance);
   return b > ethers.toBigInt(params.gte);
 }
