@@ -1,20 +1,20 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
-import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useDrawer } from '@/context/DrawerContext';
 import {
-  Box,
-  Button,
   NoSsr,
   Snackbar,
   Stack,
   Link,
-  Tab,
-  Tabs,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Card,
+  Grid,
 } from '@mui/material';
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
@@ -24,12 +24,32 @@ import { useBoosts } from '@/hooks/useBoosts';
 import { useClaimBoost } from '@/hooks/useClaimBoost';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
-import { ChallengeDifficultyEnum } from '@/hooks/types';
+import { Button } from '@/components/assets/Button';
+
+import {
+  WalletIcon,
+  CoffeeIcon,
+  BagIcon,
+  GridIcon,
+  CircleIcon,
+  LinkIcon,
+  UsersIcon,
+} from '@/components/assets/icons/BoostIcon';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
 
-export type BoostEntry = {
+const iconMapping = {
+  WALLET: <WalletIcon />,
+  COFFEE: <CoffeeIcon />,
+  BAG: <BagIcon />,
+  GRID: <GridIcon />,
+  CIRCLE: <CircleIcon />,
+  LINK: <LinkIcon />,
+  USERS: <UsersIcon />,
+};
+
+type BoostEntry = {
   id: bigint;
   title: string;
   description: string;
@@ -42,8 +62,8 @@ export type BoostEntry = {
   points: bigint;
   claimed: boolean;
   claimable: boolean;
-  startContent: ReactNode;
-  endContent: ReactNode;
+  startContent: React.JSX.Element;
+  endContent: React.JSX.Element;
 };
 
 type ListCardPropsForBoosts = ListCardProps & {
@@ -71,45 +91,37 @@ const PageConsts = {
   drawerAnchor: 'bottom' as const,
 } as const;
 
-const mapChallengeType = [
-  ChallengeDifficultyEnum.EASY,
-  ChallengeDifficultyEnum.MEDIUM,
-  ChallengeDifficultyEnum.HARD,
-  ChallengeDifficultyEnum.EPIC,
-];
-
 export default function ChallengePageClient() {
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
-  const { data: challenges, isLoading } = useBoosts({
+  const { data: boosts, isLoading } = useBoosts({
     userAddress: address,
     gameId: GAME_ID,
   });
   const { claimBoost } = useClaimBoost();
-  const [activeTab, setActiveTab] = useState<number>(0);
 
-  // const boostList = useMemo(() => {
-  //   return challenges
-  //     ?.filter((boost) => boost.isEnabled)
-  //     .map((boost) => {
-  //       return {
-  //         id: boost.id,
-  //         title: boost.name,
-  //         description: boost.description,
-  //         type: boost.boostType,
-  //         contractAddresses: boost.contractAddresses,
-  //         subtitle: '',
-  //         ctaUrl: boost.ctaUrl,
-  //         ctaText: boost.ctaText,
-  //         ctaButtonText: boost.ctaButtonText,
-  //         points: boost.points,
-  //         claimed: boost.claimed,
-  //         claimable: !boost.claimed,
-  //         startContent: iconMapping[boost.icon],
-  //         endContent: <Text>{boost.points.toString()} pts</Text>,
-  //       } as BoostEntry;
-  //     }) as BoostEntry[];
-  // }, [challenges]);
+  const boostList = useMemo(() => {
+    return boosts
+      ?.filter((boost) => boost.isEnabled)
+      .map((boost) => {
+        return {
+          id: boost.id,
+          title: boost.name,
+          description: boost.description,
+          type: boost.boostType,
+          contractAddresses: boost.contractAddresses,
+          subtitle: '',
+          ctaUrl: boost.ctaUrl,
+          ctaText: boost.ctaText,
+          ctaButtonText: boost.ctaButtonText,
+          points: boost.points,
+          claimed: boost.claimed,
+          claimable: !boost.claimed,
+          startContent: iconMapping[boost.icon],
+          endContent: <Text>{boost.points.toString()} pts</Text>,
+        } as BoostEntry;
+      }) as BoostEntry[];
+  }, [boosts]);
 
   const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
     null
@@ -178,14 +190,12 @@ export default function ChallengePageClient() {
     ({
       item,
       onClick,
+      cta = 'Claim Points',
     }: {
       item: ListCardPropsForBoosts;
       onClick: (item: ListCardPropsForBoosts) => void;
-    }) => (
-      <Box sx={{ color: 'blue' }} onClick={() => onClick(item)}>
-        Claim Points
-      </Box>
-    )
+      cta?: string;
+    }) => <Button onClick={() => onClick(item)}>{cta}</Button>
   );
 
   const ToolbarWithClose = memo(
@@ -271,14 +281,6 @@ export default function ChallengePageClient() {
         {item.type === 'SOCIAL' ? (
           <Button
             variant="contained"
-            color="primary"
-            sx={{
-              py: 2,
-              px: 3,
-              borderRadius: 2,
-              bgcolor: 'black',
-              color: 'white',
-            }}
             disabled={
               (isEligible && ctaButtonText === 'Check claim') ||
               claimBoost.isLoading
@@ -300,14 +302,6 @@ export default function ChallengePageClient() {
         ) : (
           <Button
             variant="contained"
-            color="primary"
-            sx={{
-              py: 2,
-              px: 3,
-              borderRadius: 2,
-              bgcolor: 'black',
-              color: 'white',
-            }}
             disabled={
               (isEligible && ctaButtonText === 'Check claim') ||
               claimBoost.isLoading
@@ -321,57 +315,49 @@ export default function ChallengePageClient() {
     );
   };
 
-  const handleTabChange = useCallback(
-    (_: React.SyntheticEvent, newValue: number) => {
-      setActiveTab(newValue);
-    },
-    []
-  );
-
-  const challengeCardList = useMemo(() => {
-    if (!challenges) return [];
-    const currentChallenges = challenges[mapChallengeType[activeTab]];
-    return currentChallenges.map((challenge, index) => (
-      <ListCard
-        key={index}
-        title={challenge.title}
-        subtitle={
-          challenge.claimed ? (
-            challenge.type === 'TRANSFER_NFT' ? (
-              'Auto-claimed'
-            ) : (
-              'Claimed'
-            )
-          ) : (
-            <ToggleDrawerButton item={challenge} onClick={handleToggleDrawer} />
-          )
-        }
-        startContent={challenge.startContent}
-        endContent={challenge.endContent}
-      />
-    ));
-  }, [ToggleDrawerButton, activeTab, challenges, handleToggleDrawer]);
-
   return (
     <>
       <NoSsr>
-        <Stack gap={2}>
+        <Stack gap={2} alignItems="center">
           {isLoading &&
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
             ))}
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            aria-label="bast hunt challenge tabs"
-          >
-            <Tab label="Easy" />
-            <Tab label="Medium" />
-            <Tab label="Hard" />
-            <Tab label="Epic" />
-          </Tabs>
-          {/* TODO: challenge supports "track" type and activeTab would map to it */}
-          {challengeCardList}
+          <Grid container spacing={3} sx={{ width: '100%' }}>
+            {boostList &&
+              boostList?.map((item, index) => (
+                <Grid item key={index}>
+                  <Card
+                    sx={{
+                      width: '300px',
+                      height: '100%',
+                      p: 2,
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <CardHeader
+                      sx={{ height: '100px', fontSize: '16px', p: 0 }}
+                      title={<Text variant="h6">{item.title}</Text>}
+                      subheader={<Text>{item.points.toString() + ' pts'}</Text>}
+                      disableTypography
+                      avatar={item.startContent}
+                    />
+                    <CardMedia
+                      component="img"
+                      height="300"
+                      image="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
+                      alt="green iguana"
+                    />
+                    <CardContent>
+                      <ToggleDrawerButton
+                        item={item}
+                        onClick={handleToggleDrawer}
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+          </Grid>
         </Stack>
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}
