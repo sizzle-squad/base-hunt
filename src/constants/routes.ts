@@ -15,4 +15,8 @@ export const routes = {
     default: '/api/boosts',
   },
   levels: '/api/profile/level',
+  guild: {
+    default: '/api/guild',
+    state: '/api/guild/state',
+  },
 };
