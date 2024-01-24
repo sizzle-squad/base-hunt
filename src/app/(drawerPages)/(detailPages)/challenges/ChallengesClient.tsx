@@ -91,7 +91,7 @@ const PageConsts = {
   drawerAnchor: 'bottom' as const,
 } as const;
 
-export default function ChallengePageClient() {
+export default function ChallengesPageClient() {
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
   const { data: boosts, isLoading } = useBoosts({
