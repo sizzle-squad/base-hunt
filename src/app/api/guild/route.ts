@@ -10,6 +10,31 @@ const supabase = createClient<Database>(
   process.env.SUPABASE_ANON_KEY as string
 );
 
+// Fetch all guilds
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const gameId = toBigInt(searchParams.get('gameId') as string);
+
+  const { data, error } = await supabase
+    .from('guild_configuration')
+    .select('*');
+  if (error) {
+    return new Response(`No guilds found with gameId: ${gameId}`, {
+      status: 400,
+    });
+  }
+
+  const result = data.map((guild) => ({
+    id: guild.id,
+    name: guild.name,
+    gameId: guild.game_id,
+    totalMemberCount: guild.total_member_count,
+  }));
+
+  return NextResponse.json(result);
+}
+
+// Register a user to a guild
 export async function POST(request: NextRequest) {
   const body: GuildData = await request.json();
   const { gameId, userAddress, guildId } = body;
@@ -23,20 +48,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const gameIdInBigInt = toBigInt(gameId as string);
-  const guildIdInBigInt = toBigInt(guildId as string);
-
   const params = {
-    userAddress: userAddress,
-    gameId: gameIdInBigInt,
-    guildId: guildIdInBigInt,
+    user_address: userAddress,
+    game_id: gameId,
+    guild_id: guildId,
   };
 
   console.log(params);
-  // const { error } = await supabase.rpc('upsertguild', params);
+
   const { error } = await supabase
-    .from('guild_configuration')
-    .upsert(params)
+    .from('guild_member_configuration')
+    .insert(params)
     .select();
 
   if (error) {
