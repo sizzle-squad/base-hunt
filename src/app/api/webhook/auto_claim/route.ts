@@ -10,7 +10,6 @@ import {
 import {
   CheckFunctions,
   MapChallengeTypeUserAddress,
-  ScoreFunctions,
 } from '@/utils/claims/selectors';
 import { providers } from '@/utils/ethereum';
 
@@ -53,8 +52,14 @@ export async function POST(req: Request) {
           'event_type:',
           data.event_type
         );
-        NextResponse.json({ status: 'ok' });
-        return;
+        continue;
+      }
+
+      if (c.is_dynamic_points) {
+        console.warn(
+          `dynamic points not supported for streaming challenges:` + c.id
+        );
+        continue;
       }
 
       let checkFunc =
@@ -80,32 +85,26 @@ export async function POST(req: Request) {
         throw new Error(`challenge type is undefined:` + c.type);
       }
 
-      if (c.is_dynamic_points) {
-        let points = ScoreFunctions[
-          c.function_type as keyof typeof CheckFunctions
-        ]({ ...data, ...c });
-      } else {
-        if (await checkFunc({ ...data, ...(c.params as object) }, provider)) {
-          let userAddress =
-            MapChallengeTypeUserAddress[
-              c.function_type as keyof typeof CheckFunctions
-            ](data);
-          if (userAddress === undefined) {
-            throw new Error('user address is undefined');
-          }
+      if (await checkFunc({ ...data, ...(c.params as object) }, provider)) {
+        let userAddress =
+          MapChallengeTypeUserAddress[
+            c.function_type as keyof typeof CheckFunctions
+          ](data);
+        if (userAddress === undefined) {
+          throw new Error('user address is undefined');
+        }
 
-          const claim = await supabase
-            .from('user_challenge_status')
-            .insert({
-              user_address: userAddress,
-              challenge_id: c.id,
-              status: ChallengeStatus.COMPLETE,
-              points: c.points as number,
-            })
-            .select();
-          if (claim.error) {
-            throw claim.error;
-          }
+        const claim = await supabase
+          .from('user_challenge_status')
+          .insert({
+            user_address: userAddress,
+            challenge_id: c.id,
+            status: ChallengeStatus.COMPLETE,
+            points: c.points as number,
+          })
+          .select();
+        if (claim.error) {
+          throw claim.error;
         }
       }
     } catch (error) {
