@@ -2,6 +2,7 @@ import { BigNumberish, ethers } from 'ethers';
 import { WebhookData } from '../webhook';
 import { Networks } from '../database.enums';
 import { providers } from '../ethereum';
+import { Database } from '../database.types';
 const balanceOfABI = [
   {
     constant: true,
@@ -50,43 +51,45 @@ const balanceOfTokenIdABI = [
   },
 ];
 
-export type CheckTokenIdBalanceParams = {
-  contractAddress: string;
-  userAddress: string;
-  tokenId: string;
-  gte: string;
+export type CheckBalanceConfiguration = {
+  contract_address: string;
+  params: {
+    gte: number;
+    tokenId?: number;
+  };
 };
 
 export type CheckBalanceParams = {
   userAddress: string;
-  contractAddress: string;
-  gte: string;
-};
+} & CheckBalanceConfiguration;
 
 export async function checkBalance(
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const contract = new ethers.Contract(
-    params.contractAddress,
+    params.contract_address,
     balanceOfABI,
     provider
   );
   const balance = await contract.balanceOf(params.userAddress);
   const b = ethers.getBigInt(balance);
-  return b > ethers.toBigInt(params.gte);
+  return b > ethers.toBigInt(params.params.gte);
 }
 
 export async function checkTokenIdBalance(
-  params: CheckTokenIdBalanceParams,
+  params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const contract = new ethers.Contract(
-    params.contractAddress,
+    params.contract_address,
     balanceOfTokenIdABI,
     provider
   );
-  const balance = await contract.balanceOf(params.userAddress, params.tokenId);
+  const balance = await contract.balanceOf(
+    params.userAddress,
+    params.params.tokenId
+  );
   const b = ethers.getBigInt(balance);
-  return b > ethers.toBigInt(params.gte);
+  return b > ethers.toBigInt(params.params.gte);
 }
