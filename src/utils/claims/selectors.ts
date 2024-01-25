@@ -1,6 +1,10 @@
 import { ChallengeType, CheckFunctionType } from '../database.enums';
 import { WebhookData } from '../webhook';
-import { checkBalance, checkTokenIdBalance } from './balanceCheck';
+import {
+  CheckBalanceParams,
+  checkBalance,
+  checkTokenIdBalance,
+} from './balanceCheck';
 import { checkMint } from './mintCheck';
 import { checkFunctionExecution } from './transactionCheck';
 import { checkTrivia } from './triviaCheck';
@@ -23,11 +27,11 @@ export const MapChallengeTypeUserAddress: {
 } = {
   [CheckFunctionType.checkMint]: (w: WebhookData) => w.to_address,
   [CheckFunctionType.checkFunctionExecution]: (w: WebhookData) =>
-    w.from_address,
+    w.from_address.toLowerCase(),
   [CheckFunctionType.checkTokenIdBalance]: function (
-    w: WebhookData
-  ): string | undefined {
-    throw new Error('Function not implemented.');
+    body: CheckBalanceParams
+  ): string {
+    return body.userAddress.toLowerCase();
   },
   [CheckFunctionType.getTxCountBatch]: function (
     w: WebhookData
@@ -35,12 +39,12 @@ export const MapChallengeTypeUserAddress: {
     throw new Error('Function not implemented.');
   },
   [CheckFunctionType.checkTrivia]: function (o: any): string {
-    return o.userAddress;
+    return o.userAddress.toLowerCase();
   },
   [CheckFunctionType.checkBalance]: function (
-    w: WebhookData
-  ): string | undefined {
-    throw new Error('Function not implemented.');
+    body: CheckBalanceParams
+  ): string {
+    return body.userAddress.toLowerCase();
   },
 };
 
@@ -80,12 +84,12 @@ export const ValidateBodyParams: {
     throw new Error('Function not implemented.');
   },
   [CheckFunctionType.checkBalance]: function (body: object): boolean {
-    throw new Error('Function not implemented.');
+    return true;
   },
   [CheckFunctionType.checkTokenIdBalance]: function (body: object): boolean {
-    throw new Error('Function not implemented.');
+    return true;
   },
   [CheckFunctionType.getTxCountBatch]: function (body: object): boolean {
-    throw new Error('Function not implemented.');
+    return body && body.hasOwnProperty('guildId');
   },
 };

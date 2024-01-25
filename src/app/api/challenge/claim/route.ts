@@ -212,9 +212,7 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
-
   const challenge = challengeData.data;
-  console.log(challenge.user_challenge_status);
   if (challenge.user_challenge_status.length > 0) {
     //challenge already claimed
     console.log(
@@ -268,121 +266,36 @@ export async function POST(request: NextRequest) {
     throw new Error(`challenge type is undefined:` + challenge.type);
   }
 
-  if (await checkFunc({ ...body, ...(challenge.params as object) }, provider)) {
-    let userAddress =
-      MapChallengeTypeUserAddress[
-        challenge.function_type as keyof typeof CheckFunctions
-      ](body);
-    if (userAddress === undefined) {
-      throw new Error('user address is undefined');
-    }
+  const d = { ...body, ...(challenge as object) };
+  if (await checkFunc(d, provider)) {
+    try {
+      let userAddress =
+        MapChallengeTypeUserAddress[
+          challenge.function_type as keyof typeof CheckFunctions
+        ](d);
+      if (userAddress === undefined) {
+        throw new Error('user address could not be map and is undefined:' + d);
+      }
 
-    const claim = await supabase
-      .from('user_challenge_status')
-      .insert({
-        user_address: userAddress,
-        challenge_id: challenge.id,
-        status: ChallengeStatus.COMPLETE,
-        points: challenge.points as number,
-      })
-      .select();
-    if (claim.error) {
-      throw claim.error;
+      const claim = await supabase
+        .from('user_challenge_status')
+        .insert({
+          user_address: userAddress,
+          challenge_id: challenge.id,
+          status: ChallengeStatus.COMPLETE,
+          points: challenge.points as number,
+        })
+        .select();
+      if (claim.error) {
+        throw claim.error;
+      }
+    } catch (e) {
+      console.error(e);
+      return NextResponse.json({ status: 'error-challenge' });
     }
   } else {
     return NextResponse.json({ status: 'failed-challenge' });
   }
-
-  //   if (!challenge) {
-  //     return new Response(
-  //       `No available challenge ${challengeId} found for gameId: ${gameId}`,
-  //       {
-  //         status: 400,
-  //       }
-  //     );
-  //   }
-
-  //   let contractAddress;
-  //   if (
-  //     boost.boost_type === BoostTypeEnum.NFT ||
-  //     boost.boost_type === BoostTypeEnum.NFT_PER_MINT ||
-  //     boost.boost_type === BoostTypeEnum.TOKEN ||
-  //     boost.boost_type === BoostTypeEnum.TRANSACTION
-  //   ) {
-  //     if (!contractAddresses || contractAddresses.length < 1) {
-  //       return new Response(
-  //         `Missing parameters: contractAddress: ${JSON.stringify(
-  //           contractAddresses
-  //         )} for boost type ${boost.boost_type}`,
-  //         {
-  //           status: 400,
-  //         }
-  //       );
-  //     } else {
-  //       contractAddress = contractAddresses[0];
-  //     }
-  //   }
-
-  //   let verified = false;
-  //   switch (boost.boost_type) {
-  //     case BoostTypeEnum.NFT:
-  //     case BoostTypeEnum.NFT_PER_MINT:
-  //       const response = await verifyNftOwnership(userAddress, contractAddresses);
-  //       let verifiedContractAddress = null;
-  //       for (let key in response) {
-  //         if (response.hasOwnProperty(key) && response[key] === true) {
-  //           verifiedContractAddress = key;
-  //           break;
-  //         }
-  //       }
-  //       verified = verifiedContractAddress !== null;
-  //       contractAddress = verifiedContractAddress;
-  //       break;
-  //     case BoostTypeEnum.TOKEN:
-  //       verified = await hasToken(
-  //         userAddress,
-  //         contractAddress!,
-  //         boost.transaction_value_threshold
-  //       );
-  //       break;
-  //     case BoostTypeEnum.TRANSACTION:
-  //       verified = await verifyTransactions(
-  //         boost.transaction_to,
-  //         userAddress,
-  //         contractAddress!
-  //       );
-  //       break;
-  //     case BoostTypeEnum.DEFAULT:
-  //     case BoostTypeEnum.SOCIAL:
-  //       verified = true;
-  //       break;
-  //   }
-
-  //   if (!verified)
-  //     return new Response(
-  //       `Unable to claim boost for boostId: ${boostId}, gameId: ${gameId}.`,
-  //       { status: 400 }
-  //     );
-  //   const { data: claimedBoost, error } = await supabase
-  //     .from('claimed_boost')
-  //     .insert([
-  //       {
-  //         user_address: userAddress.toLowerCase(),
-  //         boost_id: boost.id,
-  //         game_id: gameIdInBigInt,
-  //         contract_address: contractAddress
-  //           ? contractAddress.toLowerCase()
-  //           : null,
-  //       },
-  //     ])
-  //     .single();
-
-  //   if (error) {
-  //     return new Response(
-  //       `Unable to claim boost for boostId: ${boostId}, gameId: ${gameId}.`,
-  //       { status: 400 }
-  //     );
-  //   }
 
   return NextResponse.json({ status: 'ok' });
 }
