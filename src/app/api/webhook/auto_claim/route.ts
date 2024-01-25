@@ -10,7 +10,9 @@ import {
 import {
   CheckFunctions,
   MapChallengeTypeUserAddress,
+  ScoreFunctions,
 } from '@/utils/claims/selectors';
+import { providers } from '@/utils/ethereum';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -57,30 +59,53 @@ export async function POST(req: Request) {
 
       let checkFunc =
         CheckFunctions[c.function_type as keyof typeof CheckFunctions];
+      if (checkFunc === undefined) {
+        throw new Error(
+          'check function is undefined:' +
+            c.function_type +
+            ' challenge id:' +
+            c.id
+        );
+      }
 
-      const network = Networks[c.network as keyof typeof Networks];
+      const network = c.network as Networks;
+      const provider = providers[network];
+
+      if (provider === undefined) {
+        throw new Error('provider is undefined for network:' + c.network);
+      }
 
       let challengeType = ChallengeType[c.type as keyof typeof ChallengeType];
+      if (challengeType === undefined) {
+        throw new Error(`challenge type is undefined:` + c.type);
+      }
 
-      if (await checkFunc({ ...data, ...(c.params as object) }, network)) {
-        let userAddress =
-          MapChallengeTypeUserAddress[
-            c.function_type as keyof typeof CheckFunctions
-          ](data);
-        if (userAddress === undefined) {
-          throw new Error('user address is undefined');
-        }
+      if (c.is_dynamic_points) {
+        let points = ScoreFunctions[
+          c.function_type as keyof typeof CheckFunctions
+        ]({ ...data, ...c });
+      } else {
+        if (await checkFunc({ ...data, ...(c.params as object) }, provider)) {
+          let userAddress =
+            MapChallengeTypeUserAddress[
+              c.function_type as keyof typeof CheckFunctions
+            ](data);
+          if (userAddress === undefined) {
+            throw new Error('user address is undefined');
+          }
 
-        const claim = await supabase
-          .from('user_challenge_status')
-          .insert({
-            user_address: userAddress,
-            challenge_id: c.id,
-            status: ChallengeStatus.COMPLETE,
-          })
-          .select();
-        if (claim.error) {
-          throw claim.error;
+          const claim = await supabase
+            .from('user_challenge_status')
+            .insert({
+              user_address: userAddress,
+              challenge_id: c.id,
+              status: ChallengeStatus.COMPLETE,
+              points: c.points as number,
+            })
+            .select();
+          if (claim.error) {
+            throw claim.error;
+          }
         }
       }
     } catch (error) {

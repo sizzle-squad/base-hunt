@@ -63,11 +63,20 @@ export type CheckTxCountBatchParams = {
   userAddresses: string[];
   gte: string;
 };
+
 export async function checkTxCountBatch(
   params: CheckTxCountBatchParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  const r = params.userAddresses.map((a, idx) => {
+  const rr = await getTxCountBatch(params.userAddresses, provider);
+  return rr >= ethers.toBigInt(params.gte);
+}
+
+export async function getTxCountBatch(
+  userAddresses: string[],
+  provider: ethers.JsonRpcProvider
+): Promise<bigint> {
+  const r = userAddresses.map((a, idx) => {
     return { id: idx, jsonrpc: '2.0', method: 'string', params: [a] };
   }) as Array<{
     id: number;
@@ -82,5 +91,5 @@ export async function checkTxCountBatch(
       return ethers.toBigInt(r.result);
     })
     .reduce((a, b) => a + b, ethers.toBigInt(0));
-  return rr >= ethers.toBigInt(params.gte);
+  return rr;
 }
