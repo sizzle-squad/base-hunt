@@ -36,6 +36,7 @@ export const config = {
     '/art-reveal/:path*',
     '/badges/:path*',
     '/boosts/:path*',
+    '/guild/:path*',
     '/leaderboard/:path*',
     '/levels/:path*',
     '/locations/:path*',
