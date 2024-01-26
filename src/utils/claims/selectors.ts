@@ -8,7 +8,7 @@ import {
 import { checkMint } from './mintCheck';
 import { checkFunctionExecution } from './transactionCheck';
 import { checkTrivia } from './triviaCheck';
-import { checkTxCountBatch } from './txHistoryCheck';
+import { CheckTxCountBatchParams, checkTxCountBatch } from './txHistoryCheck';
 import { Database } from '../database.types';
 
 export const CheckFunctions: {
@@ -19,7 +19,7 @@ export const CheckFunctions: {
   [CheckFunctionType.checkFunctionExecution]: checkFunctionExecution,
   [CheckFunctionType.checkBalance]: checkBalance,
   [CheckFunctionType.checkTokenIdBalance]: checkTokenIdBalance,
-  [CheckFunctionType.getTxCountBatch]: checkTxCountBatch,
+  [CheckFunctionType.checkTxCountBatch]: checkTxCountBatch,
 };
 
 export const MapChallengeTypeUserAddress: {
@@ -33,10 +33,10 @@ export const MapChallengeTypeUserAddress: {
   ): string {
     return body.userAddress.toLowerCase();
   },
-  [CheckFunctionType.getTxCountBatch]: function (
-    w: WebhookData
+  [CheckFunctionType.checkTxCountBatch]: function (
+    body: CheckTxCountBatchParams
   ): string | undefined {
-    throw new Error('Function not implemented.');
+    return body.userAddress.toLowerCase();
   },
   [CheckFunctionType.checkTrivia]: function (o: any): string {
     return o.userAddress.toLowerCase();
@@ -66,7 +66,7 @@ export const ScoreFunctions: {
   [CheckFunctionType.checkTokenIdBalance]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
-  [CheckFunctionType.getTxCountBatch]: function (w: any): number {
+  [CheckFunctionType.checkTxCountBatch]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
 };
@@ -89,7 +89,7 @@ export const ValidateBodyParams: {
   [CheckFunctionType.checkTokenIdBalance]: function (body: object): boolean {
     return true;
   },
-  [CheckFunctionType.getTxCountBatch]: function (body: object): boolean {
-    return body && body.hasOwnProperty('guildId');
+  [CheckFunctionType.checkTxCountBatch]: function (body: object): boolean {
+    return body && body.hasOwnProperty('userAddress');
   },
 };

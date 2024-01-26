@@ -48,7 +48,7 @@ export enum CheckFunctionType {
   checkFunctionExecution = "checkFunctionExecution",
   checkBalance = "checkBalance",
   checkTokenIdBalance = "checkTokenIdBalance",
-  getTxCountBatch = "getTxCountBatch"
+  checkTxCountBatch = "checkTxCountBatch"
 }
 
 export enum Networks {
