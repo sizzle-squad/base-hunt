@@ -31,6 +31,18 @@ export interface TxHistoryTransaction {
   timestamp: string;
   transfers: Transfer[];
 }
+
+export type CheckTxCountBatchConfiguration = {
+  contract_address: string;
+  params: {
+    gte?: number;
+  };
+};
+
+export type CheckTxCountBatchParams = {
+  userAddress: string;
+} & CheckTxCountBatchConfiguration;
+
 export async function getTxHistoryForAddress(
   userAddress: string,
   network: Networks
@@ -59,25 +71,25 @@ export async function getTxHistoryForAddress(
   return transactions;
 }
 
-export type CheckTxCountBatchParams = {
-  userAddresses: string[];
-  gte: string;
-};
-
 export async function checkTxCountBatch(
   params: CheckTxCountBatchParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  const rr = await getTxCountBatch(params.userAddresses, provider);
-  return rr >= ethers.toBigInt(params.gte);
+  const rr = await getTxCountBatch(params, provider);
+  return rr >= ethers.toBigInt(params.params.gte as number);
 }
 
 export async function getTxCountBatch(
-  userAddresses: string[],
+  params: CheckTxCountBatchParams,
   provider: ethers.JsonRpcProvider
 ): Promise<bigint> {
-  const r = userAddresses.map((a, idx) => {
-    return { id: idx, jsonrpc: '2.0', method: 'string', params: [a] };
+  const r = [params.userAddress].map((a, idx) => {
+    return {
+      id: idx,
+      jsonrpc: '2.0',
+      method: 'eth_getTransactionCount',
+      params: [a, 'latest'],
+    };
   }) as Array<{
     id: number;
     jsonrpc: '2.0';
@@ -85,7 +97,6 @@ export async function getTxCountBatch(
     params: Array<any>;
   }>;
   const results = await provider._send(r);
-
   const rr = results
     .map((r) => {
       return ethers.toBigInt(r.result);
