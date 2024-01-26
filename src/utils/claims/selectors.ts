@@ -7,7 +7,7 @@ import {
 } from './balanceCheck';
 import { checkMint } from './mintCheck';
 import { checkFunctionExecution } from './transactionCheck';
-import { checkTrivia } from './triviaCheck';
+import { CheckTriviaParams, checkTrivia } from './triviaCheck';
 import { CheckTxCountBatchParams, checkTxCountBatch } from './txHistoryCheck';
 import { Database } from '../database.types';
 
@@ -25,7 +25,7 @@ export const CheckFunctions: {
 export const MapChallengeTypeUserAddress: {
   [key in CheckFunctionType]: (w: any) => string | undefined;
 } = {
-  [CheckFunctionType.checkMint]: (w: WebhookData) => w.to_address,
+  [CheckFunctionType.checkMint]: (w: WebhookData) => w.to_address.toLowerCase(),
   [CheckFunctionType.checkFunctionExecution]: (w: WebhookData) =>
     w.from_address.toLowerCase(),
   [CheckFunctionType.checkTokenIdBalance]: function (
@@ -38,8 +38,8 @@ export const MapChallengeTypeUserAddress: {
   ): string | undefined {
     return body.userAddress.toLowerCase();
   },
-  [CheckFunctionType.checkTrivia]: function (o: any): string {
-    return o.userAddress.toLowerCase();
+  [CheckFunctionType.checkTrivia]: function (body: CheckTriviaParams): string {
+    return body.userAddress.toLowerCase();
   },
   [CheckFunctionType.checkBalance]: function (
     body: CheckBalanceParams

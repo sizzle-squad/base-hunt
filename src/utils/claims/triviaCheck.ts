@@ -6,6 +6,7 @@ export type CheckTriviaConfiguration = {
   };
 };
 export type CheckTriviaParams = {
+  userAddress: string;
   submitted: string;
 } & CheckTriviaConfiguration;
 
