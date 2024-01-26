@@ -12,6 +12,6 @@ export async function checkFunctionExecution(
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const selector = ethers.id(params.function).substring(0, 10);
-  let tx = await provider.getTransaction(params.transaction_hash);
+  const tx = await provider.getTransaction(params.transaction_hash);
   return tx?.data.startsWith(selector) ?? false;
 }
