@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "make gen-types && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate:enums": "node ./scripts/generate-enums.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

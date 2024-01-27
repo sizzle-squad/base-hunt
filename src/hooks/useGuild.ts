@@ -10,7 +10,7 @@ type Props = {
 
 export type GuildData = {
   userAddress: `0x${string}` | undefined;
-  gameId: string;
+  gameId: number;
   guildId: string;
 };
 

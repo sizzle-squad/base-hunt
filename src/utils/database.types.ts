@@ -90,6 +90,7 @@ export interface Database {
           cta_text: string | null
           cta_url: string | null
           description: string
+          difficulty_type: string | null
           game_id: number
           icon: Database["public"]["Enums"]["boost_icon"]
           id: number
@@ -113,6 +114,7 @@ export interface Database {
           cta_text?: string | null
           cta_url?: string | null
           description?: string
+          difficulty_type?: string | null
           game_id?: number
           icon?: Database["public"]["Enums"]["boost_icon"]
           id?: number
@@ -136,6 +138,7 @@ export interface Database {
           cta_text?: string | null
           cta_url?: string | null
           description?: string
+          difficulty_type?: string | null
           game_id?: number
           icon?: Database["public"]["Enums"]["boost_icon"]
           id?: number
@@ -150,6 +153,63 @@ export interface Database {
           transaction_from?: string | null
           transaction_to?: string | null
           transaction_value_threshold?: number | null
+        }
+        Relationships: []
+      }
+      challenge_configuration: {
+        Row: {
+          auto_claim: boolean | null
+          contract_address: string | null
+          created_at: string
+          difficulty_type: string | null
+          display_name: string | null
+          function_type:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
+          game_id: number | null
+          id: number
+          is_dynamic_points: boolean
+          is_enabled: boolean | null
+          network: Database["public"]["Enums"]["networks"] | null
+          params: Json | null
+          points: number | null
+          type: Database["public"]["Enums"]["challenge_type"] | null
+        }
+        Insert: {
+          auto_claim?: boolean | null
+          contract_address?: string | null
+          created_at?: string
+          difficulty_type?: string | null
+          display_name?: string | null
+          function_type?:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
+          game_id?: number | null
+          id?: number
+          is_dynamic_points?: boolean
+          is_enabled?: boolean | null
+          network?: Database["public"]["Enums"]["networks"] | null
+          params?: Json | null
+          points?: number | null
+          type?: Database["public"]["Enums"]["challenge_type"] | null
+        }
+        Update: {
+          auto_claim?: boolean | null
+          contract_address?: string | null
+          created_at?: string
+          difficulty_type?: string | null
+          display_name?: string | null
+          function_type?:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
+          game_id?: number | null
+          id?: number
+          is_dynamic_points?: boolean
+          is_enabled?: boolean | null
+          network?: Database["public"]["Enums"]["networks"] | null
+          params?: Json | null
+          points?: number | null
+          type?: Database["public"]["Enums"]["challenge_type"] | null
         }
         Relationships: []
       }
@@ -190,6 +250,57 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
+      }
+      guild_configuration: {
+        Row: {
+          created_at: string
+          game_id: number | null
+          guild_id: string
+          id: number
+          name: string | null
+          total_member_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          game_id?: number | null
+          guild_id: string
+          id?: number
+          name?: string | null
+          total_member_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          game_id?: number | null
+          guild_id?: string
+          id?: number
+          name?: string | null
+          total_member_count?: number | null
+        }
+        Relationships: []
+      }
+      guild_member_configuration: {
+        Row: {
+          created_at: string
+          game_id: number | null
+          guild_id: string
+          id: number
+          user_address: string
+        }
+        Insert: {
+          created_at?: string
+          game_id?: number | null
+          guild_id: string
+          id?: number
+          user_address: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: number | null
+          guild_id?: string
+          id?: number
+          user_address?: string
+        }
+        Relationships: []
       }
       level_configuration: {
         Row: {
@@ -410,6 +521,41 @@ export interface Database {
         }
         Relationships: []
       }
+      user_challenge_status: {
+        Row: {
+          challenge_id: number
+          created_at: string
+          id: number
+          points: number
+          status: Database["public"]["Enums"]["challenge_status"]
+          user_address: string
+        }
+        Insert: {
+          challenge_id: number
+          created_at?: string
+          id?: number
+          points?: number
+          status?: Database["public"]["Enums"]["challenge_status"]
+          user_address: string
+        }
+        Update: {
+          challenge_id?: number
+          created_at?: string
+          id?: number
+          points?: number
+          status?: Database["public"]["Enums"]["challenge_status"]
+          user_address?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_status_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_configuration"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       webhook_data: {
         Row: {
           block_hash: string | null
@@ -534,6 +680,25 @@ export interface Database {
         | "DEFAULT"
         | "TRANSACTION"
         | "SOCIAL"
+      challenge_status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETE"
+      challenge_type:
+        | "ERC_TRANSFER"
+        | "BALANCE_CHECK"
+        | "CONTRACT_INTERACTION"
+        | "TRIVIA"
+        | "SOCIAL"
+        | "EVENT_TYPE_TRANSFER_ERC1155"
+        | "EVENT_TYPE_TRANSFER_ERC20"
+        | "EVENT_TYPE_TRANSFER_ERC721"
+        | "EVENT_TYPE_CONTRACT_EXECUTION"
+      check_function_type:
+        | "checkMint"
+        | "checkTrivia"
+        | "checkFunctionExecution"
+        | "checkBalance"
+        | "checkTokenIdBalance"
+        | "checkTxCountBatch"
+      networks: "networks/base-mainnet" | "networks/eth-mainnet"
     }
     CompositeTypes: {
       [_ in never]: never
