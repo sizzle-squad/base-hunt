@@ -1,58 +1,76 @@
 'use client';
 
 import { GAME_ID } from '@/constants/gameId';
-import { UNIT } from '@/constants/unit';
-import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { Box, LinearProgress, Skeleton, Stack } from '@mui/material';
 import { useMemo } from 'react';
 import Text from '@/components/Text';
 import { useAccount } from 'wagmi';
+import { useLevels } from '@/hooks/useLevels';
+import { Color } from '@/constants/color';
+import { useScore } from '@/hooks/useScore';
 
 export function ArtRevealProgressBar() {
   const { address } = useAccount();
-  const { data: treasureBox, isLoading } = useTreasureBox({
-    gameId: GAME_ID,
+  const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
+
+  const {
+    data: collection,
+    isLoading: isLevelsLoading,
+    error: levelsError,
+  } = useLevels({ gameId: GAME_ID, address: address ?? '' });
+  const { data: score, isLoading: isScoreLoading } = useScore({
     userAddress: address ?? '',
+    gameId,
   });
 
   const progress = useMemo(() => {
-    if (
-      !treasureBox?.totalHitpoints ||
-      !treasureBox?.currentHitpoints ||
-      isLoading
-    ) {
-      return 0;
-    }
+    if (!score?.score || !score?.nextLevel?.thresholdPoints) return 0;
 
     const result =
-      Number(treasureBox.currentHitpoints / treasureBox.totalHitpoints) * 100;
-    return result < 5 ? 5 : result;
-  }, [isLoading, treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
+      Number(score.score.currentScore / score.nextLevel.thresholdPoints) * 100;
 
-  const numericProgress = useMemo(() => {
+    return result < 5 ? 5 : result;
+  }, [score?.nextLevel?.thresholdPoints, score?.score]);
+
+  const progressBarTitle = useMemo(() => {
+    const currentLevel = collection?.currentLevelIdx ?? 0;
     return (
       <Box>
-        <Text>Points from all players</Text>
-        <Stack direction="row" gap="2px" alignItems="center">
-          {isLoading ? (
-            <Skeleton variant="rectangular" width={73} height={35} />
-          ) : (
-            <>
-              <Text variant="h5">{`${treasureBox?.currentHitpoints.toString()}`}</Text>
-              <Box>/</Box>
-              <Text variant="body2" noWrap>
-                {`${treasureBox?.totalHitpoints.toString()} ${UNIT}`}
-              </Text>
-            </>
-          )}
-        </Stack>
+        <Text
+          variant="h5"
+          fontSize="24px"
+          color={Color.Positive}
+        >{`You are at Level ${currentLevel ? currentLevel + 1 : 0}`}</Text>
       </Box>
     );
-  }, [isLoading, treasureBox?.currentHitpoints, treasureBox?.totalHitpoints]);
+  }, [collection?.currentLevelIdx]);
+
+  const description = useMemo(() => {
+    const currentLevel = Number(collection?.currentLevelIdx) ?? 0;
+    const offset = currentLevel !== 0 ? 2 : 1;
+
+    if (isLevelsLoading) {
+      return <Skeleton variant="text" width={100} height={20} />;
+    }
+
+    return (
+      <Text
+        variant="body1"
+        fontSize="16px"
+        color={Color.White}
+      >{`You need ${score?.nextLevel?.thresholdPoints} points to reach Level ${
+        currentLevel + offset
+      }`}</Text>
+    );
+  }, [
+    collection?.currentLevelIdx,
+    isLevelsLoading,
+    score?.nextLevel?.thresholdPoints,
+  ]);
 
   return (
     <>
-      {numericProgress}
+      {progressBarTitle}
       <Box
         sx={{
           borderRadius: '6.25rem',
@@ -66,13 +84,14 @@ export function ArtRevealProgressBar() {
           sx={{
             borderRadius: '6.25rem',
             height: '10px',
-            backgroundColor: '#D5D5D5', // To make the unused part of the progress bar transparent
+            backgroundColor: '#FFFFFF33', // To make the unused part of the progress bar transparent
             '& .MuiLinearProgress-bar': {
-              backgroundColor: 'var(--CB-Blue, #0052FF)', // Color for the progress indicator
+              backgroundColor: 'var(--CB-Positive, #00D17F)', // Color for the progress indicator
             },
           }}
         />
       </Box>
+      {description}
     </>
   );
 }
