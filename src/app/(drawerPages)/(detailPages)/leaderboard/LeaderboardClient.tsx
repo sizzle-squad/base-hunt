@@ -80,14 +80,6 @@ export default function LeaderboardClient() {
             Prizes
           </Text>
         </Pill>
-        <Pill>
-          <Link href="/boosts">
-            <Stack direction="row" gap={1}>
-              <AutoAwesomeIcon />
-              <Text fontWeight={400}>Get more points</Text>
-            </Stack>
-          </Link>
-        </Pill>
       </Stack>
       <NoSsr>
         {leaderboardData.length === 0 ? (
@@ -153,27 +145,13 @@ export default function LeaderboardClient() {
         <DialogContent>
           <Text gutterBottom>
             1. Work your way up the leaderboard by collecting art and additional
-            points{' '}
-            <Link href="/boosts">
-              <Text color="#0253FF" display="inline">
-                here.
-              </Text>
-            </Link>
+            points
           </Text>
           <Text gutterBottom>
             2. Points get you higher levels and move you up the leaderboard.
           </Text>
           <Text gutterBottom>
             3. Levels unlock merch discounts and other prizes.
-          </Text>
-          <Text gutterBottom>
-            4. Get to the #1 spot on the leaderboard by 2:00 PM EST on Sunday
-            December 11 to earn <b>$1,000</b> in USDC --{' '}
-            <Link href="https://basehunt.splashthat.com/">
-              <Text color="#0253FF" display="inline">
-                see rules.
-              </Text>
-            </Link>
           </Text>
         </DialogContent>
         <DialogActions>

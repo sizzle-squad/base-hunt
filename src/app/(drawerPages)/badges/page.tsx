@@ -399,27 +399,17 @@ export default function Badges() {
         </DialogTitle>
         <DialogContent>
           <Text gutterBottom>
-            1. Collect art from the Art Basel Miami Collection (in-person only)
-            or the Global collection online
+            1. Complete challenges at ETH Denver and online
           </Text>
           <Text gutterBottom>
-            2. Get points with every art piece you collect
+            2. Get points with every challenge completed.
           </Text>
           <Text gutterBottom>
-            3. Level up by gaining points to get free and discounted merch {''}
-            <Link href="/boosts">
-              <Text color="#0253FF" display="inline">
-                here
-              </Text>
-            </Link>
+            3. Join a guild and contribute your points to guild.
           </Text>
           <Text gutterBottom>
-            4. Work together to reveal a final mystery artist {''}
-            <Link href="/art-reveal">
-              <Text color="#0253FF" display="inline">
-                here
-              </Text>
-            </Link>
+            4. Work together to be the best guild at ETH Denver and get amazing
+            prizes.
           </Text>
         </DialogContent>
         <DialogActions>
