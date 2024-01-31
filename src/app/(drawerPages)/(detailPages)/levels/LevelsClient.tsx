@@ -15,7 +15,6 @@ import SvgSwitcher, { LevelNumber } from '@/components/LevelsBadge';
 import { Level } from '@/hooks/types';
 import Pill from '@/components/Pill';
 import { useAccount } from 'wagmi';
-import { BoostLinkButton } from '@/components/BoostLinkButton';
 
 const merchStoreUrl = 'https://basedmerch.slice.so/';
 
@@ -178,7 +177,6 @@ export default function LevelsPageClient() {
             );
           })}
       </Stack>
-      <BoostLinkButton />
       <SwipeUpDrawer
         toolbarTitle={PageConsts.drawerTitle}
         type={PageConsts.drawerType}
