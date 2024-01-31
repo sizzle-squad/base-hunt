@@ -107,6 +107,7 @@ export default function Badges() {
       );
     },
     // Adding walletOperations to the dependency array causes toggleDrawer always set to true
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [toggleDrawer]
   );
 

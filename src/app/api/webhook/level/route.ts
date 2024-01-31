@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 'unknown' });
   }
 
-  let body = await req.json();
+  const body = await req.json();
   console.log('[level transfer] body:', body);
 
   body.value = (toBigInt(body.value) ?? BigInt(0)).toString();
@@ -22,6 +22,7 @@ export async function POST(req: Request) {
     .from('level_data')
     .upsert(body, { ignoreDuplicates: true })
     .select();
+
   if (levelData.error) {
     console.error(levelData);
     throw new Error(levelData.error.message);
