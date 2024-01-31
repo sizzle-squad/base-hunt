@@ -5,6 +5,7 @@ import Text from '@/components/Text';
 
 import SvgSwitcher, { LevelNumber } from '../LevelsBadge';
 import Link from '@/components/AnimatedLink';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   currentLevel: LevelNumber | null;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export function Level({ currentLevel, isLoading }: Props) {
+  const router = useRouter();
   const content = useMemo(() => {
     if (isLoading) {
       return <Skeleton variant="text" width={100} height={20} />;
@@ -46,6 +48,7 @@ export function Level({ currentLevel, isLoading }: Props) {
         overflow: 'hidden',
         cursor: 'pointer',
       }}
+      onClick={() => router.push('/levels')}
     >
       <Link href="/levels">
         <Stack width="144px">
