@@ -21,8 +21,8 @@ import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
 import Text from '@/components/Text';
 import { PointsPill } from '@/components/PointsPill';
-import { useBoosts } from '@/hooks/useBoosts';
-import { useClaimBoost } from '@/hooks/useClaimBoost';
+import { useChallenges } from '@/hooks/useChallenges';
+import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
 import { GAME_ID } from '@/constants/gameId';
 import { useAccount } from 'wagmi';
 import { Button } from '@/components/assets/Button';
@@ -68,7 +68,7 @@ type BoostEntry = {
   endContent: React.JSX.Element;
 };
 
-type ListCardPropsForBoosts = ListCardProps & {
+type ListCardPropsForChallenges = ListCardProps & {
   id: bigint;
   title: string;
   description: string;
@@ -78,7 +78,7 @@ type ListCardPropsForBoosts = ListCardProps & {
   ctaText: string | null;
   ctaButtonText: string | null;
   points: bigint;
-  claimed: boolean;
+  isCompleted: boolean;
   claimable: boolean;
 };
 
@@ -145,11 +145,11 @@ CompletedSvg.displayName = 'CompletedSvg';
 export default function ChallengesPageClient() {
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
-  const { data: boosts, isLoading } = useBoosts({
+  const { data: boosts, isLoading } = useChallenges({
     userAddress: address,
     gameId: GAME_ID,
   });
-  const { claimBoost } = useClaimBoost();
+  const { claimBoost } = useCompleteChallenge();
 
   const boostList = useMemo(() => {
     return boosts
@@ -174,11 +174,10 @@ export default function ChallengesPageClient() {
       }) as BoostEntry[];
   }, [boosts]);
 
-  const [activeItem, setActiveItem] = useState<ListCardPropsForBoosts | null>(
-    null
-  );
+  const [activeItem, setActiveItem] =
+    useState<ListCardPropsForChallenges | null>(null);
   const [eligibleItem, setEligibleItem] =
-    useState<ListCardPropsForBoosts | null>(null);
+    useState<ListCardPropsForChallenges | null>(null);
 
   const { drawerStates, toggleDrawer } = useDrawer();
 
@@ -188,7 +187,7 @@ export default function ChallengesPageClient() {
   );
 
   const handleToggleDrawer = useCallback(
-    (item: ListCardPropsForBoosts) => {
+    (item: ListCardPropsForChallenges) => {
       setActiveItem(item);
       toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
     },
@@ -199,7 +198,7 @@ export default function ChallengesPageClient() {
     claimBoost.mutate({
       gameId: GAME_ID,
       userAddress: address,
-      boostId: activeItem!.id.toString(),
+      challengeId: activeItem!.id.toString(),
       contractAddresses: activeItem?.contractAddresses,
     });
     // claimBoost should not be in there
@@ -243,8 +242,8 @@ export default function ChallengesPageClient() {
       onClick,
       cta = 'Claim Points',
     }: {
-      item: ListCardPropsForBoosts;
-      onClick: (item: ListCardPropsForBoosts) => void;
+      item: ListCardPropsForChallenges;
+      onClick: (item: ListCardPropsForChallenges) => void;
       cta?: string;
     }) => <Button onClick={() => onClick(item)}>{cta}</Button>
   );
@@ -256,15 +255,19 @@ export default function ChallengesPageClient() {
       item,
     }: {
       title: string;
-      onClick: (item: ListCardPropsForBoosts) => void;
-      item: ListCardPropsForBoosts;
+      onClick: (item: ListCardPropsForChallenges) => void;
+      item: ListCardPropsForChallenges;
     }) => <ToolBar title={title} onDismiss={() => onClick(item)} />
   );
 
   ToggleDrawerButton.displayName = 'ToggleDrawerButton';
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
-  const BoostDrawerContent = ({ item }: { item: ListCardPropsForBoosts }) => {
+  const BoostDrawerContent = ({
+    item,
+  }: {
+    item: ListCardPropsForChallenges;
+  }) => {
     const isEligible = eligibleItem && eligibleItem.id === item.id;
     const ctaText =
       isEligible && item.ctaText ? item.ctaText : 'Unable to claim this boost.';

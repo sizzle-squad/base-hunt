@@ -2,33 +2,33 @@ import { useMutation, useQueryClient } from 'react-query';
 import { routes } from '@/constants/routes';
 import axios from 'axios';
 
-export type BoostsClaimData = {
+export type ChallengeData = {
   gameId: string;
   userAddress: `0x${string}` | undefined;
-  boostId: string;
+  challengeId: string;
   contractAddresses?: string[];
 };
 
-export function useClaimBoost() {
+export function useCompleteChallenge() {
   const queryClient = useQueryClient();
 
   const claimBoost = useMutation(
-    (data: BoostsClaimData) => {
-      const { gameId, userAddress, boostId } = data;
+    (data: ChallengeData) => {
+      const { gameId, userAddress, challengeId } = data;
 
-      if (!userAddress || !gameId || !boostId) {
+      if (!userAddress || !gameId || !challengeId) {
         throw new Error(
-          `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}, boostId: ${boostId}`
+          `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}, challengeId: ${challengeId}`
         );
       }
 
-      return axios.post(routes.boosts.claim, data);
+      return axios.post(routes.challenges.complete, data);
     },
     {
       onSuccess: (_, variables) => {
         const { userAddress, gameId } = variables;
 
-        queryClient.invalidateQueries(['boosts', userAddress, gameId]);
+        queryClient.invalidateQueries(['challenges', userAddress, gameId]);
         queryClient.invalidateQueries(['levels']);
       },
     }

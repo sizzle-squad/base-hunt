@@ -116,7 +116,7 @@ export type Boost = {
   claimed: boolean;
 };
 
-export enum BoostTypeEnum {
+export enum ChallengeTypeEnum {
   TRANSFER_NFT = 'TRANSFER_NFT',
   NFT = 'NFT',
   NFT_PER_MINT = 'NFT_PER_MINT',

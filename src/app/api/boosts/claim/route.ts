@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { Network, Alchemy } from 'alchemy-sdk';
 import { toBigInt } from '@/utils/toBigInt';
-import { BoostTypeEnum } from '@/hooks/types';
+import { ChallengeTypeEnum } from '@/hooks/types';
 
 class Blockscout {
   apiKey: string | undefined;
@@ -197,10 +197,10 @@ export async function POST(request: NextRequest) {
 
   let contractAddress;
   if (
-    boost.boost_type === BoostTypeEnum.NFT ||
-    boost.boost_type === BoostTypeEnum.NFT_PER_MINT ||
-    boost.boost_type === BoostTypeEnum.TOKEN ||
-    boost.boost_type === BoostTypeEnum.TRANSACTION
+    boost.boost_type === ChallengeTypeEnum.NFT ||
+    boost.boost_type === ChallengeTypeEnum.NFT_PER_MINT ||
+    boost.boost_type === ChallengeTypeEnum.TOKEN ||
+    boost.boost_type === ChallengeTypeEnum.TRANSACTION
   ) {
     if (!contractAddresses || contractAddresses.length < 1) {
       return new Response(
@@ -218,8 +218,8 @@ export async function POST(request: NextRequest) {
 
   let verified = false;
   switch (boost.boost_type) {
-    case BoostTypeEnum.NFT:
-    case BoostTypeEnum.NFT_PER_MINT:
+    case ChallengeTypeEnum.NFT:
+    case ChallengeTypeEnum.NFT_PER_MINT:
       const response = await verifyNftOwnership(userAddress, contractAddresses);
       let verifiedContractAddress = null;
       for (let key in response) {
@@ -231,22 +231,22 @@ export async function POST(request: NextRequest) {
       verified = verifiedContractAddress !== null;
       contractAddress = verifiedContractAddress;
       break;
-    case BoostTypeEnum.TOKEN:
+    case ChallengeTypeEnum.TOKEN:
       verified = await hasToken(
         userAddress,
         contractAddress!,
         boost.transaction_value_threshold
       );
       break;
-    case BoostTypeEnum.TRANSACTION:
+    case ChallengeTypeEnum.TRANSACTION:
       verified = await verifyTransactions(
         boost.transaction_to,
         userAddress,
         contractAddress!
       );
       break;
-    case BoostTypeEnum.DEFAULT:
-    case BoostTypeEnum.SOCIAL:
+    case ChallengeTypeEnum.DEFAULT:
+    case ChallengeTypeEnum.SOCIAL:
       verified = true;
       break;
   }

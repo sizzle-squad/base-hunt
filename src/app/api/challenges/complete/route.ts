@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { Network, Alchemy } from 'alchemy-sdk';
 import { toBigInt } from '@/utils/toBigInt';
-import { BoostTypeEnum } from '@/hooks/types';
+import { ChallengeTypeEnum } from '@/hooks/types';
 import {
   CheckFunctions,
   MapChallengeTypeUserAddress,

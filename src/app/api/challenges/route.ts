@@ -9,7 +9,7 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY as string
 );
 
-export type BoostType = {
+export type ChallengeType = {
   id: bigint;
   name: string;
   icon: string;
@@ -20,13 +20,13 @@ export type BoostType = {
   cta_url: string | null;
   cta_text: string | null;
   cta_button_text: string | null;
-  boost_type: string;
+  challenge_type: string;
   is_enabled: boolean;
   points: bigint;
   nft_amount: bigint | null;
 };
 
-export type Boost = {
+export type Challenge = {
   id: bigint;
   name: string;
   contractAddresses: string[];
@@ -37,28 +37,28 @@ export type Boost = {
   ctaUrl: string | null;
   ctaText: string | null;
   ctaButtonText: string | null;
-  boostType: string;
+  challengeType: string;
   isEnabled: boolean;
   points: bigint;
   nftAmount: bigint | null;
 };
 
-async function mapBoostState(boost: BoostType): Promise<Boost> {
+async function mapBoostState(challenge: ChallengeType): Promise<Challenge> {
   return {
-    id: boost.id as bigint,
-    name: boost.name,
-    contractAddresses: boost.contract_addresses,
-    icon: boost.icon,
-    description: boost.description,
-    imageUrl: boost.image_url,
-    gameId: boost.game_id as bigint,
-    ctaUrl: boost.cta_url,
-    ctaText: boost.cta_text,
-    ctaButtonText: boost.cta_button_text,
-    boostType: boost.boost_type,
-    isEnabled: boost.is_enabled,
-    points: boost.points,
-    nftAmount: boost.nft_amount,
+    id: challenge.id as bigint,
+    name: challenge.name,
+    contractAddresses: challenge.contract_addresses,
+    icon: challenge.icon,
+    description: challenge.description,
+    imageUrl: challenge.image_url,
+    gameId: challenge.game_id as bigint,
+    ctaUrl: challenge.cta_url,
+    ctaText: challenge.cta_text,
+    ctaButtonText: challenge.cta_button_text,
+    challengeType: challenge.challenge_type,
+    isEnabled: challenge.is_enabled,
+    points: challenge.points,
+    nftAmount: challenge.nft_amount,
   };
 }
 
@@ -76,13 +76,13 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const boostsData = await supabase
-    .from('boost_configuration')
+  const challengesData = await supabase
+    .from('challenge_configuration')
     .select(
       `
     *,
-    claimed_boost (
-      boost_id,
+    completed_challenge (
+      challenge_id,
       contract_address,
       updated_at
     )
@@ -90,28 +90,28 @@ export async function GET(request: NextRequest) {
     )
     .eq('game_id', gameId)
     .eq('is_enabled', true)
-    .filter('claimed_boost.user_address', 'eq', userAddress.toLowerCase())
+    .filter('completed_challenge.user_address', 'eq', userAddress.toLowerCase())
     .or(
       `available_time.is.null,available_time.lte.${new Date().toISOString()}`
     );
 
-  if (boostsData.error) {
-    console.error(boostsData.error);
-    throw new Error(boostsData.error.message);
+  if (challengesData.error) {
+    console.error(challengesData.error);
+    throw new Error(challengesData.error.message);
   }
 
-  const boosts = boostsData.data;
+  const challenges = challengesData.data;
 
-  const boostsFormatted = boosts.map(async (boost) => {
-    let isClaimed = false;
-    const claimedAddresses = boost.claimed_boost
+  const challengesFormatted = challenges.map(async (challenge) => {
+    let isCompleted = false;
+    const completedAddresses = challenge.completed_challenge
       .filter((b: { contract_address: string }) => b.contract_address)
       .map((b: { contract_address: string }) => b.contract_address);
-    switch (boost.boost_type) {
+    switch (challenge.boost_type) {
       case ChallengeTypeEnum.NFT:
       case ChallengeTypeEnum.NFT_PER_MINT:
-        isClaimed = boost.contract_addresses.some((a: string) =>
-          claimedAddresses.includes(a)
+        isCompleted = challenge.contract_addresses.some((a: string) =>
+          completedAddresses.includes(a)
         );
         break;
       case ChallengeTypeEnum.TOKEN:
@@ -119,32 +119,33 @@ export async function GET(request: NextRequest) {
       case ChallengeTypeEnum.TRANSFER_NFT:
       case ChallengeTypeEnum.SOCIAL:
       case ChallengeTypeEnum.DEFAULT:
-        isClaimed = boost.claimed_boost.every(
-          (c: { boost_id: any }) => c.boost_id === boost.id
+        isCompleted = challenge.completed_challenge.every(
+          (c: { challenge_id: number }) => c.challenge_id === challenge.id
         );
         break;
     }
 
-    isClaimed = isClaimed && boost.claimed_boost.length > 0;
+    isCompleted = isCompleted && challenge.completed_challenge.length > 0;
 
-    const mappedBoost = await mapBoostState(boost);
-    return { ...mappedBoost, claimed: isClaimed };
+    const mappedBoost = await mapBoostState(challenge);
+    return { ...mappedBoost, isCompleted };
   });
 
-  return Promise.all(boostsFormatted)
-    .then((formattedBoosts) => {
-      if (formattedBoosts) {
-        formattedBoosts.sort((a: any, b: any) => {
-          if (a.claimed === b.claimed) {
+  return Promise.all(challengesFormatted)
+    .then((formattedChallenges) => {
+      if (formattedChallenges) {
+        formattedChallenges.sort((a: any, b: any) => {
+          if (a.isCompleted === b.isCompleted) {
             return a.points - b.points; // Sort by points in ascending order if isClaimed is equal
           }
-          return a.claimed ? 1 : -1;
+          return a.isCompleted ? 1 : -1;
         });
-        const boostsResponse = formattedBoosts.filter((boost) => {
+        const boostsResponse = formattedChallenges.filter((challenge) => {
           const isTransferNftAndClaimed =
-            boost.boostType === ChallengeTypeEnum.TRANSFER_NFT && boost.claimed;
+            challenge.challengeType === ChallengeTypeEnum.TRANSFER_NFT &&
+            challenge.isCompleted;
           const isNotTransferNft =
-            boost.boostType !== ChallengeTypeEnum.TRANSFER_NFT;
+            challenge.challengeType !== ChallengeTypeEnum.TRANSFER_NFT;
 
           return isTransferNftAndClaimed || isNotTransferNft;
         });
