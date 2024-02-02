@@ -11,7 +11,6 @@ import {
   Stack,
   Link,
   CardContent,
-  CardHeader,
   CardMedia,
   Card,
   Grid,
@@ -36,7 +35,6 @@ import {
   LinkIcon,
   UsersIcon,
 } from '@/components/assets/icons/BoostIcon';
-import { ST } from 'next/dist/shared/lib/utils';
 import { deepOrange, green } from '@mui/material/colors';
 
 const satoshissecretLink =

@@ -32,15 +32,14 @@ import {
   Drawer,
   Stack,
 } from '@mui/material';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
-import ChallengesPageClient from '../(detailPages)/challenges/ChallengesClient';
+import ChallengesPageClient from './ChallengesClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
-export default function Badges() {
+export default function Challenges() {
   const isClient = useClientCheck();
   const router = useRouter();
   const { address, isConnected, isDisconnected } = useAccount();

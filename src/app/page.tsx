@@ -23,7 +23,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleStartExploring = useCallback(() => {
-    return router.push('/badges');
+    return router.push('/challenges');
   }, [router]);
 
   const ctaButton = useMemo(() => {

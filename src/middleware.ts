@@ -35,7 +35,7 @@ export const config = {
   matcher: [
     '/art-reveal/:path*',
     '/badges/:path*',
-    '/boosts/:path*',
+    '/challenges/:path*',
     '/guild/:path*',
     '/leaderboard/:path*',
     '/levels/:path*',
