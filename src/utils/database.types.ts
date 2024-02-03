@@ -577,6 +577,27 @@ export interface Database {
           }
         ]
       }
+      user_txcount: {
+        Row: {
+          created_at: string
+          network: Database["public"]["Enums"]["networks"]
+          tx_count: number | null
+          user_address: string
+        }
+        Insert: {
+          created_at?: string
+          network?: Database["public"]["Enums"]["networks"]
+          tx_count?: number | null
+          user_address: string
+        }
+        Update: {
+          created_at?: string
+          network?: Database["public"]["Enums"]["networks"]
+          tx_count?: number | null
+          user_address?: string
+        }
+        Relationships: []
+      }
       webhook_data: {
         Row: {
           block_hash: string | null

@@ -14,7 +14,7 @@ const supabase = createClient<Database>(
 );
 
 const BatchSize = parseInt(process.env.BATCH_SIZE as string) || 50;
-
+const queryBatchSize = 1000;
 export const helloWorld = inngest.createFunction(
   { id: 'hello-world' },
   { event: 'test/hello.world' },
@@ -29,14 +29,14 @@ export const helloWorld = inngest.createFunction(
           .select('user_address')
           .eq('guild_id', event.data.guildId as string)
           .eq('game_id', event.data.gameId as number)
-          .range(iter * 1000, (iter + 1) * 1000 - 1);
+          .range(iter * queryBatchSize, (iter + 1) * queryBatchSize - 1);
         if (error) {
           return [];
         }
         return data.map((u) => u.user_address);
       });
       users.push(...uRange);
-      if (uRange.length < 1000) {
+      if (uRange.length < queryBatchSize) {
         break;
       }
       iter++;
@@ -64,11 +64,12 @@ export const helloWorld = inngest.createFunction(
         }>;
         return await p._send(reqs);
       });
+
       await step.sleep('wait-a-moment', '1 seconds');
       txCounts.push(t);
     }
 
-    const flatten = await step.run('reduce-tx-count', () => {
+    let flatten: number[] = await step.run('flatten-tx-count', () => {
       return txCounts
         .reduce((accumulator, value) => accumulator.concat(value), [])
         .map((r: any) => r.result)
@@ -78,8 +79,27 @@ export const helloWorld = inngest.createFunction(
           } catch (e) {
             return ethers.toNumber(0);
           }
-        })
-        .reduce((a: any, b: any) => a + b, 0);
+        });
+    });
+
+    flatten = await step.run('update-user-score', async () => {
+      let upserts = users.map((u, i) => {
+        return {
+          user_address: u,
+          tx_count: flatten[i],
+          network: Networks.networks_base_mainnet,
+        };
+      });
+
+      const { data, error } = await supabase
+        .from('user_txcount')
+        .upsert(upserts, { onConflict: 'user_address,network' })
+        .select();
+      return flatten;
+    });
+
+    let reduced = await step.run('reduce-tx-count', () => {
+      return flatten.reduce((a, b) => a + b, 0);
     });
 
     const dbData = await step.run('update-guild-score', async () => {
@@ -90,7 +110,7 @@ export const helloWorld = inngest.createFunction(
             updated_at: new Date().toISOString(),
             guild_id: event.data.guildId as string,
             game_id: event.data.gameId as number,
-            score: flatten,
+            score: reduced,
           },
           { onConflict: 'game_id,guild_id' }
         )
