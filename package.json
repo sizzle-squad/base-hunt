@@ -36,6 +36,7 @@
     "eslint-config-next": "13.4.4",
     "ethers": "^6.8.1",
     "fs": "^0.0.1-security",
+    "inngest": "^3.12.0",
     "lodash.debounce": "^4.0.8",
     "lokijs": "^1.5.12",
     "lottie-web": "^5.12.2",

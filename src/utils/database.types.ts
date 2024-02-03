@@ -90,7 +90,6 @@ export interface Database {
           cta_text: string | null;
           cta_url: string | null;
           description: string;
-          difficulty_type: string | null;
           game_id: number;
           icon: Database['public']['Enums']['boost_icon'];
           id: number;
@@ -114,7 +113,6 @@ export interface Database {
           cta_text?: string | null;
           cta_url?: string | null;
           description?: string;
-          difficulty_type?: string | null;
           game_id?: number;
           icon?: Database['public']['Enums']['boost_icon'];
           id?: number;
@@ -138,7 +136,6 @@ export interface Database {
           cta_text?: string | null;
           cta_url?: string | null;
           description?: string;
-          difficulty_type?: string | null;
           game_id?: number;
           icon?: Database['public']['Enums']['boost_icon'];
           id?: number;
@@ -159,9 +156,9 @@ export interface Database {
       challenge_configuration: {
         Row: {
           auto_claim: boolean | null;
+          content_data: Json | null;
           contract_address: string | null;
           created_at: string;
-          difficulty_type: string | null;
           display_name: string | null;
           function_type:
             | Database['public']['Enums']['check_function_type']
@@ -177,9 +174,9 @@ export interface Database {
         };
         Insert: {
           auto_claim?: boolean | null;
+          content_data?: Json | null;
           contract_address?: string | null;
           created_at?: string;
-          difficulty_type?: string | null;
           display_name?: string | null;
           function_type?:
             | Database['public']['Enums']['check_function_type']
@@ -195,9 +192,9 @@ export interface Database {
         };
         Update: {
           auto_claim?: boolean | null;
+          content_data?: Json | null;
           contract_address?: string | null;
           created_at?: string;
-          difficulty_type?: string | null;
           display_name?: string | null;
           function_type?:
             | Database['public']['Enums']['check_function_type']
