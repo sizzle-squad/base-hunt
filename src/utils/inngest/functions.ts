@@ -19,34 +19,32 @@ export const helloWorld = inngest.createFunction(
   { id: 'hello-world' },
   { event: 'test/hello.world' },
   async ({ event, step }) => {
-    const users = await step.run('fetch guild users', async () => {
-      const { data, error } = await supabase
-        .from('guild_member_configuration')
-        .select('user_address')
-        .eq('guild_id', event.data.guildId as string)
-        .eq('game_id', event.data.gameId as number);
-      // .limit(10);
-      if (error) {
-        return [];
+    const users: string[] = [];
+    let uRange: string[] = [];
+    let iter: number = 0;
+    while (true && iter < 20) {
+      const uRange = await step.run('fetch guild users', async () => {
+        const { data, error } = await supabase
+          .from('guild_member_configuration')
+          .select('user_address')
+          .eq('guild_id', event.data.guildId as string)
+          .eq('game_id', event.data.gameId as number)
+          .range(iter * 1000, (iter + 1) * 1000 - 1);
+        if (error) {
+          return [];
+        }
+        return data.map((u) => u.user_address);
+      });
+      users.push(...uRange);
+      if (uRange.length < 1000) {
+        break;
       }
-      return data.map((u) => u.user_address);
-    });
-    // console.log('users:', users);
+      iter++;
+    }
+    // console.log('users:', users.length);
     //await step.sleep('wait-a-moment', '1 second');
     let chunks = chunkArray(users, BatchSize);
 
-    // const c = await step.run('get-count-chunk', async () => {
-    //   const p = providers[Networks.networks_base_mainnet];
-    //   const counts = await Promise.all(
-    //     chunks.map(async (chunk) => {
-    //       const sum = await getTxCountBatch(chunk, p);
-    //       return sum;
-    //     })
-    //   );
-    //   const sum = counts.reduce((a, b) => a + b, ethers.toBigInt(0));
-    //   console.log(sum);
-    //   return sum;
-    // });
     let txCounts: any[] = [];
     for (var i = 0; i < chunks.length; i++) {
       const t = await step.run('get-tx-count', async () => {
