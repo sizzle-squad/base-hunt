@@ -13,6 +13,8 @@ const supabase = createClient<Database>(
   process.env.SUPABASE_ANON_KEY as string
 );
 
+const BatchSize = parseInt(process.env.BATCH_SIZE as string) || 50;
+
 export const helloWorld = inngest.createFunction(
   { id: 'hello-world' },
   { event: 'test/hello.world' },
@@ -22,8 +24,7 @@ export const helloWorld = inngest.createFunction(
         .from('guild_member_configuration')
         .select('user_address')
         .eq('guild_id', event.data.guildId as string)
-        .eq('game_id', event.data.gameId as number)
-        .limit(1000);
+        .eq('game_id', event.data.gameId as number);
       if (error) {
         return [];
       }
@@ -31,7 +32,7 @@ export const helloWorld = inngest.createFunction(
     });
     console.log('users:', users);
     //await step.sleep('wait-a-moment', '1 second');
-    let chunks = chunkArray(users, 50);
+    let chunks = chunkArray(users, BatchSize);
 
     // const c = await step.run('get-count-chunk', async () => {
     //   const p = providers[Networks.networks_base_mainnet];
