@@ -22,7 +22,7 @@ export const helloWorld = inngest.createFunction(
         .from('guild_member_configuration')
         .select('user_address')
         .eq('guild_id', event.data.guildId as string)
-        .eq('game_id', event.data.gameId as string)
+        .eq('game_id', event.data.gameId as number)
         .limit(1000);
       if (error) {
         return [];
