@@ -25,12 +25,13 @@ export const helloWorld = inngest.createFunction(
         .select('user_address')
         .eq('guild_id', event.data.guildId as string)
         .eq('game_id', event.data.gameId as number);
+      // .limit(10);
       if (error) {
         return [];
       }
       return data.map((u) => u.user_address);
     });
-    console.log('users:', users);
+    // console.log('users:', users);
     //await step.sleep('wait-a-moment', '1 second');
     let chunks = chunkArray(users, BatchSize);
 
@@ -83,8 +84,29 @@ export const helloWorld = inngest.createFunction(
         .reduce((a: any, b: any) => a + b, 0);
     });
 
+    const dbData = await step.run('update-guild-score', async () => {
+      const { data, error } = await supabase
+        .from('guild_score')
+        .upsert(
+          {
+            updated_at: new Date().toISOString(),
+            guild_id: event.data.guildId as string,
+            game_id: event.data.gameId as number,
+            score: flatten,
+          },
+          { onConflict: 'game_id,guild_id' }
+        )
+        .eq('guild_id', event.data.guildId as string)
+        .eq('game_id', event.data.gameId as number)
+        .select();
+
+      if (error) {
+        return { error: error };
+      }
+      return { data: data };
+    });
     //TODO: update guild score table
-    return { data: flatten };
+    return { data: dbData };
   }
 );
 

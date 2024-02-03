@@ -299,6 +299,30 @@ export interface Database {
         }
         Relationships: []
       }
+      guild_score: {
+        Row: {
+          game_id: number | null
+          guild_id: string | null
+          id: number
+          score: number | null
+          updated_at: string
+        }
+        Insert: {
+          game_id?: number | null
+          guild_id?: string | null
+          id?: number
+          score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          game_id?: number | null
+          guild_id?: string | null
+          id?: number
+          score?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       level_configuration: {
         Row: {
           airdrop_command: string
