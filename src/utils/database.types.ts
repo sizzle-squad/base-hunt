@@ -546,6 +546,7 @@ export interface Database {
         Row: {
           challenge_id: number
           created_at: string
+          game_id: number
           id: number
           points: number
           status: Database["public"]["Enums"]["challenge_status"]
@@ -554,6 +555,7 @@ export interface Database {
         Insert: {
           challenge_id: number
           created_at?: string
+          game_id?: number
           id?: number
           points?: number
           status?: Database["public"]["Enums"]["challenge_status"]
@@ -562,6 +564,7 @@ export interface Database {
         Update: {
           challenge_id?: number
           created_at?: string
+          game_id?: number
           id?: number
           points?: number
           status?: Database["public"]["Enums"]["challenge_status"]

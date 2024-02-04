@@ -101,6 +101,7 @@ export async function POST(req: Request) {
             challenge_id: c.id,
             status: ChallengeStatus.COMPLETE,
             points: c.points as number,
+            game_id: c.game_id as number,
           })
           .select();
         if (claim.error) {
