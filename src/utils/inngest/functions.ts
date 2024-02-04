@@ -15,25 +15,24 @@ const supabase = createClient<Database>(
 
 const BatchSize = parseInt(process.env.BATCH_SIZE as string) || 50;
 const queryBatchSize = 1000;
-export const helloWorld = inngest.createFunction(
-  { id: 'hello-world' },
-  { event: 'test/hello.world' },
+export const userTxCount = inngest.createFunction(
+  { id: 'user-tx-count' },
+  { event: 'events/user-tx-count' },
   async ({ event, step }) => {
-    const users: string[] = [];
+    const users: { user_address: string; guild_id: string }[] = [];
     let uRange: string[] = [];
     let iter: number = 0;
     while (true && iter < 20) {
       const uRange = await step.run('fetch guild users', async () => {
         const { data, error } = await supabase
           .from('guild_member_configuration')
-          .select('user_address')
-          .eq('guild_id', event.data.guildId as string)
+          .select('user_address,guild_id')
           .eq('game_id', event.data.gameId as number)
           .range(iter * queryBatchSize, (iter + 1) * queryBatchSize - 1);
         if (error) {
           return [];
         }
-        return data.map((u) => u.user_address);
+        return data;
       });
       users.push(...uRange);
       if (uRange.length < queryBatchSize) {
@@ -49,12 +48,12 @@ export const helloWorld = inngest.createFunction(
     for (var i = 0; i < chunks.length; i++) {
       const t = await step.run('get-tx-count', async () => {
         const p = providers[Networks.networks_base_mainnet];
-        const reqs = chunks[i].map((a, idx) => {
+        const reqs = chunks[i].map((u, idx) => {
           return {
             id: idx,
             jsonrpc: '2.0',
             method: 'eth_getTransactionCount',
-            params: [a, 'latest'],
+            params: [u.user_address, 'latest'],
           };
         }) as Array<{
           id: number;
@@ -82,10 +81,10 @@ export const helloWorld = inngest.createFunction(
         });
     });
 
-    flatten = await step.run('update-user-score', async () => {
-      let upserts = users.map((u, i) => {
+    const z = await step.run('update-user-score', async () => {
+      let zipped = users.map((u, i) => {
         return {
-          user_address: u,
+          user_address: u.user_address,
           tx_count: flatten[i],
           network: Networks.networks_base_mainnet,
         };
@@ -93,28 +92,42 @@ export const helloWorld = inngest.createFunction(
 
       const { data, error } = await supabase
         .from('user_txcount')
-        .upsert(upserts, { onConflict: 'user_address,network' })
+        .upsert(zipped, { onConflict: 'user_address,network' })
         .select();
-      return flatten;
+      if (error) {
+        console.error(error);
+      }
+      //Note: we have to remap here becuase upsert complains if we include guildId
+      return zipped.map((z, i) => {
+        return { ...z, guild_id: users[i].guild_id };
+      });
     });
 
     let reduced = await step.run('reduce-tx-count', () => {
-      return flatten.reduce((a, b) => a + b, 0);
+      return z.reduce(
+        (acc, item) => {
+          if (!acc[item.guild_id]) {
+            acc[item.guild_id] = 0;
+          }
+          acc[item.guild_id] += item.tx_count;
+          return acc;
+        },
+        {} as { [guild_id: string]: number }
+      );
     });
 
     const dbData = await step.run('update-guild-score', async () => {
+      const gs = Object.keys(reduced).map((k) => {
+        return {
+          guild_id: k,
+          score: reduced[k],
+          game_id: event.data.gameId as number,
+          updated_at: new Date().toISOString(),
+        };
+      });
       const { data, error } = await supabase
         .from('guild_score')
-        .upsert(
-          {
-            updated_at: new Date().toISOString(),
-            guild_id: event.data.guildId as string,
-            game_id: event.data.gameId as number,
-            score: reduced,
-          },
-          { onConflict: 'game_id,guild_id' }
-        )
-        .eq('guild_id', event.data.guildId as string)
+        .upsert(gs, { onConflict: 'game_id,guild_id' })
         .eq('game_id', event.data.gameId as number)
         .select();
 
