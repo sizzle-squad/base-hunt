@@ -166,10 +166,10 @@ export interface Database {
           game_id: number | null
           id: number
           is_dynamic_points: boolean
-          is_enabled: boolean | null
+          is_enabled: boolean
           network: Database["public"]["Enums"]["networks"] | null
           params: Json | null
-          points: number | null
+          points: number
           type: Database["public"]["Enums"]["challenge_type"]
         }
         Insert: {
@@ -184,10 +184,10 @@ export interface Database {
           game_id?: number | null
           id?: number
           is_dynamic_points?: boolean
-          is_enabled?: boolean | null
+          is_enabled: boolean
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
-          points?: number | null
+          points: number
           type: Database["public"]["Enums"]["challenge_type"]
         }
         Update: {
@@ -202,10 +202,10 @@ export interface Database {
           game_id?: number | null
           id?: number
           is_dynamic_points?: boolean
-          is_enabled?: boolean | null
+          is_enabled?: boolean
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
-          points?: number | null
+          points?: number
           type?: Database["public"]["Enums"]["challenge_type"]
         }
         Relationships: []
