@@ -90,7 +90,6 @@ export interface Database {
           cta_text: string | null
           cta_url: string | null
           description: string
-          difficulty_type: string | null
           game_id: number
           icon: Database["public"]["Enums"]["boost_icon"]
           id: number
@@ -114,7 +113,6 @@ export interface Database {
           cta_text?: string | null
           cta_url?: string | null
           description?: string
-          difficulty_type?: string | null
           game_id?: number
           icon?: Database["public"]["Enums"]["boost_icon"]
           id?: number
@@ -138,7 +136,6 @@ export interface Database {
           cta_text?: string | null
           cta_url?: string | null
           description?: string
-          difficulty_type?: string | null
           game_id?: number
           icon?: Database["public"]["Enums"]["boost_icon"]
           id?: number
@@ -159,9 +156,9 @@ export interface Database {
       challenge_configuration: {
         Row: {
           auto_claim: boolean | null
+          content_data: Json | null
           contract_address: string | null
           created_at: string
-          difficulty_type: string | null
           display_name: string | null
           function_type:
             | Database["public"]["Enums"]["check_function_type"]
@@ -177,9 +174,9 @@ export interface Database {
         }
         Insert: {
           auto_claim?: boolean | null
+          content_data?: Json | null
           contract_address?: string | null
           created_at?: string
-          difficulty_type?: string | null
           display_name?: string | null
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
@@ -195,9 +192,9 @@ export interface Database {
         }
         Update: {
           auto_claim?: boolean | null
+          content_data?: Json | null
           contract_address?: string | null
           created_at?: string
-          difficulty_type?: string | null
           display_name?: string | null
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
@@ -299,6 +296,30 @@ export interface Database {
           guild_id?: string
           id?: number
           user_address?: string
+        }
+        Relationships: []
+      }
+      guild_score: {
+        Row: {
+          game_id: number | null
+          guild_id: string | null
+          id: number
+          score: number | null
+          updated_at: string
+        }
+        Insert: {
+          game_id?: number | null
+          guild_id?: string | null
+          id?: number
+          score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          game_id?: number | null
+          guild_id?: string | null
+          id?: number
+          score?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -525,6 +546,7 @@ export interface Database {
         Row: {
           challenge_id: number
           created_at: string
+          game_id: number
           id: number
           points: number
           status: Database["public"]["Enums"]["challenge_status"]
@@ -533,6 +555,7 @@ export interface Database {
         Insert: {
           challenge_id: number
           created_at?: string
+          game_id?: number
           id?: number
           points?: number
           status?: Database["public"]["Enums"]["challenge_status"]
@@ -541,6 +564,7 @@ export interface Database {
         Update: {
           challenge_id?: number
           created_at?: string
+          game_id?: number
           id?: number
           points?: number
           status?: Database["public"]["Enums"]["challenge_status"]
@@ -555,6 +579,27 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
+      }
+      user_txcount: {
+        Row: {
+          created_at: string
+          network: Database["public"]["Enums"]["networks"]
+          tx_count: number | null
+          user_address: string
+        }
+        Insert: {
+          created_at?: string
+          network?: Database["public"]["Enums"]["networks"]
+          tx_count?: number | null
+          user_address: string
+        }
+        Update: {
+          created_at?: string
+          network?: Database["public"]["Enums"]["networks"]
+          tx_count?: number | null
+          user_address?: string
+        }
+        Relationships: []
       }
       webhook_data: {
         Row: {
