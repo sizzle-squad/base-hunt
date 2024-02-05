@@ -40,12 +40,10 @@ export const userTxCount = inngest.createFunction(
       }
       iter++;
     }
-    // console.log('users:', users.length);
-    //await step.sleep('wait-a-moment', '1 second');
     let chunks = chunkArray(users, BatchSize);
 
     let txCounts: any[] = [];
-    for (var i = 0; i < chunks.length; i++) {
+    for (let i = 0; i < chunks.length; i++) {
       const t = await step.run('get-tx-count', async () => {
         const p = providers[Networks.networks_base_mainnet];
         const reqs = chunks[i].map((u, idx) => {
@@ -82,7 +80,7 @@ export const userTxCount = inngest.createFunction(
     });
 
     const z = await step.run('update-user-score', async () => {
-      let zipped = users.map((u, i) => {
+      const zipped = users.map((u, i) => {
         return {
           user_address: u.user_address,
           tx_count: flatten[i],
