@@ -341,7 +341,7 @@ CREATE TABLE IF NOT EXISTS "public"."challenge_configuration" (
     "points" bigint,
     "is_enabled" boolean,
     "game_id" bigint,
-    "type" "public"."challenge_type",
+    "type" "public"."challenge_type" NOT NULL,
     "network" "public"."networks",
     "function_type" "public"."check_function_type",
     "is_dynamic_points" boolean DEFAULT false NOT NULL,
