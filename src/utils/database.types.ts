@@ -170,7 +170,7 @@ export interface Database {
           network: Database["public"]["Enums"]["networks"] | null
           params: Json | null
           points: number | null
-          type: Database["public"]["Enums"]["challenge_type"] | null
+          type: Database["public"]["Enums"]["challenge_type"]
         }
         Insert: {
           auto_claim?: boolean | null
@@ -188,7 +188,7 @@ export interface Database {
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
           points?: number | null
-          type?: Database["public"]["Enums"]["challenge_type"] | null
+          type: Database["public"]["Enums"]["challenge_type"]
         }
         Update: {
           auto_claim?: boolean | null
@@ -206,7 +206,7 @@ export interface Database {
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
           points?: number | null
-          type?: Database["public"]["Enums"]["challenge_type"] | null
+          type?: Database["public"]["Enums"]["challenge_type"]
         }
         Relationships: []
       }
