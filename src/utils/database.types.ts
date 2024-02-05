@@ -159,7 +159,7 @@ export interface Database {
           content_data: Json | null
           contract_address: string | null
           created_at: string
-          display_name: string | null
+          display_name: string
           function_type:
             | Database["public"]["Enums"]["check_function_type"]
             | null
@@ -177,7 +177,7 @@ export interface Database {
           content_data?: Json | null
           contract_address?: string | null
           created_at?: string
-          display_name?: string | null
+          display_name: string
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
             | null
@@ -195,7 +195,7 @@ export interface Database {
           content_data?: Json | null
           contract_address?: string | null
           created_at?: string
-          display_name?: string | null
+          display_name?: string
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
             | null
