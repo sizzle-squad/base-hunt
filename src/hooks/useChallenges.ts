@@ -1,7 +1,7 @@
 import { routes } from '@/constants/routes';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Boost } from './types';
+import { Challenge } from './types';
 import { useMemo } from 'react';
 
 type Props = {
@@ -10,10 +10,10 @@ type Props = {
 };
 
 export function useChallenges({ userAddress, gameId }: Props) {
-  const { data, isLoading, error } = useQuery<Boost[]>(
-    ['boosts', userAddress, gameId],
+  const { data, isLoading, error } = useQuery<Challenge[]>(
+    ['challenges', userAddress, gameId],
     async () => {
-      const boosts = await axios({
+      const challenges = await axios({
         method: 'GET',
         url: `${routes.challenges.default}`,
         params: {
@@ -21,7 +21,8 @@ export function useChallenges({ userAddress, gameId }: Props) {
           gameId: gameId,
         },
       });
-      return boosts.data;
+
+      return challenges.data;
     },
     {
       enabled: !!userAddress && gameId !== undefined,

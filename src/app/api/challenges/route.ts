@@ -2,52 +2,28 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { toBigInt } from '@/utils/toBigInt';
-import { ChallengeTypeEnum } from '@/hooks/types';
-import { Database } from '@/utils/database.types';
+import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
+import { Database, Tables, Enums } from '@/utils/database.types';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
 );
 
-// export type ChallengeType = {
-//   id: bigint;
-//   display_name: string;
-//   icon: string;
-//   description: string;
-//   contract_addresses: string[];
-//   image_url: string | null;
-//   game_id: bigint;
-//   cta_url: string | null;
-//   cta_text: string | null;
-//   cta_button_text: string | null;
-//   type: string;
-//   is_enabled: boolean;
-//   points: bigint;
-//   nft_amount: bigint | null;
-//   params: object;
-//   content_data: object;
-// };
-
-export type Challenge = {
-  id: number;
-  name: string;
-  contractAddress: string | null;
+export type ContentDataType = {
   icon: string;
   description: string;
-  imageUrl: string | null;
-  gameId: bigint;
-  ctaUrl: string | null;
-  ctaText: string | null;
-  ctaButtonText: string | null;
-  challengeType: string;
-  isEnabled: boolean | null;
-  points: number;
+  image_url: string | null;
+  game_id: bigint;
+  cta_url: string | null;
+  cta_text: string | null;
+  cta_button_text: string | null;
 };
 
 async function mapChallengeState(
-  challenge: Database['public']['Tables']['challenge_configuration']['Row']
+  challenge: Tables<'challenge_configuration'>
 ): Promise<Challenge> {
+  // forced to use unknown because of lack of support in Supabase type mapping
   const {
     icon,
     description,
@@ -56,7 +32,8 @@ async function mapChallengeState(
     cta_url,
     cta_text,
     cta_button_text,
-  } = challenge.content_data;
+  } = challenge.content_data as unknown as ContentDataType;
+
   return {
     id: challenge.id,
     name: challenge.display_name,
@@ -71,6 +48,8 @@ async function mapChallengeState(
     challengeType: challenge.type,
     isEnabled: challenge.is_enabled,
     points: challenge.points,
+    type: challenge.type,
+    checkFunction: challenge.function_type,
   };
 }
 
@@ -95,8 +74,7 @@ export async function GET(request: NextRequest) {
     *,
     user_challenge_status (
       challenge_id,
-      user_address,
-      updated_at
+      user_address
     )
   `
     )
@@ -106,9 +84,6 @@ export async function GET(request: NextRequest) {
       'user_challenge_status.user_address',
       'eq',
       userAddress.toLowerCase()
-    )
-    .or(
-      `available_time.is.null,available_time.lte.${new Date().toISOString()}`
     );
 
   if (challengesData.error) {
@@ -120,31 +95,29 @@ export async function GET(request: NextRequest) {
 
   const challengesFormatted = challenges.map(async (challenge) => {
     let isCompleted = false;
-    const completedAddresses = challenge.completed_challenge
-      .filter((b: { contract_address: string }) => b.contract_address)
-      .map((b: { contract_address: string }) => b.contract_address);
-    switch (challenge.boost_type) {
-      case ChallengeTypeEnum.NFT:
-      case ChallengeTypeEnum.NFT_PER_MINT:
-        isCompleted = challenge.contract_addresses.some((a: string) =>
-          completedAddresses.includes(a)
-        );
-        break;
-      case ChallengeTypeEnum.TOKEN:
-      case ChallengeTypeEnum.TRANSACTION:
-      case ChallengeTypeEnum.TRANSFER_NFT:
-      case ChallengeTypeEnum.SOCIAL:
-      case ChallengeTypeEnum.DEFAULT:
-        isCompleted = challenge.completed_challenge.every(
-          (c: { challenge_id: number }) => c.challenge_id === challenge.id
-        );
-        break;
-    }
+    // const completedAddresses = challenge.user_challenge_status
+    //   .filter((b: { user_address: string }) => b.user_address)
+    //   .map((b: { user_address: string }) => b.user_address);
+    // switch (challenge.type) {
+    //   case ChallengeTypeEnum.TRANSFER_NFT_721:
+    //   case ChallengeTypeEnum.TRANSFER_NFT_1155:
+    //     if (challenge.contract_address) {
+    //       isCompleted = completedAddresses.includes(challenge.contract_address);
+    //     }
+    //     break;
+    //   case ChallengeTypeEnum.TOKEN:
+    //   case ChallengeTypeEnum.CONTRACT_EXECUTION:
+    //   case ChallengeTypeEnum.TRANSFER_NFT:
+    //   case ChallengeTypeEnum.SOCIAL:
+    //     isCompleted = challenge.completed_challenge.every(
+    //       (c: { challenge_id: number }) => c.challenge_id === challenge.id
+    //     );
+    //     break;
+    // }
 
-    isCompleted = isCompleted && challenge.completed_challenge.length > 0;
-
-    const mappedBoost = await mapChallengeState(challenge);
-    return { ...mappedBoost, isCompleted };
+    // isCompleted = isCompleted && challenge.completed_challenge.length > 0;
+    const mappedChallenge = await mapChallengeState(challenge);
+    return { ...mappedChallenge, isCompleted };
   });
 
   return Promise.all(challengesFormatted)
@@ -156,16 +129,19 @@ export async function GET(request: NextRequest) {
           }
           return a.isCompleted ? 1 : -1;
         });
-        const boostsResponse = formattedChallenges.filter((challenge) => {
-          const isTransferNftAndClaimed =
-            challenge.challengeType === ChallengeTypeEnum.TRANSFER_NFT &&
-            challenge.isCompleted;
+        const challengeResponse = formattedChallenges.filter((challenge) => {
+          // const isTransferNftAndClaimed =
+          //   challenge.challengeType === ChallengeTypeEnum.TRANSFER_NFT_721 ||
+          //   challenge.challengeType === ChallengeTypeEnum.TRANSFER_NFT_1155;
+          // challenge.isCompleted;
           const isNotTransferNft =
-            challenge.challengeType !== ChallengeTypeEnum.TRANSFER_NFT;
+            challenge.challengeType !== ChallengeTypeEnum.TRANSFER_NFT_721 &&
+            challenge.challengeType !== ChallengeTypeEnum.TRANSFER_NFT_1155;
 
-          return isTransferNftAndClaimed || isNotTransferNft;
+          return isNotTransferNft;
         });
-        return NextResponse.json(boostsResponse);
+
+        return NextResponse.json(challengeResponse);
       } else {
         return new Response(`No available boosts found for gameId: ${gameId}`, {
           status: 400,

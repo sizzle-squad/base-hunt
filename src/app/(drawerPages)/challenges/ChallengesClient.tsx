@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ListCard, { ListCardProps } from '@/components/ListCard';
 import ToolBar from '@/components/drawer/Toolbar';
@@ -37,6 +37,7 @@ import {
   UsersIcon,
 } from '@/components/assets/icons/BoostIcon';
 import { deepOrange, green } from '@mui/material/colors';
+import { Challenge } from '@/hooks/types';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
@@ -51,35 +52,26 @@ const iconMapping = {
   USERS: <UsersIcon />,
 };
 
-type BoostEntry = {
-  id: bigint;
+type ChallengeEntry = Omit<
+  Challenge,
+  'icon' | 'imageUrl' | 'challengeType' | 'name'
+> & {
   title: string;
-  description: string;
-  type: string;
-  contractAddresses: string[];
-  subtitle: string;
-  ctaUrl: string | null;
-  ctaText: string | null;
-  ctaButtonText: string | null;
-  points: bigint;
-  claimed: boolean;
-  claimable: boolean;
-  startContent: React.JSX.Element;
-  endContent: React.JSX.Element;
+  startContent: ReactNode;
+  endContent: ReactNode;
 };
 
 type ListCardPropsForChallenges = ListCardProps & {
-  id: bigint;
+  id: number;
   title: string;
   description: string;
   type: string;
-  contractAddresses: string[];
+  contractAddress: string | null;
   ctaUrl: string | null;
   ctaText: string | null;
   ctaButtonText: string | null;
-  points: bigint;
+  points: number;
   isCompleted: boolean;
-  claimable: boolean;
 };
 
 const PageConsts = {
@@ -145,34 +137,36 @@ CompletedSvg.displayName = 'CompletedSvg';
 export default function ChallengesPageClient() {
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
-  const { data: boosts, isLoading } = useChallenges({
+  const { data: challenges, isLoading } = useChallenges({
     userAddress: address,
     gameId: GAME_ID,
   });
-  const { claimBoost } = useCompleteChallenge();
+  const { claimChallenge } = useCompleteChallenge();
 
-  const boostList = useMemo(() => {
-    return boosts
-      ?.filter((boost) => boost.isEnabled)
-      .map((boost) => {
+  const challengeList = useMemo(() => {
+    return challenges
+      ?.filter((challenge) => challenge.isEnabled)
+      .map((challenge) => {
         return {
-          id: boost.id,
-          title: boost.name,
-          description: boost.description,
-          type: boost.boostType,
-          contractAddresses: boost.contractAddresses,
+          id: challenge.id,
+          title: challenge.name,
+          description: challenge.description,
+          type: challenge.challengeType,
+          contractAddress: challenge.contractAddress,
           subtitle: '',
-          ctaUrl: boost.ctaUrl,
-          ctaText: boost.ctaText,
-          ctaButtonText: boost.ctaButtonText,
-          points: boost.points,
-          claimed: boost.claimed,
-          claimable: !boost.claimed,
-          startContent: iconMapping[boost.icon],
-          endContent: <Text>{boost.points.toString()} pts</Text>,
-        } as BoostEntry;
-      }) as BoostEntry[];
-  }, [boosts]);
+          ctaUrl: challenge.ctaUrl,
+          ctaText: challenge.ctaText,
+          ctaButtonText: challenge.ctaButtonText,
+          points: challenge.points,
+          startContent: iconMapping[challenge.icon as keyof typeof iconMapping],
+          endContent: <Text>{challenge.points.toString()} pts</Text>,
+          isCompleted: challenge.isCompleted,
+          isEnabled: challenge.isEnabled,
+          gameId: challenge.gameId,
+          checkFunction: challenge.checkFunction,
+        } as ChallengeEntry;
+      }) as ChallengeEntry[];
+  }, [challenges]);
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsForChallenges | null>(null);
@@ -195,11 +189,11 @@ export default function ChallengesPageClient() {
   );
 
   const handleClaimPress = useCallback(() => {
-    claimBoost.mutate({
+    claimChallenge.mutate({
       gameId: GAME_ID,
       userAddress: address,
       challengeId: activeItem!.id.toString(),
-      contractAddresses: activeItem?.contractAddresses,
+      contractAddress: activeItem?.contractAddress,
     });
     // claimBoost should not be in there
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,17 +218,17 @@ export default function ChallengesPageClient() {
   };
 
   useEffect(() => {
-    if (claimBoost.isSuccess) {
+    if (claimChallenge.isSuccess) {
       setSnackbarMessage('Points claimed.');
       setSnackbarOpen(true);
       handleToggleDrawer(activeItem!);
     }
-    if (claimBoost.isError) {
+    if (claimChallenge.isError) {
       setEligibleItem(activeItem);
     }
     // activeItem and handleToggleDrawer should not be in there
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [claimBoost.isSuccess, claimBoost.isError]);
+  }, [claimChallenge.isSuccess, claimChallenge.isError]);
 
   const ToggleDrawerButton = memo(
     ({
@@ -337,7 +331,7 @@ export default function ChallengesPageClient() {
             variant="contained"
             disabled={
               (isEligible && ctaButtonText === 'Check claim') ||
-              claimBoost.isLoading
+              claimChallenge.isLoading
             }
           >
             <a
@@ -358,7 +352,7 @@ export default function ChallengesPageClient() {
             variant="contained"
             disabled={
               (isEligible && ctaButtonText === 'Check claim') ||
-              claimBoost.isLoading
+              claimChallenge.isLoading
             }
             onClick={handleButtonAction}
           >
@@ -378,8 +372,8 @@ export default function ChallengesPageClient() {
               <ListCard key={index} isLoading={isLoading} />
             ))}
           <Grid container spacing={3} sx={{ width: '100%' }}>
-            {boostList &&
-              boostList?.map((item, index) => {
+            {challengeList &&
+              challengeList?.map((item, index) => {
                 const bgColor =
                   item.type.charAt(0) === 'T' ? deepOrange[500] : green[500];
                 return (
@@ -400,7 +394,11 @@ export default function ChallengesPageClient() {
                           right: 0,
                         }}
                       >
-                        {item.claimed ? <CompletedSvg /> : <IncompleteSvg />}
+                        {item.isCompleted ? (
+                          <CompletedSvg />
+                        ) : (
+                          <IncompleteSvg />
+                        )}
                       </Box>
                       <CardContent sx={{ position: 'relative' }}>
                         <Stack

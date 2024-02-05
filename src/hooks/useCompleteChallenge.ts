@@ -6,13 +6,13 @@ export type ChallengeData = {
   gameId: string;
   userAddress: `0x${string}` | undefined;
   challengeId: string;
-  contractAddresses?: string[];
+  contractAddress?: string | null;
 };
 
 export function useCompleteChallenge() {
   const queryClient = useQueryClient();
 
-  const claimBoost = useMutation(
+  const claimChallenge = useMutation(
     (data: ChallengeData) => {
       const { gameId, userAddress, challengeId } = data;
 
@@ -33,5 +33,5 @@ export function useCompleteChallenge() {
       },
     }
   );
-  return { claimBoost };
+  return { claimChallenge };
 }

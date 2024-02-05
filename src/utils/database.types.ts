@@ -6,16 +6,6 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type ContentDataType = {
-  icon: string;
-  description: string;
-  image_url: string | null;
-  game_id: bigint;
-  cta_url: string | null;
-  cta_text: string | null;
-  cta_button_text: string | null;
-};
-
 export interface Database {
   public: {
     Tables: {
@@ -166,7 +156,7 @@ export interface Database {
       challenge_configuration: {
         Row: {
           auto_claim: boolean | null;
-          content_data: ContentDataType | null;
+          content_data: Json | null;
           contract_address: string | null;
           created_at: string;
           display_name: string;
@@ -184,7 +174,7 @@ export interface Database {
         };
         Insert: {
           auto_claim?: boolean | null;
-          content_data?: ContentDataType | null;
+          content_data?: Json | null;
           contract_address?: string | null;
           created_at?: string;
           display_name: string;
@@ -202,7 +192,7 @@ export interface Database {
         };
         Update: {
           auto_claim?: boolean | null;
-          content_data?: ContentDataType | null;
+          content_data?: Json | null;
           contract_address?: string | null;
           created_at?: string;
           display_name?: string;
