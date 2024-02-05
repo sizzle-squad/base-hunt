@@ -3,33 +3,36 @@ import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { toBigInt } from '@/utils/toBigInt';
 import { ChallengeTypeEnum } from '@/hooks/types';
+import { Database } from '@/utils/database.types';
 
-const supabase = createClient(
+const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
 );
 
-export type ChallengeType = {
-  id: bigint;
-  name: string;
-  icon: string;
-  description: string;
-  contract_addresses: string[];
-  image_url: string | null;
-  game_id: bigint;
-  cta_url: string | null;
-  cta_text: string | null;
-  cta_button_text: string | null;
-  challenge_type: string;
-  is_enabled: boolean;
-  points: bigint;
-  nft_amount: bigint | null;
-};
+// export type ChallengeType = {
+//   id: bigint;
+//   display_name: string;
+//   icon: string;
+//   description: string;
+//   contract_addresses: string[];
+//   image_url: string | null;
+//   game_id: bigint;
+//   cta_url: string | null;
+//   cta_text: string | null;
+//   cta_button_text: string | null;
+//   type: string;
+//   is_enabled: boolean;
+//   points: bigint;
+//   nft_amount: bigint | null;
+//   params: object;
+//   content_data: object;
+// };
 
 export type Challenge = {
-  id: bigint;
+  id: number;
   name: string;
-  contractAddresses: string[];
+  contractAddress: string | null;
   icon: string;
   description: string;
   imageUrl: string | null;
@@ -38,27 +41,36 @@ export type Challenge = {
   ctaText: string | null;
   ctaButtonText: string | null;
   challengeType: string;
-  isEnabled: boolean;
-  points: bigint;
-  nftAmount: bigint | null;
+  isEnabled: boolean | null;
+  points: number;
 };
 
-async function mapBoostState(challenge: ChallengeType): Promise<Challenge> {
+async function mapChallengeState(
+  challenge: Database['public']['Tables']['challenge_configuration']['Row']
+): Promise<Challenge> {
+  const {
+    icon,
+    description,
+    image_url,
+    game_id,
+    cta_url,
+    cta_text,
+    cta_button_text,
+  } = challenge.content_data;
   return {
-    id: challenge.id as bigint,
-    name: challenge.name,
-    contractAddresses: challenge.contract_addresses,
-    icon: challenge.icon,
-    description: challenge.description,
-    imageUrl: challenge.image_url,
-    gameId: challenge.game_id as bigint,
-    ctaUrl: challenge.cta_url,
-    ctaText: challenge.cta_text,
-    ctaButtonText: challenge.cta_button_text,
-    challengeType: challenge.challenge_type,
+    id: challenge.id,
+    name: challenge.display_name,
+    contractAddress: challenge.contract_address,
+    icon,
+    description,
+    imageUrl: image_url,
+    gameId: game_id as bigint,
+    ctaUrl: cta_url,
+    ctaText: cta_text,
+    ctaButtonText: cta_button_text,
+    challengeType: challenge.type,
     isEnabled: challenge.is_enabled,
     points: challenge.points,
-    nftAmount: challenge.nft_amount,
   };
 }
 
@@ -81,16 +93,20 @@ export async function GET(request: NextRequest) {
     .select(
       `
     *,
-    completed_challenge (
+    user_challenge_status (
       challenge_id,
-      contract_address,
+      user_address,
       updated_at
     )
   `
     )
     .eq('game_id', gameId)
     .eq('is_enabled', true)
-    .filter('completed_challenge.user_address', 'eq', userAddress.toLowerCase())
+    .filter(
+      'user_challenge_status.user_address',
+      'eq',
+      userAddress.toLowerCase()
+    )
     .or(
       `available_time.is.null,available_time.lte.${new Date().toISOString()}`
     );
@@ -127,7 +143,7 @@ export async function GET(request: NextRequest) {
 
     isCompleted = isCompleted && challenge.completed_challenge.length > 0;
 
-    const mappedBoost = await mapBoostState(challenge);
+    const mappedBoost = await mapChallengeState(challenge);
     return { ...mappedBoost, isCompleted };
   });
 
