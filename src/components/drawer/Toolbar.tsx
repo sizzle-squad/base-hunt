@@ -30,7 +30,7 @@ const ToolBar: React.FC<ToolBarProps> = ({ title, onDismiss }) => {
       alignItems="center"
     >
       <Stack flexDirection="row" justifyContent="space-between" width="100%">
-        <Text fontSize="20px">{title}</Text>
+        <Text variant="h4">{title}</Text>
       </Stack>
       <IconButton onClick={onDismiss}>
         <CloseIcon />
