@@ -114,7 +114,7 @@ export type Challenge = {
   points: number;
   type: string;
   checkFunction: string | null;
-  isCompleted: boolean;
+  isCompleted?: boolean;
 };
 
 export enum ChallengeTypeEnum {

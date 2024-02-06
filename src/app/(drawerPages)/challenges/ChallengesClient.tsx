@@ -71,7 +71,7 @@ type ListCardPropsForChallenges = ListCardProps & {
   ctaText: string | null;
   ctaButtonText: string | null;
   points: number;
-  isCompleted: boolean;
+  isCompleted?: boolean;
 };
 
 const PageConsts = {
