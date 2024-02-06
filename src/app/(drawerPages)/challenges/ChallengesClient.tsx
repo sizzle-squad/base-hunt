@@ -204,8 +204,8 @@ export default function ChallengesPageClient() {
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsForChallenges | null>(null);
-  const [eligibleItem, setEligibleItem] =
-    useState<ListCardPropsForChallenges | null>(null);
+  const [hasChallengeCompleteError, setHasChallengeCompleteError] =
+    useState(false);
 
   const { drawerStates, toggleDrawer } = useDrawer();
 
@@ -215,27 +215,33 @@ export default function ChallengesPageClient() {
   );
 
   const handleToggleDrawer = useCallback(
-    (item: ListCardPropsForChallenges) => {
+    (item: ListCardPropsForChallenges | null) => {
       setActiveItem(item);
       toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
     },
     [isOpen, toggleDrawer]
   );
 
-  const handleClaimPress = useCallback(() => {
+  const handleDrawerClose = useCallback(() => {
+    handleToggleDrawer(null);
+    setHasChallengeCompleteError(false);
+  }, [handleToggleDrawer]);
+
+  const handleCompletePress = useCallback(() => {
     claimChallenge.mutate({
       gameId: GAME_ID,
       userAddress: address,
       challengeId: activeItem!.id.toString(),
       contractAddress: activeItem?.contractAddress,
     });
+
     // claimBoost should not be in there
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, activeItem]);
 
-  const handleCTAPress = (ctaUrl: string) => {
+  const handleCTAPress = useCallback((ctaUrl: string) => {
     window.open(ctaUrl, '_blank');
-  };
+  }, []);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -244,12 +250,15 @@ export default function ChallengesPageClient() {
     CLICKAWAY: 'clickaway',
   };
 
-  const handleClose = (event: any, reason: string) => {
-    if (reason === Reason.CLICKAWAY) {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
+  const handleClose = useCallback(
+    (_: any, reason: string) => {
+      if (reason === Reason.CLICKAWAY) {
+        return;
+      }
+      setSnackbarOpen(false);
+    },
+    [Reason.CLICKAWAY]
+  );
 
   useEffect(() => {
     if (claimChallenge.isSuccess) {
@@ -257,8 +266,9 @@ export default function ChallengesPageClient() {
       setSnackbarOpen(true);
       handleToggleDrawer(activeItem!);
     }
+
     if (claimChallenge.isError) {
-      setEligibleItem(activeItem);
+      setHasChallengeCompleteError(true);
     }
     // activeItem and handleToggleDrawer should not be in there
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -291,34 +301,32 @@ export default function ChallengesPageClient() {
   ToggleDrawerButton.displayName = 'ToggleDrawerButton';
   ToolbarWithClose.displayName = 'ToolbarWithClose';
 
-  const BoostDrawerContent = ({
+  const ChallengeDrawerContent = ({
     item,
   }: {
     item: ListCardPropsForChallenges;
   }) => {
-    const isEligible = eligibleItem && eligibleItem.id === item.id;
-    const ctaText =
-      isEligible && item.ctaText ? item.ctaText : 'Unable to claim this boost.';
+    const isActive = activeItem && activeItem.id === item.id;
     const ctaButtonText =
-      isEligible && item.ctaButtonText ? item.ctaButtonText : 'Claim Points';
+      isActive && item.ctaButtonText ? item.ctaButtonText : 'Claim Points';
     const ctaUrl = item.ctaUrl;
 
-    const handleButtonAction = () => {
+    const handleButtonAction = useCallback(() => {
       if (item.type === 'SOCIAL') {
-        handleClaimPress();
-      } else if (isEligible && ctaUrl) {
+        handleCompletePress();
+      } else if (isActive && ctaUrl) {
         handleCTAPress(ctaUrl);
       } else {
-        handleClaimPress();
+        handleCompletePress();
       }
-    };
+    }, [ctaUrl, isActive, item.type]);
 
     return (
       <Stack gap="24px">
         <ToolbarWithClose
           item={item}
-          onClick={handleToggleDrawer}
-          title={PageConsts.drawerTitle}
+          onClick={handleDrawerClose}
+          title={item.title}
         />
 
         <Stack
@@ -327,9 +335,8 @@ export default function ChallengesPageClient() {
           alignItems="center"
         >
           <Stack gap="8px">
-            {!(isEligible && ctaText) && item.title && (
+            {!(isActive && hasChallengeCompleteError) && item.title && (
               <>
-                <Text variant="h4">{item.title}</Text>
                 <Text>
                   {item.description}{' '}
                   {item.title.indexOf('Secret') > -1 && (
@@ -344,14 +351,10 @@ export default function ChallengesPageClient() {
                 </Text>
               </>
             )}
-            {isEligible && ctaText && (
-              <>
-                <Text variant="h4">{item.title}</Text>
-                <Text color="red">
-                  You are not eligible to claim this boost.
-                </Text>
-                <Text>{ctaText}</Text>
-              </>
+            {isActive && hasChallengeCompleteError && (
+              <Text color="red">
+                You are not eligible to complete this challenge.
+              </Text>
             )}
           </Stack>
           <PointsPill
@@ -364,7 +367,7 @@ export default function ChallengesPageClient() {
           <Button
             variant="contained"
             disabled={
-              (isEligible && ctaButtonText === 'Check claim') ||
+              (isActive && ctaButtonText === 'Check claim') ||
               claimChallenge.isLoading
             }
           >
@@ -385,7 +388,7 @@ export default function ChallengesPageClient() {
           <Button
             variant="contained"
             disabled={
-              (isEligible && ctaButtonText === 'Check claim') ||
+              (isActive && ctaButtonText === 'Check claim') ||
               claimChallenge.isLoading
             }
             onClick={handleButtonAction}
@@ -467,10 +470,10 @@ export default function ChallengesPageClient() {
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}
           type={PageConsts.drawerType}
-          handleClose={handleToggleDrawer}
+          handleClose={handleDrawerClose}
           open={isOpen}
         >
-          {activeItem && <BoostDrawerContent item={activeItem} />}
+          {activeItem && <ChallengeDrawerContent item={activeItem} />}
         </SwipeUpDrawer>
       </NoSsr>
       <Snackbar
