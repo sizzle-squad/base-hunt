@@ -10,12 +10,9 @@ import {
   Snackbar,
   Stack,
   Link,
-  CardContent,
   CardMedia,
   Card,
   Grid,
-  Avatar,
-  Box,
 } from '@mui/material';
 import { memo, useCallback, useMemo, useState, useEffect } from 'react';
 import { DrawerType } from '@/context/DrawerContext';
@@ -36,8 +33,10 @@ import {
   LinkIcon,
   UsersIcon,
 } from '@/components/assets/icons/BoostIcon';
-import { deepOrange, green } from '@mui/material/colors';
-import { Challenge } from '@/hooks/types';
+import { deepOrange, green, purple, red } from '@mui/material/colors';
+import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
+import Pill from '@/components/Pill';
+import { Color } from '@/constants/color';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
@@ -134,6 +133,41 @@ const IncompleteSvg = memo(() => (
 IncompleteSvg.displayName = 'IncompleteSvg';
 CompletedSvg.displayName = 'CompletedSvg';
 
+type ClientChallengeType = 'Social' | 'Trivia' | 'NFT' | 'OnBase';
+
+function mapChallengeType(type: ChallengeTypeEnum): ClientChallengeType {
+  switch (type) {
+    case 'GUILD':
+    case 'SOCIAL':
+      return 'Social';
+    case 'TRIVIA':
+      return 'Trivia';
+    case 'EVENT_TYPE_TRANSFER_ERC721':
+    case 'EVENT_TYPE_TRANSFER_ERC1155':
+      return 'NFT';
+    case 'CONTRACT_INTERACTION':
+    case 'BALANCE_CHECK':
+    case 'EVENT_TYPE_CONTRACT_EXECUTION':
+    case 'ERC_TRANSFER':
+      return 'OnBase';
+    default:
+      throw new Error(`Unknown challenge type: ${type}`);
+  }
+}
+
+function getChallengeTypeBgColor(type: ClientChallengeType) {
+  switch (type) {
+    case 'Social':
+      return deepOrange[500];
+    case 'Trivia':
+      return purple[500];
+    case 'NFT':
+      return red[500];
+    case 'OnBase':
+      return green[500];
+  }
+}
+
 export default function ChallengesPageClient() {
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
@@ -151,7 +185,7 @@ export default function ChallengesPageClient() {
           id: challenge.id,
           title: challenge.name,
           description: challenge.description,
-          type: challenge.challengeType,
+          type: mapChallengeType(challenge.challengeType as ChallengeTypeEnum),
           contractAddress: challenge.contractAddress,
           subtitle: '',
           ctaUrl: challenge.ctaUrl,
@@ -371,69 +405,59 @@ export default function ChallengesPageClient() {
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
             ))}
-          <Grid container spacing={3} sx={{ width: '100%' }}>
+          <Grid container gap={2} sx={{ width: '100%' }}>
             {challengeList &&
               challengeList?.map((item, index) => {
-                const bgColor =
-                  item.type.charAt(0) === 'T' ? deepOrange[500] : green[500];
                 return (
                   <Grid item key={index}>
                     <Card
+                      key={index}
                       sx={{
-                        width: '300px',
+                        width: '390px',
                         height: '100%',
                         p: 2,
                         borderRadius: '8px',
-                        position: 'relative',
                       }}
+                      onClick={() => handleToggleDrawer(item)}
                     >
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          top: 0,
-                          right: 0,
-                        }}
-                      >
-                        {item.isCompleted ? (
-                          <CompletedSvg />
-                        ) : (
-                          <IncompleteSvg />
-                        )}
-                      </Box>
-                      <CardContent sx={{ position: 'relative' }}>
-                        <Stack
-                          direction="row"
-                          gap={2}
-                          justifyContent="space-between"
-                        >
-                          <Stack direction={'column'} height={100} py={1}>
-                            <Text variant="h6">{item.title}</Text>
-                            <Text>{item.points.toString() + ' pts'}</Text>
-                          </Stack>
-                          <Avatar
-                            sx={{
-                              bgcolor: bgColor,
-                              height: '50px',
-                              width: '50px',
-                            }}
-                          >
-                            {item.type.charAt(0)}
-                          </Avatar>
-                        </Stack>
-                      </CardContent>
-                      <CardMedia
-                        component="img"
-                        height="300"
-                        image="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
-                        alt="green iguana"
-                      />
-                      <CardContent>
-                        <ToggleDrawerButton
-                          item={item}
-                          onClick={handleToggleDrawer}
-                          cta={item.ctaText ?? 'Claim Points'}
+                      <Stack direction="row" gap={2}>
+                        <CardMedia
+                          component="img"
+                          image="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
+                          alt="green iguana"
+                          sx={{
+                            height: '126px',
+                            width: '126px',
+                          }}
                         />
-                      </CardContent>
+                        <Stack direction="column" gap={2}>
+                          <Stack
+                            direction="row"
+                            justifyContent="flex-end"
+                            gap={1}
+                            width="215px"
+                          >
+                            <Pill
+                              backgroundColor={getChallengeTypeBgColor(
+                                item.type as ClientChallengeType
+                              )}
+                              textColor={Color.White}
+                            >
+                              <Text>{item.type}</Text>
+                            </Pill>
+                            <Pill
+                              backgroundColor={Color.CoinbaseBlue}
+                              textColor={Color.White}
+                            >
+                              <Text>{item.points.toString() + ' pts'}</Text>
+                            </Pill>
+                          </Stack>
+                          <Stack gap={1}>
+                            <Text variant="h6">{item.title.toUpperCase()}</Text>
+                            <Text variant="body1">{item.description}</Text>
+                          </Stack>
+                        </Stack>
+                      </Stack>
                     </Card>
                   </Grid>
                 );
