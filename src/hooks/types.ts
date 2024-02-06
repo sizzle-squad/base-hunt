@@ -98,32 +98,34 @@ export enum BoostIconEnum {
   USERS = 'USERS',
 }
 
-export type Boost = {
-  icon: BoostIconEnum;
-  description: string;
-  id: bigint;
+export type Challenge = {
+  id: number;
   name: string;
-  contractAddresses: string[];
+  description: string;
+  contractAddress: string | null;
+  icon: string;
   imageUrl: string | null;
   gameId: bigint;
   ctaUrl: string | null;
   ctaText: string | null;
   ctaButtonText: string | null;
-  boostType: string;
-  isEnabled: boolean;
-  points: bigint;
-  nftAmount: bigint | null;
-  claimed: boolean;
+  challengeType: string;
+  isEnabled: boolean | null;
+  points: number;
+  type: string;
+  checkFunction: string | null;
+  isCompleted?: boolean;
 };
 
-export enum BoostTypeEnum {
-  TRANSFER_NFT = 'TRANSFER_NFT',
-  NFT = 'NFT',
-  NFT_PER_MINT = 'NFT_PER_MINT',
-  TOKEN = 'TOKEN',
-  TRANSACTION = 'TRANSACTION',
+export enum ChallengeTypeEnum {
+  TRANSFER_ERC_20 = 'EVENT_TYPE_TRANSFER_ERC20',
+  TRANSFER_NFT_721 = 'EVENT_TYPE_TRANSFER_ERC721',
+  TRANSFER_NFT_1155 = 'EVENT_TYPE_TRANSFER_ERC1155',
   SOCIAL = 'SOCIAL',
-  DEFAULT = 'DEFAULT',
+  BALANCE_CHECK = 'BALANCE_CHECK',
+  ERC_TRANSFER = 'ERC_TRANSFER',
+  CONTRACT_INTERACTION = 'CONTRACT_INTERACTION',
+  CONTRACT_EXECUTION = 'EVENT_TYPE_CONTRACT_EXECUTION',
 }
 
 export type PlayerRank = {

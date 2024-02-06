@@ -10,9 +10,9 @@ export const routes = {
     state: '/api/treasure-box/state',
     default: '/api/treasure-box',
   },
-  boosts: {
-    claim: '/api/boosts/claim',
-    default: '/api/boosts',
+  challenges: {
+    default: '/api/challenges',
+    complete: '/api/challenges/complete',
   },
   levels: '/api/profile/level',
   guild: {

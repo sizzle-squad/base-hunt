@@ -9,10 +9,9 @@ export default function Template({ children }: { children: ReactNode }) {
   const noShowRoutes = useMemo(
     () => [
       /^\/levels$/,
-      /^\/boosts$/,
+      /^\/challenges$/,
       /^\/guild$/,
       /^\/leaderboard$/,
-      /^\/badges\/.+$/, // This regex will match any route starting with /badges/ followed by any characters
       /^\/thanks$/,
     ],
     []
