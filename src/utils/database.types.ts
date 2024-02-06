@@ -159,54 +159,54 @@ export interface Database {
           content_data: Json | null
           contract_address: string | null
           created_at: string
-          display_name: string | null
+          display_name: string
           function_type:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id: number | null
           id: number
           is_dynamic_points: boolean
-          is_enabled: boolean | null
+          is_enabled: boolean
           network: Database["public"]["Enums"]["networks"] | null
           params: Json | null
-          points: number | null
-          type: Database["public"]["Enums"]["challenge_type"] | null
+          points: number
+          type: Database["public"]["Enums"]["challenge_type"]
         }
         Insert: {
           auto_claim?: boolean | null
           content_data?: Json | null
           contract_address?: string | null
           created_at?: string
-          display_name?: string | null
+          display_name: string
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id?: number | null
           id?: number
           is_dynamic_points?: boolean
-          is_enabled?: boolean | null
+          is_enabled: boolean
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
-          points?: number | null
-          type?: Database["public"]["Enums"]["challenge_type"] | null
+          points: number
+          type: Database["public"]["Enums"]["challenge_type"]
         }
         Update: {
           auto_claim?: boolean | null
           content_data?: Json | null
           contract_address?: string | null
           created_at?: string
-          display_name?: string | null
+          display_name?: string
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id?: number | null
           id?: number
           is_dynamic_points?: boolean
-          is_enabled?: boolean | null
+          is_enabled?: boolean
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
-          points?: number | null
-          type?: Database["public"]["Enums"]["challenge_type"] | null
+          points?: number
+          type?: Database["public"]["Enums"]["challenge_type"]
         }
         Relationships: []
       }

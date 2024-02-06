@@ -218,7 +218,7 @@ export async function POST(request: NextRequest) {
     console.log(
       `challenge already claimed: ${challenge.user_challenge_status[0].status}`
     );
-    return NextResponse.json({ status: 'challenge-claimed' });
+    return NextResponse.json({ success: true, message: 'challenge-claimed' });
   }
 
   if (challenge.is_dynamic_points) {
@@ -239,7 +239,10 @@ export async function POST(request: NextRequest) {
         ' function type:' +
         challenge.function_type
     );
-    return NextResponse.json({ status: 'invalid-body-params' });
+    return NextResponse.json({
+      success: false,
+      message: 'invalid-body-params',
+    });
   }
 
   let checkFunc =
@@ -291,11 +294,11 @@ export async function POST(request: NextRequest) {
       }
     } catch (e) {
       console.error(e);
-      return NextResponse.json({ status: 'error-challenge' });
+      return NextResponse.json({ success: false, message: 'error-challenge' });
     }
   } else {
-    return NextResponse.json({ status: 'failed-challenge' });
+    return NextResponse.json({ success: false, message: 'failed-challenge' });
   }
 
-  return NextResponse.json({ status: 'ok' });
+  return NextResponse.json({ success: true, message: 'ok' });
 }
