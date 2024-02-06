@@ -151,33 +151,21 @@ export const userPointDistribute = inngest.createFunction(
   { id: 'user-point-distribute' },
   { event: 'events/user-point-distribute' },
   async ({ event, step }) => {
-    // Get current date in MST
     let now = new Date();
-    let mstNow = now.toLocaleString('en-US', { timeZone: 'America/Denver' });
-
-    // Get start of day in MST
-    let start = new Date(mstNow);
-    start.setHours(0, 0, 0, 0);
-    let mstStart = start.toLocaleString('en-US', {
-      timeZone: 'America/Denver',
-    });
-
-    // Get end of day in MST
-    let end = new Date(mstNow);
-    end.setHours(23, 59, 59, 999);
-    let mstEnd = end.toLocaleString('en-US', { timeZone: 'America/Denver' });
-
     const challengeData = await supabase
       .from('challenge_configuration')
       .select()
+      .eq('game_id', event.data.gameId as number)
       .eq('type', ChallengeType.GUILD)
       .eq('function_type', CheckFunctionType.checkTxCountBatch)
-
+      .lte('start_timestamp', now.toISOString())
+      .gt('end_timestamp', now.toISOString())
+      .eq('is_enabled', true)
       .single();
 
     if (challengeData.error) {
       console.error(challengeData.error);
-      return;
+      return { error: challengeData.error };
     }
 
     const challenge = challengeData.data;
@@ -201,42 +189,55 @@ export const userPointDistribute = inngest.createFunction(
     );
 
     if (guildId === null) {
-      console.error('No guild found with highest score');
-      return;
+      const message = `No guild found with highest score gameId:${event.data.gameId}`;
+      console.error(message);
+      return { error: message };
     }
 
-    const users = await step.run('fetch-guild-users', async () => {
-      const { data, error } = await supabase
-        .from('guild_member_configuration')
-        .select('user_address')
-        .eq('game_id', event.data.gameId as number)
-        .eq('guild_id', guildId as string);
-      if (error) {
-        console.error(error);
-        return [];
+    const users: { user_address: string }[] = [];
+    let uRange: string[] = [];
+    let iter: number = 0;
+    while (true && iter < 20) {
+      const uRange = await step.run('fetch guild users', async () => {
+        const { data, error } = await supabase
+          .from('guild_member_configuration')
+          .select('user_address')
+          .eq('game_id', event.data.gameId as number)
+          .eq('guild_id', guildId)
+          .range(iter * queryBatchSize, (iter + 1) * queryBatchSize - 1);
+        if (error) {
+          return [];
+        }
+        return data;
+      });
+      users.push(...uRange);
+      if (uRange.length < queryBatchSize) {
+        break;
       }
-      return data;
-    });
+      iter++;
+    }
 
+    //NOTE: we only want to insert 10 scores every second so we dont blow up airdrops for users crossing levels
+    let chunks = chunkArray(users, 10);
     const rows = [];
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
+    for (let i = 0; i < chunks.length; i++) {
       const row = await step.run('update-challenge', async () => {
-        const d = {
-          user_address: user.user_address,
-          challenge_id: challenge.id,
-          status: ChallengeStatus.COMPLETE,
-          points: challenge.points as number,
-        };
+        return chunks[i].map((u) => {
+          return {
+            user_address: u.user_address,
+            challenge_id: challenge.id,
+            status: ChallengeStatus.COMPLETE,
+            points: challenge.points as number,
+          };
+        });
         // TODO: uncomment this
         // await supabase
         //   .from('user_challenge_status')
         //   .insert(d)
         //   .select();
-        return d;
       });
 
-      await step.sleep('wait-a-moment', '10 milliseconds');
+      await step.sleep('wait-a-moment', '2000 milliseconds');
       rows.push(row);
     }
 
