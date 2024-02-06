@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 
 export default function Pill({
   backgroundColor = '#efefef',
+  textColor = 'var(--Black, #151515)',
   hover,
   children,
   onClick,
@@ -11,6 +12,7 @@ export default function Pill({
   hover?: boolean;
   children: ReactNode;
   onClick?: () => void;
+  textColor?: string;
 }) {
   return (
     <Stack
@@ -20,7 +22,7 @@ export default function Pill({
       gap={1}
       onClick={onClick}
       sx={{
-        color: '#151515', // Replaces var(--Black, #151515)
+        color: textColor,
         fontFeatureSettings: '"clig" off, "liga" off',
         letterSpacing: '-0.5px',
         whiteSpace: 'nowrap', // Adjusts for responsiveness
