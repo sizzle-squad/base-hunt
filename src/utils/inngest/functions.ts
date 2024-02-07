@@ -146,6 +146,15 @@ function chunkArray<T>(array: T[], size: number): T[][] {
   );
 }
 
+/*
+  The event should have 3 fields with example:
+
+  scheduleAt: '2024-02-20 17:00:00.000-07',//Run at 5pm MST on 20th Feb 2024
+  from: '2024-02-19 17:00:00.000-07',// 5pm MST on 19th Feb 2024
+  to: '2024-02-20 17:00:00.000-07',// 5pm MST on 20th Feb 2024
+
+  This will find which guild did the most activity between the from and to dates and distribute points to the users in that guild
+*/
 export const userPointDistribute = inngest.createFunction(
   { id: 'user-point-distribute' },
   { event: 'events/user-point-distribute' },
@@ -267,24 +276,32 @@ export const userPointDistribute = inngest.createFunction(
     let chunks = chunkArray(users, queryBatchSize);
     const rows = [];
     for (let i = 0; i < chunks.length; i++) {
-      const row = await step.run('update-challenge', async () => {
-        return chunks[i].map((u) => {
+      const rowChunks = await step.run('update-challenge', async () => {
+        const rows = chunks[i].map((u) => {
           return {
             user_address: u.user_address,
-            challenge_id: challenge.id,
-            status: ChallengeStatus.IN_PROGRESS,
             points: challenge.points as number,
+            game_id: event.data.gameId as number,
+            guild_id: guildId,
+            claim_time: event.data.scheduleAt,
+            is_claimed: false,
           };
         });
-        // TODO: uncomment this
-        // await supabase
-        //   .from('user_challenge_status')
-        //   .insert(d)
-        //   .select();
+
+        //insert all claims
+        const ugscData = await supabase
+          .from('user_guild_score_claim')
+          .insert(rows)
+          .select();
+        if (ugscData.error) {
+          console.error(ugscData.error);
+          return [];
+        }
+        return ugscData.data;
       });
 
       await step.sleep('wait-a-moment', '2000 milliseconds');
-      rows.push(row);
+      rows.push(rowChunks);
     }
 
     return { data: rows };
