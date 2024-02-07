@@ -1,12 +1,14 @@
-import axios from 'axios';
 import { inngest } from './client';
 import { Database } from '../database.types';
-import { createClient } from '@supabase/supabase-js';
-import { getTxCountBatch } from '../claims/txHistoryCheck';
-import { Networks } from '../database.enums';
+import { PostgrestError, createClient } from '@supabase/supabase-js';
+import {
+  ChallengeStatus,
+  ChallengeType,
+  CheckFunctionType,
+  Networks,
+} from '../database.enums';
 import { providers } from '../ethereum';
 import { ethers } from 'ethers';
-import { get } from 'http';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -82,7 +84,7 @@ export const userTxCount = inngest.createFunction(
     const z = await step.run('update-user-score', async () => {
       const zipped = users.map((u, i) => {
         return {
-          user_address: u.user_address,
+          user_address: u.user_address.toLowerCase(),
           tx_count: flatten[i],
           network: Networks.networks_base_mainnet,
         };
@@ -115,20 +117,19 @@ export const userTxCount = inngest.createFunction(
     });
 
     const dbData = await step.run('update-guild-score', async () => {
+      const executionTime = new Date().toISOString();
       const gs = Object.keys(reduced).map((k) => {
         return {
           guild_id: k,
           score: reduced[k],
           game_id: event.data.gameId as number,
-          updated_at: new Date().toISOString(),
+          timestamp: executionTime,
         };
       });
       const { data, error } = await supabase
         .from('guild_score')
-        .upsert(gs, { onConflict: 'game_id,guild_id' })
-        .eq('game_id', event.data.gameId as number)
+        .insert(gs)
         .select();
-
       if (error) {
         return { error: error };
       }
@@ -144,3 +145,168 @@ function chunkArray<T>(array: T[], size: number): T[][] {
     array.slice(i * size, i * size + size)
   );
 }
+
+/*
+  The event should have 3 fields with example:
+
+  scheduleAt: '2024-02-20 17:00:00.000-07',//Run at 5pm MST on 20th Feb 2024
+  from: '2024-02-19 17:00:00.000-07',// 5pm MST on 19th Feb 2024
+  to: '2024-02-20 17:00:00.000-07',// 5pm MST on 20th Feb 2024
+  claimId: 1 // int representing this run 
+  This will find which guild did the most activity between the from and to dates and distribute points to the users in that guild
+*/
+export const userPointDistribute = inngest.createFunction(
+  { id: 'user-point-distribute' },
+  { event: 'events/user-point-distribute' },
+  async ({ event, step }) => {
+    //NOTE: the time passed in should be iso 8601 compatible string
+    const at = new Date(event.data.scheduleAt);
+
+    await step.sleepUntil('wait-for-scheduled', at);
+
+    let now = new Date();
+    const challengeData = await supabase
+      .from('challenge_configuration')
+      .select()
+      .eq('game_id', event.data.gameId as number)
+      .eq('type', ChallengeType.GUILD)
+      .eq('function_type', CheckFunctionType.checkTxCountBatch)
+      .lte('start_timestamp', now.toISOString())
+      .gt('end_timestamp', now.toISOString())
+      .eq('is_enabled', true)
+      .single();
+
+    if (challengeData.error) {
+      console.error(challengeData.error);
+      return { error: challengeData.error };
+    }
+
+    const challenge = challengeData.data;
+    const time = new Date();
+
+    const guildId: string | null = await step.run(
+      'fetch-guild-with-highest-score',
+      async () => {
+        const { data, error } = await supabase
+          .from('guild_score')
+          .select('id,guild_id,score')
+          .eq('game_id', event.data.gameId as number)
+          .gte('timestamp', event.data.from as string)
+          .lte('timestamp', event.data.to as string)
+          .returns<{ id: number; guild_id: string; score: number }[]>();
+
+        if (error) {
+          console.error(error);
+          return null;
+        }
+
+        if (data.length === 0) {
+          return null;
+        }
+
+        // Group items by guild_id
+        const grouped = data.reduce(
+          (
+            acc: Record<
+              string,
+              { id: number; guild_id: string; score: number }[]
+            >,
+            item: { id: number; guild_id: string; score: number }
+          ) => {
+            if (!acc[item.guild_id]) {
+              acc[item.guild_id] = [];
+            }
+            acc[item.guild_id].push(item);
+            return acc;
+          },
+          {}
+        );
+
+        // Sort each group by id and calculate score difference
+        const scoreDifferences: Record<string, number> = {};
+        for (const guild_id in grouped) {
+          const sorted = grouped[guild_id].sort((a, b) => a.id - b.id);
+          const first = sorted[0];
+          const last = sorted[sorted.length - 1];
+          scoreDifferences[guild_id] = last.score - first.score;
+        }
+
+        // Find the guild_id with the highest score difference
+        const sortedScoreDifferences = Object.entries(scoreDifferences).sort(
+          (a, b) => b[1] - a[1]
+        );
+
+        console.log(sortedScoreDifferences);
+        return sortedScoreDifferences.length > 0
+          ? sortedScoreDifferences[0][0]
+          : null;
+      }
+    );
+
+    if (guildId === null) {
+      const message = `No guild found with highest score gameId:${event.data.gameId}`;
+      console.error(message);
+      return { error: message };
+    }
+
+    const users: { user_address: string }[] = [];
+    let uRange: string[] = [];
+    let iter: number = 0;
+    while (true && iter < 20) {
+      const uRange = await step.run('fetch guild users', async () => {
+        const { data, error } = await supabase
+          .from('guild_member_configuration')
+          .select('user_address')
+          .eq('game_id', event.data.gameId as number)
+          .eq('guild_id', guildId)
+          .range(iter * queryBatchSize, (iter + 1) * queryBatchSize - 1);
+        if (error) {
+          return [];
+        }
+        return data;
+      });
+      users.push(...uRange);
+      if (uRange.length < queryBatchSize) {
+        break;
+      }
+      iter++;
+    }
+
+    //NOTE: we only want to insert 10 scores every second so we dont blow up airdrops for users crossing levels
+    let chunks = chunkArray(users, queryBatchSize);
+    const rows = [];
+    for (let i = 0; i < chunks.length; i++) {
+      const rowChunks = await step.run('update-challenge', async () => {
+        const rows = chunks[i].map((u) => {
+          return {
+            user_address: u.user_address.toLowerCase(),
+            points: challenge.points as number,
+            game_id: event.data.gameId as number,
+            guild_id: guildId,
+            claim_id: event.data.claimId,
+            is_claimed: false,
+          };
+        });
+
+        //insert all claims
+        const ugscData = await supabase
+          .from('user_guild_score_claim')
+          .upsert(rows, {
+            onConflict: 'game_id,user_address,guild_id,claim_id',
+            ignoreDuplicates: true,
+          })
+          .select();
+        if (ugscData.error) {
+          console.error(ugscData.error);
+          return [];
+        }
+        return ugscData.data;
+      });
+
+      await step.sleep('wait-a-moment', '2000 milliseconds');
+      rows.push(rowChunks);
+    }
+
+    return { data: rows };
+  }
+);

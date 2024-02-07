@@ -589,6 +589,39 @@ export type Database = {
           }
         ]
       }
+      user_guild_score_claim: {
+        Row: {
+          claim_id: number
+          created_at: string
+          game_id: number
+          guild_id: string
+          id: number
+          is_claimed: boolean
+          points: number
+          user_address: string
+        }
+        Insert: {
+          claim_id?: number
+          created_at?: string
+          game_id?: number
+          guild_id: string
+          id?: number
+          is_claimed?: boolean
+          points?: number
+          user_address: string
+        }
+        Update: {
+          claim_id?: number
+          created_at?: string
+          game_id?: number
+          guild_id?: string
+          id?: number
+          is_claimed?: boolean
+          points?: number
+          user_address?: string
+        }
+        Relationships: []
+      }
       user_txcount: {
         Row: {
           created_at: string
@@ -714,6 +747,13 @@ export type Database = {
         Returns: {
           j: Json
         }[]
+      }
+      user_claim_guild_score: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: boolean
       }
     }
     Enums: {

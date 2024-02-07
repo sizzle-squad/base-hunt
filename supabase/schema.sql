@@ -10,25 +10,9 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
+CREATE SCHEMA IF NOT EXISTS "public";
 
-CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
-
-CREATE SCHEMA IF NOT EXISTS "supabase_migrations";
-
-ALTER SCHEMA "supabase_migrations" OWNER TO "postgres";
-
-CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
-
-CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
-
-CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+ALTER SCHEMA "public" OWNER TO "pg_database_owner";
 
 CREATE TYPE "public"."badge_type" AS ENUM (
     'online',
@@ -79,7 +63,8 @@ CREATE TYPE "public"."challenge_type" AS ENUM (
     'EVENT_TYPE_TRANSFER_ERC1155',
     'EVENT_TYPE_TRANSFER_ERC20',
     'EVENT_TYPE_TRANSFER_ERC721',
-    'EVENT_TYPE_CONTRACT_EXECUTION'
+    'EVENT_TYPE_CONTRACT_EXECUTION',
+    'GUILD'
 );
 
 ALTER TYPE "public"."challenge_type" OWNER TO "postgres";
@@ -102,7 +87,7 @@ CREATE TYPE "public"."networks" AS ENUM (
 
 ALTER TYPE "public"."networks" OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."claimed_boost_insert"() RETURNS "trigger"
+CREATE OR REPLACE FUNCTION "public"."claimed_boost_insert"() RETURNS trigger
     LANGUAGE "plpgsql"
     AS $$ 
     DECLARE 
@@ -120,7 +105,7 @@ CREATE OR REPLACE FUNCTION "public"."claimed_boost_insert"() RETURNS "trigger"
 
 ALTER FUNCTION "public"."claimed_boost_insert"() OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."getbadgestate"("_game_id" bigint, "_user_address" "text") RETURNS TABLE("j" "json")
+CREATE OR REPLACE FUNCTION "public"."getbadgestate"(_game_id bigint, _user_address text) RETURNS TABLE(j json)
     LANGUAGE "plpgsql"
     AS $$
 declare 
@@ -132,9 +117,9 @@ begin
 end; 
 $$;
 
-ALTER FUNCTION "public"."getbadgestate"("_game_id" bigint, "_user_address" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."getbadgestate"(_game_id bigint, _user_address text) OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."getlevelstate"("_game_id" bigint, "_user_address" "text") RETURNS TABLE("j" "json")
+CREATE OR REPLACE FUNCTION "public"."getlevelstate"(_game_id bigint, _user_address text) RETURNS TABLE(j json)
     LANGUAGE "plpgsql"
     AS $$
 declare 
@@ -146,9 +131,9 @@ begin
 end; 
 $$;
 
-ALTER FUNCTION "public"."getlevelstate"("_game_id" bigint, "_user_address" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."getlevelstate"(_game_id bigint, _user_address text) OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."getscorerank"("_game_id" bigint, "_user_address" "text") RETURNS TABLE("j" "json")
+CREATE OR REPLACE FUNCTION "public"."getscorerank"(_game_id bigint, _user_address text) RETURNS TABLE(j json)
     LANGUAGE "plpgsql"
     AS $$
 declare 
@@ -159,9 +144,9 @@ begin
 end; 
 $$;
 
-ALTER FUNCTION "public"."getscorerank"("_game_id" bigint, "_user_address" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."getscorerank"(_game_id bigint, _user_address text) OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."getuserrank"("_game_id" bigint, "_user_address" "text") RETURNS TABLE("j" "json")
+CREATE OR REPLACE FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text) RETURNS TABLE(j json)
     LANGUAGE "plpgsql"
     AS $$
 declare 
@@ -172,9 +157,9 @@ begin
 end; 
 $$;
 
-ALTER FUNCTION "public"."getuserrank"("_game_id" bigint, "_user_address" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text) OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."upserttreasurebox"("_game_id" bigint, "_user_address" "text", "_cbid" "text", "_ens_name" "text", "_increment" bigint, "_tap_count" integer) RETURNS TABLE("j" "json")
+CREATE OR REPLACE FUNCTION "public"."upserttreasurebox"(_game_id bigint, _user_address text, _cbid text, _ens_name text, _increment bigint, _tap_count integer) RETURNS TABLE(j json)
     LANGUAGE "plpgsql"
     AS $$
 declare 
@@ -196,9 +181,9 @@ is_open = _is_open_ ;
 end; 
 $$;
 
-ALTER FUNCTION "public"."upserttreasurebox"("_game_id" bigint, "_user_address" "text", "_cbid" "text", "_ens_name" "text", "_increment" bigint, "_tap_count" integer) OWNER TO "postgres";
+ALTER FUNCTION "public"."upserttreasurebox"(_game_id bigint, _user_address text, _cbid text, _ens_name text, _increment bigint, _tap_count integer) OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."user_challenge_status_insert"() RETURNS "trigger"
+CREATE OR REPLACE FUNCTION "public"."user_challenge_status_insert"() RETURNS trigger
     LANGUAGE "plpgsql"
     AS $$ 
     DECLARE      
@@ -213,7 +198,29 @@ CREATE OR REPLACE FUNCTION "public"."user_challenge_status_insert"() RETURNS "tr
 
 ALTER FUNCTION "public"."user_challenge_status_insert"() OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."webhook_data_update"() RETURNS "trigger"
+CREATE OR REPLACE FUNCTION "public"."user_claim_guild_score"(_game_id bigint, _user_address text) RETURNS boolean
+    LANGUAGE "plpgsql"
+    AS $$
+declare 
+  _sum_points bigint = 0;
+begin
+ with cte as (UPDATE user_guild_score_claim set is_claimed = true where game_id=_game_id and user_address=_user_address and is_claimed is false returning points)
+ select sum(cte.points) into _sum_points from cte;
+ IF _sum_points IS null THEN
+  RETURN FALSE;
+ END IF;
+ UPDATE score set current_score = score.current_score+_sum_points  
+  where game_id=_game_id and user_address=_user_address;
+ IF NOT FOUND THEN 
+  INSERT INTO score(current_score,user_address,game_id) values (_sum_points, _user_address, _game_id); 
+  END IF;  
+  RETURN TRUE;
+end; 
+$$;
+
+ALTER FUNCTION "public"."user_claim_guild_score"(_game_id bigint, _user_address text) OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION "public"."webhook_data_update"() RETURNS trigger
     LANGUAGE "plpgsql"
     AS $$ 
     
@@ -252,9 +259,9 @@ SET default_table_access_method = "heap";
 
 CREATE TABLE IF NOT EXISTS "public"."address_gameid_configuration" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
     "game_id" bigint,
-    "address" "text"
+    "address" text
 );
 
 ALTER TABLE "public"."address_gameid_configuration" OWNER TO "postgres";
@@ -274,15 +281,15 @@ CREATE TABLE IF NOT EXISTS "public"."badge_configuration" (
     "contract_address" character varying NOT NULL,
     "token_id" bigint NOT NULL,
     "level" integer,
-    "minter" "text" NOT NULL,
-    "image_url" "text",
+    "minter" text NOT NULL,
+    "image_url" text,
     "game_id" bigint DEFAULT '0'::bigint NOT NULL,
-    "cta_url" "text",
-    "cta_text" "text",
-    "type" "public"."badge_type" DEFAULT 'irl'::"public"."badge_type" NOT NULL,
-    "lat_lng" "text",
-    "description" "text",
-    "artist_name" "text"
+    "cta_url" text,
+    "cta_text" text,
+    "type" public.badge_type DEFAULT 'irl'::public.badge_type NOT NULL,
+    "lat_lng" text,
+    "description" text,
+    "artist_name" text
 );
 
 ALTER TABLE "public"."badge_configuration" OWNER TO "postgres";
@@ -305,7 +312,7 @@ CREATE TABLE IF NOT EXISTS "public"."boost_configuration" (
     "game_id" bigint DEFAULT '0'::bigint NOT NULL,
     "cta_url" character varying,
     "cta_text" character varying,
-    "boost_type" "public"."boost_type" DEFAULT 'NFT'::"public"."boost_type" NOT NULL,
+    "boost_type" public.boost_type DEFAULT 'NFT'::public.boost_type NOT NULL,
     "is_enabled" boolean DEFAULT true NOT NULL,
     "points" bigint DEFAULT '0'::bigint NOT NULL,
     "nft_amount" bigint,
@@ -316,7 +323,7 @@ CREATE TABLE IF NOT EXISTS "public"."boost_configuration" (
     "network" character varying DEFAULT 'base-mainnet'::character varying NOT NULL,
     "max_threshold" bigint DEFAULT '0'::bigint,
     "description" character varying DEFAULT '""'::character varying NOT NULL,
-    "icon" "public"."boost_icon" DEFAULT 'CIRCLE'::"public"."boost_icon" NOT NULL,
+    "icon" public.boost_icon DEFAULT 'CIRCLE'::public.boost_icon NOT NULL,
     "cta_button_text" character varying
 );
 
@@ -333,19 +340,21 @@ ALTER TABLE "public"."boost_configuration" ALTER COLUMN "id" ADD GENERATED BY DE
 
 CREATE TABLE IF NOT EXISTS "public"."challenge_configuration" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "display_name" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    "display_name" text NOT NULL,
     "auto_claim" boolean DEFAULT false,
-    "params" "jsonb",
-    "contract_address" "text",
+    "params" jsonb,
+    "contract_address" text,
     "points" bigint NOT NULL,
     "is_enabled" boolean NOT NULL,
     "game_id" bigint,
-    "type" "public"."challenge_type" NOT NULL,
-    "network" "public"."networks",
-    "function_type" "public"."check_function_type",
+    "type" public.challenge_type NOT NULL,
+    "network" public.networks,
+    "function_type" public.check_function_type,
     "is_dynamic_points" boolean DEFAULT false NOT NULL,
-    "content_data" "jsonb" DEFAULT '{}'::"jsonb"
+    "content_data" jsonb DEFAULT '{}'::jsonb,
+    "start_timestamp" timestamp with time zone,
+    "end_timestamp" timestamp with time zone
 );
 
 ALTER TABLE "public"."challenge_configuration" OWNER TO "postgres";
@@ -361,7 +370,7 @@ ALTER TABLE "public"."challenge_configuration" ALTER COLUMN "id" ADD GENERATED B
 
 CREATE TABLE IF NOT EXISTS "public"."claimed_boost" (
     "id" bigint NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT now() NOT NULL,
     "user_address" character varying NOT NULL,
     "boost_id" bigint NOT NULL,
     "game_id" bigint NOT NULL,
@@ -382,10 +391,10 @@ ALTER TABLE "public"."claimed_boost" ALTER COLUMN "id" ADD GENERATED BY DEFAULT 
 
 CREATE TABLE IF NOT EXISTS "public"."guild_configuration" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "guild_id" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    "guild_id" text NOT NULL,
     "game_id" bigint,
-    "name" "text",
+    "name" text,
     "total_member_count" bigint
 );
 
@@ -402,7 +411,7 @@ ALTER TABLE "public"."guild_configuration" ALTER COLUMN "id" ADD GENERATED BY DE
 
 CREATE TABLE IF NOT EXISTS "public"."guild_member_configuration" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
     "user_address" character varying NOT NULL,
     "game_id" bigint,
     "guild_id" character varying NOT NULL
@@ -421,10 +430,11 @@ ALTER TABLE "public"."guild_member_configuration" ALTER COLUMN "id" ADD GENERATE
 
 CREATE TABLE IF NOT EXISTS "public"."guild_score" (
     "id" bigint NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "guild_id" "text",
+    "updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+    "guild_id" text,
     "game_id" bigint,
-    "score" bigint
+    "score" bigint,
+    "timestamp" timestamp with time zone DEFAULT now() NOT NULL
 );
 
 ALTER TABLE "public"."guild_score" OWNER TO "postgres";
@@ -440,19 +450,19 @@ ALTER TABLE "public"."guild_score" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS
 
 CREATE TABLE IF NOT EXISTS "public"."level_configuration" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
     "game_id" bigint NOT NULL,
-    "name" "text" NOT NULL,
+    "name" text NOT NULL,
     "threshold_points" bigint NOT NULL,
-    "airdrop_command" "text" NOT NULL,
-    "level" "text" DEFAULT ''::"text",
-    "contract_address" "text",
-    "minter" "text",
-    "image_url" "text",
-    "badge_type" "public"."badge_type" DEFAULT 'level'::"public"."badge_type" NOT NULL,
+    "airdrop_command" text NOT NULL,
+    "level" text DEFAULT ''::text,
+    "contract_address" text,
+    "minter" text,
+    "image_url" text,
+    "badge_type" public.badge_type DEFAULT 'level'::public.badge_type NOT NULL,
     "token_id" bigint,
-    "description" "text",
-    "cta_url" "text"
+    "description" text,
+    "cta_url" text
 );
 
 ALTER TABLE "public"."level_configuration" OWNER TO "postgres";
@@ -468,9 +478,9 @@ ALTER TABLE "public"."level_configuration" ALTER COLUMN "id" ADD GENERATED BY DE
 
 CREATE TABLE IF NOT EXISTS "public"."level_data" (
     "transaction_hash" character varying NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
     "network_id" character varying NOT NULL,
-    "block_hash" "text",
+    "block_hash" text,
     "block_timestamp" character varying,
     "event_type" character varying,
     "from_address" character varying,
@@ -497,9 +507,9 @@ ALTER TABLE "public"."level_data" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS 
 CREATE TABLE IF NOT EXISTS "public"."score" (
     "id" bigint NOT NULL,
     "game_id" bigint NOT NULL,
-    "user_address" "text" NOT NULL,
+    "user_address" text NOT NULL,
     "current_score" bigint DEFAULT '0'::bigint NOT NULL,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL
+    "updated_at" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 ALTER TABLE "public"."score" OWNER TO "postgres";
@@ -515,34 +525,34 @@ ALTER TABLE "public"."score" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENT
 
 CREATE TABLE IF NOT EXISTS "public"."treasure_box_configuration" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
     "total_hitpoints" bigint NOT NULL,
     "game_id" bigint NOT NULL,
-    "name" "text" NOT NULL,
-    "location" "text",
-    "cta_url" "text",
-    "image_url" "text"
+    "name" text NOT NULL,
+    "location" text,
+    "cta_url" text,
+    "image_url" text
 );
 
 ALTER TABLE "public"."treasure_box_configuration" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."treasure_box_entries" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "user_address" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    "user_address" text NOT NULL,
     "total_hitpoints" bigint NOT NULL,
-    "cbid" "text",
+    "cbid" text,
     "game_id" bigint NOT NULL,
-    "ens_name" "text",
+    "ens_name" text,
     "tap_count" integer DEFAULT 0 NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 
 ALTER TABLE "public"."treasure_box_entries" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."treasure_box_state" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
     "current_hitpoints" bigint NOT NULL,
     "is_open" boolean DEFAULT false NOT NULL,
     "game_id" bigint
@@ -579,10 +589,10 @@ ALTER TABLE "public"."treasure_box_configuration" ALTER COLUMN "id" ADD GENERATE
 
 CREATE TABLE IF NOT EXISTS "public"."user_challenge_status" (
     "id" bigint NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "user_address" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    "user_address" text NOT NULL,
     "challenge_id" bigint NOT NULL,
-    "status" "public"."challenge_status" DEFAULT 'NOT_STARTED'::"public"."challenge_status" NOT NULL,
+    "status" public.challenge_status DEFAULT 'NOT_STARTED'::public.challenge_status NOT NULL,
     "points" bigint DEFAULT '0'::bigint NOT NULL,
     "game_id" bigint DEFAULT '0'::bigint NOT NULL
 );
@@ -598,20 +608,42 @@ ALTER TABLE "public"."user_challenge_status" ALTER COLUMN "id" ADD GENERATED BY 
     CACHE 1
 );
 
+CREATE TABLE IF NOT EXISTS "public"."user_guild_score_claim" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    "points" bigint DEFAULT '0'::bigint NOT NULL,
+    "is_claimed" boolean DEFAULT false NOT NULL,
+    "claim_id" bigint DEFAULT '0'::bigint NOT NULL,
+    "game_id" bigint DEFAULT '0'::bigint NOT NULL,
+    "user_address" text NOT NULL,
+    "guild_id" text NOT NULL
+);
+
+ALTER TABLE "public"."user_guild_score_claim" OWNER TO "postgres";
+
+ALTER TABLE "public"."user_guild_score_claim" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."user_guild_score_claim_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
 CREATE TABLE IF NOT EXISTS "public"."user_txcount" (
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "user_address" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+    "user_address" text NOT NULL,
     "tx_count" bigint DEFAULT '0'::bigint,
-    "network" "public"."networks" DEFAULT 'networks/base-mainnet'::"public"."networks" NOT NULL
+    "network" public.networks DEFAULT 'networks/base-mainnet'::public.networks NOT NULL
 );
 
 ALTER TABLE "public"."user_txcount" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."webhook_data" (
     "transaction_hash" character varying NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL,
     "network_id" character varying NOT NULL,
-    "block_hash" "text",
+    "block_hash" text,
     "block_timestamp" character varying,
     "event_type" character varying,
     "from_address" character varying,
@@ -634,14 +666,6 @@ ALTER TABLE "public"."webhook_data" ALTER COLUMN "id" ADD GENERATED BY DEFAULT A
     NO MAXVALUE
     CACHE 1
 );
-
-CREATE TABLE IF NOT EXISTS "supabase_migrations"."schema_migrations" (
-    "version" "text" NOT NULL,
-    "statements" "text"[],
-    "name" "text"
-);
-
-ALTER TABLE "supabase_migrations"."schema_migrations" OWNER TO "postgres";
 
 ALTER TABLE ONLY "public"."address_gameid_configuration"
     ADD CONSTRAINT "address_gameid_configuration_pkey" PRIMARY KEY ("id");
@@ -694,58 +718,58 @@ ALTER TABLE ONLY "public"."treasure_box_configuration"
 ALTER TABLE ONLY "public"."user_challenge_status"
     ADD CONSTRAINT "user_challenge_status_pkey" PRIMARY KEY ("id");
 
+ALTER TABLE ONLY "public"."user_guild_score_claim"
+    ADD CONSTRAINT "user_guild_score_claim_pkey" PRIMARY KEY ("id");
+
 ALTER TABLE ONLY "public"."user_txcount"
     ADD CONSTRAINT "user_txcount_pkey" PRIMARY KEY ("user_address", "network");
 
 ALTER TABLE ONLY "public"."webhook_data"
     ADD CONSTRAINT "webhook_data_pkey" PRIMARY KEY ("id");
 
-ALTER TABLE ONLY "supabase_migrations"."schema_migrations"
-    ADD CONSTRAINT "schema_migrations_pkey" PRIMARY KEY ("version");
+CREATE UNIQUE INDEX address_gameid_unique_key ON public.address_gameid_configuration USING btree (game_id, address);
 
-CREATE UNIQUE INDEX "address_gameid_unique_key" ON "public"."address_gameid_configuration" USING "btree" ("game_id", "address");
+CREATE INDEX claimed_boost_boost_id_user_address_idx ON public.claimed_boost USING btree (boost_id, user_address);
 
-CREATE INDEX "claimed_boost_boost_id_user_address_idx" ON "public"."claimed_boost" USING "btree" ("boost_id", "user_address");
+CREATE UNIQUE INDEX claimed_boost_unique ON public.claimed_boost USING btree (user_address, boost_id, game_id);
 
-CREATE UNIQUE INDEX "claimed_boost_unique" ON "public"."claimed_boost" USING "btree" ("user_address", "boost_id", "game_id");
+CREATE UNIQUE INDEX level_data_contract_address_to_address_value_idx ON public.level_data USING btree (contract_address, to_address, value);
 
-CREATE UNIQUE INDEX "guild_score_guild_id_game_id_idx" ON "public"."guild_score" USING "btree" ("guild_id", "game_id");
+CREATE INDEX level_data_to_address_idx ON public.level_data USING btree (to_address);
 
-CREATE UNIQUE INDEX "level_data_contract_address_to_address_value_idx" ON "public"."level_data" USING "btree" ("contract_address", "to_address", "value");
+CREATE UNIQUE INDEX score_unique ON public.score USING btree (user_address, game_id);
 
-CREATE INDEX "level_data_to_address_idx" ON "public"."level_data" USING "btree" ("to_address");
+CREATE UNIQUE INDEX treasure_box_entries_unique ON public.treasure_box_entries USING btree (user_address, game_id);
 
-CREATE UNIQUE INDEX "score_unique" ON "public"."score" USING "btree" ("user_address", "game_id");
+CREATE UNIQUE INDEX treasure_box_state_unique ON public.treasure_box_state USING btree (game_id);
 
-CREATE UNIQUE INDEX "treasure_box_entries_unique" ON "public"."treasure_box_entries" USING "btree" ("user_address", "game_id");
+CREATE UNIQUE INDEX user_challenge_status_user_address_challenge_id_idx ON public.user_challenge_status USING btree (user_address, challenge_id);
 
-CREATE UNIQUE INDEX "treasure_box_state_unique" ON "public"."treasure_box_state" USING "btree" ("game_id");
+CREATE UNIQUE INDEX user_guild_score_claim_game_id_guild_id_user_address_claim__idx ON public.user_guild_score_claim USING btree (game_id, guild_id, user_address, claim_id);
 
-CREATE UNIQUE INDEX "user_challenge_status_user_address_challenge_id_idx" ON "public"."user_challenge_status" USING "btree" ("user_address", "challenge_id");
+CREATE INDEX webhook_data_to_address_idx ON public.webhook_data USING btree (to_address);
 
-CREATE INDEX "webhook_data_to_address_idx" ON "public"."webhook_data" USING "btree" ("to_address");
+CREATE UNIQUE INDEX webhook_data_unique ON public.webhook_data USING btree (contract_address, to_address, value);
 
-CREATE UNIQUE INDEX "webhook_data_unique" ON "public"."webhook_data" USING "btree" ("contract_address", "to_address", "value");
-
-CREATE OR REPLACE TRIGGER "claimed_boost_insert_trigger" AFTER INSERT ON "public"."claimed_boost" FOR EACH ROW EXECUTE FUNCTION "public"."claimed_boost_insert"();
+CREATE TRIGGER claimed_boost_insert_trigger AFTER INSERT ON public.claimed_boost FOR EACH ROW EXECUTE FUNCTION public.claimed_boost_insert();
 
 ALTER TABLE "public"."claimed_boost" DISABLE TRIGGER "claimed_boost_insert_trigger";
 
-CREATE OR REPLACE TRIGGER "score update => /api/webhook/airdrop" AFTER INSERT OR UPDATE ON "public"."score" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://base-hunt-eth-denver-2024.vercel.app/api/webhook/airdrop', 'POST', '{"Content-type":"application/json","x-api-secret":"8DF49982CBF3C3D28696B63975253"}', '{}', '3986');
+CREATE OR REPLACE TRIGGER "score update => /api/webhook/airdrop" AFTER INSERT OR UPDATE ON public.score FOR EACH ROW EXECUTE FUNCTION supabase_functions.http_request('https://base-hunt-eth-denver-2024.vercel.app/api/webhook/airdrop', 'POST', '{"Content-type":"application/json","x-api-secret":"8DF49982CBF3C3D28696B63975253"}', '{}', '3986');
 
-CREATE OR REPLACE TRIGGER "user_challenge_status_trigger" BEFORE INSERT ON "public"."user_challenge_status" FOR EACH ROW EXECUTE FUNCTION "public"."user_challenge_status_insert"();
+CREATE TRIGGER user_challenge_status_trigger BEFORE INSERT ON public.user_challenge_status FOR EACH ROW EXECUTE FUNCTION public.user_challenge_status_insert();
 
-CREATE OR REPLACE TRIGGER "webhook_data_update_trigger" BEFORE INSERT ON "public"."webhook_data" FOR EACH ROW EXECUTE FUNCTION "public"."webhook_data_update"();
+CREATE TRIGGER webhook_data_update_trigger BEFORE INSERT ON public.webhook_data FOR EACH ROW EXECUTE FUNCTION public.webhook_data_update();
 
 ALTER TABLE "public"."webhook_data" DISABLE TRIGGER "webhook_data_update_trigger";
 
 ALTER TABLE ONLY "public"."claimed_boost"
-    ADD CONSTRAINT "claimed_boost_boost_id_fkey" FOREIGN KEY ("boost_id") REFERENCES "public"."boost_configuration"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "claimed_boost_boost_id_fkey" FOREIGN KEY (boost_id) REFERENCES public.boost_configuration(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."user_challenge_status"
-    ADD CONSTRAINT "user_challenge_status_challenge_id_fkey" FOREIGN KEY ("challenge_id") REFERENCES "public"."challenge_configuration"("id");
+    ADD CONSTRAINT "user_challenge_status_challenge_id_fkey" FOREIGN KEY (challenge_id) REFERENCES public.challenge_configuration(id);
 
-CREATE POLICY "Enable insert for authenticated users only" ON "public"."webhook_data" FOR INSERT TO "authenticated" WITH CHECK (true);
+CREATE POLICY "Enable insert for authenticated users only" ON "public"."webhook_data" FOR INSERT TO authenticated WITH CHECK (true);
 
 ALTER TABLE "public"."address_gameid_configuration" ENABLE ROW LEVEL SECURITY;
 
@@ -777,6 +801,8 @@ ALTER TABLE "public"."treasure_box_state" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."user_challenge_status" ENABLE ROW LEVEL SECURITY;
 
+ALTER TABLE "public"."user_guild_score_claim" ENABLE ROW LEVEL SECURITY;
+
 ALTER TABLE "public"."user_txcount" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."webhook_data" ENABLE ROW LEVEL SECURITY;
@@ -790,29 +816,33 @@ GRANT ALL ON FUNCTION "public"."claimed_boost_insert"() TO "anon";
 GRANT ALL ON FUNCTION "public"."claimed_boost_insert"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."claimed_boost_insert"() TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."getbadgestate"("_game_id" bigint, "_user_address" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."getbadgestate"("_game_id" bigint, "_user_address" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."getbadgestate"("_game_id" bigint, "_user_address" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."getbadgestate"(_game_id bigint, _user_address text) TO "anon";
+GRANT ALL ON FUNCTION "public"."getbadgestate"(_game_id bigint, _user_address text) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."getbadgestate"(_game_id bigint, _user_address text) TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."getlevelstate"("_game_id" bigint, "_user_address" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."getlevelstate"("_game_id" bigint, "_user_address" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."getlevelstate"("_game_id" bigint, "_user_address" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."getlevelstate"(_game_id bigint, _user_address text) TO "anon";
+GRANT ALL ON FUNCTION "public"."getlevelstate"(_game_id bigint, _user_address text) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."getlevelstate"(_game_id bigint, _user_address text) TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."getscorerank"("_game_id" bigint, "_user_address" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."getscorerank"("_game_id" bigint, "_user_address" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."getscorerank"("_game_id" bigint, "_user_address" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."getscorerank"(_game_id bigint, _user_address text) TO "anon";
+GRANT ALL ON FUNCTION "public"."getscorerank"(_game_id bigint, _user_address text) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."getscorerank"(_game_id bigint, _user_address text) TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."getuserrank"("_game_id" bigint, "_user_address" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."getuserrank"("_game_id" bigint, "_user_address" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."getuserrank"("_game_id" bigint, "_user_address" "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text) TO "anon";
+GRANT ALL ON FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text) TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."upserttreasurebox"("_game_id" bigint, "_user_address" "text", "_cbid" "text", "_ens_name" "text", "_increment" bigint, "_tap_count" integer) TO "anon";
-GRANT ALL ON FUNCTION "public"."upserttreasurebox"("_game_id" bigint, "_user_address" "text", "_cbid" "text", "_ens_name" "text", "_increment" bigint, "_tap_count" integer) TO "authenticated";
-GRANT ALL ON FUNCTION "public"."upserttreasurebox"("_game_id" bigint, "_user_address" "text", "_cbid" "text", "_ens_name" "text", "_increment" bigint, "_tap_count" integer) TO "service_role";
+GRANT ALL ON FUNCTION "public"."upserttreasurebox"(_game_id bigint, _user_address text, _cbid text, _ens_name text, _increment bigint, _tap_count integer) TO "anon";
+GRANT ALL ON FUNCTION "public"."upserttreasurebox"(_game_id bigint, _user_address text, _cbid text, _ens_name text, _increment bigint, _tap_count integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."upserttreasurebox"(_game_id bigint, _user_address text, _cbid text, _ens_name text, _increment bigint, _tap_count integer) TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."user_challenge_status_insert"() TO "anon";
 GRANT ALL ON FUNCTION "public"."user_challenge_status_insert"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."user_challenge_status_insert"() TO "service_role";
+
+GRANT ALL ON FUNCTION "public"."user_claim_guild_score"(_game_id bigint, _user_address text) TO "anon";
+GRANT ALL ON FUNCTION "public"."user_claim_guild_score"(_game_id bigint, _user_address text) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."user_claim_guild_score"(_game_id bigint, _user_address text) TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."webhook_data_update"() TO "anon";
 GRANT ALL ON FUNCTION "public"."webhook_data_update"() TO "authenticated";
@@ -937,6 +967,14 @@ GRANT ALL ON TABLE "public"."user_challenge_status" TO "service_role";
 GRANT ALL ON SEQUENCE "public"."user_challenge_status_id_seq" TO "anon";
 GRANT ALL ON SEQUENCE "public"."user_challenge_status_id_seq" TO "authenticated";
 GRANT ALL ON SEQUENCE "public"."user_challenge_status_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "public"."user_guild_score_claim" TO "anon";
+GRANT ALL ON TABLE "public"."user_guild_score_claim" TO "authenticated";
+GRANT ALL ON TABLE "public"."user_guild_score_claim" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."user_guild_score_claim_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."user_guild_score_claim_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."user_guild_score_claim_id_seq" TO "service_role";
 
 GRANT ALL ON TABLE "public"."user_txcount" TO "anon";
 GRANT ALL ON TABLE "public"."user_txcount" TO "authenticated";
