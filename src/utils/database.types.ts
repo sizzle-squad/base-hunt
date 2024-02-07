@@ -346,6 +346,8 @@ export type Database = {
           level: string | null
           minter: string | null
           name: string
+          prize_description: string | null
+          prize_image_url: string | null
           threshold_points: number
           token_id: number | null
         }
@@ -362,6 +364,8 @@ export type Database = {
           level?: string | null
           minter?: string | null
           name: string
+          prize_description?: string | null
+          prize_image_url?: string | null
           threshold_points: number
           token_id?: number | null
         }
@@ -378,6 +382,8 @@ export type Database = {
           level?: string | null
           minter?: string | null
           name?: string
+          prize_description?: string | null
+          prize_image_url?: string | null
           threshold_points?: number
           token_id?: number | null
         }

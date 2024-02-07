@@ -46,6 +46,9 @@ export type Badge = {
 };
 
 export type Level = {
+  prizeImageUrl: string;
+  prizeDescription: string;
+  ctaUrl: string;
   id: string;
   gameId: string;
   name:
