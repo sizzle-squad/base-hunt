@@ -311,6 +311,7 @@ export type Database = {
           guild_id: string | null;
           id: number;
           score: number | null;
+          timestamp: string;
           updated_at: string;
         };
         Insert: {
@@ -318,6 +319,7 @@ export type Database = {
           guild_id?: string | null;
           id?: number;
           score?: number | null;
+          timestamp?: string;
           updated_at?: string;
         };
         Update: {
@@ -325,6 +327,7 @@ export type Database = {
           guild_id?: string | null;
           id?: number;
           score?: number | null;
+          timestamp?: string;
           updated_at?: string;
         };
         Relationships: [];
@@ -585,6 +588,36 @@ export type Database = {
             referencedColumns: ['id'];
           },
         ];
+      };
+      user_guild_score_claim: {
+        Row: {
+          claim_time: string;
+          created_at: string;
+          game_id: number;
+          id: number;
+          is_claimed: boolean;
+          score: number;
+          user_address: string;
+        };
+        Insert: {
+          claim_time: string;
+          created_at?: string;
+          game_id?: number;
+          id?: number;
+          is_claimed?: boolean;
+          score?: number;
+          user_address: string;
+        };
+        Update: {
+          claim_time?: string;
+          created_at?: string;
+          game_id?: number;
+          id?: number;
+          is_claimed?: boolean;
+          score?: number;
+          user_address?: string;
+        };
+        Relationships: [];
       };
       user_txcount: {
         Row: {

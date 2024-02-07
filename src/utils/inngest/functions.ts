@@ -117,20 +117,19 @@ export const userTxCount = inngest.createFunction(
     });
 
     const dbData = await step.run('update-guild-score', async () => {
+      const executionTime = new Date().toISOString();
       const gs = Object.keys(reduced).map((k) => {
         return {
           guild_id: k,
           score: reduced[k],
           game_id: event.data.gameId as number,
-          updated_at: new Date().toISOString(),
+          timestamp: executionTime,
         };
       });
       const { data, error } = await supabase
         .from('guild_score')
-        .upsert(gs, { onConflict: 'game_id,guild_id' })
-        .eq('game_id', event.data.gameId as number)
+        .insert(gs)
         .select();
-
       if (error) {
         return { error: error };
       }
@@ -151,6 +150,11 @@ export const userPointDistribute = inngest.createFunction(
   { id: 'user-point-distribute' },
   { event: 'events/user-point-distribute' },
   async ({ event, step }) => {
+    //NOTE: the time passed in should be iso 8601 compatible string
+    const at = new Date(event.data.scheduleAt);
+
+    await step.sleepUntil('wait-for-scheduled', at);
+
     let now = new Date();
     const challengeData = await supabase
       .from('challenge_configuration')
@@ -169,22 +173,64 @@ export const userPointDistribute = inngest.createFunction(
     }
 
     const challenge = challengeData.data;
+    const time = new Date();
 
     const guildId: string | null = await step.run(
       'fetch-guild-with-highest-score',
       async () => {
         const { data, error } = await supabase
           .from('guild_score')
-          .select('guild_id')
+          .select('id,guild_id,score')
           .eq('game_id', event.data.gameId as number)
-          .order('score', { ascending: false })
-          .limit(1);
+          .gte('timestamp', event.data.from as string)
+          .lte('timestamp', event.data.to as string)
+          .returns<{ id: number; guild_id: string; score: number }[]>();
+
         if (error) {
           console.error(error);
           return null;
         }
 
-        return data[0].guild_id;
+        if (data.length === 0) {
+          return null;
+        }
+
+        // Group items by guild_id
+        const grouped = data.reduce(
+          (
+            acc: Record<
+              string,
+              { id: number; guild_id: string; score: number }[]
+            >,
+            item: { id: number; guild_id: string; score: number }
+          ) => {
+            if (!acc[item.guild_id]) {
+              acc[item.guild_id] = [];
+            }
+            acc[item.guild_id].push(item);
+            return acc;
+          },
+          {}
+        );
+
+        // Sort each group by id and calculate score difference
+        const scoreDifferences: Record<string, number> = {};
+        for (const guild_id in grouped) {
+          const sorted = grouped[guild_id].sort((a, b) => a.id - b.id);
+          const first = sorted[0];
+          const last = sorted[sorted.length - 1];
+          scoreDifferences[guild_id] = last.score - first.score;
+        }
+
+        // Find the guild_id with the highest score difference
+        const sortedScoreDifferences = Object.entries(scoreDifferences).sort(
+          (a, b) => b[1] - a[1]
+        );
+
+        console.log(sortedScoreDifferences);
+        return sortedScoreDifferences.length > 0
+          ? sortedScoreDifferences[0][0]
+          : null;
       }
     );
 
@@ -218,7 +264,7 @@ export const userPointDistribute = inngest.createFunction(
     }
 
     //NOTE: we only want to insert 10 scores every second so we dont blow up airdrops for users crossing levels
-    let chunks = chunkArray(users, 10);
+    let chunks = chunkArray(users, queryBatchSize);
     const rows = [];
     for (let i = 0; i < chunks.length; i++) {
       const row = await step.run('update-challenge', async () => {
@@ -226,7 +272,7 @@ export const userPointDistribute = inngest.createFunction(
           return {
             user_address: u.user_address,
             challenge_id: challenge.id,
-            status: ChallengeStatus.COMPLETE,
+            status: ChallengeStatus.IN_PROGRESS,
             points: challenge.points as number,
           };
         });
