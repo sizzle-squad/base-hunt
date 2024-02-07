@@ -84,7 +84,7 @@ export const userTxCount = inngest.createFunction(
     const z = await step.run('update-user-score', async () => {
       const zipped = users.map((u, i) => {
         return {
-          user_address: u.user_address,
+          user_address: u.user_address.toLowerCase(),
           tx_count: flatten[i],
           network: Networks.networks_base_mainnet,
         };
@@ -279,7 +279,7 @@ export const userPointDistribute = inngest.createFunction(
       const rowChunks = await step.run('update-challenge', async () => {
         const rows = chunks[i].map((u) => {
           return {
-            user_address: u.user_address,
+            user_address: u.user_address.toLowerCase(),
             points: challenge.points as number,
             game_id: event.data.gameId as number,
             guild_id: guildId,
