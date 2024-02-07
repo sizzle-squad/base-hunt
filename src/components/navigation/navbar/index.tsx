@@ -1,4 +1,3 @@
-import { Stack } from '@mui/material';
 import { memo } from 'react';
 import { NavbarClient } from '@/components/navigation/navbar/NavbarClient';
 

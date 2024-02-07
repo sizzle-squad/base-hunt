@@ -136,6 +136,12 @@ export type PlayerRank = {
   currentScore: number;
 };
 
+export type GuildRank = {
+  rank: string;
+  name: string;
+  currentScore: number;
+};
+
 export type Rank = {
   cbid: string | null;
   createdAt: string;

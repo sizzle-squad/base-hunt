@@ -4,15 +4,13 @@ import { useDrawer } from '@/context/DrawerContext';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
-import { Skeleton, Stack } from '@mui/material';
+import { Box, Skeleton, Stack } from '@mui/material';
 import { useMemo, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import Text from '@/components/Text';
 import Circle from '@/components/Circle';
-import { PointsPill } from '@/components/PointsPill';
-import { UNIT } from '@/constants/unit';
-import Link from '@/components/AnimatedLink';
-import Pill from '@/components/Pill';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export const NavbarClient = () => {
   const { address, isDisconnected, isConnecting } = useAccount();
@@ -21,9 +19,9 @@ export const NavbarClient = () => {
     { address }
   );
   const userName = useUserName({ address, userPublicProfile });
-  const { toggleDrawer } = useDrawer();
+  const { toggleDrawer, drawerStates } = useDrawer();
 
-  // Todo: solidify types and figure out why this is returning undefined
+  // TODO: solidify types and figure out why this is returning undefined
   const { data, isLoading: isScoreLoading } = useScore({
     userAddress: address ?? '',
     gameId,
@@ -46,31 +44,40 @@ export const NavbarClient = () => {
   }, [isConnecting, isProfileLoading, isScoreLoading]);
 
   return (
-    <Stack direction="row" justifyContent="space-between" width="100%">
-      <Stack direction="row" gap=".5rem" alignItems={'center'}>
-        <Stack
-          onClick={handleDrawerToggle}
-          direction="row"
-          alignItems="center"
-          spacing=".25rem"
-          useFlexGap
-          sx={{
-            borderRadius: '6.25rem',
-            padding: '0.25rem 0.5rem 0.25rem 0.5rem',
-            backgroundColor: 'white',
-            cursor: 'pointer',
-          }}
-        >
-          {isDisconnected ? (
-            <Text>Not connected</Text>
-          ) : (
-            <>
-              <Circle color="yellow" size="1rem" />
-              {userName && !isLoading && userName}
-              {isLoading && <Skeleton width={80} height={20} />}
-            </>
-          )}
-        </Stack>
+    <Stack
+      direction="row"
+      width="100%"
+      justifyItems="center"
+      justifyContent="center"
+    >
+      <Stack
+        data-testid="pill"
+        onClick={handleDrawerToggle}
+        direction="row"
+        alignItems="center"
+        spacing=".25rem"
+        useFlexGap
+        sx={{
+          borderRadius: '6.25rem',
+          padding: '0.25rem 0.5rem',
+          backgroundColor: 'white',
+          cursor: 'pointer',
+        }}
+      >
+        {isDisconnected ? (
+          <Text>Not connected</Text>
+        ) : (
+          <>
+            <Circle color="yellow" size="1rem" />
+            {userName && !isLoading && userName}
+            {isLoading && <Skeleton width={80} height={20} />}
+            {drawerStates.walletOperations.bottom ? (
+              <ExpandLessIcon />
+            ) : (
+              <ExpandMoreIcon />
+            )}
+          </>
+        )}
       </Stack>
     </Stack>
   );

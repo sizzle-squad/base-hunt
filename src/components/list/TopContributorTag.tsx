@@ -18,7 +18,7 @@ const CrownIcon = memo(() => (
 ));
 CrownIcon.displayName = 'CrownIcon';
 
-export function TopContributorTag() {
+export function TopContributorTag({ isGuild }: { isGuild?: boolean }) {
   return (
     <Stack
       direction="row"
@@ -40,7 +40,7 @@ export function TopContributorTag() {
         color={'var(--White, #fff)'}
         variant="h6"
       >
-        Top player
+        {`Top ${isGuild ? 'guild' : 'player'}`}
       </Text>
     </Stack>
   );
