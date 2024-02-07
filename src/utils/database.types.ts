@@ -591,30 +591,30 @@ export type Database = {
       };
       user_guild_score_claim: {
         Row: {
-          claim_time: string;
+          claim_id: number;
           created_at: string;
           game_id: number;
           id: number;
           is_claimed: boolean;
-          score: number;
+          points: number;
           user_address: string;
         };
         Insert: {
-          claim_time: string;
+          claim_id?: number;
           created_at?: string;
           game_id?: number;
           id?: number;
           is_claimed?: boolean;
-          score?: number;
+          points?: number;
           user_address: string;
         };
         Update: {
-          claim_time?: string;
+          claim_id?: number;
           created_at?: string;
           game_id?: number;
           id?: number;
           is_claimed?: boolean;
-          score?: number;
+          points?: number;
           user_address?: string;
         };
         Relationships: [];

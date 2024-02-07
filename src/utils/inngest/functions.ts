@@ -152,7 +152,7 @@ function chunkArray<T>(array: T[], size: number): T[][] {
   scheduleAt: '2024-02-20 17:00:00.000-07',//Run at 5pm MST on 20th Feb 2024
   from: '2024-02-19 17:00:00.000-07',// 5pm MST on 19th Feb 2024
   to: '2024-02-20 17:00:00.000-07',// 5pm MST on 20th Feb 2024
-
+  claimId: 1 // int representing this run 
   This will find which guild did the most activity between the from and to dates and distribute points to the users in that guild
 */
 export const userPointDistribute = inngest.createFunction(
@@ -283,7 +283,7 @@ export const userPointDistribute = inngest.createFunction(
             points: challenge.points as number,
             game_id: event.data.gameId as number,
             guild_id: guildId,
-            claim_time: event.data.scheduleAt,
+            claim_id: event.data.claimId,
             is_claimed: false,
           };
         });
@@ -291,7 +291,10 @@ export const userPointDistribute = inngest.createFunction(
         //insert all claims
         const ugscData = await supabase
           .from('user_guild_score_claim')
-          .insert(rows)
+          .upsert(rows, {
+            onConflict: 'game_id,user_address,guild_id,claim_id',
+            ignoreDuplicates: true,
+          })
           .select();
         if (ugscData.error) {
           console.error(ugscData.error);
