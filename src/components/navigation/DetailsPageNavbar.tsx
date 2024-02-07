@@ -42,7 +42,7 @@ type TitleBarProps = {
 export function TitleBar({
   owned = false,
   title,
-  backHref = '/badges',
+  backHref = '/challenges',
 }: TitleBarProps) {
   const chevronIcon = useMemo(() => {
     return owned ? <WhiteLeftChevron /> : <LeftChevron />;

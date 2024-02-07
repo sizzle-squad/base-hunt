@@ -7,13 +7,7 @@ import { ReactNode, useMemo } from 'react';
 export default function Template({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const noShowRoutes = useMemo(
-    () => [
-      /^\/levels$/,
-      /^\/challenges$/,
-      /^\/guild$/,
-      /^\/leaderboard$/,
-      /^\/thanks$/,
-    ],
+    () => [/^\/levels$/, /^\/guild$/, /^\/thanks$/],
     []
   );
   const showFooter = useMemo(() => {
