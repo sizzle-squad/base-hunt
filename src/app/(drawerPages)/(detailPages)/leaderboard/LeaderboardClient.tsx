@@ -1,31 +1,29 @@
 'use client';
 
+import { useState } from 'react';
 import LeaderBoardRow from '@/components/list/LeaderboardRow';
 import { TopContributorTag } from '@/components/list/TopContributorTag';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { GAME_ID } from '@/constants/gameId';
-import { PlayerRank } from '@/hooks/types';
+import { GuildRank, PlayerRank } from '@/hooks/types';
 import { useTopRanks } from '@/hooks/useTopRanks';
 import {
   Box,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   NoSsr,
   Stack,
-  Button,
+  ToggleButton,
+  ToggleButtonGroup,
 } from '@mui/material';
-import { useCallback, useMemo } from 'react';
-import Text from '@/components/Text';
-import Pill from '@/components/Pill';
-import { useGameInfoContext } from '@/context/GameInfoContext';
-import Link from 'next/link';
-import { BootstrapDialog } from '@/components/BoostrapDialog';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
-type RankMock = PlayerRank & {
-  isMock: boolean;
-};
+import { useMemo } from 'react';
+import Text from '@/components/Text';
+import ListRow from '@/components/list/ListRow';
+
+type RankMock =
+  | PlayerRank
+  | (GuildRank & {
+      isMock: boolean;
+    });
 
 function generateMockData(count: number) {
   // Function to generate 'count' number of mock leaderboard entries
@@ -41,33 +39,66 @@ function generateMockData(count: number) {
   return mockData;
 }
 
-export default function LeaderboardClient() {
-  const { showModal, setShowModal } = useGameInfoContext();
+type BoardType = 'leaderboard' | 'guilds';
 
-  const toggleModal = useCallback(() => {
-    setShowModal((prev) => !prev);
-  }, [setShowModal]);
+function getName({
+  selectedBoard,
+  rank,
+}: {
+  selectedBoard: BoardType;
+  rank: PlayerRank | GuildRank | RankMock;
+}) {
+  return selectedBoard === 'guilds'
+    ? (rank as GuildRank).name
+    : (rank as PlayerRank).userAddress;
+}
+
+// TODO: build out a hook
+const topGuildRanks: GuildRank[] = [
+  {
+    rank: '1',
+    name: 'Guild 1',
+    currentScore: 100,
+  },
+];
+
+export default function LeaderboardClient() {
+  const [selectedBoard, setSelectedBoard] = useState<BoardType>('leaderboard');
 
   const { data: topRanks, isLoading } = useTopRanks({ gameId: GAME_ID });
 
-  // Add logic to integrate mock data
   const leaderboardData = useMemo(() => {
+    if (selectedBoard === 'guilds') {
+      return {
+        topContributor: topGuildRanks[0],
+        restOfRanks: topGuildRanks.slice(1),
+        totalCount: topGuildRanks.length,
+      };
+    }
+
     const realDataCount = topRanks.length;
     const mockDataCount = 10 - realDataCount;
-    return realDataCount < 10
-      ? [...topRanks, ...generateMockData(mockDataCount)]
-      : topRanks;
-  }, [topRanks]);
 
-  const topContributor = useMemo(() => leaderboardData[0], [leaderboardData]);
-  const restOfRanks = useMemo(
-    () => leaderboardData.slice(1),
-    [leaderboardData]
-  );
+    // Add logic to integrate mock data
+    const rankList =
+      realDataCount < 10
+        ? [...topRanks, ...generateMockData(mockDataCount)]
+        : topRanks;
+
+    return {
+      topContributor: rankList[0],
+      restOfRanks: rankList.slice(1),
+      totalCount: rankList.length,
+    };
+  }, [selectedBoard, topRanks]);
+
+  const RowComp = useMemo(() => {
+    return selectedBoard === 'guilds' ? ListRow : LeaderBoardRow;
+  }, [selectedBoard]);
 
   return (
     <>
-      <DetailsPageNavbar title="Leaderboard" />
+      <DetailsPageNavbar />
       <Stack
         direction="row"
         justifyContent="center"
@@ -75,14 +106,44 @@ export default function LeaderboardClient() {
         marginLeft="24px"
         gap={2}
       >
-        <Pill onClick={toggleModal} hover>
-          <Text align="center" sx={{ width: '75px' }}>
-            Prizes
-          </Text>
-        </Pill>
+        <ToggleButtonGroup
+          value={selectedBoard}
+          exclusive
+          onChange={(_, newBoard) => setSelectedBoard(newBoard)}
+          sx={{
+            outlineColor: 'black',
+            '.Mui-selected': {
+              '&:hover': {
+                backgroundColor: 'white',
+              },
+              backgroundColor: 'white !important',
+            },
+          }}
+        >
+          <ToggleButton
+            sx={{
+              height: '52px',
+              borderRadius: '12px',
+              width: '140px',
+            }}
+            value="leaderboard"
+          >
+            Leaderboard
+          </ToggleButton>
+          <ToggleButton
+            value="guilds"
+            sx={{
+              height: '52px',
+              borderRadius: '12px',
+              width: '140px',
+            }}
+          >
+            Guilds
+          </ToggleButton>
+        </ToggleButtonGroup>
       </Stack>
       <NoSsr>
-        {leaderboardData.length === 0 ? (
+        {leaderboardData.totalCount === 0 ? (
           <Stack
             direction="column"
             height="80vh"
@@ -96,70 +157,57 @@ export default function LeaderboardClient() {
         ) : (
           <Stack direction="column" mt="24px" gap="24px">
             <Stack direction="column" gap={1}>
-              <TopContributorTag />
-              <LeaderBoardRow
-                rank={topContributor as PlayerRank}
+              <TopContributorTag isGuild={selectedBoard === 'guilds'} />
+              <RowComp
+                name={getName({
+                  selectedBoard,
+                  rank: leaderboardData.topContributor,
+                })}
+                score={leaderboardData.topContributor.currentScore}
                 position={0}
                 offset={1}
                 isLast
               />
             </Stack>
             <Box>
-              {restOfRanks.map((rank: PlayerRank | RankMock, index: number) => {
-                if ('isMock' in rank) {
-                  // rank is treated as RankMock here
-                  return (
-                    <LeaderBoardRow
-                      key={`mock-${index}`}
-                      rank={rank}
-                      position={index}
-                      offset={2}
-                      isLast={index === restOfRanks.length - 1}
-                    />
-                  );
-                } else {
-                  // rank is treated as Rank here
-                  return (
-                    <LeaderBoardRow
-                      key={`${rank}-${rank.userAddress}`}
-                      rank={rank}
-                      position={index}
-                      offset={2}
-                      isLast={index === restOfRanks.length - 1}
-                    />
-                  );
+              {leaderboardData.restOfRanks.map(
+                (rank: PlayerRank | GuildRank | RankMock, index: number) => {
+                  const name = getName({ selectedBoard, rank });
+                  if ('isMock' in rank) {
+                    // rank is treated as RankMock here
+                    return (
+                      <RowComp
+                        key={`mock-${index}`}
+                        name={name}
+                        position={index}
+                        offset={2}
+                        isLast={
+                          index === leaderboardData.restOfRanks.length - 1
+                        }
+                        score={rank.currentScore}
+                      />
+                    );
+                  } else {
+                    // rank is treated as Rank here
+                    return (
+                      <RowComp
+                        key={`${rank}-${index}`}
+                        name={name}
+                        position={index}
+                        offset={2}
+                        isLast={
+                          index === leaderboardData.restOfRanks.length - 1
+                        }
+                        score={rank.currentScore}
+                      />
+                    );
+                  }
                 }
-              })}
+              )}
             </Box>
           </Stack>
         )}
       </NoSsr>
-      <BootstrapDialog
-        onClose={() => setShowModal(false)}
-        aria-labelledby="customized-dialog-title"
-        open={showModal}
-      >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Prizes
-        </DialogTitle>
-        <DialogContent>
-          <Text gutterBottom>
-            1. Work your way up the leaderboard by collecting art and additional
-            points
-          </Text>
-          <Text gutterBottom>
-            2. Points get you higher levels and move you up the leaderboard.
-          </Text>
-          <Text gutterBottom>
-            3. Levels unlock merch discounts and other prizes.
-          </Text>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowModal(false)}>
-            <Text color="black">Ok!</Text>
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
     </>
   );
 }

@@ -35,13 +35,13 @@ const WhiteLeftChevron = memo(function whiteLeftChevron() {
 
 type TitleBarProps = {
   owned?: boolean;
-  title: string;
+  title?: string;
   backHref?: string;
 };
 
 export function TitleBar({
   owned = false,
-  title,
+  title = '',
   backHref = '/challenges',
 }: TitleBarProps) {
   const chevronIcon = useMemo(() => {
