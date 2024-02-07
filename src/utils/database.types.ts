@@ -311,6 +311,7 @@ export type Database = {
           guild_id: string | null
           id: number
           score: number | null
+          timestamp: string
           updated_at: string
         }
         Insert: {
@@ -318,6 +319,7 @@ export type Database = {
           guild_id?: string | null
           id?: number
           score?: number | null
+          timestamp?: string
           updated_at?: string
         }
         Update: {
@@ -325,6 +327,7 @@ export type Database = {
           guild_id?: string | null
           id?: number
           score?: number | null
+          timestamp?: string
           updated_at?: string
         }
         Relationships: []

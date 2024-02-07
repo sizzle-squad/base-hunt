@@ -47,10 +47,12 @@ export default function Footer() {
                 color: '#000',
               },
             }}
-            label="Art"
-            value="/badges"
+            label="Challenges"
+            value="/challenges"
             icon={
-              <ArtIcon color={value === '/badges' ? Color.Positive : 'none'} />
+              <ArtIcon
+                color={value === '/challenges' ? Color.Positive : 'none'}
+              />
             }
           />
           <BottomNavigationAction
@@ -59,11 +61,11 @@ export default function Footer() {
                 color: '#000',
               },
             }}
-            label="Locations"
-            value="/locations"
+            label="Leaderboard"
+            value="/leaderboard"
             icon={
               <LocationIcon
-                color={value === '/locations' ? Color.Positive : 'none'}
+                color={value === '/leaderboard' ? Color.Positive : 'none'}
               />
             }
           />
