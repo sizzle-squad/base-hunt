@@ -9,7 +9,7 @@ import { useLevels } from '@/hooks/useLevels';
 import { Color } from '@/constants/color';
 import { useScore } from '@/hooks/useScore';
 
-export function ArtRevealProgressBar() {
+export function NextLevelProgressBar() {
   const { address } = useAccount();
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
 

@@ -3,7 +3,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/utils/database.types';
 import { toBigInt } from '@/utils/toBigInt';
-import { GuildData } from '@/hooks/useGuild';
+import { GuildData } from '@/hooks/useMutateGuild';
+import { Guild } from '@/hooks/types';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -15,20 +16,31 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const gameId = toBigInt(searchParams.get('gameId') as string);
 
+  if (gameId === null) {
+    return new Response(`Missing parameters: gameId: ${gameId}`, {
+      status: 400,
+    });
+  }
+
   const { data, error } = await supabase
     .from('guild_configuration')
-    .select('*');
+    .select(`*`)
+    .eq('game_id', BigInt(gameId));
+
   if (error) {
     return new Response(`No guilds found with gameId: ${gameId}`, {
       status: 400,
     });
   }
 
-  const result = data.map((guild) => ({
+  const result: Guild[] = data.map((guild, index) => ({
     id: guild.id,
     name: guild.name,
     gameId: guild.game_id,
     totalMemberCount: guild.total_member_count,
+    leader: guild.leader,
+    currentScore: 0, // TODO: add currentScore column in guild_configuration
+    rank: index.toString(), // TODO: add getGuildRank function in supabase
   }));
 
   return NextResponse.json(result);
@@ -50,11 +62,9 @@ export async function POST(request: NextRequest) {
 
   const params = {
     user_address: userAddress,
-    game_id: gameId,
+    game_id: parseInt(gameId),
     guild_id: guildId,
   };
-
-  console.log(params);
 
   const { error } = await supabase
     .from('guild_member_configuration')

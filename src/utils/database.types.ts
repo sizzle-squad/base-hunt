@@ -257,26 +257,29 @@ export type Database = {
       guild_configuration: {
         Row: {
           created_at: string
-          game_id: number | null
+          game_id: number
           guild_id: string
           id: number
-          name: string | null
+          leader: string
+          name: string
           total_member_count: number | null
         }
         Insert: {
           created_at?: string
-          game_id?: number | null
+          game_id: number
           guild_id: string
           id?: number
-          name?: string | null
+          leader: string
+          name: string
           total_member_count?: number | null
         }
         Update: {
           created_at?: string
-          game_id?: number | null
+          game_id?: number
           guild_id?: string
           id?: number
-          name?: string | null
+          leader?: string
+          name?: string
           total_member_count?: number | null
         }
         Relationships: []

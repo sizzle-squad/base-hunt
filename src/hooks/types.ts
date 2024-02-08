@@ -139,12 +139,6 @@ export type PlayerRank = {
   currentScore: number;
 };
 
-export type GuildRank = {
-  rank: string;
-  name: string;
-  currentScore: number;
-};
-
 export type Rank = {
   cbid: string | null;
   createdAt: string;
@@ -175,4 +169,14 @@ export type TreasureBoxEntry = {
   createdAt: Date;
   isCTAEligible: boolean;
   nextEligibleDate: Date;
+};
+
+export type Guild = {
+  id: number;
+  name: string;
+  gameId: number;
+  totalMemberCount: number | null;
+  leader: string;
+  currentScore: number;
+  rank: string;
 };

@@ -1,31 +1,41 @@
+import { useQuery } from 'react-query';
 import { routes } from '@/constants/routes';
 import axios from 'axios';
-import { useMutation } from 'react-query';
+import { useMemo } from 'react';
+import { Guild } from './types';
 
 type Props = {
-  userAddress: `0x${string}` | string;
   gameId: string;
-  guildId: string;
 };
 
-export type GuildData = {
-  userAddress: `0x${string}` | undefined;
-  gameId: number;
-  guildId: string;
-};
+export function useGuild({ gameId }: Props) {
+  const { data, isLoading, error } = useQuery<Guild[]>(
+    'guild',
+    async () => {
+      const guilds = await axios({
+        method: 'GET',
+        url: routes.guild.default,
+        params: {
+          gameId,
+        },
+      });
 
-export function useGuild() {
-  const joinGuild = useMutation((data: GuildData) => {
-    const { gameId, userAddress, guildId } = data;
-
-    if (!userAddress || !gameId || !guildId) {
-      throw new Error(
-        `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}, guildId: ${guildId}`
-      );
+      return guilds.data;
+    },
+    {
+      enabled: gameId !== undefined,
+      onError: (error) => {
+        console.error(error);
+      },
     }
+  );
 
-    return axios.post(routes.guild.default, data);
-  });
-
-  return { joinGuild };
+  return useMemo(
+    () => ({
+      data: data ?? ([] as Guild[]),
+      isLoading,
+      error,
+    }),
+    [data, error, isLoading]
+  );
 }
