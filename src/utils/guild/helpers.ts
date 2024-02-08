@@ -15,6 +15,7 @@ export async function getGuildTxCounts(
     {}
   );
 
+  console.log(grouped);
   // Sort each group by id and calculate score difference
   const scoreDifferences: Record<string, number> = {};
   for (const guild_id in grouped) {
@@ -30,24 +31,13 @@ export async function get5pmMstDateRangeFromCurrent(
   now: Date
 ): Promise<[Date, Date]> {
   let from, to;
-  let mst5pm = new Date();
-  mst5pm.setUTCHours(24, 0, 0, 0); //5pm MST
+  from = new Date(
+    `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${
+      now.getUTCDate() - 1
+    } 24:00:00.000Z`
+  ); //5pm MST from yesterday
+  to = now;
+  console.log(from, to);
 
-  // Check if current time is before or after 5pm MST today
-  if (now < mst5pm) {
-    //get the previous day range
-    console.log('get previous day');
-    from = new Date();
-    from.setUTCDate(from.getUTCDate() - 1); //yesterday
-    from.setUTCHours(24, 0, 0, 0); //5pm MST
-    to = mst5pm;
-  } else {
-    console.log('get next day');
-    //get the next day range
-    to = new Date();
-    to.setUTCDate(to.getUTCDate() + 1); //tomorrow
-    to.setUTCHours(24, 0, 0, 0); //5pm MST
-    from = mst5pm;
-  }
   return [from, to];
 }
