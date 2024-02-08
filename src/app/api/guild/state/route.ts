@@ -17,6 +17,12 @@ const supabase = createClient<Database>(
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const gameId = toBigInt(searchParams.get('gameId') as string);
+
+  if (gameId === null) {
+    return new Response(`No gameId found`, {
+      status: 405,
+    });
+  }
   // Get current date range
   const [from, to] = await get5pmMstDateRangeFromCurrent(new Date());
   const { data, error } = await supabase
@@ -28,17 +34,29 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     console.error(error);
-
     return new Response(`No guilds found with gameId: ${gameId}`, {
-      status: 405,
+      status: 400,
     });
   }
 
-  if (data?.length == 0) {
-    return new Response('No guild scores found with gameId', { status: 405 });
+  const result = await getGuildTxCounts(data);
+
+  const guildsData = await supabase
+    .from('guild_configuration')
+    .select('*')
+    .eq('game_id', gameId);
+
+  if (guildsData.error) {
+    return new Response(`Unable to retrieve guilds: ${gameId}`, {
+      status: 400,
+    });
   }
 
-  const result = await getGuildTxCounts(data);
+  for (let i = 0; i < guildsData.data.length; i++) {
+    if (!result.hasOwnProperty(guildsData.data[i].guild_id)) {
+      result[guildsData.data[i].guild_id] = 0;
+    }
+  }
 
   return NextResponse.json(result);
 }
