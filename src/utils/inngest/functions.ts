@@ -269,7 +269,7 @@ export const userPointDistribute = inngest.createFunction(
             points: challenge.points as number,
             game_id: event.data.gameId as number,
             guild_id: guildId,
-            claim_id: event.data.claimId,
+            claim_id: claimId,
             is_claimed: false,
           };
         });
