@@ -229,15 +229,18 @@ export const userPointDistribute = inngest.createFunction(
             : null;
 
         if (guildId) {
-          //Save the winning guild in this period
-          const guildWinInsert = await supabase.from('guild_win').insert({
-            guild_id: guildId,
-            game_id: event.data.gameId as number,
-            claim_id: claimId,
-            from: from.toISOString(),
-            to: to.toISOString(),
-            score: sortedScoreDifferences[0][1] || 0,
-          });
+          //Save the winning guild in this claim period
+          const guildWinInsert = await supabase.from('guild_win').upsert(
+            {
+              guild_id: guildId,
+              game_id: event.data.gameId as number,
+              claim_id: claimId,
+              from: from.toISOString(),
+              to: to.toISOString(),
+              score: sortedScoreDifferences[0][1] || 0,
+            },
+            { onConflict: 'game_id,claim_id' }
+          );
 
           if (guildWinInsert.error) {
             console.error(guildWinInsert.error);
@@ -278,7 +281,7 @@ export const userPointDistribute = inngest.createFunction(
       iter++;
     }
 
-    //NOTE: we only want to insert 10 scores every second so we dont blow up airdrops for users crossing levels
+    //NOTE: we update a users claim as only members of a guild at the point of distribution can claim
     let chunks = chunkArray(users, queryBatchSize);
     const rows = [];
     for (let i = 0; i < chunks.length; i++) {
