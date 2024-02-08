@@ -6,8 +6,14 @@ import ListRow from '@/components/list/ListRow';
 import Text from '@/components/Text';
 import { useGuild } from '@/hooks/useGuild';
 import { GAME_ID } from '@/constants/gameId';
+import { GuildCardList } from './GuildCardList';
+
+// TODO: remove this once we are able to fetch guild from profile/state
+const guild = null;
 
 export function GuildLeaderboard() {
+  // TODO: fetch player's guild
+  // const { data: state } = useGameState({ gameId: GAME_ID, userAddress: address});
   const {
     data: topGuildRanks,
     isLoading,
@@ -24,17 +30,8 @@ export function GuildLeaderboard() {
 
   return (
     <NoSsr>
-      {leaderboardData.totalCount === 0 ? (
-        <Stack
-          direction="column"
-          height="80vh"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Text variant="h6" align="center">
-            No leaderboard found.
-          </Text>
-        </Stack>
+      {!guild ? (
+        <GuildCardList guilds={topGuildRanks} />
       ) : (
         <Stack direction="column" mt="24px" gap="24px">
           <Stack direction="column" gap={1}>

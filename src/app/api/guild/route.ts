@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
   const params = {
     user_address: userAddress,
-    game_id: gameId,
+    game_id: parseInt(gameId),
     guild_id: guildId,
   };
 
