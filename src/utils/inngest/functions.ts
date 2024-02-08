@@ -9,6 +9,11 @@ import {
 } from '../database.enums';
 import { providers } from '../ethereum';
 import { ethers } from 'ethers';
+import {
+  GuildScoreData,
+  get5pmMstDateRangeFromCurrent,
+  getGuildTxCounts,
+} from '../guild/helpers';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -42,7 +47,7 @@ export const userTxCount = inngest.createFunction(
       }
       iter++;
     }
-    let chunks = chunkArray(users, BatchSize);
+    let chunks = chunkArray(users, event.data.batchSize || BatchSize);
 
     let txCounts: any[] = [];
     for (let i = 0; i < chunks.length; i++) {
@@ -182,8 +187,15 @@ export const userPointDistribute = inngest.createFunction(
     }
 
     const challenge = challengeData.data;
-    const time = new Date();
-
+    let from: Date, to: Date, claimId: number;
+    if (event.data.from && event.data.to && event.data.claimId) {
+      from = new Date(event.data.from);
+      to = new Date(event.data.to);
+      claimId = event.data.claimId;
+    } else {
+      [from, to] = await get5pmMstDateRangeFromCurrent(new Date());
+      claimId = to.getDate();
+    }
     const guildId: string | null = await step.run(
       'fetch-guild-with-highest-score',
       async () => {
@@ -191,9 +203,9 @@ export const userPointDistribute = inngest.createFunction(
           .from('guild_score')
           .select('id,guild_id,score')
           .eq('game_id', event.data.gameId as number)
-          .gte('timestamp', event.data.from as string)
-          .lte('timestamp', event.data.to as string)
-          .returns<{ id: number; guild_id: string; score: number }[]>();
+          .gte('timestamp', from.toISOString())
+          .lte('timestamp', to.toISOString())
+          .returns<GuildScoreData[]>();
 
         if (error) {
           console.error(error);
@@ -204,39 +216,13 @@ export const userPointDistribute = inngest.createFunction(
           return null;
         }
 
-        // Group items by guild_id
-        const grouped = data.reduce(
-          (
-            acc: Record<
-              string,
-              { id: number; guild_id: string; score: number }[]
-            >,
-            item: { id: number; guild_id: string; score: number }
-          ) => {
-            if (!acc[item.guild_id]) {
-              acc[item.guild_id] = [];
-            }
-            acc[item.guild_id].push(item);
-            return acc;
-          },
-          {}
-        );
-
-        // Sort each group by id and calculate score difference
-        const scoreDifferences: Record<string, number> = {};
-        for (const guild_id in grouped) {
-          const sorted = grouped[guild_id].sort((a, b) => a.id - b.id);
-          const first = sorted[0];
-          const last = sorted[sorted.length - 1];
-          scoreDifferences[guild_id] = last.score - first.score;
-        }
+        const scoreDifferences = await getGuildTxCounts(data);
 
         // Find the guild_id with the highest score difference
         const sortedScoreDifferences = Object.entries(scoreDifferences).sort(
           (a, b) => b[1] - a[1]
         );
 
-        console.log(sortedScoreDifferences);
         return sortedScoreDifferences.length > 0
           ? sortedScoreDifferences[0][0]
           : null;
