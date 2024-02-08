@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-export const ArtRevealIcon = memo(() => {
+export const ArtRevealIcon = memo(({ color = 'none' }: { color?: string }) => {
   return (
     <svg
       width="34"
@@ -11,6 +11,7 @@ export const ArtRevealIcon = memo(() => {
     >
       <path
         d="M3.80339 8.65542L17.0001 1.01105L30.1969 8.65542V23.9463L17.0001 31.5907L3.80339 23.9463V8.65542Z"
+        fill={color}
         stroke="#1D1818"
         strokeWidth="0.76"
       />

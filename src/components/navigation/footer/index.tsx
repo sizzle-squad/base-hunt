@@ -11,7 +11,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ArtIcon } from '@/components/assets/icons/ArtIcon';
 import { LocationIcon } from '@/components/assets/icons/LocationIcon';
 import { ArtRevealIcon } from '@/components/assets/icons/ArtRevealIcon';
-import { ActiveArtRevealIcon } from '@/components/assets/icons/ActiveArtRevealIcon';
 import { Color } from '@/constants/color';
 
 export default function Footer() {
@@ -66,6 +65,20 @@ export default function Footer() {
             icon={
               <LocationIcon
                 color={value === '/leaderboard' ? Color.Positive : 'none'}
+              />
+            }
+          />
+          <BottomNavigationAction
+            sx={{
+              '.Mui-selected': {
+                color: '#000',
+              },
+            }}
+            label="Prizes"
+            value="/prizes"
+            icon={
+              <ArtRevealIcon
+                color={value === '/prizes' ? Color.Positive : 'none'}
               />
             }
           />

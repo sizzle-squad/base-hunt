@@ -54,12 +54,16 @@ export async function GET(req: NextRequest) {
       transactionHash: d.j.transaction_hash,
       isClaimed: d.j.transaction_hash !== null,
       imageUrl: d.j.image_url,
+      prizeImageUrl: d.j.prize_image_url,
+      prizeDescription: d.j.prize_description,
+      ctaUrl: d.j.cta_url,
     };
   });
 
   levels.sort((a: any, b: any) => {
     return a.level - b.level;
   });
+
   let currentLevelIdx = null;
   for (var i = levels.length - 1; i >= 0; i--) {
     if (levels[i].isClaimed) {

@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
     name: entry.name,
     thresholdPoints: entry.threshold_points,
     description: entry.description ?? '',
+    prizeImageUrl: entry.prize_image_url ?? '',
   }));
 
   return NextResponse.json(result);
