@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/inngest/user-tx-count?gameId=0",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
