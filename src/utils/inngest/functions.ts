@@ -47,7 +47,7 @@ export const userTxCount = inngest.createFunction(
       }
       iter++;
     }
-    let chunks = chunkArray(users, BatchSize);
+    let chunks = chunkArray(users, event.data.batchSize || BatchSize);
 
     let txCounts: any[] = [];
     for (let i = 0; i < chunks.length; i++) {
