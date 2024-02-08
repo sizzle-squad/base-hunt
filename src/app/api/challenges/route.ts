@@ -2,8 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse, type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { toBigInt } from '@/utils/toBigInt';
-import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
-import { Database, Tables, Enums } from '@/utils/database.types';
+import { Challenge } from '@/hooks/types';
+import { Database, Tables } from '@/utils/database.types';
+import { ChallengeStatus } from '@/utils/database.enums';
+import compact from 'lodash/compact';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -73,84 +75,45 @@ export async function GET(request: NextRequest) {
       `
     *,
     user_challenge_status (
-      challenge_id,
-      user_address
+      *
     )
   `
     )
     .eq('game_id', gameId)
     .eq('is_enabled', true)
-    .filter(
-      'user_challenge_status.user_address',
-      'eq',
-      userAddress.toLowerCase()
-    );
+    .eq('user_challenge_status.user_address', userAddress.toLowerCase());
 
   if (challengesData.error) {
     console.error(challengesData.error);
     throw new Error(challengesData.error.message);
   }
 
-  const challenges = challengesData.data;
+  const challengesFormatted: Promise<Challenge>[] = challengesData.data.map(
+    async (challenge) => {
+      const isCompleted = Boolean(
+        challenge.user_challenge_status.length &&
+          challenge.user_challenge_status[0].status === ChallengeStatus.COMPLETE
+      );
+      const mappedChallenge = await mapChallengeState(challenge);
+      1;
+      return { ...mappedChallenge, isCompleted };
+    }
+  );
 
-  const challengesFormatted = challenges.map(async (challenge) => {
-    let isCompleted = false;
-    // const completedAddresses = challenge.user_challenge_status
-    //   .filter((b: { user_address: string }) => b.user_address)
-    //   .map((b: { user_address: string }) => b.user_address);
-    // switch (challenge.type) {
-    //   case ChallengeTypeEnum.TRANSFER_NFT_721:
-    //   case ChallengeTypeEnum.TRANSFER_NFT_1155:
-    //     if (challenge.contract_address) {
-    //       isCompleted = completedAddresses.includes(challenge.contract_address);
-    //     }
-    //     break;
-    //   case ChallengeTypeEnum.TOKEN:
-    //   case ChallengeTypeEnum.CONTRACT_EXECUTION:
-    //   case ChallengeTypeEnum.TRANSFER_NFT:
-    //   case ChallengeTypeEnum.SOCIAL:
-    //     isCompleted = challenge.completed_challenge.every(
-    //       (c: { challenge_id: number }) => c.challenge_id === challenge.id
-    //     );
-    //     break;
-    // }
-
-    // isCompleted = isCompleted && challenge.completed_challenge.length > 0;
-    const mappedChallenge = await mapChallengeState(challenge);
-    return { ...mappedChallenge, isCompleted };
-  });
-
-  return Promise.all(challengesFormatted)
-    .then((formattedChallenges) => {
-      if (formattedChallenges) {
-        formattedChallenges.sort((a: any, b: any) => {
-          if (a.isCompleted === b.isCompleted) {
-            return a.points - b.points; // Sort by points in ascending order if isClaimed is equal
-          }
-          return a.isCompleted ? 1 : -1;
-        });
-        const challengeResponse = formattedChallenges.filter((challenge) => {
-          // const isTransferNftAndClaimed =
-          //   challenge.challengeType === ChallengeTypeEnum.TRANSFER_NFT_721 ||
-          //   challenge.challengeType === ChallengeTypeEnum.TRANSFER_NFT_1155;
-          // challenge.isCompleted;
-          const isNotTransferNft =
-            challenge.challengeType !== ChallengeTypeEnum.TRANSFER_NFT_721 &&
-            challenge.challengeType !== ChallengeTypeEnum.TRANSFER_NFT_1155;
-
-          return isNotTransferNft;
-        });
-
-        return NextResponse.json(challengeResponse);
-      } else {
-        return new Response(`No available boosts found for gameId: ${gameId}`, {
-          status: 400,
-        });
+  try {
+    const formattedChallenges = await Promise.all(compact(challengesFormatted));
+    formattedChallenges.sort((a: Challenge, b: Challenge) => {
+      if (a.isCompleted === b.isCompleted) {
+        return a.points - b.points; // Sort by points in ascending order if isClaimed is equal
       }
-    })
-    .catch((error) => {
-      return new Response(`No available boosts found for gameId: ${gameId}`, {
-        status: 400,
-      });
+      return a.isCompleted ? 1 : -1;
     });
+
+    return NextResponse.json(formattedChallenges);
+  } catch (error) {
+    return NextResponse.json(
+      { error: `No available boosts found for gameId: ${gameId}` },
+      { status: 400 }
+    );
+  }
 }
