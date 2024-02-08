@@ -172,7 +172,7 @@ export type TreasureBoxEntry = {
 };
 
 export type Guild = {
-  id: number;
+  id: string;
   name: string;
   gameId: number;
   totalMemberCount: number | null;
