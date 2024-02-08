@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
     name: guild.name,
     gameId: guild.game_id,
     totalMemberCount: guild.total_member_count,
+    leader: guild.leader,
   }));
 
   return NextResponse.json(result);

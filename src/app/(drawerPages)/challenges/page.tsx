@@ -1,37 +1,21 @@
 'use client';
 
-import CustomAccordion from '@/components/Badges/Accordion';
-import AccordionPill from '@/components/Badges/AccordionPill';
-import BadgeStack from '@/components/Badges/BadgeStack';
 import Hero from '@/components/Badges/Hero';
-import { BootstrapDialog } from '@/components/BoostrapDialog';
 import { Level } from '@/components/Cards/Level';
 import { Rank } from '@/components/Cards/Rank';
-import { TreasureChest } from '@/components/Cards/TreasureChest';
+import { PlayerLevelStatus } from '@/components/Cards/PlayerLevelStatus';
 import Circle from '@/components/Circle';
 import Text from '@/components/Text';
-import BadgeContainer from '@/components/assets/BadgeContainer';
 import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
-import { useGameInfoContext } from '@/context/GameInfoContext';
-import { BadgeTypeEnum, type Level as LevelType } from '@/hooks/types';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
 import { useLevels } from '@/hooks/useLevels';
 import { useRank } from '@/hooks/useRank';
 import { useScore } from '@/hooks/useScore';
-import { useTreasureBox } from '@/hooks/useTreasureBox';
 import { useUserName } from '@/hooks/useUsername';
-import {
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Drawer,
-  Stack,
-} from '@mui/material';
+import { Box, Drawer, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
@@ -47,9 +31,6 @@ export default function Challenges() {
   const { data: userPublicProfile } = useCBProfile({ address });
   const userName = useUserName({ address, userPublicProfile });
   const { disconnectAsync } = useDisconnect();
-  const [irlAccordionExpanded, setIrlAccordionExpanded] = useState(false);
-  const [virtualAccordionExpanded, setVirtualAccordionExpanded] =
-    useState(false);
   const {
     data: badges,
     isLoading,
@@ -61,13 +42,6 @@ export default function Challenges() {
     error: levelsError,
   } = useLevels({ gameId: GAME_ID, address: address ?? '' });
 
-  const { data: treasureBox, isLoading: isTreasureBoxLoading } = useTreasureBox(
-    {
-      gameId: GAME_ID,
-      userAddress: address ?? '',
-    }
-  );
-
   const { data: rank, isLoading: isRankLoading } = useRank({
     userAddress: address ?? '',
     gameId: GAME_ID,
@@ -77,8 +51,6 @@ export default function Challenges() {
     userAddress: address ?? '',
     gameId: GAME_ID,
   });
-
-  const { showModal, setShowModal } = useGameInfoContext();
 
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {
@@ -110,104 +82,11 @@ export default function Challenges() {
     [toggleDrawer]
   );
 
-  const handleToggleAccordion = useCallback((type: BadgeTypeEnum) => {
-    if (type === BadgeTypeEnum.IRL) {
-      setIrlAccordionExpanded((prev) => !prev);
-    } else if (type === BadgeTypeEnum.Online) {
-      setVirtualAccordionExpanded((prev) => !prev);
-    }
-  }, []);
-
   useEffect(() => {
     if (isDisconnected) {
       router.push('/');
     }
   }, [isDisconnected, router]);
-
-  const BadgesWrapper = useMemo(() => {
-    if (isClient) {
-      return (
-        <>
-          {error && <div>Error...</div>}
-          {badges && (
-            <>
-              <Box
-                sx={{
-                  paddingTop: '30px',
-                  alignItems: 'flex-start',
-                  width: '100%',
-                }}
-                gap={2}
-              >
-                {badges && (
-                  <>
-                    <CustomAccordion
-                      title="Art Basel Collection"
-                      toggleFunction={handleToggleAccordion}
-                      expanded={irlAccordionExpanded}
-                      panel={BadgeTypeEnum.IRL}
-                      pill={
-                        <AccordionPill
-                          totalCount={badges.irlBadges.length}
-                          collectedCount={badges.completedIRLBadgeCount}
-                        />
-                      }
-                    >
-                      <BadgeContainer badges={badges.irlBadges} />
-                    </CustomAccordion>
-                    <BadgeStack
-                      toggleFunction={handleToggleAccordion}
-                      panel={BadgeTypeEnum.IRL}
-                      hide={irlAccordionExpanded}
-                    />
-                  </>
-                )}
-              </Box>
-              <Box
-                sx={{
-                  paddingTop: '30px',
-                  alignItems: 'flex-start',
-                  width: '100%',
-                }}
-                gap={2}
-              >
-                {badges && (
-                  <>
-                    <CustomAccordion
-                      title="Global Collection"
-                      toggleFunction={handleToggleAccordion}
-                      expanded={virtualAccordionExpanded}
-                      panel={BadgeTypeEnum.Online}
-                      pill={
-                        <AccordionPill
-                          totalCount={badges.onlineBadges.length}
-                          collectedCount={badges.completedOnlineBadgeCount}
-                        />
-                      }
-                    >
-                      <BadgeContainer badges={badges.onlineBadges} />
-                    </CustomAccordion>
-                    <BadgeStack
-                      toggleFunction={handleToggleAccordion}
-                      panel={BadgeTypeEnum.Online}
-                      hide={virtualAccordionExpanded}
-                    />
-                  </>
-                )}
-              </Box>
-            </>
-          )}
-        </>
-      );
-    }
-  }, [
-    isClient,
-    badges,
-    error,
-    irlAccordionExpanded,
-    virtualAccordionExpanded,
-    handleToggleAccordion,
-  ]);
 
   const list = (anchor: Anchor) => (
     <Box
@@ -346,10 +225,7 @@ export default function Challenges() {
         className="pageContent"
       >
         <Hero />
-        <TreasureChest
-          isOpen={treasureBox?.isOpen}
-          ctaUrl={treasureBox?.ctaUrl}
-        />
+        <PlayerLevelStatus />
         <Stack
           flexDirection="row"
           justifyContent="center"
@@ -387,36 +263,6 @@ export default function Challenges() {
         </Box>
         <ChallengesPageClient />
       </Stack>
-
-      <BootstrapDialog
-        onClose={() => setShowModal(false)}
-        aria-labelledby="customized-dialog-title"
-        open={showModal}
-      >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          How to Play
-        </DialogTitle>
-        <DialogContent>
-          <Text gutterBottom>
-            1. Complete challenges at ETH Denver and online
-          </Text>
-          <Text gutterBottom>
-            2. Get points with every challenge completed.
-          </Text>
-          <Text gutterBottom>
-            3. Join a guild and contribute your points to guild.
-          </Text>
-          <Text gutterBottom>
-            4. Work together to be the best guild at ETH Denver and get amazing
-            prizes.
-          </Text>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowModal(false)}>
-            <Text color="black">Ok!</Text>
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
     </>
   );
 }

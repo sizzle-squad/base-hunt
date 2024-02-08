@@ -260,6 +260,7 @@ export type Database = {
           game_id: number | null
           guild_id: string
           id: number
+          leader: string | null
           name: string | null
           total_member_count: number | null
         }
@@ -268,6 +269,7 @@ export type Database = {
           game_id?: number | null
           guild_id: string
           id?: number
+          leader?: string | null
           name?: string | null
           total_member_count?: number | null
         }
@@ -276,6 +278,7 @@ export type Database = {
           game_id?: number | null
           guild_id?: string
           id?: number
+          leader?: string | null
           name?: string | null
           total_member_count?: number | null
         }
