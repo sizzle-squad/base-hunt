@@ -27,7 +27,7 @@ import { UNIT } from '@/constants/unit';
 import { Card } from '@/components/assets/Card';
 import Text from '@/components/Text';
 import Stepper from '@/components/Reveal/Stepper';
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 import accurateInterval from 'accurate-interval';
 import Blurred from '@public/images/blurred-art-reveal.gif';
 import { differenceInMilliseconds, isToday, startOfTomorrow } from 'date-fns';

@@ -5,7 +5,7 @@ import { toBigInt } from '@/utils/toBigInt';
 import { Challenge } from '@/hooks/types';
 import { Database, Tables } from '@/utils/database.types';
 import { ChallengeStatus } from '@/utils/database.enums';
-import { compact } from 'lodash';
+import compact from 'lodash/compact';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
