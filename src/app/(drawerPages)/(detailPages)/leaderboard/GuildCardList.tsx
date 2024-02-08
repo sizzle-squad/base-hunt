@@ -36,7 +36,11 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                 direction="column"
                 gap={1}
                 p={2}
-                sx={{ background: Color.White, borderRadius: '14px' }}
+                sx={{
+                  background: Color.White,
+                  borderRadius: '14px',
+                  cursor: 'pointer',
+                }}
                 height="100%"
                 width="336px"
               >
