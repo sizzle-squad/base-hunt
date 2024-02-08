@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
   }
 
   const result: Guild[] = data.map((guild, index) => ({
-    id: guild.id,
+    id: guild.guild_id,
     name: guild.name,
     gameId: guild.game_id,
     totalMemberCount: guild.total_member_count,

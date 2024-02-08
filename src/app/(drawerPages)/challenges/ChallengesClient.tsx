@@ -421,6 +421,7 @@ export default function ChallengesPageClient() {
                         p: 2,
                         borderRadius: '8px',
                         opacity: item.isCompleted ? 1 : 0.5,
+                        cursor: 'pointer',
                       }}
                       onClick={() => handleToggleDrawer(item)}
                     >

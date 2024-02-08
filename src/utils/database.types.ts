@@ -338,6 +338,33 @@ export type Database = {
         }
         Relationships: []
       }
+      guild_win: {
+        Row: {
+          claim_id: number
+          created_at: string
+          from: string
+          guild_id: string
+          id: number
+          to: string
+        }
+        Insert: {
+          claim_id: number
+          created_at?: string
+          from: string
+          guild_id: string
+          id?: number
+          to: string
+        }
+        Update: {
+          claim_id?: number
+          created_at?: string
+          from?: string
+          guild_id?: string
+          id?: number
+          to?: string
+        }
+        Relationships: []
+      }
       level_configuration: {
         Row: {
           airdrop_command: string
