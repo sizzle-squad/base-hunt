@@ -15,6 +15,49 @@ export type GuildClaimData = {
   gameId: string;
 };
 
+export async function GET(prequest: NextRequest) {
+  const searchParams = prequest.nextUrl.searchParams;
+  const userAddress = searchParams.get('userAddress') as string;
+  const gameId = toBigInt(searchParams.get('gameId') as string);
+
+  if (!userAddress || gameId === null) {
+    return new Response(
+      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
+  }
+
+  const { data, error } = await supabase
+    .from('user_guild_score_claim')
+    .select()
+    .eq('user_address', userAddress.toLowerCase())
+    .eq('game_id', gameId);
+
+  if (error) {
+    return new Response(`No guilds found with gameId: ${gameId}`, {
+      status: 400,
+    });
+  }
+
+  const claimablePoints = data
+    .filter((x) => !x.is_claimed)
+    .reduce((acc, curr) => {
+      return acc + curr.points;
+    }, 0);
+  const claimedPoints = data
+    .filter((x) => x.is_claimed)
+    .reduce((acc, curr) => {
+      return acc + curr.points;
+    }, 0);
+
+  return NextResponse.json({
+    claimablePoints: claimablePoints,
+    claimedPoints: claimedPoints,
+  });
+}
+
 export async function POST(request: NextRequest) {
   const body: GuildClaimData = await request.json();
   const { userAddress, gameId } = body;
