@@ -15,18 +15,18 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  console.log('[level transfer] body:', body);
+  //We only care about ERC1155 transfers
+  if (body.event_type && body.event_type === 'EVENT_TYPE_TRANSFER_ERC1155') {
+    body.value = (toBigInt(body.value) ?? BigInt(0)).toString();
+    const levelData = await supabase
+      .from('level_data')
+      .upsert(body, { ignoreDuplicates: true })
+      .select();
 
-  body.value = (toBigInt(body.value) ?? BigInt(0)).toString();
-  const levelData = await supabase
-    .from('level_data')
-    .upsert(body, { ignoreDuplicates: true })
-    .select();
-
-  if (levelData.error) {
-    console.error(levelData);
-    throw new Error(levelData.error.message);
+    if (levelData.error) {
+      console.error(levelData);
+      throw new Error(levelData.error.message);
+    }
   }
-
   return NextResponse.json({ status: 'ok' });
 }
