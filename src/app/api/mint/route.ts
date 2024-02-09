@@ -11,24 +11,24 @@ const supabase = createClient<Database>(
 );
 
 export type MintData = {
-  userAddress: `0x${string}` | undefined;
+  address: `0x${string}` | undefined;
   command: string;
 };
 
 export async function POST(request: NextRequest) {
   const body: MintData = await request.json();
-  const { userAddress, command } = body;
+  const { address, command } = body;
 
-  if (!userAddress || !command) {
+  if (!address || !command) {
     return new Response(
-      `Missing parameters: userAddress: ${userAddress}, command: ${command}`,
+      `Missing parameters: userAddress: ${address}, command: ${command}`,
       {
         status: 400,
       }
     );
   }
   try {
-    await airdropNft(userAddress, command);
+    await airdropNft(address, command);
   } catch (e) {
     console.error(e);
     return NextResponse.json({ success: false });
