@@ -1,9 +1,11 @@
+import { memo, useMemo } from 'react';
+
 import { Box, Stack } from '@mui/material';
 import Image from 'next/image';
-import type { Badge as BadgeType } from '@/hooks/types';
 import Link from 'next/link';
-import { memo, useMemo } from 'react';
+
 import Text from '@/components/Text';
+import type { Badge as BadgeType } from '@/hooks/types';
 
 type Props = {
   imageUrl: URL | string;

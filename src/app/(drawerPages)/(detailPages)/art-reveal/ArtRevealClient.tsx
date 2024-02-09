@@ -1,14 +1,16 @@
 'use client';
 
-import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
-import { ListCardProps } from '@/components/ListCard';
-import ToolBar from '@/components/drawer/Toolbar';
-import { DrawerType, useDrawer } from '@/context/DrawerContext';
-import { Box, NoSsr, Stack } from '@mui/material';
 import { memo, useCallback, useMemo, useState } from 'react';
-import Text from '@/components/Text';
-import { RevealedCard } from '@/components/assets/RevealedCard';
+
+import { Box, NoSsr, Stack } from '@mui/material';
+
 import { Card } from '@/components/assets/Card';
+import { RevealedCard } from '@/components/assets/RevealedCard';
+import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
+import ToolBar from '@/components/drawer/Toolbar';
+import { ListCardProps } from '@/components/ListCard';
+import Text from '@/components/Text';
+import { DrawerType, useDrawer } from '@/context/DrawerContext';
 
 const PageConsts = {
   navTitle: 'Art Reveal' as const,

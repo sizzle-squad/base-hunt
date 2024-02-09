@@ -1,6 +1,7 @@
-import { useMutation, useQueryClient } from 'react-query';
-import { routes } from '@/constants/routes';
 import axios from 'axios';
+import { useMutation, useQueryClient } from 'react-query';
+
+import { routes } from '@/constants/routes';
 
 export type ChallengeData = {
   gameId: string;

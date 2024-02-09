@@ -1,15 +1,17 @@
 'use client';
 
-import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
-import { Color } from '@/constants/color';
-import { GAME_ID } from '@/constants/gameId';
-import { useLevels } from '@/hooks/useLevels';
+import { useCallback } from 'react';
+
 import { Stack } from '@mui/material';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
-import Text from '@/components/Text';
+
 import { Button } from '@/components/assets/Button';
-import { useCallback } from 'react';
+import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
+import Text from '@/components/Text';
+import { Color } from '@/constants/color';
+import { GAME_ID } from '@/constants/gameId';
+import { useLevels } from '@/hooks/useLevels';
 
 export default function PrizesPageClient() {
   const { address } = useAccount();

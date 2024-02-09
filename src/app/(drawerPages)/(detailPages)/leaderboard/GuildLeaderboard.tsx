@@ -1,15 +1,18 @@
 'use client';
 
-import { TopContributorTag } from '@/components/list/TopContributorTag';
-import { Guild as GuildRank } from '@/hooks/types';
-import { Box, NoSsr, Stack } from '@mui/material';
 import { useMemo } from 'react';
-import ListRow from '@/components/list/ListRow';
-import { useGuild } from '@/hooks/useGuild';
-import { GAME_ID } from '@/constants/gameId';
-import { GuildCardList } from './GuildCardList';
+
+import { Box, NoSsr, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
+
+import ListRow from '@/components/list/ListRow';
+import { TopContributorTag } from '@/components/list/TopContributorTag';
+import { GAME_ID } from '@/constants/gameId';
+import { Guild as GuildRank } from '@/hooks/types';
+import { useGuild } from '@/hooks/useGuild';
 import { useGuildState } from '@/hooks/useGuildState';
+
+import { GuildCardList } from './GuildCardList';
 
 type RankMock = GuildRank & {
   isMock: boolean;

@@ -1,42 +1,43 @@
 'use client';
 
 import React, { ReactNode } from 'react';
-import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
-import ListCard, { ListCardProps } from '@/components/ListCard';
-import ToolBar from '@/components/drawer/Toolbar';
-import { useDrawer } from '@/context/DrawerContext';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
+  Card,
+  CardMedia,
+  Grid,
+  Link,
   NoSsr,
   Snackbar,
   Stack,
-  Link,
-  CardMedia,
-  Card,
-  Grid,
 } from '@mui/material';
-import { memo, useCallback, useMemo, useState, useEffect } from 'react';
-import { DrawerType } from '@/context/DrawerContext';
-import Text from '@/components/Text';
-import { PointsPill } from '@/components/PointsPill';
-import { useChallenges } from '@/hooks/useChallenges';
-import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
-import { GAME_ID } from '@/constants/gameId';
+import { deepOrange, green, purple, red } from '@mui/material/colors';
 import { useAccount } from 'wagmi';
-import { Button } from '@/components/assets/Button';
 
+import { Button } from '@/components/assets/Button';
 import {
-  WalletIcon,
-  CoffeeIcon,
   BagIcon,
-  GridIcon,
   CircleIcon,
+  CoffeeIcon,
+  GridIcon,
   LinkIcon,
   UsersIcon,
+  WalletIcon,
 } from '@/components/assets/icons/BoostIcon';
-import { deepOrange, green, purple, red } from '@mui/material/colors';
-import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
+import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
+import ToolBar from '@/components/drawer/Toolbar';
+import ListCard, { ListCardProps } from '@/components/ListCard';
 import Pill from '@/components/Pill';
+import { PointsPill } from '@/components/PointsPill';
+import Text from '@/components/Text';
 import { Color } from '@/constants/color';
+import { GAME_ID } from '@/constants/gameId';
+import { useDrawer } from '@/context/DrawerContext';
+import { DrawerType } from '@/context/DrawerContext';
+import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
+import { useChallenges } from '@/hooks/useChallenges';
+import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';

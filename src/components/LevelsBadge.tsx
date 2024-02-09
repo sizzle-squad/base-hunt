@@ -1,13 +1,14 @@
 import React, { ComponentProps, memo } from 'react';
+
 import Image from 'next/image';
 
+import { type Level } from '@/hooks/types';
 import Svg1 from '@public/images/levels/1.svg';
 import Svg2 from '@public/images/levels/2.svg';
 import Svg3 from '@public/images/levels/3.svg';
 import Svg4 from '@public/images/levels/4.svg';
 import Svg5 from '@public/images/levels/5.svg';
 import Svg6 from '@public/images/levels/6.svg';
-import { type Level } from '@/hooks/types';
 
 export type LevelNumber = Level['level'];
 

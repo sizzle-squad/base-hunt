@@ -1,11 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { toBigInt } from '@/utils/toBigInt';
-import { Challenge } from '@/hooks/types';
-import { Database, Tables } from '@/utils/database.types';
-import { ChallengeStatus } from '@/utils/database.enums';
 import compact from 'lodash/compact';
+
+import { Challenge } from '@/hooks/types';
+import { ChallengeStatus } from '@/utils/database.enums';
+import { Database, Tables } from '@/utils/database.types';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,

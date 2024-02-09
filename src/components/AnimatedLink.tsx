@@ -1,7 +1,9 @@
 'use client';
-import useAnimatedRouter from '@/hooks/useAnimatedRouter';
-import Link from 'next/link';
 import React, { memo } from 'react';
+
+import Link from 'next/link';
+
+import useAnimatedRouter from '@/hooks/useAnimatedRouter';
 
 type Props = {
   href: string;

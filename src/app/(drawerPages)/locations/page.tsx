@@ -1,8 +1,9 @@
 'use client';
 
-import Layout from '@/components/layout';
 import { Stack } from '@mui/material';
 import Image from 'next/image';
+
+import Layout from '@/components/layout';
 
 export default function Map() {
   return (

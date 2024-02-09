@@ -1,7 +1,9 @@
-import { BadgeTypeEnum } from '@/hooks/types';
+import { useCallback } from 'react';
+
 import { Box } from '@mui/material';
 import Image from 'next/image';
-import { useCallback } from 'react';
+
+import { BadgeTypeEnum } from '@/hooks/types';
 
 type Props = {
   panel: BadgeTypeEnum;

@@ -1,12 +1,14 @@
 'use client';
 
-import { GAME_ID } from '@/constants/gameId';
-import { Box, LinearProgress, Skeleton, Stack } from '@mui/material';
 import { useMemo } from 'react';
-import Text from '@/components/Text';
+
+import { Box, LinearProgress, Skeleton, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
-import { useLevels } from '@/hooks/useLevels';
+
+import Text from '@/components/Text';
 import { Color } from '@/constants/color';
+import { GAME_ID } from '@/constants/gameId';
+import { useLevels } from '@/hooks/useLevels';
 import { useScore } from '@/hooks/useScore';
 
 export function NextLevelProgressBar() {

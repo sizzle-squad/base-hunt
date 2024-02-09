@@ -1,11 +1,14 @@
-import { type Level } from '@/hooks/types';
-import { Box, Stack, Skeleton } from '@mui/material';
 import { useMemo } from 'react';
+
+import { Box, Skeleton, Stack } from '@mui/material';
+import { useRouter } from 'next/navigation';
+
+import Link from '@/components/AnimatedLink';
 import Text from '@/components/Text';
+import { type Level } from '@/hooks/types';
+
 
 import SvgSwitcher, { LevelNumber } from '../LevelsBadge';
-import Link from '@/components/AnimatedLink';
-import { useRouter } from 'next/navigation';
 
 type Props = {
   currentLevel: LevelNumber | null;

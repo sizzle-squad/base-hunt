@@ -1,5 +1,7 @@
-import { Box, Stack } from '@mui/material';
 import { memo } from 'react';
+
+import { Box, Stack } from '@mui/material';
+
 import HeroSVG from '@/components/assets/HeroSVG';
 import Navbar from '@/components/navigation/navbar';
 

@@ -1,17 +1,18 @@
-import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { WebhookData, verifyWebhookSecret } from '@/utils/webhook';
-import { Database } from '@/utils/database.types';
-import {
-  Networks,
-  ChallengeStatus,
-  ChallengeType,
-} from '@/utils/database.enums';
+import { NextResponse } from 'next/server';
+
 import {
   CheckFunctions,
   MapChallengeTypeUserAddress,
 } from '@/utils/claims/selectors';
+import {
+  ChallengeStatus,
+  ChallengeType,
+  Networks,
+} from '@/utils/database.enums';
+import { Database } from '@/utils/database.types';
 import { providers } from '@/utils/ethereum';
+import { verifyWebhookSecret, WebhookData } from '@/utils/webhook';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,

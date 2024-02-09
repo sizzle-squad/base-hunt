@@ -1,5 +1,6 @@
-import { DrawerProvider } from '@/context/DrawerContext';
 import { Box } from '@mui/material';
+
+import { DrawerProvider } from '@/context/DrawerContext';
 
 export default function ArtRevealLayout({
   children,

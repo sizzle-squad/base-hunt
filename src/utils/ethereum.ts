@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+
 import { Networks } from './database.enums';
 
 export const BASE_NODE_URL = process.env.BASE_NODE_URL;

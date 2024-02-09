@@ -1,16 +1,19 @@
-import { DrawerType, useDrawer } from '@/context/DrawerContext';
+import { memo, useCallback, useMemo, useState } from 'react';
+
 import { Global } from '@emotion/react';
 import { Box, Stack } from '@mui/material';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { format } from 'date-fns';
-import { memo, useCallback, useMemo, useState } from 'react';
-import Text from '@/components/Text';
-import { BadgeLocationMap } from '../Map/BadgeLocationMap';
-import ToolBar from '../drawer/Toolbar';
-import { Button } from '@/components/assets/Button';
+
 import Link from '@/components/AnimatedLink';
+import { Button } from '@/components/assets/Button';
+import Text from '@/components/Text';
+import { DrawerType, useDrawer } from '@/context/DrawerContext';
 import { useMobileCheck } from '@/context/MobileContext';
 import { BadgeTypeEnum } from '@/hooks/types';
+
+import ToolBar from '../drawer/Toolbar';
+import { BadgeLocationMap } from '../Map/BadgeLocationMap';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';
@@ -103,6 +106,7 @@ function SwipeUpDrawer({
       setIsMapOpen(false);
       toggleDrawer(type, anchor, !drawerStates.badgeActions[anchor]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMapOpen]);
 
   const ctaButton = useMemo(() => {

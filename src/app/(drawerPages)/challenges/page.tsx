@@ -1,9 +1,15 @@
 'use client';
 
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+
+import { Box, Drawer, Stack } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { useAccount, useDisconnect } from 'wagmi';
+
 import Hero from '@/components/Badges/Hero';
 import { Level } from '@/components/Cards/Level';
-import { Rank } from '@/components/Cards/Rank';
 import { PlayerLevelStatus } from '@/components/Cards/PlayerLevelStatus';
+import { Rank } from '@/components/Cards/Rank';
 import Circle from '@/components/Circle';
 import Text from '@/components/Text';
 import { GAME_ID } from '@/constants/gameId';
@@ -15,10 +21,7 @@ import { useLevels } from '@/hooks/useLevels';
 import { useRank } from '@/hooks/useRank';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
-import { Box, Drawer, Stack } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
+
 import ChallengesPageClient from './ChallengesClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';

@@ -1,6 +1,7 @@
 'use client';
-import { ExtendedDocument } from '@/hooks/types';
 import { useRouter } from 'next/navigation';
+
+import { ExtendedDocument } from '@/hooks/types';
 
 export default function useAnimatedRouter() {
   const router = useRouter();

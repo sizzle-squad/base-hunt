@@ -1,6 +1,8 @@
 import { Grid, Stack } from '@mui/material';
-import { Badge } from './Badge';
+
 import type { Badge as BadgeType } from '@/hooks/types';
+
+import { Badge } from './Badge';
 
 type Props = {
   badges: BadgeType[];

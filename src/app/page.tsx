@@ -1,17 +1,19 @@
 'use client';
 
-import Head from 'next/head';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { Box, Button, Link, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { ConnectButton } from '@/components/assets/ConnectButton';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
-import { useRouter } from 'next/navigation';
+import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
+import Head from 'next/head';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useAccount } from 'wagmi';
+
+import { ConnectButton } from '@/components/assets/ConnectButton';
+import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
 import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
 import Text from '@/components/Text';
-import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
-import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);

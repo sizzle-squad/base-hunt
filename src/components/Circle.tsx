@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Box } from '@mui/material';
 
 const Circle = ({ color, size = '2rem' }: { color: string; size?: string }) => {

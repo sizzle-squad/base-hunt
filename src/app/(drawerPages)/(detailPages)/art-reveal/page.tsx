@@ -1,7 +1,7 @@
 'use client';
 
-import Layout from '@/components/layout';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
   Alert,
   AlertColor,
@@ -12,25 +12,28 @@ import {
   Snackbar,
   Stack,
 } from '@mui/material';
-import { useMutateTreasureBox } from '@/hooks/useMutateTreasureBox';
-import { GAME_ID } from '@/constants/gameId';
-import { useAccount } from 'wagmi';
-import { useCBProfile } from '@/hooks/useCBProfile';
-import { useTreasureBox } from '@/hooks/useTreasureBox';
-import { ProgressCard } from '@/components/assets/ProgressCard';
-import { useScore } from '@/hooks/useScore';
+import accurateInterval from 'accurate-interval';
+import { differenceInMilliseconds, isToday, startOfTomorrow } from 'date-fns';
+import debounce from 'lodash/debounce';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import ArtRevealClient from './ArtRevealClient';
-import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
-import { UNIT } from '@/constants/unit';
+import { useAccount } from 'wagmi';
+
 import { Card } from '@/components/assets/Card';
-import Text from '@/components/Text';
+import { ProgressCard } from '@/components/assets/ProgressCard';
+import Layout from '@/components/layout';
+import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import Stepper from '@/components/Reveal/Stepper';
-import debounce from 'lodash/debounce';
-import accurateInterval from 'accurate-interval';
+import Text from '@/components/Text';
+import { GAME_ID } from '@/constants/gameId';
+import { UNIT } from '@/constants/unit';
+import { useCBProfile } from '@/hooks/useCBProfile';
+import { useMutateTreasureBox } from '@/hooks/useMutateTreasureBox';
+import { useScore } from '@/hooks/useScore';
+import { useTreasureBox } from '@/hooks/useTreasureBox';
 import Blurred from '@public/images/blurred-art-reveal.gif';
-import { differenceInMilliseconds, isToday, startOfTomorrow } from 'date-fns';
+
+import ArtRevealClient from './ArtRevealClient';
 
 const imageUrl =
   'https://go.wallet.coinbase.com/static/base-hunt/badges/Itsallagame.gif';
@@ -118,6 +121,7 @@ export default function ArtReveal() {
     return '';
   }, [iykRef, physicalTapMulitplier]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCTAPress = useCallback(
     debounce(() => {
       attackBox.mutate({
@@ -132,7 +136,6 @@ export default function ArtReveal() {
     }, 500),
     [
       address,
-      // attackBox,
       userPublicProfile?.ensDomainProfile?.name,
       userPublicProfile?.subdomainProfile?.name,
     ]

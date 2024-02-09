@@ -1,8 +1,10 @@
 'use client';
-import React, { useState, useEffect, useMemo } from 'react';
-import accurateInterval from 'accurate-interval';
-import Text from '@/components/Text';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import { Stack } from '@mui/material';
+import accurateInterval from 'accurate-interval';
+
+import Text from '@/components/Text';
 
 export const CountdownTimer = ({
   fontSize = '100px',

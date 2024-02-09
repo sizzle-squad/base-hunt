@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useMemo, memo } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
+
 import { Loader } from '@googlemaps/js-api-loader';
 import { Box, NoSsr, Stack } from '@mui/material';
 

@@ -1,6 +1,7 @@
-import { UserPublicProfile } from '@/hooks/types';
 import axios from 'axios';
 import { type NextRequest } from 'next/server';
+
+import { UserPublicProfile } from '@/hooks/types';
 import { WALLET_API_URL } from '@/utils/env';
 
 export async function GET(request: NextRequest) {

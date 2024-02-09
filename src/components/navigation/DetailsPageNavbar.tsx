@@ -1,7 +1,9 @@
 import { memo, useMemo } from 'react';
-import { Stack, IconButton } from '@mui/material';
-import Text from '@/components/Text';
+
+import { IconButton, Stack } from '@mui/material';
 import Link from 'next/link';
+
+import Text from '@/components/Text';
 
 const LeftChevron = memo(function defaultLeftChevron() {
   return (

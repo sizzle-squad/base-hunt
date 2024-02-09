@@ -1,16 +1,18 @@
 'use client';
 
+import { useCallback, useMemo } from 'react';
+
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Box, Skeleton, Stack } from '@mui/material';
+import { useAccount } from 'wagmi';
+
+import Circle from '@/components/Circle';
+import Text from '@/components/Text';
 import { useDrawer } from '@/context/DrawerContext';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
-import { Box, Skeleton, Stack } from '@mui/material';
-import { useMemo, useCallback } from 'react';
-import { useAccount } from 'wagmi';
-import Text from '@/components/Text';
-import Circle from '@/components/Circle';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export const NavbarClient = () => {
   const { address, isDisconnected, isConnecting } = useAccount();

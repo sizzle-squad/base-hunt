@@ -1,4 +1,5 @@
 import { Stack } from '@mui/material';
+
 import PrizesPageClient from './PrizesClient';
 
 export default function Page() {

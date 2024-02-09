@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { Badge, BadgeTypeEnum } from '../../../../hooks/types';
 
 import { createClient } from '@supabase/supabase-js';
+
 import { toBigInt } from '@/utils/toBigInt';
+
+import { Badge, BadgeTypeEnum } from '../../../../hooks/types';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,

@@ -1,5 +1,6 @@
-import { Box, SxProps } from '@mui/material';
 import { FC, memo } from 'react';
+
+import { Box, SxProps } from '@mui/material';
 
 const HeroSVG: FC = ({ sx }: { sx?: SxProps }) => {
   return (

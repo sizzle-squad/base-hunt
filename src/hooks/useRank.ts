@@ -1,6 +1,8 @@
-import axios from 'axios';
 import { useMemo } from 'react';
+
+import axios from 'axios';
 import { useQuery } from 'react-query';
+
 import { PlayerRank } from './types';
 
 type Props = {

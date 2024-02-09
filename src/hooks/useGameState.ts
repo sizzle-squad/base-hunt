@@ -1,9 +1,12 @@
-import { routes } from '@/constants/routes';
+import { useMemo } from 'react';
+
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Badge, BadgeTypeEnum } from './types';
-import { useMemo } from 'react';
+
+import { routes } from '@/constants/routes';
 import { sortWithBigInt } from '@/utils/sortWithBigInt';
+
+import { Badge, BadgeTypeEnum } from './types';
 
 type Props = {
   userAddress?: `0x${string}`;

@@ -1,9 +1,11 @@
 'use client';
-import { DrawerType } from '@/context/DrawerContext';
+import { memo } from 'react';
+
 import { Global } from '@emotion/react';
 import { Box, Typography } from '@mui/material';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { memo } from 'react';
+
+import { DrawerType } from '@/context/DrawerContext';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';

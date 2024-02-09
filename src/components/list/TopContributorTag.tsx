@@ -1,6 +1,8 @@
-import Text from '@/components/Text';
-import { Stack } from '@mui/material';
 import { memo } from 'react';
+
+import { Stack } from '@mui/material';
+
+import Text from '@/components/Text';
 
 const CrownIcon = memo(() => (
   <svg

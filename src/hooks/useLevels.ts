@@ -1,9 +1,12 @@
-import axios from 'axios';
 import { useMemo } from 'react';
+
+import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Level } from './types';
-import { routes } from '@/constants/routes';
+
 import { LevelNumber } from '@/components/LevelsBadge';
+import { routes } from '@/constants/routes';
+
+import { Level } from './types';
 
 type Props = {
   gameId: string;

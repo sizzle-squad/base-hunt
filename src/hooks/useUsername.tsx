@@ -1,5 +1,6 @@
-import { getTruncatedAddress } from '@/utils/truncate';
 import { useMemo } from 'react';
+
+import { getTruncatedAddress } from '@/utils/truncate';
 
 type Props = {
   address: `0x${string}` | string | undefined;

@@ -1,6 +1,7 @@
 'use client';
-import { Stack } from '@mui/material';
 import { ReactNode } from 'react';
+
+import { Stack } from '@mui/material';
 
 type Props = {
   noPadding?: boolean;
