@@ -165,8 +165,6 @@ export async function getClaimablev2(
   );
 
   return { result: result };
-
-  //TODO: make sure none of the claims have already been taken
 }
 
 export type Claimable = {
