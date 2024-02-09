@@ -14,6 +14,7 @@ import { GAME_ID } from '@/constants/gameId';
 export function GuildCardList({ guilds }: { guilds: Guild[] }) {
   const { address } = useAccount();
   const { joinGuild } = useMutateGuild();
+
   const handleJoinPress = useCallback(
     (guildId: string) => () => {
       joinGuild.mutate({
