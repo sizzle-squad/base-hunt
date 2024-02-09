@@ -373,6 +373,7 @@ export type Database = {
           game_id: number
           guild_id: string
           id: number
+          points: number
           score: number
           to: string
         }
@@ -383,6 +384,7 @@ export type Database = {
           game_id: number
           guild_id: string
           id?: number
+          points?: number
           score: number
           to: string
         }
@@ -393,6 +395,7 @@ export type Database = {
           game_id?: number
           guild_id?: string
           id?: number
+          points?: number
           score?: number
           to?: string
         }

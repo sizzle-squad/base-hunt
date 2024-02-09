@@ -238,6 +238,7 @@ export const userPointDistribute = inngest.createFunction(
               from: from.toISOString(),
               to: to.toISOString(),
               score: sortedScoreDifferences[0][1] || 0,
+              points: challenge?.points || 0,
             },
             { onConflict: 'game_id,claim_id' }
           );

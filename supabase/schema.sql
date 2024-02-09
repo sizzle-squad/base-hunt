@@ -166,7 +166,7 @@ declare
   _score bigint:=0;
 begin
 
-CREATE TEMP TABLE _claims AS select _game_id as game_id, gmc.guild_id as guild_id, _user_address as user_address, gw.claim_id as claim_id,gw.score as score 
+CREATE TEMP TABLE _claims AS select _game_id as game_id, gmc.guild_id as guild_id, _user_address as user_address, gw.claim_id as claim_id,gw.points as score 
 from 
 guild_win as gw 
 join guild_member_configuration as gmc on gw.guild_id = gmc.guild_id and gw.game_id = gmc.game_id 
@@ -181,6 +181,7 @@ IF _score >0 then
     INSERT INTO score(game_id,user_address,current_score) VALUES(_game_id,_user_address,_score);
   end if;
 end if;
+DROP TABLE _claims;
 return TRUE;
  
 end; 
@@ -507,7 +508,8 @@ CREATE TABLE IF NOT EXISTS "public"."guild_win" (
     "from" timestamp with time zone NOT NULL,
     "to" timestamp with time zone NOT NULL,
     "game_id" bigint NOT NULL,
-    "score" bigint NOT NULL
+    "score" bigint NOT NULL,
+    "points" bigint DEFAULT '0'::bigint NOT NULL
 );
 
 ALTER TABLE "public"."guild_win" OWNER TO "postgres";

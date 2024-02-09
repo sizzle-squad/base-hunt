@@ -52,17 +52,29 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  console.log('claiming guild score');
+  let gameIdNumber;
   try {
-    const gameIdNumber = parseInt(gameId as string);
-    await supabase.rpc('guilduserclaim', {
-      _game_id: gameIdNumber,
-      _user_address: userAddress,
-    });
+    gameIdNumber = parseInt(gameId as string);
   } catch (e) {
     console.error(e);
     return NextResponse.json({ success: false });
   }
+
+  if (gameIdNumber === undefined) {
+    console.error(`invalid gameIdNumber ${gameId}`);
+    return NextResponse.json({ success: false });
+  }
+
+  const { data, error } = await supabase.rpc('guilduserclaim', {
+    _game_id: gameIdNumber,
+    _user_address: userAddress,
+  });
+
+  if (error) {
+    console.error(error);
+    return NextResponse.json({ success: false });
+  }
+
   return NextResponse.json({ success: true });
 }
 
