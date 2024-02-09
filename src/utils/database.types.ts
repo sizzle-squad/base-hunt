@@ -338,6 +338,33 @@ export type Database = {
         }
         Relationships: []
       }
+      guild_user_claim: {
+        Row: {
+          claim_id: number
+          created_at: string
+          game_id: number
+          guild_id: string
+          id: number
+          user_address: string
+        }
+        Insert: {
+          claim_id: number
+          created_at?: string
+          game_id: number
+          guild_id: string
+          id?: number
+          user_address: string
+        }
+        Update: {
+          claim_id?: number
+          created_at?: string
+          game_id?: number
+          guild_id?: string
+          id?: number
+          user_address?: string
+        }
+        Relationships: []
+      }
       guild_win: {
         Row: {
           claim_id: number
@@ -779,6 +806,13 @@ export type Database = {
         Returns: {
           j: Json
         }[]
+      }
+      guilduserclaim: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: boolean
       }
       upserttreasurebox: {
         Args: {

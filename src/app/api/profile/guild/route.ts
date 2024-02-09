@@ -29,6 +29,7 @@ type QueryData = {
   cta_text: string;
   cta_url: string;
 };
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;

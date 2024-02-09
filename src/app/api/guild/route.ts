@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/utils/database.types';
 import { toBigInt } from '@/utils/toBigInt';
-import { GuildData } from '@/hooks/useMutateGuild';
+import { GuildPostBodyData } from '@/hooks/useMutateGuild';
 import { Guild } from '@/hooks/types';
 
 const supabase = createClient<Database>(
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
 // Register a user to a guild
 export async function POST(request: NextRequest) {
-  const body: GuildData = await request.json();
+  const body: GuildPostBodyData = await request.json();
   const { gameId, userAddress, guildId } = body;
 
   if (!userAddress || !gameId || !guildId) {
