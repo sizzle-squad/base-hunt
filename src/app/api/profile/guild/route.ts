@@ -9,6 +9,7 @@ import {
 } from '@/utils/guild/helpers';
 import axios from 'axios';
 import { getGuildRanks } from '../../guild/state/route';
+import { getUserClaimData } from '../../guild/claim/route';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -123,14 +124,20 @@ export async function GET(req: NextRequest) {
   }
 
   //get guild daily rank
-  const rank = result?.findIndex((g) => g[0] === guild.guild_id) || -1;
+  const rank = result?.findIndex((g) => g[0] === guild.guild_id) ?? -1;
   if (rank === -1) {
-    return new Response('unable to get guild rank', {
-      status: 400,
-    });
+    console.warn('guild not found in ranks');
   }
 
-  const score = result ? result[rank as number][1] : 0;
+  const score = result && rank >= 0 ? result[rank as number][1] : 0;
+
+  //get guild points claimable / claimed by user
+
+  const claimData = await getUserClaimData(gameId, userAddress);
+  if (claimData.error) {
+    console.error(claimData.error);
+  }
+
   return NextResponse.json({
     id: guild.id,
     name: guild.name,
@@ -140,6 +147,8 @@ export async function GET(req: NextRequest) {
     totalWinShares: guildWin.length,
     currentDailyScore: score,
     currentDailyRank: rank,
+    claimablePoints: claimData?.result?.claimablePoints ?? 0,
+    claimedPoints: claimData?.result?.claimedPoints ?? 0,
   } as GuildData);
 }
 
@@ -152,4 +161,6 @@ export type GuildData = {
   currentDailyScore: number;
   totalWinShares: number;
   currentDailyRank: number;
+  claimablePoints: number;
+  claimedPoints: number;
 };

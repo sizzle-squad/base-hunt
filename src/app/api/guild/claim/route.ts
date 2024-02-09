@@ -29,33 +29,14 @@ export async function GET(prequest: NextRequest) {
     );
   }
 
-  const { data, error } = await supabase
-    .from('user_guild_score_claim')
-    .select()
-    .eq('user_address', userAddress.toLowerCase())
-    .eq('game_id', gameId);
-
+  const { result, error } = await getUserClaimData(gameId, userAddress);
   if (error) {
-    return new Response(`No guilds found with gameId: ${gameId}`, {
+    return new Response(`Error getting user guild scores: ${error}`, {
       status: 400,
     });
   }
 
-  const claimablePoints = data
-    .filter((x) => !x.is_claimed)
-    .reduce((acc, curr) => {
-      return acc + curr.points;
-    }, 0);
-  const claimedPoints = data
-    .filter((x) => x.is_claimed)
-    .reduce((acc, curr) => {
-      return acc + curr.points;
-    }, 0);
-
-  return NextResponse.json({
-    claimablePoints: claimablePoints,
-    claimedPoints: claimedPoints,
-  });
+  return NextResponse.json(result);
 }
 
 export async function POST(request: NextRequest) {
@@ -74,15 +55,52 @@ export async function POST(request: NextRequest) {
   console.log('claiming guild score');
   try {
     const gameIdBigInt = parseInt(gameId as string);
-    await supabase
-      .rpc('user_claim_guild_score', {
-        _game_id: gameIdBigInt,
-        _user_address: userAddress.toLowerCase(),
-      })
-      .select();
   } catch (e) {
     console.error(e);
     return NextResponse.json({ success: false });
   }
   return NextResponse.json({ success: true });
+}
+
+export type UserGuildScoreClaimable = {
+  claimablePoints: number;
+  claimedPoints: number;
+};
+
+export async function getUserClaimData(
+  gameId: bigint,
+  userAddress: string
+): Promise<{
+  result?: UserGuildScoreClaimable;
+  error?: Error;
+}> {
+  const { data, error } = await supabase
+    .from('user_guild_score_claim')
+    .select()
+    .eq('user_address', userAddress.toLowerCase())
+    .eq('game_id', gameId);
+
+  if (error) {
+    return {
+      error: new Error(`No guilds found with gameId: ${gameId}`),
+    };
+  }
+
+  const claimablePoints = data
+    .filter((x) => !x.is_claimed)
+    .reduce((acc, curr) => {
+      return acc + curr.points;
+    }, 0);
+  const claimedPoints = data
+    .filter((x) => x.is_claimed)
+    .reduce((acc, curr) => {
+      return acc + curr.points;
+    }, 0);
+
+  return {
+    result: {
+      claimablePoints: claimablePoints,
+      claimedPoints: claimedPoints,
+    },
+  };
 }
