@@ -3,6 +3,7 @@ export const routes = {
   profile: {
     score: '/api/profile/score',
     state: '/api/profile/state',
+    guild: 'api/profile/guild',
   },
   treasureBox: {
     rank: '/api/treasure-box/rank',
