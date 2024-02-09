@@ -1,16 +1,19 @@
 import type { Metadata } from 'next';
-import {
-  coinbaseSans,
-  coinbaseText,
-  coinbaseMono,
-  coinbaseDisplay,
-  inter,
-} from './font';
+
 import clsx from 'clsx';
 import '@/globals.css';
-import Providers from '@/providers/providers';
-import { Box, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import { Analytics } from '@vercel/analytics/react';
+
+import Providers from '@/providers/providers';
+
+import {
+  coinbaseDisplay,
+  coinbaseMono,
+  coinbaseSans,
+  coinbaseText,
+  inter,
+} from './font';
 
 export const metadata: Metadata = {
   title: 'Base Hunt',

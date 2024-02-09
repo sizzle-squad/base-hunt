@@ -1,7 +1,10 @@
-import { useQuery } from 'react-query';
-import { routes } from '@/constants/routes';
-import axios from 'axios';
 import { useMemo } from 'react';
+
+import axios from 'axios';
+import { useQuery } from 'react-query';
+
+import { routes } from '@/constants/routes';
+
 import { Guild } from './types';
 
 type Props = {

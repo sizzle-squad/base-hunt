@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { Network, Alchemy } from 'alchemy-sdk';
-import { toBigInt } from '@/utils/toBigInt';
+import { Alchemy, Network } from 'alchemy-sdk';
+
 import { ChallengeTypeEnum } from '@/hooks/types';
 import {
   CheckFunctions,
@@ -15,6 +15,7 @@ import {
   Networks,
 } from '@/utils/database.enums';
 import { providers } from '@/utils/ethereum';
+import { toBigInt } from '@/utils/toBigInt';
 
 class Blockscout {
   apiKey: string | undefined;

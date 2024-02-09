@@ -1,8 +1,10 @@
 'use client';
-import Footer from '@/components/navigation/footer';
+import { ReactNode, useMemo } from 'react';
+
 import { Stack } from '@mui/material';
 import { usePathname } from 'next/navigation';
-import { ReactNode, useMemo } from 'react';
+
+import Footer from '@/components/navigation/footer';
 
 export default function Template({ children }: { children: ReactNode }) {
   const pathname = usePathname();

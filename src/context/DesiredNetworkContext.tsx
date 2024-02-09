@@ -1,17 +1,18 @@
 'use client';
 
 import {
+  createContext,
   FC,
   PropsWithChildren,
-  useRef,
-  createContext,
-  useEffect,
   useContext,
+  useEffect,
+  useRef,
   useState,
 } from 'react';
+
 import { useNetwork, useSwitchNetwork } from 'wagmi';
-import { base, baseGoerli, goerli, mainnet } from 'wagmi/chains';
 import { WindowProvider } from 'wagmi';
+import { base, baseGoerli, goerli, mainnet } from 'wagmi/chains';
 
 interface CustomWindowProvider extends WindowProvider {
   isCoinbaseBrowser?: boolean;

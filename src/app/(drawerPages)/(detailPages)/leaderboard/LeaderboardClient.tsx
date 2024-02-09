@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
+
 import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
-import { PlayerLeaderboard } from './PlayerLeaderboard';
+import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
+
 import { GuildLeaderboard } from './GuildLeaderboard';
+import { PlayerLeaderboard } from './PlayerLeaderboard';
 
 type BoardType = 'leaderboard' | 'guilds';
 

@@ -1,8 +1,9 @@
 import { BigNumberish, ethers } from 'ethers';
-import { WebhookData } from '../webhook';
+
 import { Networks } from '../database.enums';
-import { providers } from '../ethereum';
 import { Database } from '../database.types';
+import { providers } from '../ethereum';
+import { WebhookData } from '../webhook';
 const balanceOfABI = [
   {
     constant: true,

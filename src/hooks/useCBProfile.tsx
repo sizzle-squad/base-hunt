@@ -1,8 +1,11 @@
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import { UserPublicProfile } from './types';
-import { routes } from '@/constants/routes';
 import { useMemo } from 'react';
+
+import axios from 'axios';
+import { useQuery } from 'react-query';
+
+import { routes } from '@/constants/routes';
+
+import { UserPublicProfile } from './types';
 
 type Props = {
   address: `0x${string}` | undefined;

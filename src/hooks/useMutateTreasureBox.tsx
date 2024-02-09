@@ -1,7 +1,8 @@
+import axios from 'axios';
 import { useMutation, useQueryClient } from 'react-query';
+
 import { TreasureBoxType } from '@/app/api/treasure-box/route';
 import { routes } from '@/constants/routes';
-import axios from 'axios';
 import { verifyTreasureBoxRequest } from '@/utils/verifyTreasureBoxRequest';
 
 // Your error type

@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
+
 import { Avatar, Box, Skeleton, Stack } from '@mui/material';
+
 import Text from '@/components/Text';
 import { stringToColor } from '@/utils/stringToColor';
 

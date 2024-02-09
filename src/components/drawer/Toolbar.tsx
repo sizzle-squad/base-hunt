@@ -1,5 +1,6 @@
 import {} from 'react';
-import { Stack, IconButton } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
+
 import Text from '@/components/Text';
 
 type ToolBarProps = {

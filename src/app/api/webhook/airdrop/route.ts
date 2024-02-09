@@ -1,6 +1,7 @@
-import { airdropNft } from '@/utils/walletapi';
-import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
+
+import { airdropNft } from '@/utils/walletapi';
 import { verifyWebhookSecret } from '@/utils/webhook';
 
 const supabase = createClient(

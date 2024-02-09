@@ -1,15 +1,15 @@
-import { ChallengeType, CheckFunctionType } from '../database.enums';
-import { WebhookData } from '../webhook';
 import {
-  CheckBalanceParams,
   checkBalance,
+  CheckBalanceParams,
   checkTokenIdBalance,
 } from './balanceCheck';
 import { checkMint } from './mintCheck';
 import { checkFunctionExecution } from './transactionCheck';
-import { CheckTriviaParams, checkTrivia } from './triviaCheck';
-import { CheckTxCountBatchParams, checkTxCountBatch } from './txHistoryCheck';
+import { checkTrivia, CheckTriviaParams } from './triviaCheck';
+import { checkTxCountBatch, CheckTxCountBatchParams } from './txHistoryCheck';
+import { ChallengeType, CheckFunctionType } from '../database.enums';
 import { Database } from '../database.types';
+import { WebhookData } from '../webhook';
 
 export const CheckFunctions: {
   [key in CheckFunctionType]: (...args: any[]) => Promise<boolean>;

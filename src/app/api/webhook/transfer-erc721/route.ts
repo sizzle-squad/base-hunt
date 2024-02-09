@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { verifyWebhookSecret } from '@/utils/webhook';
+import { NextResponse } from 'next/server';
+
 import { Database } from '@/utils/database.types';
+import { verifyWebhookSecret } from '@/utils/webhook';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,

@@ -1,9 +1,11 @@
 import { type NextRequest } from 'next/server';
 import '@/utils/helper';
 import { NextResponse } from 'next/server';
-import { ScoreState } from '../../../../hooks/types';
 import { createClient } from '@supabase/supabase-js';
+
 import { toBigInt } from '@/utils/toBigInt';
+
+import { ScoreState } from '../../../../hooks/types';
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string

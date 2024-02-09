@@ -1,9 +1,10 @@
 'use client';
 
-import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
+import { Button, Stack } from '@mui/material';
+
 import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
+import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
 import Text from '@/components/Text';
-import { Stack, Button } from '@mui/material';
 
 export default function Thanks() {
   return (

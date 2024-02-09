@@ -1,12 +1,14 @@
 'use client';
-import { Box, Grid, Skeleton, Stack } from '@mui/material';
-import Text from '@/components/Text';
-import { CountdownTimer } from '@/components/ArtRevealScreen/Countdown';
-import { useTreasureBoxForRevealScreen } from '@/hooks/useTreasureBoxForRevealScreen';
 import { useEffect, useMemo, useState } from 'react';
+
+import { Box, Grid, Skeleton, Stack } from '@mui/material';
 import Image from 'next/image';
-import RevealGif from '@public/images/blurred-art-reveal.gif';
+
+import { CountdownTimer } from '@/components/ArtRevealScreen/Countdown';
+import Text from '@/components/Text';
 import useScreenSize from '@/hooks/useScreenSize';
+import { useTreasureBoxForRevealScreen } from '@/hooks/useTreasureBoxForRevealScreen';
+import RevealGif from '@public/images/blurred-art-reveal.gif';
 
 export default function ArtRevealScreen() {
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';

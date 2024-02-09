@@ -1,18 +1,19 @@
+import { createClient, PostgrestError } from '@supabase/supabase-js';
+import { ethers } from 'ethers';
+
 import { inngest } from './client';
-import { Database } from '../database.types';
-import { PostgrestError, createClient } from '@supabase/supabase-js';
 import {
   ChallengeStatus,
   ChallengeType,
   CheckFunctionType,
   Networks,
 } from '../database.enums';
+import { Database } from '../database.types';
 import { providers } from '../ethereum';
-import { ethers } from 'ethers';
 import {
-  GuildScoreData,
   get5pmMstDateRangeFromCurrent,
   getGuildTxCounts,
+  GuildScoreData,
 } from '../guild/helpers';
 
 const supabase = createClient<Database>(

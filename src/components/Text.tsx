@@ -1,4 +1,5 @@
 import { FC, PropsWithChildren, ReactNode } from 'react';
+
 import { Typography, TypographyProps } from '@mui/material';
 
 interface CustomTypographyProps extends TypographyProps {

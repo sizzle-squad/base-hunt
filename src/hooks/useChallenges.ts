@@ -1,8 +1,11 @@
-import { routes } from '@/constants/routes';
+import { useMemo } from 'react';
+
 import axios from 'axios';
 import { useQuery } from 'react-query';
+
+import { routes } from '@/constants/routes';
+
 import { Challenge } from './types';
-import { useMemo } from 'react';
 
 type Props = {
   userAddress: `0x${string}` | undefined;

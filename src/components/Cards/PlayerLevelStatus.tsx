@@ -1,6 +1,7 @@
 'use client';
 
-import { Stack, Card } from '@mui/material';
+import { Card, Stack } from '@mui/material';
+
 import { NextLevelProgressBar } from '../assets/NextLevelProgressBar';
 
 export function PlayerLevelStatus() {

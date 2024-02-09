@@ -1,6 +1,13 @@
-import { routes } from '@/constants/routes';
 import axios from 'axios';
+
 import { useMutation, useQueryClient } from 'react-query';
+import { routes } from '@/constants/routes';
+
+type Props = {
+  userAddress: `0x${string}` | string;
+  gameId: string;
+  guildId: string;
+};
 
 export type GuildPostBodyData = {
   userAddress: `0x${string}` | undefined;

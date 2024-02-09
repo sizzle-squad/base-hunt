@@ -1,13 +1,15 @@
+import { ReactNode } from 'react';
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
-  Typography,
-  Stack,
+  AccordionSummary,
   Box,
+  Stack,
+  Typography,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { ReactNode } from 'react';
+
 import { BadgeTypeEnum } from '@/hooks/types';
 
 type Props = {

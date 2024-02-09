@@ -1,7 +1,9 @@
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import { routes } from '@/constants/routes';
 import { useMemo } from 'react';
+
+import axios from 'axios';
+import { useQuery } from 'react-query';
+
+import { routes } from '@/constants/routes';
 
 type Props = {
   gameId: string;

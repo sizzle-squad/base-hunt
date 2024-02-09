@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { providers } from '../ethereum';
 import { ethers } from 'ethers';
+
 import { Networks } from '../database.enums';
+import { providers } from '../ethereum';
 
 const MAX_FETCH = 10;
 

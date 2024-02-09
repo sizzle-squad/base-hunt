@@ -1,7 +1,8 @@
 import { ethers } from 'ethers';
-import { WebhookData } from '../webhook';
+
 import { Networks } from '../database.enums';
 import { providers } from '../ethereum';
+import { WebhookData } from '../webhook';
 
 export type CheckExectionParams = {
   function: string;

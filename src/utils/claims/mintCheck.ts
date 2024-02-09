@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
-import { WebhookData } from '../webhook';
+
 import { Networks } from '../database.enums';
+import { WebhookData } from '../webhook';
 
 export type CheckMintParams = {
   minter: string;

@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
+
+import axios from 'axios';
+import { useQuery } from 'react-query';
+
 import { GuildData } from '@/app/api/profile/guild/route';
 import { routes } from '@/constants/routes';
-import axios from 'axios';
-import { useMemo } from 'react';
-import { useQuery } from 'react-query';
 
 type Props = {
   userAddress?: `0x${string}`;

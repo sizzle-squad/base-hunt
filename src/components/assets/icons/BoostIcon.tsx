@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+
 import { Alert, Box, Button, NoSsr, Snackbar, Stack, SvgIcon } from '@mui/material';
 
 export const BagIcon = memo(function BagIcon() {

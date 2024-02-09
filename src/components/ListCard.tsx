@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
+
 import { Box, Card, Skeleton, Stack } from '@mui/material';
+
 import Text from '@/components/Text';
 
 // Define a type that requires either title or subtitle to be present

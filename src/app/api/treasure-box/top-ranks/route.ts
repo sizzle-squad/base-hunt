@@ -1,6 +1,7 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
 import { createClient } from '@supabase/supabase-js';
+
 import { Database } from '@/utils/database.types';
 import { toBigInt } from '@/utils/toBigInt';
 

@@ -1,5 +1,6 @@
-import { LoadingButton } from '@mui/lab';
 import { ReactNode } from 'react';
+
+import { LoadingButton } from '@mui/lab';
 
 type Props = {
   variant?: 'text' | 'outlined' | 'contained';

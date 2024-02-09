@@ -1,24 +1,26 @@
 'use client';
 
 import React from 'react';
+
 import '@rainbow-me/rainbowkit/styles.css';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { base } from 'viem/chains';
-import { WagmiConfig, createConfig, configureChains } from 'wagmi';
+import { CssBaseline } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
+  DisclaimerComponent,
   getDefaultWallets,
   RainbowKitProvider,
-  DisclaimerComponent,
 } from '@rainbow-me/rainbowkit';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { base } from 'viem/chains';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import '@fontsource/open-sans';
 import '@/globals.css';
-import { CssBaseline } from '@mui/material';
-import { MobileProvider } from '@/context/MobileContext';
+
 import { DesiredNetworkContextProvider } from '@/context/DesiredNetworkContext';
 import { GameInfoProvider } from '@/context/GameInfoContext';
+import { MobileProvider } from '@/context/MobileContext';
 
 type Props = {
   children: React.ReactNode;

@@ -1,11 +1,13 @@
+import { useMemo } from 'react';
+
+import { Box, NoSsr, Stack } from '@mui/material';
+
 import LeaderBoardRow from '@/components/list/LeaderboardRow';
 import { TopContributorTag } from '@/components/list/TopContributorTag';
+import Text from '@/components/Text';
 import { GAME_ID } from '@/constants/gameId';
 import { PlayerRank } from '@/hooks/types';
 import { useTopRanks } from '@/hooks/useTopRanks';
-import { Box, NoSsr, Stack } from '@mui/material';
-import { useMemo } from 'react';
-import Text from '@/components/Text';
 
 type RankMock = PlayerRank & {
   isMock: boolean;

@@ -1,5 +1,6 @@
-import { inngest } from '@/utils/inngest/client';
 import { NextRequest, NextResponse } from 'next/server';
+
+import { inngest } from '@/utils/inngest/client';
 
 type namedEvent = 'events/user-tx-count' | 'events/user-point-distribute';
 

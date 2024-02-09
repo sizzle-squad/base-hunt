@@ -1,20 +1,22 @@
 'use client';
 
-import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
-import ListCard, { ListCardProps } from '@/components/ListCard';
-import ToolBar from '@/components/drawer/Toolbar';
-import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
-import { useDrawer } from '@/context/DrawerContext';
+import { memo, ReactElement, useCallback, useMemo, useState } from 'react';
+
 import { Box, Button, Stack } from '@mui/material';
-import { ReactElement, memo, useCallback, useMemo, useState } from 'react';
-import { DrawerType } from '@/context/DrawerContext';
-import Text from '@/components/Text';
-import { useLevels } from '@/hooks/useLevels';
-import { GAME_ID } from '@/constants/gameId';
-import SvgSwitcher, { LevelNumber } from '@/components/LevelsBadge';
-import { Level } from '@/hooks/types';
-import Pill from '@/components/Pill';
 import { useAccount } from 'wagmi';
+
+import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
+import ToolBar from '@/components/drawer/Toolbar';
+import SvgSwitcher, { LevelNumber } from '@/components/LevelsBadge';
+import ListCard, { ListCardProps } from '@/components/ListCard';
+import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
+import Pill from '@/components/Pill';
+import Text from '@/components/Text';
+import { GAME_ID } from '@/constants/gameId';
+import { useDrawer } from '@/context/DrawerContext';
+import { DrawerType } from '@/context/DrawerContext';
+import { Level } from '@/hooks/types';
+import { useLevels } from '@/hooks/useLevels';
 
 const merchStoreUrl = 'https://basedmerch.slice.so/';
 

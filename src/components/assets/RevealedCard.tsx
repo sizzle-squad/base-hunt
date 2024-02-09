@@ -1,8 +1,9 @@
 'use client';
 
 import { Stack } from '@mui/material';
-import Text from '../Text';
+
 import { Button } from './Button';
+import Text from '../Text';
 
 type Props = {
   onClick?: (args?: any) => void;

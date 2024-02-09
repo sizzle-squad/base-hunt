@@ -1,9 +1,11 @@
 import { Box, Stack } from '@mui/material';
+
 import Text from '@/components/Text';
-import { NextLevelProgressBar } from './NextLevelProgressBar';
+import { UNIT } from '@/constants/unit';
+
 import { Button } from './Button';
 import { Card } from './Card';
-import { UNIT } from '@/constants/unit';
+import { NextLevelProgressBar } from './NextLevelProgressBar';
 
 type Props = {
   ctaText: string;

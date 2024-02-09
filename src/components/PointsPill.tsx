@@ -1,4 +1,5 @@
 import { Skeleton, Stack } from '@mui/material';
+
 import Text from '@/components/Text';
 
 type Props = {

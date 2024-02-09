@@ -1,15 +1,17 @@
 'use client';
 
-import { Color } from '@/constants/color';
-import { Guild } from '@/hooks/types';
+import { useCallback } from 'react';
+
 import { Box, Grid, Stack } from '@mui/material';
 import Image from 'next/image';
-import Text from '@/components/Text';
-import { Button } from '@/components/assets/Button';
-import { useCallback } from 'react';
 import { useAccount } from 'wagmi';
-import { useMutateGuild } from '@/hooks/useMutateGuild';
+
+import { Button } from '@/components/assets/Button';
+import Text from '@/components/Text';
+import { Color } from '@/constants/color';
 import { GAME_ID } from '@/constants/gameId';
+import { Guild } from '@/hooks/types';
+import { useMutateGuild } from '@/hooks/useMutateGuild';
 
 export function GuildCardList({ guilds }: { guilds: Guild[] }) {
   const { address } = useAccount();

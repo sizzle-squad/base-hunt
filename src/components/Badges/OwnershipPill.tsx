@@ -1,5 +1,6 @@
 import { Stack } from '@mui/material';
 import Image from 'next/image';
+
 import Text from '@/components/Text';
 
 type Props = {
