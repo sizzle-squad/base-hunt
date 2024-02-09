@@ -29,10 +29,7 @@ export async function GET(prequest: NextRequest) {
     );
   }
 
-  const r = await getClaimablev2(gameId, userAddress);
-  console.log(r);
-
-  const { result, error } = await getUserClaimData(gameId, userAddress);
+  const { result, error } = await getClaimablev2(gameId, userAddress);
   if (error) {
     return new Response(`Error getting user guild scores: ${error}`, {
       status: 400,
@@ -115,7 +112,13 @@ export async function getUserClaimData(
 export async function getClaimablev2(
   gameId: bigint,
   userAddress: string
-): Promise<any> {
+): Promise<{
+  result?: {
+    claimable: Claimable[];
+    claimed: Claimable[];
+  };
+  error?: Error;
+}> {
   const guildMemberData = await supabase
     .from('guild_member_configuration')
     .select('guild_id,created_at')
@@ -123,11 +126,16 @@ export async function getClaimablev2(
     .eq('user_address', userAddress)
     .maybeSingle();
   if (guildMemberData.error) {
-    return { error: guildMemberData.error };
+    return { error: new Error(guildMemberData.error.message) };
   }
   const guildMember = guildMemberData.data;
   if (!guildMember) {
-    return { result: {} };
+    return {
+      result: {
+        claimable: [],
+        claimed: [],
+      },
+    };
   }
   console.log(guildMember);
 
@@ -139,7 +147,7 @@ export async function getClaimablev2(
     .gt('to', guildMember.created_at);
 
   if (guildWinClaimsData.error) {
-    return { error: guildWinClaimsData.error };
+    return { error: new Error(guildWinClaimsData.error.message) };
   }
   const guildWinClaims = guildWinClaimsData.data;
   console.log(guildWinClaims);
@@ -149,28 +157,16 @@ export async function getClaimablev2(
     .select()
     .eq('game_id', gameId)
     .eq('user_address', userAddress.toLowerCase())
-    .eq('guild_id', guildMember.guild_id);
+    .eq('guild_id', guildMember.guild_id)
+    .returns<Claimable[]>();
 
   if (guildUserClaimData.error) {
-    return { error: guildUserClaimData.error };
+    return { error: new Error(guildUserClaimData.error.message) };
   }
 
   const guildUserClaim = guildUserClaimData.data;
   const alreadyClaimed = guildUserClaim.reduce(
-    (
-      acc: Record<
-        string,
-        {
-          claim_id: number;
-          created_at: string;
-          game_id: number;
-          guild_id: string;
-          id: number;
-          user_address: string;
-        }
-      >,
-      claim
-    ) => {
+    (acc: Record<string, Claimable>, claim: Claimable) => {
       acc[claim.claim_id] = claim;
       return acc;
     },
@@ -179,37 +175,10 @@ export async function getClaimablev2(
   const result = guildWinClaims.reduce(
     (
       acc: {
-        claimable: {
-          claim_id: number;
-          created_at: string;
-          from: string;
-          game_id: number;
-          guild_id: string;
-          id: number;
-          score: number;
-          to: string;
-        }[];
-        claimed: {
-          claim_id: number;
-          created_at: string;
-          from: string;
-          game_id: number;
-          guild_id: string;
-          id: number;
-          score: number;
-          to: string;
-        }[];
+        claimable: Claimable[];
+        claimed: Claimable[];
       },
-      curr: {
-        claim_id: number;
-        created_at: string;
-        from: string;
-        game_id: number;
-        guild_id: string;
-        id: number;
-        score: number;
-        to: string;
-      }
+      curr: Claimable
     ) => {
       if (alreadyClaimed.hasOwnProperty(curr.claim_id)) {
         acc.claimed.push(curr);
@@ -221,7 +190,18 @@ export async function getClaimablev2(
     { claimable: [], claimed: [] }
   );
 
-  return result;
+  return { result: result };
 
   //TODO: make sure none of the claims have already been taken
 }
+
+export type Claimable = {
+  claim_id: number;
+  created_at: string;
+  from: string;
+  game_id: number;
+  guild_id: string;
+  id: number;
+  score: number;
+  to: string;
+};
