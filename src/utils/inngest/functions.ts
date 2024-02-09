@@ -238,6 +238,7 @@ export const userPointDistribute = inngest.createFunction(
               from: from.toISOString(),
               to: to.toISOString(),
               score: sortedScoreDifferences[0][1] || 0,
+              points: challenge?.points || 0,
             },
             { onConflict: 'game_id,claim_id' }
           );
@@ -252,70 +253,6 @@ export const userPointDistribute = inngest.createFunction(
       }
     );
 
-    if (guildId === null) {
-      const message = `No guild found with highest score gameId:${event.data.gameId}`;
-      console.error(message);
-      return { error: message };
-    }
-
-    const users: { user_address: string }[] = [];
-    let uRange: string[] = [];
-    let iter: number = 0;
-    while (true && iter < 20) {
-      const uRange = await step.run('fetch guild users', async () => {
-        const { data, error } = await supabase
-          .from('guild_member_configuration')
-          .select('user_address')
-          .eq('game_id', event.data.gameId as number)
-          .eq('guild_id', guildId)
-          .range(iter * queryBatchSize, (iter + 1) * queryBatchSize - 1);
-        if (error) {
-          return [];
-        }
-        return data;
-      });
-      users.push(...uRange);
-      if (uRange.length < queryBatchSize) {
-        break;
-      }
-      iter++;
-    }
-
-    //NOTE: we update a users claim as only members of a guild at the point of distribution can claim
-    let chunks = chunkArray(users, queryBatchSize);
-    const rows = [];
-    for (let i = 0; i < chunks.length; i++) {
-      const rowChunks = await step.run('update-challenge', async () => {
-        const rows = chunks[i].map((u) => {
-          return {
-            user_address: u.user_address.toLowerCase(),
-            points: challenge.points as number,
-            game_id: event.data.gameId as number,
-            guild_id: guildId,
-            claim_id: claimId,
-            is_claimed: false,
-          };
-        });
-
-        //insert all claims
-        const ugscData = await supabase
-          .from('user_guild_score_claim')
-          .upsert(rows, {
-            onConflict: 'game_id,user_address,guild_id,claim_id',
-            ignoreDuplicates: true,
-          })
-          .select();
-        if (ugscData.error) {
-          console.error(ugscData.error);
-          return [];
-        }
-        return ugscData.data;
-      });
-
-      await step.sleep('wait-a-moment', '2000 milliseconds');
-      rows.push(rowChunks);
-    }
-
-    return { data: rows };
+    return { data: guildId };
   }
 );
