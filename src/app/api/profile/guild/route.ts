@@ -3,6 +3,12 @@ import '@/utils/helper';
 import { BadgeTypeEnum, Level, LevelState } from '../../../../hooks/types';
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
+import {
+  GuildScoreData,
+  get5pmMstDateRangeFromCurrent,
+} from '@/utils/guild/helpers';
+import axios from 'axios';
+import { getGuildRanks } from '../../guild/state/route';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -54,60 +60,96 @@ export async function GET(req: NextRequest) {
 
   //user is not part of guild
   if (!userGuildData.data) {
-    return NextResponse.json({});
+    return NextResponse.json({
+      id: null,
+      name: null,
+      guildId: null,
+    });
   }
 
   //Get guild data
-  let guild = null;
-  if (!userGuildData.data) {
-    const guildData = await supabase
-      .from('guild_configuration')
-      .select('*')
-      .eq('game_id', gameId)
-      .eq('guild_id', userGuildData.data.guild_id)
-      .single();
-    if (guildData.error) {
-      console.error(guildData.error);
-      return new Response(
-        `Error getting guild: guild_id: ${userGuildData.data.guild_id}, gameId: ${gameId}`,
-        {
-          status: 400,
-        }
-      );
-    }
-    guild = guildData.data;
+  let guild: {
+    guild_id: string;
+    id: bigint;
+    name: string;
+    leader: string;
+    image_url: string | null;
+  };
+
+  //TODO: these 3 calls can be parallelized
+  const guildData = await supabase
+    .from('guild_configuration')
+    .select('*')
+    .eq('game_id', gameId)
+    .eq('guild_id', userGuildData.data.guild_id)
+    .single();
+  if (guildData.error) {
+    console.error(guildData.error);
+    return new Response(
+      `Error getting guild: guild_id: ${userGuildData.data.guild_id}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
   }
+  guild = guildData.data;
+
+  //Get guild win shares
+  let guildWin = null;
+  const guildWinData = await supabase
+    .from('guild_win')
+    .select('*')
+    .eq('game_id', gameId)
+    .eq('guild_id', guild.guild_id);
+
+  if (guildWinData.error) {
+    console.error(guildWinData.error);
+    return new Response(
+      `Error getting guild wins: guild_id: ${guild.guild_id}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
+  }
+
+  guildWin = guildWinData.data;
+  const [from, to] = await get5pmMstDateRangeFromCurrent(new Date());
+  const { result, error } = await getGuildRanks(gameId, from, to);
+
+  if (error) {
+    return new Response(error.message, {
+      status: 400,
+    });
+  }
+
+  //get guild daily rank
+  const rank = result?.findIndex((g) => g[0] === guild.guild_id) || -1;
+  if (rank === -1) {
+    return new Response('unable to get guild rank', {
+      status: 400,
+    });
+  }
+
+  const score = result ? result[rank as number][1] : 0;
+  return NextResponse.json({
+    id: guild.id,
+    name: guild.name,
+    guildId: guild.guild_id,
+    leader: guild.leader,
+    imageUrl: guild.image_url || null,
+    totalWinShares: guildWin.length,
+    currentDailyScore: score,
+    currentDailyRank: rank,
+  } as GuildData);
 }
 
 export type GuildData = {
-  id: bigint;
-  name: string;
-  guild_id: string;
+  id: bigint | null;
+  name: string | null;
+  guildId: string | null;
   leader: string;
-  imageUrl: string;
-  currentDailyScore: bigint;
+  imageUrl: string | null;
+  currentDailyScore: number;
+  totalWinShares: number;
+  currentDailyRank: number;
 };
-
-/*
-database function:
-
-create or replace function getLevelState(
-    _game_id bigint,
-    _user_address text
-) 
-returns table ( j json ) 
-language plpgsql
-as $$
-declare 
-
-begin
- RETURN QUERY select to_json(temp) from (select * from level_configuration as  l LEFT join level_data as d
-  on LOWER(l.contract_address) = LOWER(d.contract_address) and l.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(d.value,3)),16,'0'))::bit(64)::bigint and LOWER(l.minter) = LOWER(d.from_address)  
-  and d.to_address = LOWER(_user_address) and l.game_id = _game_id) as temp;
-end; 
-$$
-
-
-
-
-*/

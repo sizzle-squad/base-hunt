@@ -343,24 +343,30 @@ export type Database = {
           claim_id: number
           created_at: string
           from: string
+          game_id: number
           guild_id: string
           id: number
+          score: number
           to: string
         }
         Insert: {
           claim_id: number
           created_at?: string
           from: string
+          game_id: number
           guild_id: string
           id?: number
+          score: number
           to: string
         }
         Update: {
           claim_id?: number
           created_at?: string
           from?: string
+          game_id?: number
           guild_id?: string
           id?: number
+          score?: number
           to?: string
         }
         Relationships: []
