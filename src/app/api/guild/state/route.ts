@@ -25,6 +25,25 @@ export async function GET(request: NextRequest) {
   }
   // Get current date range
   const [from, to] = await get5pmMstDateRangeFromCurrent(new Date());
+  const { result, error } = await getGuildRanks(gameId, from, to);
+  if (error) {
+    return new Response(`Error getting guilds: ${error}`, {
+      status: 400,
+    });
+  }
+
+  return NextResponse.json(result);
+}
+
+export async function getGuildRanks(
+  gameId: bigint,
+  from: Date,
+  to: Date
+): Promise<{
+  result?: [string, number][];
+  error?: Error;
+}> {
+  // Get current date range
   const { data, error } = await supabase
     .from('guild_score')
     .select('id, guild_id,score')
@@ -34,9 +53,7 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     console.error(error);
-    return new Response(`No guilds found with gameId: ${gameId}`, {
-      status: 400,
-    });
+    return { error: new Error(`No guilds found with gameId: ${gameId}`) };
   }
 
   const result = await getGuildTxCounts(data);
@@ -47,9 +64,7 @@ export async function GET(request: NextRequest) {
     .eq('game_id', gameId);
 
   if (guildsData.error) {
-    return new Response(`Unable to retrieve guilds: ${gameId}`, {
-      status: 400,
-    });
+    return { error: new Error(`Unable to retrieve guilds: ${gameId}`) };
   }
 
   for (let i = 0; i < guildsData.data.length; i++) {
@@ -57,6 +72,6 @@ export async function GET(request: NextRequest) {
       result[guildsData.data[i].guild_id] = 0;
     }
   }
-
-  return NextResponse.json(result);
+  const sorted = Object.entries(result).sort((a, b) => b[1] - a[1]);
+  return { result: sorted };
 }
