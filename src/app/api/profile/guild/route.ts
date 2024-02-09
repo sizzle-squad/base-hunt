@@ -50,6 +50,26 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  //get total member count
+  const totalMemberCountData = await supabase
+    .from('guild_configuration')
+    .select('*', { count: 'exact', head: true })
+    .eq('game_id', gameId)
+    .eq('guild_id', userGuildData.data.guild_id)
+    .single();
+
+  if (totalMemberCountData.error) {
+    console.error(totalMemberCountData.error);
+    return new Response(
+      `Error getting total member count: guild_id: ${userGuildData.data.guild_id}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
+  }
+
+  let totalMemberCount = totalMemberCountData.data;
+
   //Get guild data
   let guild: {
     guild_id: string;
@@ -135,6 +155,7 @@ export async function GET(req: NextRequest) {
     claimedPoints:
       claimData?.result?.claimed.reduce((acc, curr) => acc + curr.score, 0) ??
       0,
+    totalMemberCount: totalMemberCount,
   } as GuildData);
 }
 
@@ -149,4 +170,5 @@ export type GuildData = {
   currentDailyRank: number;
   claimablePoints: number;
   claimedPoints: number;
+  totalMemberCount: number;
 };
