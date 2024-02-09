@@ -807,18 +807,13 @@ export type Database = {
           j: Json
         }[]
       }
-      guilduserclam:
-        | {
-            Args: Record<PropertyKey, never>
-            Returns: Record<string, unknown>
-          }
-        | {
-            Args: {
-              _game_id: number
-              _user_address: string
-            }
-            Returns: Record<string, unknown>
-          }
+      guilduserclaim: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: boolean
+      }
       upserttreasurebox: {
         Args: {
           _game_id: number

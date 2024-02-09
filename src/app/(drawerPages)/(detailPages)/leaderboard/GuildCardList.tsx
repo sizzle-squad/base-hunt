@@ -1,3 +1,5 @@
+'use client';
+
 import { Color } from '@/constants/color';
 import { Guild } from '@/hooks/types';
 import { Box, Grid, Stack } from '@mui/material';

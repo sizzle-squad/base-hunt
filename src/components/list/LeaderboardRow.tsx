@@ -1,4 +1,3 @@
-import { PlayerRank } from '@/hooks/types';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useUserName } from '@/hooks/useUsername';
 import ListRow from './ListRow';

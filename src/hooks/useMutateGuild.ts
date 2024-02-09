@@ -8,14 +8,14 @@ type Props = {
   guildId: string;
 };
 
-export type GuildData = {
+export type GuildPostBodyData = {
   userAddress: `0x${string}` | undefined;
   gameId: string;
   guildId: string;
 };
 
 export function useMutateGuild() {
-  const joinGuild = useMutation((data: GuildData) => {
+  const joinGuild = useMutation((data: GuildPostBodyData) => {
     const { gameId, userAddress, guildId } = data;
 
     if (!userAddress || !gameId || !guildId) {

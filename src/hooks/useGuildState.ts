@@ -1,5 +1,5 @@
+import { GuildData } from '@/app/api/profile/guild/route';
 import { routes } from '@/constants/routes';
-import { GuildScoreData } from '@/utils/guild/helpers';
 import axios from 'axios';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export function useGuildState({ userAddress, gameId }: Props) {
-  const { data, isLoading, error } = useQuery(
+  const { data, isLoading, error } = useQuery<GuildData>(
     ['profile/guild', userAddress, gameId],
     async () => {
       const guild = await axios({
@@ -34,6 +34,7 @@ export function useGuildState({ userAddress, gameId }: Props) {
       data,
       isLoading,
       error,
+      hasGuild: data?.id !== null,
     }),
     [data, error, isLoading]
   );
