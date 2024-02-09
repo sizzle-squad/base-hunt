@@ -9,7 +9,7 @@ import {
 } from '@/utils/guild/helpers';
 import axios from 'axios';
 import { getGuildRanks } from '../../guild/state/route';
-import { getUserClaimData } from '../../guild/claim/route';
+import { getClaimablev2, getUserClaimData } from '../../guild/claim/route';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -134,7 +134,7 @@ export async function GET(req: NextRequest) {
 
   //get guild points claimable / claimed by user
 
-  const claimData = await getUserClaimData(gameId, userAddress);
+  const claimData = await getClaimablev2(gameId, userAddress);
   if (claimData.error) {
     console.error(claimData.error);
   }
@@ -148,8 +148,12 @@ export async function GET(req: NextRequest) {
     totalWinShares: guildWin.length,
     currentDailyScore: score,
     currentDailyRank: rank,
-    claimablePoints: claimData?.result?.claimablePoints ?? 0,
-    claimedPoints: claimData?.result?.claimedPoints ?? 0,
+    claimablePoints:
+      claimData?.result?.claimable.reduce((acc, curr) => acc + curr.score, 0) ??
+      0,
+    claimedPoints:
+      claimData?.result?.claimed.reduce((acc, curr) => acc + curr.score, 0) ??
+      0,
   } as GuildData);
 }
 
