@@ -1,34 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { BadgeTypeEnum, Level, LevelState } from '../../../../hooks/types';
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
-import {
-  GuildScoreData,
-  get5pmMstDateRangeFromCurrent,
-} from '@/utils/guild/helpers';
-import axios from 'axios';
+import { get5pmMstDateRangeFromCurrent } from '@/utils/guild/helpers';
 import { getGuildRanks } from '../../guild/state/route';
-import { getClaimablev2, getUserClaimData } from '../../guild/claim/route';
+import { getClaimablev2 } from '../../guild/claim/route';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
 );
-
-type QueryData = {
-  id: bigint;
-  name: string;
-  image_url: string;
-  to_address: string;
-  type: BadgeTypeEnum;
-  transaction_hash: string;
-  created_at: Date;
-  contract_address: string;
-  token_id: bigint;
-  cta_text: string;
-  cta_url: string;
-};
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;

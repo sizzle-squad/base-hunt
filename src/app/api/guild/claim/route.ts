@@ -71,44 +71,6 @@ export type UserGuildScoreClaimable = {
   claimedPoints: number;
 };
 
-export async function getUserClaimData(
-  gameId: bigint,
-  userAddress: string
-): Promise<{
-  result?: UserGuildScoreClaimable;
-  error?: Error;
-}> {
-  const { data, error } = await supabase
-    .from('user_guild_score_claim')
-    .select()
-    .eq('user_address', userAddress.toLowerCase())
-    .eq('game_id', gameId);
-
-  if (error) {
-    return {
-      error: new Error(`No guilds found with gameId: ${gameId}`),
-    };
-  }
-
-  const claimablePoints = data
-    .filter((x) => !x.is_claimed)
-    .reduce((acc, curr) => {
-      return acc + curr.points;
-    }, 0);
-  const claimedPoints = data
-    .filter((x) => x.is_claimed)
-    .reduce((acc, curr) => {
-      return acc + curr.points;
-    }, 0);
-
-  return {
-    result: {
-      claimablePoints: claimablePoints,
-      claimedPoints: claimedPoints,
-    },
-  };
-}
-
 export async function getClaimablev2(
   gameId: bigint,
   userAddress: string
