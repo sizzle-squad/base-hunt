@@ -66,7 +66,7 @@ export async function generateMetadata(
     openGraph: {
       title: 'Base Hunt Guilds',
       description: 'Join a guild and start hunting!',
-      images: ['https://i.ibb.co/tzy655S/guild-base-glitch.png'],
+      images: ['https://i.ibb.co/dtbDRxb/img.gif'],
     },
     other: {
       ...frameMetadata,
