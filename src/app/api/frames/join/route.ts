@@ -28,10 +28,10 @@ export async function POST(req: NextRequest) {
   console.log('fm:', JSON.stringify(fm));
   return new NextResponse(`
   <!DOCTYPE html><html><head>
-  <meta name="fc:frame" content="vNext" />
+  <meta property="fc:frame" content="vNext" />
   <meta name="fc:frame:image" content="https://i.ibb.co/tzy655S/guild-base-glitch.png"/>
   <meta name="fc:frame:button:1" content="Happy Hunting" />
-  <meta name="fc:frame:button:1:action" content="link" />
-  <meta name="fc:frame:button:1:action:target" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fbase-hunt-eth-denver-2024.vercel.app%2F" />
+  <meta name="fc:frame:button:1:action" content="post_redirect" />
+  <meta name="fc:frame:post_url" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fbase-hunt-eth-denver-2024.vercel.app%2F" />
   </head></html>`);
 }
