@@ -84,3 +84,5 @@ export default function Page({ params, searchParams }: Props) {
     </>
   );
 }
+
+export const dynamic = 'force-dynamic';
