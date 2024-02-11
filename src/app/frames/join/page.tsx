@@ -56,7 +56,7 @@ export async function generateMetadata(
         label: `Join ${guild.name}`,
       },
     ],
-    image: 'https://i.ibb.co/tzy655S/guild-base-glitch.png',
+    image: 'https://i.ibb.co/dtbDRxb/img.gif',
     postUrl: `https://base-hunt-eth-denver-2024.vercel.app/api/frames/join?userAddress=${userAddress}&gameId=${gameId}&guildId=${guild.guild_id}`,
   });
 
