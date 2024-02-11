@@ -189,6 +189,21 @@ $$;
 
 ALTER FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) OWNER TO "postgres";
 
+CREATE OR REPLACE FUNCTION "public"."incrementuserscore"(_game_id bigint, _user_address text, _score bigint) RETURNS boolean
+    LANGUAGE "plpgsql"
+    AS $$
+declare 
+begin
+  UPDATE score set current_score = score.current_score + _score where game_id = _game_id and user_address =_user_address;
+  IF NOT FOUND then
+    INSERT INTO score(game_id,user_address,current_score) VALUES(_game_id,_user_address,_score);
+  end if;
+  return TRUE;
+end; 
+$$;
+
+ALTER FUNCTION "public"."incrementuserscore"(_game_id bigint, _user_address text, _score bigint) OWNER TO "postgres";
+
 CREATE OR REPLACE FUNCTION "public"."upserttreasurebox"(_game_id bigint, _user_address text, _cbid text, _ens_name text, _increment bigint, _tap_count integer) RETURNS TABLE(j json)
     LANGUAGE "plpgsql"
     AS $$
@@ -816,6 +831,8 @@ CREATE INDEX claimed_boost_boost_id_user_address_idx ON public.claimed_boost USI
 
 CREATE UNIQUE INDEX claimed_boost_unique ON public.claimed_boost USING btree (user_address, boost_id, game_id);
 
+CREATE UNIQUE INDEX guild_member_configuration_game_id_user_address_idx ON public.guild_member_configuration USING btree (game_id, user_address);
+
 CREATE UNIQUE INDEX guild_user_claim_game_id_claim_id_user_address_idx ON public.guild_user_claim USING btree (game_id, claim_id, user_address);
 
 CREATE UNIQUE INDEX guild_win_game_id_claim_id_idx ON public.guild_win USING btree (game_id, claim_id);
@@ -926,6 +943,10 @@ GRANT ALL ON FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text
 GRANT ALL ON FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) TO "anon";
 GRANT ALL ON FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) TO "service_role";
+
+GRANT ALL ON FUNCTION "public"."incrementuserscore"(_game_id bigint, _user_address text, _score bigint) TO "anon";
+GRANT ALL ON FUNCTION "public"."incrementuserscore"(_game_id bigint, _user_address text, _score bigint) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."incrementuserscore"(_game_id bigint, _user_address text, _score bigint) TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."upserttreasurebox"(_game_id bigint, _user_address text, _cbid text, _ens_name text, _increment bigint, _tap_count integer) TO "anon";
 GRANT ALL ON FUNCTION "public"."upserttreasurebox"(_game_id bigint, _user_address text, _cbid text, _ens_name text, _increment bigint, _tap_count integer) TO "authenticated";

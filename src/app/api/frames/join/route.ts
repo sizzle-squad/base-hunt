@@ -13,10 +13,10 @@ const supabase = createClient(
 //const client = new NeynarAPIClient(process.env.NEYNAR_API_KEY as string);
 
 export async function POST(req: NextRequest) {
-  // const userAddress = req.nextUrl.searchParams.get('userAddress');
-  // const gameId = req.nextUrl.searchParams.get('gameId');
-  // const guildId = req.nextUrl.searchParams.get('guildId');
-  console.log('searchParams:', req.nextUrl.searchParams);
+  const userAddress = req.nextUrl.searchParams.get('userAddress');
+  const gameId = req.nextUrl.searchParams.get('gameId');
+  const guildId = req.nextUrl.searchParams.get('guildId');
+  // console.log('searchParams:', req.nextUrl.searchParams);
   const body = await req.json();
   console.log('body:', body);
   const fm = await getFrameMessage(body, {
@@ -24,6 +24,39 @@ export async function POST(req: NextRequest) {
     castReactionContext: true,
     followContext: true,
   });
+
+  if (fm.message && fm.message.raw.action.interactor.verifications.length > 0) {
+    const verificationAddress =
+      fm.message.raw.action.interactor.verifications[0];
+    const addMemberData = await supabase
+      .from('guild_member_configuration')
+      .insert({
+        game_id: gameId,
+        user_address: verificationAddress,
+        guild_id: guildId,
+      });
+
+    if (addMemberData.error) {
+      console.error(addMemberData.error);
+    } else {
+      const incrementReferrerData = await supabase.rpc('incrementuserscore', {
+        _game_id: gameId,
+        _user_address: userAddress,
+        score: 100,
+      });
+      if (incrementReferrerData.error) {
+        console.error(incrementReferrerData.error);
+      }
+    }
+  } else {
+    `<!DOCTYPE html><html><head>
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="https://i.ibb.co/tzy655S/guild-base-glitch.png"/>
+    <meta property="fc:frame:button:1" content="Verify CBWallet Address on Farcaster" />
+    <meta property="fc:frame:button:1:action" content="link" />
+    <meta property="fc:frame:button:1:target" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fbase-hunt-eth-denver-2024.vercel.app%2F" />
+    </head></html>`;
+  }
 
   console.log('fm:', JSON.stringify(fm));
   return new NextResponse(`
