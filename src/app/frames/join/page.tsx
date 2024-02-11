@@ -57,7 +57,7 @@ export async function generateMetadata(
       },
     ],
     image: 'https://i.ibb.co/tzy655S/guild-base-glitch.png',
-    postUrl: `/api/frames/join?userAddress=${userAddress}&gameId=${gameId}&guildId=${guild.guild_id}`,
+    postUrl: `https://base-hunt-eth-denver-2024.vercel.app/api/frames/join?userAddress=${userAddress}&gameId=${gameId}&guildId=${guild.guild_id}`,
   });
 
   const _metadata: Metadata = {
