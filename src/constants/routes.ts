@@ -4,6 +4,7 @@ export const routes = {
     score: '/api/profile/score',
     state: '/api/profile/state',
     guild: 'api/profile/guild',
+    levels: '/api/profile/level',
   },
   treasureBox: {
     rank: '/api/treasure-box/rank',
@@ -15,7 +16,6 @@ export const routes = {
     default: '/api/challenges',
     complete: '/api/challenges/complete',
   },
-  levels: '/api/profile/level',
   guild: {
     default: '/api/guild',
     state: '/api/guild/state',

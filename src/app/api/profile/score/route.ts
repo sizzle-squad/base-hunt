@@ -128,6 +128,7 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
           ctaUrl: c.cta_url,
           prizeImageUrl: c.prize_image_url,
           prizeDescription: c.prize_description,
+          imageUrl: c.image_url,
         }
       : {
           id: '',
@@ -139,6 +140,7 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
           ctaUrl: '',
           prizeImageUrl: '',
           prizeDescription: '',
+          imageUrl: '',
         },
     nextLevel: {
       id: n.id,
@@ -150,6 +152,7 @@ function mapToScore(c: any, n: any, s: any, gameId: bigint): ScoreState {
       ctaUrl: n.cta_url,
       prizeImageUrl: n.prize_image_url,
       prizeDescription: n.prize_description,
+      imageUrl: n.image_url,
     },
     score: s
       ? {
