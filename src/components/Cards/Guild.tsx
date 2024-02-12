@@ -3,19 +3,23 @@ import { useMemo } from 'react';
 import { Box, Skeleton, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
+import Image from 'next/image';
 import Link from '@/components/AnimatedLink';
 import Text from '@/components/Text';
-import { type Level } from '@/hooks/types';
-
-import SvgSwitcher, { LevelNumber } from '../LevelsBadge';
 
 type Props = {
-  currentLevel: LevelNumber | null;
-  score: number;
+  name: string;
+  position: string;
   isLoading?: boolean;
+  imageUrl?: string;
 };
 
-export function Level({ currentLevel, score, isLoading }: Props) {
+export function Guild({
+  name,
+  position,
+  imageUrl = '/images/solo.svg',
+  isLoading,
+}: Props) {
   const router = useRouter();
 
   const content = useMemo(() => {
@@ -25,19 +29,21 @@ export function Level({ currentLevel, score, isLoading }: Props) {
 
     return (
       <Stack flexDirection="column" alignItems="flex-start" gap={1.5}>
-        <SvgSwitcher
-          alt={`Level ${currentLevel || 'Level badge'} Badge`}
-          level={currentLevel}
+        <Image
+          src={!name || !position ? '/images/solo.svg' : imageUrl}
+          alt="Guild badge"
           width={64}
           height={64}
         />
         <Box>
-          <Text variant="h5">Tier {currentLevel}</Text>
-          <Text variant="body2">{`${score} points`}</Text>
+          <Text variant="h5">{name ? name : 'Solo player'}</Text>
+          <Text variant="body2">
+            {position ? `${position} place` : 'No guild'}
+          </Text>
         </Box>
       </Stack>
     );
-  }, [currentLevel, isLoading, score]);
+  }, [imageUrl, isLoading, name, position]);
 
   return (
     <Stack
