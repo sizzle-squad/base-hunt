@@ -338,11 +338,17 @@ export default function ChallengesPageClient() {
   return (
     <>
       <NoSsr>
-        <Stack gap={2} alignItems="center">
+        <Stack gap={2} alignItems="flex-start">
           {isLoading &&
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
             ))}
+          <Text
+            variant="h6"
+            sx={{ fontWeight: 500, size: '16px', lineHeight: '16px' }}
+          >
+            Challenges
+          </Text>
           <Grid container gap={2} sx={{ width: '100%' }}>
             {challengeList &&
               challengeList?.map((item, index) => {

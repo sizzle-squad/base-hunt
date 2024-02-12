@@ -8,7 +8,6 @@ import { useAccount, useDisconnect } from 'wagmi';
 
 import Hero from '@/components/Badges/Hero';
 import { Level } from '@/components/Cards/Level';
-import { PlayerLevelStatus } from '@/components/Cards/PlayerLevelStatus';
 import Circle from '@/components/Circle';
 import Text from '@/components/Text';
 import { GAME_ID } from '@/constants/gameId';
@@ -228,7 +227,6 @@ export default function Challenges() {
         className="pageContent"
       >
         <Hero />
-        <PlayerLevelStatus />
         <Stack
           flexDirection="row"
           justifyContent="center"
