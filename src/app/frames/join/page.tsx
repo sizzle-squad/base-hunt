@@ -29,7 +29,7 @@ export async function generateMetadata(
     .from('guild_member_configuration')
     .select('*')
     .eq('game_id', gameId)
-    .eq('user_address', userAddress)
+    .eq('user_address', userAddress.toLocaleLowerCase())
     .maybeSingle();
   if (userGuildData.error) {
     console.error(userGuildData.error);
