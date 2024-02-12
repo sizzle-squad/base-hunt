@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-
+  console.log('body:', body);
   const fm = await getFrameMessage(body, {
     neynarApiKey: NEYNAR_API_KEY,
     castReactionContext: true,
@@ -39,9 +39,10 @@ export async function POST(req: NextRequest) {
   ) {
     const postUrl = new URL(fm.message.raw.action.url);
     if (postUrl.origin !== DOMAIN) {
-      return new NextResponse(`Invalid Origin ${postUrl.origin}`, {
-        status: 400,
-      });
+      console.log('invalid origin', postUrl.origin);
+      // return new NextResponse(`Invalid Origin ${postUrl.origin}`, {
+      //   status: 400,
+      // });
     }
 
     const verificationAddress =
@@ -71,15 +72,28 @@ export async function POST(req: NextRequest) {
       </head></html>`);
     }
 
-    const resp = await axios.post(`https://${DOMAIN}/api/guild`, {
-      userAddress: verificationAddress,
-      gameId: gameId,
-      guildId: guildId,
-    });
+    console.log('posting to join endpoint');
+    const resp = await axios.post(
+      `https://${DOMAIN}/api/guild`,
+      {
+        userAddress: verificationAddress,
+        gameId: gameId,
+        guildId: guildId,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    console.log('post:', resp.data);
+    console.log('post:', resp);
 
     if (resp.status !== 200) {
+      console.error(
+        `error posting to join guild  https://${DOMAIN}/api/guild`,
+        resp.data
+      );
       return new NextResponse('Error', { status: 400 });
     }
     const guild = await getGuildData(gameId as string, guildId as string);
