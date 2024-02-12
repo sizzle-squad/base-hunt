@@ -439,7 +439,7 @@ export default function ChallengesPageClient() {
                         <Stack direction="column" gap={2}>
                           <Stack
                             direction="row"
-                            justifyContent="flex-end"
+                            justifyContent="flex-start"
                             gap={1}
                             width="215px"
                           >
@@ -458,10 +458,7 @@ export default function ChallengesPageClient() {
                               <Text>{item.points.toString() + ' pts'}</Text>
                             </Pill>
                           </Stack>
-                          <Stack gap={1}>
-                            <Text variant="h6">{item.title.toUpperCase()}</Text>
-                            <Text variant="body1">{item.description}</Text>
-                          </Stack>
+                          <Text variant="h6">{item.title.toUpperCase()}</Text>
                         </Stack>
                       </Stack>
                     </Card>
