@@ -72,8 +72,10 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                       />
                     </Box>
                     <Stack direction="column" gap={0.5}>
-                      <Text variant="body2">Guild</Text>
-                      <Text variant="h5">{guild.name}</Text>
+                      <Text variant="h6" pb={1.5}>
+                        {guild.name}
+                      </Text>
+                      <Text variant="body2">Guild leader</Text>
                       <Text variant="body1">{guild.leader}</Text>
                     </Stack>
                   </Stack>

@@ -136,6 +136,10 @@ CompletedSvg.displayName = 'CompletedSvg';
 
 type ClientChallengeType = 'Social' | 'Trivia' | 'NFT' | 'OnBase';
 
+const Reason = {
+  CLICKAWAY: 'clickaway',
+};
+
 function mapChallengeType(type: ChallengeTypeEnum): ClientChallengeType {
   switch (type) {
     case 'GUILD':
@@ -247,19 +251,12 @@ export default function ChallengesPageClient() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const Reason = {
-    CLICKAWAY: 'clickaway',
-  };
-
-  const handleClose = useCallback(
-    (_: any, reason: string) => {
-      if (reason === Reason.CLICKAWAY) {
-        return;
-      }
-      setSnackbarOpen(false);
-    },
-    [Reason.CLICKAWAY]
-  );
+  const handleClose = useCallback((_: any, reason: string) => {
+    if (reason === Reason.CLICKAWAY) {
+      return;
+    }
+    setSnackbarOpen(false);
+  }, []);
 
   useEffect(() => {
     if (claimChallenge.isSuccess) {

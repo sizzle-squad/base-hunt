@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
 import { LoadingButton } from '@mui/lab';
+import { Color } from '@/constants/color';
 
 type Props = {
   variant?: 'text' | 'outlined' | 'contained';
@@ -19,7 +20,7 @@ export function Button({
   isLoading,
   disabled,
   href,
-  bgColor = 'text.primary',
+  bgColor = Color.Black,
 }: Props) {
   return (
     <LoadingButton
@@ -33,7 +34,7 @@ export function Button({
         px: '20px',
         py: '16px',
         borderRadius: '1rem',
-        bgColor,
+        backgroundColor: bgColor,
         color: 'white',
         textAlign: 'center',
       }}
