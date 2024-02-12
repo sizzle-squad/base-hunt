@@ -23,14 +23,15 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
+
+  //TODO: remove this after testing
   console.log('body:', body);
+
   const fm = await getFrameMessage(body, {
     neynarApiKey: NEYNAR_API_KEY,
     castReactionContext: true,
     followContext: true,
   });
-
-  console.log('fm:', JSON.stringify(fm));
 
   if (
     fm.isValid &&
@@ -38,15 +39,15 @@ export async function POST(req: NextRequest) {
     fm.message.raw.action.interactor.verifications.length > 0
   ) {
     const postUrl = new URL(fm.message.raw.action.url);
-    if (postUrl.origin !== DOMAIN) {
-      console.log('invalid origin', postUrl.origin);
+    if (postUrl.origin !== `https://${DOMAIN}`) {
+      console.error('invalid origin', postUrl.origin, `https://${DOMAIN}`);
       // return new NextResponse(`Invalid Origin ${postUrl.origin}`, {
       //   status: 400,
       // });
     }
 
-    const verificationAddress =
-      fm.message.raw.action.interactor.verifications[0].toLowercase();
+    let verificationAddress = fm.message.raw.action.interactor.verifications[0];
+    verificationAddress = verificationAddress.toLowerCase();
 
     //Check if the clicking user is already in a guild
     const memberData = await supabase
@@ -61,6 +62,9 @@ export async function POST(req: NextRequest) {
     }
 
     if (memberData.data !== null) {
+      console.log(
+        `user already in a guild userAddress:${verificationAddress} guildId:${memberData.data.guild_id}`
+      );
       const guild = await getGuildData(gameId as string, guildId as string);
       return new NextResponse(`
       <!DOCTYPE html><html><head>
@@ -72,7 +76,6 @@ export async function POST(req: NextRequest) {
       </head></html>`);
     }
 
-    console.log('posting to join endpoint');
     const resp = await axios.post(
       `https://${DOMAIN}/api/guild`,
       {
@@ -86,9 +89,6 @@ export async function POST(req: NextRequest) {
         },
       }
     );
-
-    console.log('post:', resp);
-
     if (resp.status !== 200) {
       console.error(
         `error posting to join guild  https://${DOMAIN}/api/guild`,

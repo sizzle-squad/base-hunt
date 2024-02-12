@@ -5,7 +5,7 @@ import { Guild } from '@/hooks/types';
 import { GuildPostBodyData } from '@/hooks/useMutateGuild';
 import { Database } from '@/utils/database.types';
 import { toBigInt } from '@/utils/toBigInt';
-import { CheckFunctionType } from '@/utils/database.enums';
+import { ChallengeType, CheckFunctionType } from '@/utils/database.enums';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -72,7 +72,8 @@ export async function POST(request: NextRequest) {
     .from('challenge_configuration')
     .select('id,points')
     .eq('game_id', gameId)
-    .eq('type', CheckFunctionType.checkJoinGuild)
+    .eq('type', ChallengeType.SOCIAL)
+    .eq('function_type', CheckFunctionType.checkJoinGuild)
     .single();
   if (challengeData.error) {
     console.error(challengeData.error);
