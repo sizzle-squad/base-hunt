@@ -46,6 +46,7 @@ export type Badge = {
 };
 
 export type Level = {
+  imageUrl: string;
   prizeImageUrl: string;
   prizeDescription: string;
   ctaUrl: string;

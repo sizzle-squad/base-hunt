@@ -24,7 +24,7 @@ export function useLevels({ gameId, address }: Props) {
     async () => {
       const result = await axios({
         method: 'GET',
-        url: `${routes.levels}?gameId=${gameId}&userAddress=${address}`,
+        url: `${routes.profile.levels}?gameId=${gameId}&userAddress=${address}`,
       });
 
       return result.data;

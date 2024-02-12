@@ -9,6 +9,7 @@ type Props = {
   isLoading?: boolean;
   disabled?: boolean;
   href?: string;
+  bgColor?: string;
 };
 
 export function Button({
@@ -18,6 +19,7 @@ export function Button({
   isLoading,
   disabled,
   href,
+  bgColor = 'text.primary',
 }: Props) {
   return (
     <LoadingButton
@@ -31,7 +33,7 @@ export function Button({
         px: '20px',
         py: '16px',
         borderRadius: '1rem',
-        bgcolor: 'text.primary',
+        bgColor,
         color: 'white',
         textAlign: 'center',
       }}
