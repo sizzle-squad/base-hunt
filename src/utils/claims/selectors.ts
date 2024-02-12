@@ -20,6 +20,9 @@ export const CheckFunctions: {
   [CheckFunctionType.checkBalance]: checkBalance,
   [CheckFunctionType.checkTokenIdBalance]: checkTokenIdBalance,
   [CheckFunctionType.checkTxCountBatch]: checkTxCountBatch,
+  [CheckFunctionType.checkJoinGuild]: function (body: any): Promise<boolean> {
+    throw new Error('Function not implemented.');
+  },
 };
 
 export const MapChallengeTypeUserAddress: {
@@ -46,6 +49,9 @@ export const MapChallengeTypeUserAddress: {
   ): string {
     return body.userAddress.toLowerCase();
   },
+  [CheckFunctionType.checkJoinGuild]: function (body: any): string {
+    throw new Error('Function not implemented.');
+  },
 };
 
 export const ScoreFunctions: {
@@ -67,6 +73,9 @@ export const ScoreFunctions: {
     throw new Error('Function not implemented.');
   },
   [CheckFunctionType.checkTxCountBatch]: function (w: any): number {
+    throw new Error('Function not implemented.');
+  },
+  [CheckFunctionType.checkJoinGuild]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
 };
@@ -91,5 +100,8 @@ export const ValidateBodyParams: {
   },
   [CheckFunctionType.checkTxCountBatch]: function (body: object): boolean {
     return body && body.hasOwnProperty('userAddress');
+  },
+  [CheckFunctionType.checkJoinGuild]: function (body: object): boolean {
+    throw new Error('Function not implemented.');
   },
 };

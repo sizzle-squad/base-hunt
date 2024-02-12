@@ -75,7 +75,8 @@ CREATE TYPE "public"."check_function_type" AS ENUM (
     'checkFunctionExecution',
     'checkBalance',
     'checkTokenIdBalance',
-    'checkTxCountBatch'
+    'checkTxCountBatch',
+    'checkJoinGuild'
 );
 
 ALTER TYPE "public"."check_function_type" OWNER TO "postgres";

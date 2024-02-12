@@ -817,6 +817,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      incrementuserscore: {
+        Args: {
+          _game_id: number
+          _user_address: string
+          _score: number
+        }
+        Returns: boolean
+      }
       upserttreasurebox: {
         Args: {
           _game_id: number
@@ -875,6 +883,7 @@ export type Database = {
         | "checkBalance"
         | "checkTokenIdBalance"
         | "checkTxCountBatch"
+        | "checkJoinGuild"
       networks: "networks/base-mainnet" | "networks/eth-mainnet"
     }
     CompositeTypes: {

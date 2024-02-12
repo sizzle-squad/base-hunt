@@ -49,7 +49,8 @@ export enum CheckFunctionType {
   checkFunctionExecution = "checkFunctionExecution",
   checkBalance = "checkBalance",
   checkTokenIdBalance = "checkTokenIdBalance",
-  checkTxCountBatch = "checkTxCountBatch"
+  checkTxCountBatch = "checkTxCountBatch",
+  checkJoinGuild = "checkJoinGuild"
 }
 
 export enum Networks {

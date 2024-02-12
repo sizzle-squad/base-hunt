@@ -1,9 +1,6 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata, ResolvingMetadata } from 'next';
-import { NextRequest, NextResponse } from 'next/server';
-import { NeynarAPIClient } from '@neynar/nodejs-sdk';
 import { createClient } from '@supabase/supabase-js';
-import Image from 'next/image';
 import { toBigInt } from '@/utils/toBigInt';
 
 type Props = {
