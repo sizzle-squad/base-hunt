@@ -883,6 +883,7 @@ export type Database = {
         | "checkBalance"
         | "checkTokenIdBalance"
         | "checkTxCountBatch"
+        | "checkJoinGuild"
       networks: "networks/base-mainnet" | "networks/eth-mainnet"
     }
     CompositeTypes: {

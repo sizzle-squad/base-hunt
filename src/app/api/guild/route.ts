@@ -5,6 +5,7 @@ import { Guild } from '@/hooks/types';
 import { GuildPostBodyData } from '@/hooks/useMutateGuild';
 import { Database } from '@/utils/database.types';
 import { toBigInt } from '@/utils/toBigInt';
+import { ChallengeType, CheckFunctionType } from '@/utils/database.enums';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -61,10 +62,25 @@ export async function POST(request: NextRequest) {
   }
 
   const params = {
-    user_address: userAddress,
+    user_address: userAddress.toLowerCase(),
     game_id: parseInt(gameId),
     guild_id: guildId,
   };
+
+  //claim the join guild challenge
+  const challengeData = await supabase
+    .from('challenge_configuration')
+    .select('id,points')
+    .eq('game_id', gameId)
+    .eq('type', ChallengeType.SOCIAL)
+    .eq('function_type', CheckFunctionType.checkJoinGuild)
+    .single();
+  if (challengeData.error) {
+    console.error(challengeData.error);
+    return new NextResponse(`Error getting challenge data`, {
+      status: 400,
+    });
+  }
 
   const { error } = await supabase
     .from('guild_member_configuration')
@@ -77,6 +93,40 @@ export async function POST(request: NextRequest) {
     return new Response(`Error: failed to join guild: ${guildId}`, {
       status: 400,
     });
+  }
+
+  const claimChallengeData = await supabase
+    .from('user_challenge_status')
+    .upsert(
+      {
+        user_address: params.user_address,
+        challenge_id: challengeData.data.id,
+        status: 'COMPLETE',
+        points: challengeData.data.points,
+        game_id: params.game_id,
+      },
+      {
+        onConflict: 'game_id,user_address,challenge_id',
+        ignoreDuplicates: true,
+      }
+    );
+
+  if (claimChallengeData.error) {
+    console.error(claimChallengeData.error);
+    return new NextResponse(`Error claiming join challegne`, {
+      status: 400,
+    });
+  }
+
+  if (body.referrerAddress) {
+    const referrerData = await supabase.rpc('incrementuserscore', {
+      _game_id: params.game_id,
+      _user_address: body.referrerAddress.toLowerCase(),
+      _score: challengeData.data.points * 0.5,
+    });
+    if (referrerData.error) {
+      console.error(`error incrementing referrerScore:${referrerData.error}`);
+    }
   }
 
   return NextResponse.json({ success: true });
