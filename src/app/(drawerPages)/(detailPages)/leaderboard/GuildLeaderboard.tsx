@@ -89,7 +89,6 @@ export function GuildLeaderboard() {
       ) : (
         <Stack direction="column" mt="24px" gap="24px">
           <Stack direction="column" gap={1}>
-            <TopContributorTag isGuild />
             <ListRow
               name={leaderboardData.topContributor.name}
               score={leaderboardData.topContributor.currentScore}
@@ -97,6 +96,7 @@ export function GuildLeaderboard() {
               offset={1}
               isLast
               isLoading={isTopGuildRanksLoading}
+              startContent={<TopContributorTag isGuild />}
             />
           </Stack>
           <Box>

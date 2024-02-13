@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 import { Avatar, Box, Skeleton, Stack } from '@mui/material';
 
@@ -12,6 +12,7 @@ type Props = {
   isLast?: boolean;
   isLoading?: boolean;
   score: number;
+  startContent?: ReactNode;
 };
 
 export default function ListRow({
@@ -21,6 +22,7 @@ export default function ListRow({
   isLoading,
   name,
   score,
+  startContent,
 }: Props) {
   const borderRadiusStyle = useMemo(() => {
     // single row should have rounded corners
@@ -46,55 +48,65 @@ export default function ListRow({
   }, [isLoading, name]);
 
   return (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="center"
-      alignSelf="stretch"
-      borderRadius={borderRadiusStyle}
-      display="flex"
-      gap="20px"
-      padding="20px"
-      bgcolor="var(--White, #fff)"
-    >
-      <Box width="30px">
-        <Text variant="body1">{position + offset}</Text>
-      </Box>
+    <>
       <Stack
-        direction="row"
-        justifyContent="flex-start"
-        alignSelf="stretch"
+        direction="column"
+        borderRadius={borderRadiusStyle}
         display="flex"
-        gap="8px"
-        flexGrow={1}
+        padding="20px"
+        bgcolor="var(--White, #fff)"
+        gap={2}
       >
+        {startContent}
         <Stack
           direction="row"
-          justifyContent="flex-start"
-          gap="8px"
+          justifyContent="space-between"
+          alignItems="center"
+          alignSelf="stretch"
+          gap="20px"
           display="flex"
+          bgcolor="var(--White, #fff)"
         >
-          <Avatar
-            sx={{
-              borderRadius: '100px',
-              backgroundColor: stringToColor(name),
-              width: '24px',
-              height: '24px',
-              flexDirection: 'column',
-            }}
+          <Box width="30px">
+            <Text variant="body1">{position + offset}</Text>
+          </Box>
+          <Stack
+            direction="row"
+            justifyContent="flex-start"
+            alignSelf="stretch"
+            display="flex"
+            gap="8px"
+            flexGrow={1}
           >
-            {''}
-          </Avatar>
-          {content}
+            <Stack
+              direction="row"
+              justifyContent="flex-start"
+              gap="8px"
+              display="flex"
+            >
+              <Avatar
+                sx={{
+                  borderRadius: '100px',
+                  backgroundColor: stringToColor(name),
+                  width: '24px',
+                  height: '24px',
+                  flexDirection: 'column',
+                }}
+              >
+                {''}
+              </Avatar>
+              {content}
+            </Stack>
+          </Stack>
+          <Text
+            textAlign="right"
+            width={80}
+            variant="body1"
+            fontWeight={500}
+            noWrap
+          >{`${score} pts`}</Text>
         </Stack>
       </Stack>
-      <Text
-        textAlign="right"
-        width={80}
-        variant="body1"
-        fontWeight={500}
-        noWrap
-      >{`${score} pts`}</Text>
-    </Stack>
+    </>
   );
 }

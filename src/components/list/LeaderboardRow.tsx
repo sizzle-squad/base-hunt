@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useUserName } from '@/hooks/useUsername';
 
@@ -9,6 +10,7 @@ type Props = {
   isLast?: boolean;
   score: number;
   name: string;
+  startContent?: ReactNode;
 };
 
 export default function LeaderBoardRow({
@@ -17,6 +19,7 @@ export default function LeaderBoardRow({
   isLast,
   score,
   name,
+  startContent,
 }: Props) {
   const { data: userPublicProfile, isLoading } = useCBProfile({
     address: name as '0x${string}',
@@ -36,6 +39,7 @@ export default function LeaderBoardRow({
         isLoading,
         name: displayName,
         score,
+        startContent,
       }}
     />
   );
