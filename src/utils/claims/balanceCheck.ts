@@ -75,7 +75,7 @@ export async function checkBalance(
   );
   const balance = await contract.balanceOf(params.userAddress);
   const b = ethers.getBigInt(balance);
-  return b > ethers.toBigInt(params.params.gte);
+  return b >= ethers.toBigInt(params.params.gte);
 }
 
 export async function checkTokenIdBalance(
@@ -92,5 +92,5 @@ export async function checkTokenIdBalance(
     params.params.tokenId
   );
   const b = ethers.getBigInt(balance);
-  return b > ethers.toBigInt(params.params.gte);
+  return b >= ethers.toBigInt(params.params.gte);
 }

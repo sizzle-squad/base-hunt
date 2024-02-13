@@ -74,9 +74,7 @@ export async function GET(req: NextRequest) {
 
     if (score) {
       for (let i = 0; i < levels.length; i++) {
-        console.log(levels[i]);
         if (levels[i].threshold_points > currentScore) {
-          console.log('setting current score');
           nextLevel = levels[i];
           if (i > 0) {
             currentLevel = levels[i - 1];
