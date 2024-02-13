@@ -130,7 +130,7 @@ export async function getClaimablev2(
     .eq('game_id', gameId)
     .eq('user_address', userAddress.toLowerCase())
     .eq('guild_id', guildMember.guild_id)
-    .returns<Claimable[]>();
+    .returns<Claimed[]>();
 
   if (guildUserClaimData.error) {
     return { error: new Error(guildUserClaimData.error.message) };
@@ -138,7 +138,7 @@ export async function getClaimablev2(
 
   const guildUserClaim = guildUserClaimData.data;
   const alreadyClaimed = guildUserClaim.reduce(
-    (acc: Record<string, Claimable>, claim: Claimable) => {
+    (acc: Record<string, Claimed>, claim: Claimed) => {
       acc[claim.claim_id] = claim;
       return acc;
     },
@@ -164,6 +164,15 @@ export async function getClaimablev2(
 
   return { result: result };
 }
+
+export type Claimed = {
+  claim_id: number;
+  created_at: string;
+  game_id: number;
+  guild_id: string;
+  id: number;
+  user_address: string;
+};
 
 export type Claimable = {
   claim_id: number;
