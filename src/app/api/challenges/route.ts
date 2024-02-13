@@ -89,28 +89,28 @@ export async function GET(request: NextRequest) {
     throw new Error(challengesData.error.message);
   }
 
-  const challengesFormatted: Promise<Challenge>[] = challengesData.data.map(
-    async (challenge) => {
-      const isCompleted = Boolean(
-        challenge.user_challenge_status.length &&
-          challenge.user_challenge_status[0].status === ChallengeStatus.COMPLETE
-      );
-      const mappedChallenge = await mapChallengeState(challenge);
-      1;
-      return { ...mappedChallenge, isCompleted };
-    }
-  );
+  // const challengesFormatted: Promise<Challenge>[] = challengesData.data.map(
+  //   async (challenge) => {
+  //     const isCompleted = Boolean(
+  //       challenge.user_challenge_status.length &&
+  //         challenge.user_challenge_status[0].status === ChallengeStatus.COMPLETE
+  //     );
+  //     const mappedChallenge = await mapChallengeState(challenge);
+  //     1;
+  //     return { ...mappedChallenge, isCompleted };
+  //   }
+  // );
 
   try {
-    const formattedChallenges = await Promise.all(compact(challengesFormatted));
-    formattedChallenges.sort((a: Challenge, b: Challenge) => {
-      if (a.isCompleted === b.isCompleted) {
-        return a.points - b.points; // Sort by points in ascending order if isClaimed is equal
-      }
-      return a.isCompleted ? 1 : -1;
-    });
+    // const formattedChallenges = await Promise.all(compact(challengesFormatted));
+    // formattedChallenges.sort((a: Challenge, b: Challenge) => {
+    //   if (a.isCompleted === b.isCompleted) {
+    //     return a.points - b.points; // Sort by points in ascending order if isClaimed is equal
+    //   }
+    //   return a.isCompleted ? 1 : -1;
+    // });
 
-    return NextResponse.json(formattedChallenges);
+    return NextResponse.json(challengesData.data);
   } catch (error) {
     return NextResponse.json(
       { error: `No available boosts found for gameId: ${gameId}` },
