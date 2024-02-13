@@ -72,14 +72,7 @@ export async function GET(request: NextRequest) {
 
   const challengesData = await supabase
     .from('challenge_configuration')
-    .select(
-      `
-    *,
-    user_challenge_status (
-      *
-    )
-  `
-    )
+    .select(`*, user_challenge_status (*)`)
     .eq('game_id', gameId)
     .eq('is_enabled', true)
     .eq('user_challenge_status.user_address', userAddress.toLowerCase());

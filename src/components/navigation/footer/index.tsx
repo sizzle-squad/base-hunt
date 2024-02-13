@@ -66,7 +66,7 @@ export default function Footer() {
             value="/leaderboard"
             icon={
               <LocationIcon
-                color={value === '/leaderboard' ? Color.Positive : 'none'}
+                color={value.includes('leaderboard') ? Color.Positive : 'none'}
               />
             }
           />

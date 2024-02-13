@@ -1,8 +1,15 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react';
 
 interface GameInfoContextProps {
   showModal: boolean;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
 const GameInfoContext = createContext<GameInfoContextProps | undefined>(
