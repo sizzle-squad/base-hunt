@@ -15,7 +15,6 @@ export async function getGuildTxCounts(
     {}
   );
 
-  console.log(grouped);
   // Sort each group by id and calculate score difference
   const scoreDifferences: Record<string, number> = {};
   for (const guild_id in grouped) {
