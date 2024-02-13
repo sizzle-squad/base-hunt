@@ -54,11 +54,10 @@ export async function GET(req: NextRequest) {
 
   //get total member count
   const totalMemberCountData = await supabase
-    .from('guild_configuration')
+    .from('guild_member_configuration')
     .select('*', { count: 'exact', head: true })
     .eq('game_id', gameId)
-    .eq('guild_id', userGuildData.data.guild_id)
-    .single();
+    .eq('guild_id', userGuildData.data.guild_id);
 
   if (totalMemberCountData.error) {
     console.error(totalMemberCountData.error);
@@ -70,7 +69,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  let totalMemberCount = totalMemberCountData.data;
+  let totalMemberCount = totalMemberCountData.count ?? 0;
 
   //Get guild data
   let guild: {
