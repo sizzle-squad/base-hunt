@@ -810,12 +810,30 @@ export type Database = {
           j: Json
         }[]
       }
+      guildmembercount: {
+        Args: {
+          _game_id: number
+        }
+        Returns: {
+          guild: string
+          count: number
+        }[]
+      }
       guilduserclaim: {
         Args: {
           _game_id: number
           _user_address: string
         }
         Returns: boolean
+      }
+      guildwinshares: {
+        Args: {
+          _game_id: number
+        }
+        Returns: {
+          guild: string
+          count: number
+        }[]
       }
       incrementuserscore: {
         Args: {
