@@ -8,7 +8,7 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY as string
 );
 
-const DOMAIN = process.env.VERCEL_URL as string; //NOTE: does not include protocol
+const DOMAIN = process.env.DOMAIN as string; //NOTE: does not include protocol
 
 const NEYNAR_API_KEY =
   (process.env.NEYNAR_API_KEY as string) || 'NEYNAR_API_DOCS';
@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
     fm.message.raw.action.interactor.verifications.length > 0
   ) {
     const postUrl = new URL(fm.message.raw.action.url);
-    if (postUrl.origin !== `https://${DOMAIN}`) {
-      console.error('invalid origin', postUrl.origin, `https://${DOMAIN}`);
+    if (postUrl.origin !== DOMAIN) {
+      console.error('invalid origin', postUrl.origin, DOMAIN);
       // return new NextResponse(`Invalid Origin ${postUrl.origin}`, {
       //   status: 400,
       // });
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     }
 
     const resp = await axios.post(
-      `https://${DOMAIN}/api/guild`,
+      `${DOMAIN}/api/guild`,
       {
         userAddress: verificationAddress,
         gameId: gameId,
