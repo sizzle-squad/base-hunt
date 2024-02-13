@@ -34,17 +34,17 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const result: Guild[] = data.map((guild, index) => ({
-    id: guild.guild_id,
-    name: guild.name,
-    gameId: guild.game_id,
-    totalMemberCount: guild.total_member_count,
-    leader: guild.leader,
-    currentScore: 0, // TODO: add currentScore column in guild_configuration
-    rank: index.toString(), // TODO: add getGuildRank function in supabase
-  }));
+  // const result: Guild[] = data.map((guild, index) => ({
+  //   id: guild.guild_id,
+  //   name: guild.name,
+  //   gameId: guild.game_id,
+  //   totalMemberCount: guild.total_member_count,
+  //   leader: guild.leader,
+  //   currentScore: 0, // TODO: add currentScore column in guild_configuration
+  //   rank: index.toString(), // TODO: add getGuildRank function in supabase
+  // }));
 
-  return NextResponse.json(result);
+  return NextResponse.json({});
 }
 
 // Register a user to a guild
