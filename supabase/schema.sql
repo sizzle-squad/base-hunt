@@ -160,6 +160,18 @@ $$;
 
 ALTER FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text) OWNER TO "postgres";
 
+CREATE OR REPLACE FUNCTION "public"."guildmembercount"(_game_id bigint) RETURNS TABLE(guild text, count bigint)
+    LANGUAGE "plpgsql"
+    AS $$
+declare 
+begin
+
+return query select guild_id::text as guild,count(*) from guild_member_configuration where game_id=_game_id group by guild_id; 
+end; 
+$$;
+
+ALTER FUNCTION "public"."guildmembercount"(_game_id bigint) OWNER TO "postgres";
+
 CREATE OR REPLACE FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) RETURNS boolean
     LANGUAGE "plpgsql"
     AS $$
@@ -189,6 +201,20 @@ end;
 $$;
 
 ALTER FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION "public"."guildwinshares"(_game_id bigint) RETURNS TABLE(guild text, count bigint)
+    LANGUAGE "plpgsql"
+    AS $$
+declare 
+begin
+
+return query select guild_id as guild, count(*) from guild_win where game_id = _game_id group by guild_id;
+
+ 
+end; 
+$$;
+
+ALTER FUNCTION "public"."guildwinshares"(_game_id bigint) OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."incrementuserscore"(_game_id bigint, _user_address text, _score bigint) RETURNS boolean
     LANGUAGE "plpgsql"
@@ -832,6 +858,8 @@ CREATE INDEX claimed_boost_boost_id_user_address_idx ON public.claimed_boost USI
 
 CREATE UNIQUE INDEX claimed_boost_unique ON public.claimed_boost USING btree (user_address, boost_id, game_id);
 
+CREATE INDEX guild_member_configuration_game_id_guild_id_idx ON public.guild_member_configuration USING btree (game_id, guild_id);
+
 CREATE UNIQUE INDEX guild_member_configuration_game_id_user_address_idx ON public.guild_member_configuration USING btree (game_id, user_address);
 
 CREATE UNIQUE INDEX guild_user_claim_game_id_claim_id_user_address_idx ON public.guild_user_claim USING btree (game_id, claim_id, user_address);
@@ -848,7 +876,7 @@ CREATE UNIQUE INDEX treasure_box_entries_unique ON public.treasure_box_entries U
 
 CREATE UNIQUE INDEX treasure_box_state_unique ON public.treasure_box_state USING btree (game_id);
 
-CREATE UNIQUE INDEX user_challenge_status_user_address_challenge_id_idx ON public.user_challenge_status USING btree (user_address, challenge_id);
+CREATE UNIQUE INDEX user_challenge_status_user_address_challenge_id_idx ON public.user_challenge_status USING btree (game_id, user_address, challenge_id);
 
 CREATE UNIQUE INDEX user_guild_score_claim_game_id_guild_id_user_address_claim__idx ON public.user_guild_score_claim USING btree (game_id, guild_id, user_address, claim_id);
 
@@ -941,9 +969,17 @@ GRANT ALL ON FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text
 GRANT ALL ON FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."getuserrank"(_game_id bigint, _user_address text) TO "service_role";
 
+GRANT ALL ON FUNCTION "public"."guildmembercount"(_game_id bigint) TO "anon";
+GRANT ALL ON FUNCTION "public"."guildmembercount"(_game_id bigint) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."guildmembercount"(_game_id bigint) TO "service_role";
+
 GRANT ALL ON FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) TO "anon";
 GRANT ALL ON FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."guilduserclaim"(_game_id bigint, _user_address text) TO "service_role";
+
+GRANT ALL ON FUNCTION "public"."guildwinshares"(_game_id bigint) TO "anon";
+GRANT ALL ON FUNCTION "public"."guildwinshares"(_game_id bigint) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."guildwinshares"(_game_id bigint) TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."incrementuserscore"(_game_id bigint, _user_address text, _score bigint) TO "anon";
 GRANT ALL ON FUNCTION "public"."incrementuserscore"(_game_id bigint, _user_address text, _score bigint) TO "authenticated";

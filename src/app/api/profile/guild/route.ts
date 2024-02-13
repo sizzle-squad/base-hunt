@@ -118,7 +118,22 @@ export async function GET(req: NextRequest) {
 
   guildWin = guildWinData.data;
   const [from, to] = await get5pmMstDateRangeFromCurrent(new Date());
-  const { result, error } = await getGuildRanks(gameId, from, to);
+  const guildsData = await supabase
+    .from('guild_configuration')
+    .select('*')
+    .eq('game_id', gameId);
+
+  if (guildsData.error) {
+    return new Response(`Unable to retrieve guilds: ${gameId}`, {
+      status: 400,
+    });
+  }
+  const { result, error } = await getGuildRanks(
+    gameId,
+    from,
+    to,
+    guildsData.data
+  );
 
   if (error) {
     return new Response(error.message, {
@@ -149,7 +164,7 @@ export async function GET(req: NextRequest) {
     imageUrl: guild.image_url || null,
     totalWinShares: guildWin.length,
     currentDailyScore: score,
-    currentDailyRank: rank,
+    currentDailyRank: rank > -1 ? rank + 1 : 0,
     claimablePoints:
       claimData?.result?.claimable.reduce(
         (acc, curr) => acc + curr.points,
