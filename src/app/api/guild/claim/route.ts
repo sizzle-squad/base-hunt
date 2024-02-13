@@ -112,57 +112,62 @@ export async function getClaimablev2(
     };
   }
 
-  const guildWinClaimsData = await supabase
-    .from('guild_win')
-    .select('*')
-    .eq('game_id', gameId)
-    .eq('guild_id', guildMember.guild_id)
-    .gt('to', guildMember.created_at);
+  // const guildWinClaimsData = await supabase
+  //   .from('guild_win')
+  //   .select('*')
+  //   .eq('game_id', gameId)
+  //   .eq('guild_id', guildMember.guild_id)
+  //   .gt('to', guildMember.created_at);
 
-  if (guildWinClaimsData.error) {
-    return { error: new Error(guildWinClaimsData.error.message) };
-  }
-  const guildWinClaims = guildWinClaimsData.data;
+  // if (guildWinClaimsData.error) {
+  //   return { error: new Error(guildWinClaimsData.error.message) };
+  // }
+  // const guildWinClaims = guildWinClaimsData.data;
 
-  const guildUserClaimData = await supabase
-    .from('guild_user_claim')
-    .select()
-    .eq('game_id', gameId)
-    .eq('user_address', userAddress.toLowerCase())
-    .eq('guild_id', guildMember.guild_id)
-    .returns<Claimed[]>();
+  // const guildUserClaimData = await supabase
+  //   .from('guild_user_claim')
+  //   .select()
+  //   .eq('game_id', gameId)
+  //   .eq('user_address', userAddress.toLowerCase())
+  //   .eq('guild_id', guildMember.guild_id)
+  //   .returns<Claimed[]>();
 
-  if (guildUserClaimData.error) {
-    return { error: new Error(guildUserClaimData.error.message) };
-  }
+  // if (guildUserClaimData.error) {
+  //   return { error: new Error(guildUserClaimData.error.message) };
+  // }
 
-  const guildUserClaim = guildUserClaimData.data;
-  const alreadyClaimed = guildUserClaim.reduce(
-    (acc: Record<string, Claimed>, claim: Claimed) => {
-      acc[claim.claim_id] = claim;
-      return acc;
+  // const guildUserClaim = guildUserClaimData.data;
+  // const alreadyClaimed = guildUserClaim.reduce(
+  //   (acc: Record<string, Claimed>, claim: Claimed) => {
+  //     acc[claim.claim_id] = claim;
+  //     return acc;
+  //   },
+  //   {}
+  // );
+  // const result = guildWinClaims.reduce(
+  //   (
+  //     acc: {
+  //       claimable: Claimable[];
+  //       claimed: Claimable[];
+  //     },
+  //     curr: Claimable
+  //   ) => {
+  //     if (alreadyClaimed.hasOwnProperty(curr.claim_id)) {
+  //       acc.claimed.push(curr);
+  //       return acc;
+  //     }
+  //     acc.claimable.push(curr);
+  //     return acc;
+  //   },
+  //   { claimable: [], claimed: [] }
+  // );
+
+  return {
+    result: {
+      claimable: [],
+      claimed: [],
     },
-    {}
-  );
-  const result = guildWinClaims.reduce(
-    (
-      acc: {
-        claimable: Claimable[];
-        claimed: Claimable[];
-      },
-      curr: Claimable
-    ) => {
-      if (alreadyClaimed.hasOwnProperty(curr.claim_id)) {
-        acc.claimed.push(curr);
-        return acc;
-      }
-      acc.claimable.push(curr);
-      return acc;
-    },
-    { claimable: [], claimed: [] }
-  );
-
-  return { result: result };
+  };
 }
 
 export type Claimed = {
