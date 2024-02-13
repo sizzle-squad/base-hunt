@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 
   //get total member count
   const totalMemberCountData = await supabase
-    .from('guild_configuration')
+    .from('guild_member_configuration')
     .select('*', { count: 'exact', head: true })
     .eq('game_id', gameId)
     .eq('guild_id', userGuildData.data.guild_id)
