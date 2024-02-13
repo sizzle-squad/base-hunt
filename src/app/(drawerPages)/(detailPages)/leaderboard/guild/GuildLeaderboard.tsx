@@ -82,9 +82,18 @@ export function GuildLeaderboard() {
     };
   }, [isTopGuildRanksLoading, topGuildRanks]);
 
+  const isLoading = useMemo(() => {
+    return isGuildStateLoading || isTopGuildRanksLoading;
+  }, [isGuildStateLoading, isTopGuildRanksLoading]);
+
+  // TODO: better loading
+  if (isLoading) {
+    return <NoSsr />;
+  }
+
   return (
     <NoSsr>
-      {!hasGuild ? (
+      {!hasGuild && !isGuildStateLoading ? (
         <GuildCardList guilds={topGuildRanks} />
       ) : (
         <Stack direction="column" mt="24px" gap="24px">

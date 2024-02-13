@@ -59,9 +59,9 @@ export function Guild({
         overflow: 'hidden',
         cursor: 'pointer',
       }}
-      onClick={() => router.push('/levels')}
+      onClick={() => router.push('/leaderboard/guild')}
     >
-      <Link href="/levels">
+      <Link href="/leaderboard/guild">
         <Stack width="160px">{content}</Stack>
       </Link>
     </Stack>

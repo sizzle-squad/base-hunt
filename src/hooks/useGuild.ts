@@ -13,7 +13,7 @@ type Props = {
 
 export function useGuild({ gameId }: Props) {
   const { data, isLoading, error } = useQuery<Guild[]>(
-    'guild',
+    ['guild', gameId],
     async () => {
       const guilds = await axios({
         method: 'GET',
@@ -30,6 +30,8 @@ export function useGuild({ gameId }: Props) {
       onError: (error) => {
         console.error(error);
       },
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 5, // 5 minutes
     }
   );
 

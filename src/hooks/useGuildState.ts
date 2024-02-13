@@ -15,28 +15,39 @@ export function useGuildState({ userAddress, gameId }: Props) {
   const { data, isLoading, error } = useQuery<GuildData>(
     ['profile/guild', userAddress, gameId],
     async () => {
-      const guild = await axios({
-        method: 'GET',
-        url: `${routes.profile.guild}?userAddress=${userAddress}&gameId=${gameId}`,
-      });
+      try {
+        const guild = await axios({
+          method: 'GET',
+          url: `${routes.profile.guild}?userAddress=${userAddress}&gameId=${gameId}`,
+        });
 
-      return guild.data;
+        return guild.data;
+      } catch (error) {
+        console.error(error);
+        return {} as GuildData;
+      }
     },
     {
       enabled: !!userAddress && gameId !== undefined,
       onError: (error) => {
         console.error(error);
         // Handle error appropriately
+
+        // return Promise.resolve({} as GuildData);
       },
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 5, // 5 minutes
     }
   );
+
+  console.log({ data, error });
 
   return useMemo(
     () => ({
       data,
       isLoading,
       error,
-      hasGuild: data?.id !== null,
+      hasGuild: !!data?.id,
     }),
     [data, error, isLoading]
   );

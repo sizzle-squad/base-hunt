@@ -1,19 +1,22 @@
 'use client';
 
-import { useState } from 'react';
-
 import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
+import { useState } from 'react';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import Text from '@/components/Text';
 
-import { GuildLeaderboard } from './GuildLeaderboard';
+import { GuildLeaderboard } from './guild/GuildLeaderboard';
 import { PlayerLeaderboard } from './PlayerLeaderboard';
 
-type BoardType = 'leaderboard' | 'guilds';
+type Props = {
+  selectedBoard?: 'leaderboard' | 'guilds';
+};
 
-export default function LeaderboardClient() {
-  const [selectedBoard, setSelectedBoard] = useState<BoardType>('leaderboard');
+export default function LeaderboardClient({
+  selectedBoard = 'leaderboard',
+}: Props) {
+  const [currentBoard, setCurrentBoard] = useState(selectedBoard);
 
   return (
     <>
@@ -26,9 +29,9 @@ export default function LeaderboardClient() {
         gap={3}
       >
         <ToggleButtonGroup
-          value={selectedBoard}
+          value={currentBoard}
           exclusive
-          onChange={(_, newBoard) => setSelectedBoard(newBoard)}
+          onChange={(_, newBoard) => setCurrentBoard(newBoard)}
           sx={{
             outlineColor: 'black',
             '.Mui-selected': {
@@ -60,14 +63,14 @@ export default function LeaderboardClient() {
             Guilds
           </ToggleButton>
         </ToggleButtonGroup>
-        {selectedBoard === 'leaderboard' ? null : (
+        {currentBoard === 'leaderboard' ? null : (
           <Text variant="body1">
             Complete transactions on Base to help your guild win the Daily
             Challenge
           </Text>
         )}
       </Stack>
-      {selectedBoard === 'leaderboard' ? (
+      {currentBoard === 'leaderboard' ? (
         <PlayerLeaderboard />
       ) : (
         <GuildLeaderboard />
