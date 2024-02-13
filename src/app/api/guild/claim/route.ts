@@ -17,7 +17,7 @@ export type GuildClaimData = {
 
 export async function GET(prequest: NextRequest) {
   const searchParams = prequest.nextUrl.searchParams;
-  const userAddress = searchParams.get('userAddress') as string;
+  const userAddress = (searchParams.get('userAddress') as string).toLowerCase();
   const gameId = toBigInt(searchParams.get('gameId') as string);
 
   if (!userAddress || gameId === null) {
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
   const { data, error } = await supabase.rpc('guilduserclaim', {
     _game_id: gameIdNumber,
-    _user_address: userAddress,
+    _user_address: userAddress.toLowerCase(),
   });
 
   if (error) {
@@ -97,7 +97,7 @@ export async function getClaimablev2(
     .from('guild_member_configuration')
     .select('guild_id,created_at')
     .eq('game_id', gameId)
-    .eq('user_address', userAddress)
+    .eq('user_address', userAddress.toLowerCase())
     .maybeSingle();
   if (guildMemberData.error) {
     return { error: new Error(guildMemberData.error.message) };
@@ -176,4 +176,5 @@ export type Claimable = {
   id: number;
   score: number;
   to: string;
+  points: number;
 };
