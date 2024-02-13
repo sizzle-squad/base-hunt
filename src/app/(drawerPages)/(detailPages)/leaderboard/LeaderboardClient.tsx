@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
+import Text from '@/components/Text';
 
 import { GuildLeaderboard } from './GuildLeaderboard';
 import { PlayerLeaderboard } from './PlayerLeaderboard';
@@ -18,11 +19,11 @@ export default function LeaderboardClient() {
     <>
       <DetailsPageNavbar />
       <Stack
-        direction="row"
+        direction="column"
         justifyContent="center"
         alignItems="center"
         marginLeft="24px"
-        gap={2}
+        gap={3}
       >
         <ToggleButtonGroup
           value={selectedBoard}
@@ -59,6 +60,12 @@ export default function LeaderboardClient() {
             Guilds
           </ToggleButton>
         </ToggleButtonGroup>
+        {selectedBoard === 'leaderboard' ? null : (
+          <Text variant="body1">
+            Complete transactions on Base to help your guild win the Daily
+            Challenge
+          </Text>
+        )}
       </Stack>
       {selectedBoard === 'leaderboard' ? (
         <PlayerLeaderboard />

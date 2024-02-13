@@ -8,8 +8,6 @@ import { useAccount, useDisconnect } from 'wagmi';
 
 import Hero from '@/components/Badges/Hero';
 import { Level } from '@/components/Cards/Level';
-import { PlayerLevelStatus } from '@/components/Cards/PlayerLevelStatus';
-import { Rank } from '@/components/Cards/Rank';
 import Circle from '@/components/Circle';
 import Text from '@/components/Text';
 import { GAME_ID } from '@/constants/gameId';
@@ -22,6 +20,7 @@ import { useRank } from '@/hooks/useRank';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
 
+import { Guild } from '@/components/Cards/Guild';
 import ChallengesPageClient from './ChallengesClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
@@ -228,7 +227,6 @@ export default function Challenges() {
         className="pageContent"
       >
         <Hero />
-        <PlayerLevelStatus />
         <Stack
           flexDirection="row"
           justifyContent="center"
@@ -241,15 +239,12 @@ export default function Challenges() {
               collection.currentLevelIdx !== null
                 ? collection.levels[collection.currentLevelIdx]?.level ??
                   undefined
-                : null
+                : '0'
             }
             isLoading={isLevelsLoading}
-          />
-          <Rank
-            currentRank={rank?.rank}
-            isLoading={isRankLoading}
             score={score as number}
           />
+          <Guild name="" position="" isLoading={false} />
         </Stack>
         <Box>
           {(['bottom'] as const).map((anchor) => (

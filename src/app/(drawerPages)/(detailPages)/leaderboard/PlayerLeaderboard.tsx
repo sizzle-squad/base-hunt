@@ -62,13 +62,13 @@ export function PlayerLeaderboard() {
       ) : (
         <Stack direction="column" mt="24px" gap="24px">
           <Stack direction="column" gap={1}>
-            <TopContributorTag />
             <LeaderBoardRow
               name={leaderboardData.topContributor.userAddress}
               score={leaderboardData.topContributor.currentScore}
               position={0}
               offset={1}
               isLast
+              startContent={<TopContributorTag />}
             />
           </Stack>
           <Box>

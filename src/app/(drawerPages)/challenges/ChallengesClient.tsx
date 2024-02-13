@@ -42,23 +42,11 @@ import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
 
-const iconMapping = {
-  WALLET: <WalletIcon />,
-  COFFEE: <CoffeeIcon />,
-  BAG: <BagIcon />,
-  GRID: <GridIcon />,
-  CIRCLE: <CircleIcon />,
-  LINK: <LinkIcon />,
-  USERS: <UsersIcon />,
-};
-
 type ChallengeEntry = Omit<
   Challenge,
   'icon' | 'imageUrl' | 'challengeType' | 'name'
 > & {
   title: string;
-  startContent: ReactNode;
-  endContent: ReactNode;
 };
 
 type ListCardPropsForChallenges = ListCardProps & {
@@ -85,56 +73,11 @@ const PageConsts = {
   drawerAnchor: 'bottom' as const,
 } as const;
 
-const CompletedSvg = memo(() => (
-  <svg
-    width={32}
-    height={32}
-    viewBox="0 0 32 32"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M14 1.1547C15.2376 0.440169 16.7624 0.440169 18 1.1547L27.8564 6.8453C29.094 7.55983 29.8564 8.88034 29.8564 10.3094V21.6906C29.8564 23.1197 29.094 24.4402 27.8564 25.1547L18 30.8453C16.7624 31.5598 15.2376 31.5598 14 30.8453L4.14359 25.1547C2.90599 24.4402 2.14359 23.1197 2.14359 21.6906V10.3094C2.14359 8.88034 2.90599 7.55983 4.14359 6.8453L14 1.1547Z"
-      fill="white"
-    />
-    <path
-      d="M15 8.57735C15.6188 8.22008 16.3812 8.22008 17 8.57735L21.9282 11.4226C22.547 11.7799 22.9282 12.4402 22.9282 13.1547V18.8453C22.9282 19.5598 22.547 20.2201 21.9282 20.5774L17 23.4226C16.3812 23.7799 15.6188 23.7799 15 23.4226L10.0718 20.5774C9.45299 20.2201 9.0718 19.5598 9.0718 18.8453V13.1547C9.0718 12.4402 9.45299 11.7799 10.0718 11.4226L15 8.57735Z"
-      fill="#1D1818"
-    />
-    <path
-      d="M13 17.5L15.2857 19L19 13"
-      stroke="white"
-      strokeWidth="1.5"
-      strokeLinecap="square"
-    />
-  </svg>
-));
-
-const IncompleteSvg = memo(() => (
-  <svg
-    width={32}
-    height={32}
-    viewBox="0 0 32 32"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M14 1.1547C15.2376 0.440169 16.7624 0.440169 18 1.1547L27.8564 6.8453C29.094 7.55983 29.8564 8.88034 29.8564 10.3094V21.6906C29.8564 23.1197 29.094 24.4402 27.8564 25.1547L18 30.8453C16.7624 31.5598 15.2376 31.5598 14 30.8453L4.14359 25.1547C2.90599 24.4402 2.14359 23.1197 2.14359 21.6906V10.3094C2.14359 8.88034 2.90599 7.55983 4.14359 6.8453L14 1.1547Z"
-      fill="white"
-    />
-    <path
-      d="M15 8.57735C15.6188 8.22008 16.3812 8.22008 17 8.57735L21.9282 11.4226C22.547 11.7799 22.9282 12.4402 22.9282 13.1547V18.8453C22.9282 19.5598 22.547 20.2201 21.9282 20.5774L17 23.4226C16.3812 23.7799 15.6188 23.7799 15 23.4226L10.0718 20.5774C9.45299 20.2201 9.0718 19.5598 9.0718 18.8453V13.1547C9.0718 12.4402 9.45299 11.7799 10.0718 11.4226L15 8.57735Z"
-      fill="black"
-    />
-    <path d="M13 13L19 19" stroke="white" strokeWidth="1.5" />
-    <path d="M13 19L19 13" stroke="white" strokeWidth="1.5" />
-  </svg>
-));
-
-IncompleteSvg.displayName = 'IncompleteSvg';
-CompletedSvg.displayName = 'CompletedSvg';
-
 type ClientChallengeType = 'Social' | 'Trivia' | 'NFT' | 'OnBase';
+
+const Reason = {
+  CLICKAWAY: 'clickaway',
+};
 
 function mapChallengeType(type: ChallengeTypeEnum): ClientChallengeType {
   switch (type) {
@@ -193,8 +136,6 @@ export default function ChallengesPageClient() {
           ctaText: challenge.ctaText,
           ctaButtonText: challenge.ctaButtonText,
           points: challenge.points,
-          startContent: iconMapping[challenge.icon as keyof typeof iconMapping],
-          endContent: <Text>{challenge.points.toString()} pts</Text>,
           isCompleted: challenge.isCompleted,
           isEnabled: challenge.isEnabled,
           gameId: challenge.gameId,
@@ -247,19 +188,12 @@ export default function ChallengesPageClient() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const Reason = {
-    CLICKAWAY: 'clickaway',
-  };
-
-  const handleClose = useCallback(
-    (_: any, reason: string) => {
-      if (reason === Reason.CLICKAWAY) {
-        return;
-      }
-      setSnackbarOpen(false);
-    },
-    [Reason.CLICKAWAY]
-  );
+  const handleClose = useCallback((_: any, reason: string) => {
+    if (reason === Reason.CLICKAWAY) {
+      return;
+    }
+    setSnackbarOpen(false);
+  }, []);
 
   useEffect(() => {
     if (claimChallenge.isSuccess) {
@@ -404,7 +338,13 @@ export default function ChallengesPageClient() {
   return (
     <>
       <NoSsr>
-        <Stack gap={2} alignItems="center">
+        <Stack gap={2} alignItems="flex-start">
+          <Text
+            variant="h6"
+            sx={{ fontWeight: 500, size: '16px', lineHeight: '16px' }}
+          >
+            Challenges
+          </Text>
           {isLoading &&
             loadingCollection.map((_, index) => (
               <ListCard key={index} isLoading={isLoading} />
@@ -439,7 +379,7 @@ export default function ChallengesPageClient() {
                         <Stack direction="column" gap={2}>
                           <Stack
                             direction="row"
-                            justifyContent="flex-end"
+                            justifyContent="flex-start"
                             gap={1}
                             width="215px"
                           >
@@ -458,10 +398,7 @@ export default function ChallengesPageClient() {
                               <Text>{item.points.toString() + ' pts'}</Text>
                             </Pill>
                           </Stack>
-                          <Stack gap={1}>
-                            <Text variant="h6">{item.title.toUpperCase()}</Text>
-                            <Text variant="body1">{item.description}</Text>
-                          </Stack>
+                          <Text variant="h6">{item.title.toUpperCase()}</Text>
                         </Stack>
                       </Stack>
                     </Card>

@@ -3,6 +3,7 @@ import React, { ComponentProps, memo } from 'react';
 import Image from 'next/image';
 
 import { type Level } from '@/hooks/types';
+import Svg0 from '@public/images/levels/0.svg';
 import Svg1 from '@public/images/levels/1.svg';
 import Svg2 from '@public/images/levels/2.svg';
 import Svg3 from '@public/images/levels/3.svg';
@@ -15,7 +16,7 @@ export type LevelNumber = Level['level'];
 const Levels: {
   [key in LevelNumber]: typeof Svg1;
 } = {
-  0: null,
+  0: Svg0,
   1: Svg1,
   2: Svg2,
   3: Svg3,
@@ -41,7 +42,7 @@ const SvgSwitcher = ({ level, ...imageProps }: SvgSwitcherProps) => {
     SvgComponent = Levels[level];
   }
 
-  if (!SvgComponent || level === '0') return null;
+  if (!SvgComponent) return null;
 
   return (
     <Image
