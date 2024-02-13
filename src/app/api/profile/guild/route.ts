@@ -15,7 +15,7 @@ const supabase = createClient(
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const userAddress = searchParams.get('userAddress') as string;
+  const userAddress = (searchParams.get('userAddress') as string).toLowerCase();
   const gameId = toBigInt(searchParams.get('gameId') as string);
   if (!userAddress || gameId === null) {
     return new Response(
@@ -151,10 +151,12 @@ export async function GET(req: NextRequest) {
     currentDailyScore: score,
     currentDailyRank: rank,
     claimablePoints:
-      claimData?.result?.claimable.reduce((acc, curr) => acc + curr.score, 0) ??
-      0,
+      claimData?.result?.claimable.reduce(
+        (acc, curr) => acc + curr.points,
+        0
+      ) ?? 0,
     claimedPoints:
-      claimData?.result?.claimed.reduce((acc, curr) => acc + curr.score, 0) ??
+      claimData?.result?.claimed.reduce((acc, curr) => acc + curr.points, 0) ??
       0,
     totalMemberCount: totalMemberCount,
   } as GuildData);
