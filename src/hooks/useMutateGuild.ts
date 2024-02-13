@@ -13,6 +13,7 @@ export type GuildPostBodyData = {
   userAddress: `0x${string}` | undefined;
   gameId: string;
   guildId: string;
+  referrerAddress?: `0x${string}` | undefined;
 };
 
 export function useMutateGuild() {

@@ -118,5 +118,16 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  if (body.referrerAddress) {
+    const referrerData = await supabase.rpc('incrementuserscore', {
+      _game_id: params.game_id,
+      _user_address: body.referrerAddress,
+      _score: challengeData.data.points * 0.5,
+    });
+    if (referrerData.error) {
+      console.error(`error incrementing referrerScore:${referrerData.error}`);
+    }
+  }
+
   return NextResponse.json({ success: true });
 }

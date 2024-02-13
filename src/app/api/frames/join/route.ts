@@ -14,12 +14,12 @@ const NEYNAR_API_KEY =
   (process.env.NEYNAR_API_KEY as string) || 'NEYNAR_API_DOCS';
 
 export async function POST(req: NextRequest) {
-  const userAddress = req.nextUrl.searchParams.get('userAddress');
+  const referrerAddress = req.nextUrl.searchParams.get('userAddress');
   const gameId = req.nextUrl.searchParams.get('gameId');
   const guildId = req.nextUrl.searchParams.get('guildId');
 
-  if (!userAddress || !gameId === undefined || !guildId) {
-    return new NextResponse('Invalid URL', { status: 400 });
+  if (!referrerAddress || !gameId === undefined || !guildId) {
+    return new NextResponse('Invalid URL params', { status: 400 });
   }
 
   const body = await req.json();
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 
     if (memberData.data !== null) {
       console.log(
-        `user already in a guild userAddress:${verificationAddress} guildId:${memberData.data.guild_id}`
+        `user already in a guild verificationAddress:${verificationAddress} guildId:${memberData.data.guild_id}`
       );
       const guild = await getGuildData(gameId as string, guildId as string);
       return new NextResponse(`
@@ -82,6 +82,7 @@ export async function POST(req: NextRequest) {
         userAddress: verificationAddress,
         gameId: gameId,
         guildId: guildId,
+        referrerAddress: referrerAddress.toLowerCase(),
       },
       {
         headers: {
