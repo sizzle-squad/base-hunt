@@ -40,8 +40,6 @@ export function useGuildState({ userAddress, gameId }: Props) {
     }
   );
 
-  console.log({ data, error });
-
   return useMemo(
     () => ({
       data,
