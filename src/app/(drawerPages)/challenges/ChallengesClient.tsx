@@ -5,6 +5,9 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Card,
   CardMedia,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   Link,
   NoSsr,
@@ -13,6 +16,7 @@ import {
 } from '@mui/material';
 import { deepOrange, green, purple, red } from '@mui/material/colors';
 import { useAccount } from 'wagmi';
+import { BootstrapDialog } from '@/components/BoostrapDialog';
 
 import { Button } from '@/components/assets/Button';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
@@ -28,6 +32,7 @@ import { useChallenges } from '@/hooks/useChallenges';
 import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
 import { useGuildState } from '@/hooks/useGuildState';
 import { useMutateGuildDailyChallenge } from '@/hooks/useMutateGuildDailyChallenge';
+import { useGameInfoContext } from '@/context/GameInfoContext';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
@@ -130,6 +135,7 @@ ToggleDrawerButton.displayName = 'ToggleDrawerButton';
 
 export default function ChallengesPageClient() {
   const { address } = useAccount();
+  const { showModal, setShowModal } = useGameInfoContext();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
   const { data: challenges, isLoading } = useChallenges({
     userAddress: address,
@@ -489,6 +495,31 @@ export default function ChallengesPageClient() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         message={snackbarMessage}
       />
+      <BootstrapDialog
+        onClose={() => setShowModal(false)}
+        aria-labelledby="customized-dialog-title"
+        open={showModal}
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          How to it works
+        </DialogTitle>
+        <DialogContent>
+          <Text gutterBottom>
+            1. Complete challenges to get points and level up.
+          </Text>
+          <Text gutterBottom>
+            2. Join guild to play with friends and to win guild specific prizes.
+          </Text>
+          <Text gutterBottom>
+            3. Each level unlocks new merch and other prizes.
+          </Text>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowModal(false)}>
+            <Text>Ok!</Text>
+          </Button>
+        </DialogActions>
+      </BootstrapDialog>
     </>
   );
 }
