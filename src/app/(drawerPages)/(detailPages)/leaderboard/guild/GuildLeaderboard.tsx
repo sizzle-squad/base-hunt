@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { Box, NoSsr, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 
+import Image from 'next/image';
 import ListRow from '@/components/list/ListRow';
 import { TopContributorTag } from '@/components/list/TopContributorTag';
 import { GAME_ID } from '@/constants/gameId';
@@ -40,6 +41,7 @@ function generateGuildRankData() {
       leader: '',
       rank: '0',
       isMock: true,
+      imageUrl: null,
     });
   }
   return mockData;
@@ -106,6 +108,26 @@ export function GuildLeaderboard() {
               isLast
               isLoading={isTopGuildRanksLoading}
               startContent={<TopContributorTag isGuild />}
+              profileTile={
+                <Box
+                  sx={{
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    width: '45px',
+                    height: '45px',
+                  }}
+                >
+                  <Image
+                    src={
+                      leaderboardData.topContributor.imageUrl ??
+                      '/images/solo.svg'
+                    }
+                    alt="guild profile picture"
+                    width={45}
+                    height={45}
+                  />
+                </Box>
+              }
             />
           </Stack>
           <Box>
@@ -120,6 +142,23 @@ export function GuildLeaderboard() {
                     isLast={index === leaderboardData.restOfRanks.length - 1}
                     score={rank.currentScore}
                     isLoading={isTopGuildRanksLoading}
+                    profileTile={
+                      <Box
+                        sx={{
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          width: '45px',
+                          height: '45px',
+                        }}
+                      >
+                        <Image
+                          src={rank.imageUrl ?? '/images/solo.svg'}
+                          alt="guild profile picture"
+                          width={45}
+                          height={45}
+                        />
+                      </Box>
+                    }
                   />
                 );
               }

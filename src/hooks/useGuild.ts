@@ -17,7 +17,7 @@ export function useGuild({ gameId }: Props) {
     async () => {
       const guilds = await axios({
         method: 'GET',
-        url: routes.guild.default,
+        url: routes.guild.state,
         params: {
           gameId,
         },

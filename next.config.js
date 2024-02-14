@@ -9,7 +9,7 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'fastly.picsum.photos',
+        hostname: 'picsum.photos',
       },
       {
         protocol: 'https',
