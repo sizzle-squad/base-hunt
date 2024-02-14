@@ -36,7 +36,5 @@ export async function get5pmMstDateRangeFromCurrent(
     } 24:00:00.000Z`
   ); //5pm MST from yesterday
   to = now;
-  console.log(from, to);
-
   return [from, to];
 }

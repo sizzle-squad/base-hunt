@@ -111,7 +111,6 @@ export async function getClaimablev2(
       },
     };
   }
-  console.log(guildMember);
 
   const guildWinClaimsData = await supabase
     .from('guild_win')
@@ -124,7 +123,6 @@ export async function getClaimablev2(
     return { error: new Error(guildWinClaimsData.error.message) };
   }
   const guildWinClaims = guildWinClaimsData.data;
-  console.log(guildWinClaims);
 
   const guildUserClaimData = await supabase
     .from('guild_user_claim')
