@@ -19,5 +19,6 @@ export const routes = {
   guild: {
     default: '/api/guild',
     state: '/api/guild/state',
+    claim: 'api/guild/claim',
   },
 };

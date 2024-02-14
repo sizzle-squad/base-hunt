@@ -1,6 +1,5 @@
 'use client';
 
-import React, { ReactNode } from 'react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -16,15 +15,6 @@ import { deepOrange, green, purple, red } from '@mui/material/colors';
 import { useAccount } from 'wagmi';
 
 import { Button } from '@/components/assets/Button';
-import {
-  BagIcon,
-  CircleIcon,
-  CoffeeIcon,
-  GridIcon,
-  LinkIcon,
-  UsersIcon,
-  WalletIcon,
-} from '@/components/assets/icons/BoostIcon';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ToolBar from '@/components/drawer/Toolbar';
 import ListCard, { ListCardProps } from '@/components/ListCard';
@@ -38,6 +28,8 @@ import { DrawerType } from '@/context/DrawerContext';
 import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
 import { useChallenges } from '@/hooks/useChallenges';
 import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
+import { useGuildState } from '@/hooks/useGuildState';
+import { useMutateGuildDailyChallenge } from '@/hooks/useMutateGuildDailyChallenge';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
@@ -112,6 +104,32 @@ function getChallengeTypeBgColor(type: ClientChallengeType) {
   }
 }
 
+const ToolbarWithClose = memo(
+  ({
+    title,
+    onClick,
+    item,
+  }: {
+    title: string;
+    onClick: (item: ListCardPropsForChallenges) => void;
+    item: ListCardPropsForChallenges;
+  }) => <ToolBar title={title} onDismiss={() => onClick(item)} />
+);
+ToolbarWithClose.displayName = 'ToolbarWithClose';
+
+const ToggleDrawerButton = memo(
+  ({
+    item,
+    onClick,
+    cta = 'Claim Points',
+  }: {
+    item: ListCardPropsForChallenges;
+    onClick: (item: ListCardPropsForChallenges) => void;
+    cta?: string;
+  }) => <Button onClick={() => onClick(item)}>{cta}</Button>
+);
+ToggleDrawerButton.displayName = 'ToggleDrawerButton';
+
 export default function ChallengesPageClient() {
   const { address } = useAccount();
   const loadingCollection = useMemo(() => [null, null, null, null], []);
@@ -120,6 +138,17 @@ export default function ChallengesPageClient() {
     gameId: GAME_ID,
   });
   const { claimChallenge } = useCompleteChallenge();
+  const {
+    data: guildState,
+    isLoading: isGuildStateLoading,
+    error: guildStateError,
+    hasGuild,
+  } = useGuildState({
+    gameId: GAME_ID,
+    userAddress: address,
+  });
+
+  const { claimDailyChallenge } = useMutateGuildDailyChallenge();
 
   const challengeList = useMemo(() => {
     return challenges
@@ -209,131 +238,168 @@ export default function ChallengesPageClient() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [claimChallenge.isSuccess, claimChallenge.isError]);
 
-  const ToggleDrawerButton = memo(
-    ({
-      item,
-      onClick,
-      cta = 'Claim Points',
-    }: {
-      item: ListCardPropsForChallenges;
-      onClick: (item: ListCardPropsForChallenges) => void;
-      cta?: string;
-    }) => <Button onClick={() => onClick(item)}>{cta}</Button>
-  );
+  const ChallengeDrawerContent = memo(
+    ({ item }: { item: ListCardPropsForChallenges }) => {
+      const isActive = activeItem && activeItem.id === item.id;
+      const ctaButtonText =
+        isActive && item.ctaButtonText ? item.ctaButtonText : 'Claim Points';
+      const ctaUrl = item.ctaUrl;
 
-  const ToolbarWithClose = memo(
-    ({
-      title,
-      onClick,
-      item,
-    }: {
-      title: string;
-      onClick: (item: ListCardPropsForChallenges) => void;
-      item: ListCardPropsForChallenges;
-    }) => <ToolBar title={title} onDismiss={() => onClick(item)} />
-  );
+      const handleButtonAction = useCallback(() => {
+        if (item.type === 'SOCIAL') {
+          handleCompletePress();
+        } else if (isActive && ctaUrl) {
+          handleCTAPress(ctaUrl);
+        } else {
+          handleCompletePress();
+        }
+      }, [ctaUrl, isActive, item.type]);
 
-  ToggleDrawerButton.displayName = 'ToggleDrawerButton';
-  ToolbarWithClose.displayName = 'ToolbarWithClose';
-
-  const ChallengeDrawerContent = ({
-    item,
-  }: {
-    item: ListCardPropsForChallenges;
-  }) => {
-    const isActive = activeItem && activeItem.id === item.id;
-    const ctaButtonText =
-      isActive && item.ctaButtonText ? item.ctaButtonText : 'Claim Points';
-    const ctaUrl = item.ctaUrl;
-
-    const handleButtonAction = useCallback(() => {
-      if (item.type === 'SOCIAL') {
-        handleCompletePress();
-      } else if (isActive && ctaUrl) {
-        handleCTAPress(ctaUrl);
-      } else {
-        handleCompletePress();
-      }
-    }, [ctaUrl, isActive, item.type]);
-
-    return (
-      <Stack gap="24px">
-        <ToolbarWithClose
-          item={item}
-          onClick={handleDrawerClose}
-          title={item.title}
-        />
-
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Stack gap="8px">
-            {!(isActive && hasChallengeCompleteError) && item.title && (
-              <>
-                <Text>
-                  {item.description}{' '}
-                  {item.title.indexOf('Secret') > -1 && (
-                    <Link
-                      href={satoshissecretLink}
-                      target="_blank"
-                      underline="none"
-                    >
-                      here
-                    </Link>
-                  )}
-                </Text>
-              </>
-            )}
-            {isActive && hasChallengeCompleteError && (
-              <Text color="red">
-                You are not eligible to complete this challenge.
-              </Text>
-            )}
-          </Stack>
-          <PointsPill
-            points={Number(item.points)}
-            unit={PageConsts.drawerSubtitleUnit}
-            textColor="#151515"
+      return (
+        <Stack gap="24px">
+          <ToolbarWithClose
+            item={item}
+            onClick={handleDrawerClose}
+            title={item.title}
           />
-        </Stack>
-        {item.type === 'SOCIAL' ? (
-          <Button
-            variant="contained"
-            disabled={
-              (isActive && ctaButtonText === 'Check claim') ||
-              claimChallenge.isLoading
-            }
+
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            <a
-              href={item.type === 'SOCIAL' ? item.ctaUrl ?? '' : undefined}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Stack gap="8px">
+              {!(isActive && hasChallengeCompleteError) && item.title && (
+                <>
+                  <Text>
+                    {item.description}{' '}
+                    {item.title.indexOf('Secret') > -1 && (
+                      <Link
+                        href={satoshissecretLink}
+                        target="_blank"
+                        underline="none"
+                      >
+                        here
+                      </Link>
+                    )}
+                  </Text>
+                </>
+              )}
+              {isActive && hasChallengeCompleteError && (
+                <Text color="red">
+                  You are not eligible to complete this challenge.
+                </Text>
+              )}
+            </Stack>
+            <PointsPill
+              points={Number(item.points)}
+              unit={PageConsts.drawerSubtitleUnit}
+              textColor="#151515"
+            />
+          </Stack>
+          {item.type === 'SOCIAL' ? (
+            <Button
+              variant="contained"
+              disabled={
+                (isActive && ctaButtonText === 'Check claim') ||
+                claimChallenge.isLoading
+              }
+            >
+              <a
+                href={item.type === 'SOCIAL' ? item.ctaUrl ?? '' : undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleButtonAction}
+                style={{
+                  textDecoration: 'none',
+                  color: 'white',
+                }}
+              >
+                {ctaButtonText}
+              </a>
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              disabled={
+                (isActive && ctaButtonText === 'Check claim') ||
+                claimChallenge.isLoading
+              }
               onClick={handleButtonAction}
-              style={{
-                textDecoration: 'none',
-                color: 'white',
-              }}
             >
               {ctaButtonText}
-            </a>
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            disabled={
-              (isActive && ctaButtonText === 'Check claim') ||
-              claimChallenge.isLoading
-            }
-            onClick={handleButtonAction}
-          >
-            {ctaButtonText}
-          </Button>
-        )}
-      </Stack>
+            </Button>
+          )}
+        </Stack>
+      );
+    }
+  );
+
+  ChallengeDrawerContent.displayName = 'ChallengeDrawerContent';
+
+  const handleGuildDailyChallengeClaimPress = useCallback(() => {
+    claimDailyChallenge.mutate({
+      gameId: GAME_ID,
+      userAddress: address,
+    });
+  }, [address, claimDailyChallenge]);
+
+  const guildDailyChallengeClaimCard = useMemo(() => {
+    if (!guildState?.claimablePoints) {
+      return null;
+    }
+
+    return (
+      <Grid item>
+        <Card
+          sx={{
+            width: '390px',
+            height: '100%',
+            p: 2,
+            borderRadius: '12px',
+            cursor: 'pointer',
+          }}
+        >
+          <Stack gap={2}>
+            <Stack
+              direction="row"
+              borderRadius={100}
+              bgcolor="var(--Yellow, #FFD200)"
+              display="flex"
+              padding="4px 8px"
+              alignItems="center"
+              width="fit-content"
+              gap={1}
+            >
+              <Text
+                flexGrow={1}
+                whiteSpace="nowrap"
+                fontSize={14}
+                lineHeight="17px"
+                fontWeight={400}
+                variant="h6"
+                textAlign="center"
+              >
+                Congratuation
+              </Text>
+            </Stack>
+            <Text variant="h5">Your guild won a Daily Challenge</Text>
+            <Button
+              variant="contained"
+              onClick={handleGuildDailyChallengeClaimPress}
+              isLoading={claimDailyChallenge.isLoading}
+            >
+              <Text variant="h6">Claim {guildState?.claimablePoints} pts</Text>
+            </Button>
+          </Stack>
+        </Card>
+      </Grid>
     );
-  };
+  }, [
+    claimDailyChallenge.isLoading,
+    guildState?.claimablePoints,
+    handleGuildDailyChallengeClaimPress,
+  ]);
 
   return (
     <>
@@ -350,6 +416,7 @@ export default function ChallengesPageClient() {
               <ListCard key={index} isLoading={isLoading} />
             ))}
           <Grid container gap={2} sx={{ width: '100%' }}>
+            {guildDailyChallengeClaimCard}
             {challengeList &&
               challengeList?.map((item, index) => {
                 return (

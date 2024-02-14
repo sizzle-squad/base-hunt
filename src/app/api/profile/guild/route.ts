@@ -164,7 +164,7 @@ export async function GET(req: NextRequest) {
 
 export type GuildData = {
   id: bigint | null;
-  name: string | null;
+  name: string;
   guildId: string | null;
   leader: string;
   imageUrl: string | null;

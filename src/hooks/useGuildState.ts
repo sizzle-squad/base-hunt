@@ -32,7 +32,6 @@ export function useGuildState({ userAddress, gameId }: Props) {
       onError: (error) => {
         console.error(error);
         // Handle error appropriately
-
         // return Promise.resolve({} as GuildData);
       },
       staleTime: 1000 * 60 * 5, // 5 minutes
