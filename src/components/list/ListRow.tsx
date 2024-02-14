@@ -13,6 +13,7 @@ type Props = {
   isLoading?: boolean;
   score: number;
   startContent?: ReactNode;
+  profileTile?: ReactNode;
 };
 
 export default function ListRow({
@@ -23,6 +24,7 @@ export default function ListRow({
   name,
   score,
   startContent,
+  profileTile,
 }: Props) {
   const borderRadiusStyle = useMemo(() => {
     // single row should have rounded corners
@@ -84,27 +86,34 @@ export default function ListRow({
               gap="8px"
               display="flex"
             >
-              <Avatar
-                sx={{
-                  borderRadius: '100px',
-                  backgroundColor: stringToColor(name),
-                  width: '24px',
-                  height: '24px',
-                  flexDirection: 'column',
-                }}
-              >
-                {''}
-              </Avatar>
-              {content}
+              {profileTile ?? (
+                <Avatar
+                  sx={{
+                    borderRadius: '100px',
+                    backgroundColor: stringToColor(name),
+                    width: '24px',
+                    height: '24px',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {''}
+                </Avatar>
+              )}
+              <Stack direction="column" justifyContent="center">
+                {content}
+              </Stack>
             </Stack>
           </Stack>
+
           <Text
             textAlign="right"
             width={80}
             variant="body1"
             fontWeight={500}
             noWrap
-          >{`${score} pts`}</Text>
+          >
+            {`${score} pts`}
+          </Text>
         </Stack>
       </Stack>
     </>
