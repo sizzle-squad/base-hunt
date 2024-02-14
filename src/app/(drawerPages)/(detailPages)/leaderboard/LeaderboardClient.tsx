@@ -1,10 +1,9 @@
 'use client';
 
-import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 import { useState } from 'react';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
-import Text from '@/components/Text';
 
 import { GuildLeaderboard } from './guild/GuildLeaderboard';
 import { PlayerLeaderboard } from './PlayerLeaderboard';
@@ -19,7 +18,7 @@ export default function LeaderboardClient({
   const [currentBoard, setCurrentBoard] = useState(selectedBoard);
 
   return (
-    <>
+    <Box pb={9}>
       <DetailsPageNavbar />
       <Stack
         direction="column"
@@ -63,18 +62,12 @@ export default function LeaderboardClient({
             Guilds
           </ToggleButton>
         </ToggleButtonGroup>
-        {currentBoard === 'leaderboard' ? null : (
-          <Text variant="body1">
-            Complete transactions on Base to help your guild win the Daily
-            Challenge
-          </Text>
-        )}
       </Stack>
       {currentBoard === 'leaderboard' ? (
         <PlayerLeaderboard />
       ) : (
         <GuildLeaderboard />
       )}
-    </>
+    </Box>
   );
 }

@@ -17,7 +17,12 @@ export default function Template({ children }: { children: ReactNode }) {
   }, [pathname, noShowRoutes]);
 
   return (
-    <Stack justifyContent="space-between" width="100vw" height={['100vh']}>
+    <Stack
+      justifyContent="space-between"
+      width="100vw"
+      height="100vh"
+      paddingBottom={9}
+    >
       {children}
       {showFooter && <Footer />}
     </Stack>
