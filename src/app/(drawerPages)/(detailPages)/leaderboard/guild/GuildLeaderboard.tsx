@@ -15,6 +15,7 @@ import { useGuildState } from '@/hooks/useGuildState';
 import Text from '@/components/Text';
 
 import { CountdownTimer } from '@/components/Countdown';
+import { DailyChallengeClaim } from '@/components/Cards/DailyChallengeClaim';
 import { GuildCardList } from './GuildCardList';
 
 type RankMock = GuildRank & {
@@ -102,9 +103,12 @@ export function GuildLeaderboard() {
       ) : (
         <>
           <Stack direction="column" mt="24px" gap={1}>
-            <Text variant="body1" pb={3}>
-              Complete transactions on Base to help your guild earn the top spot
+            <DailyChallengeClaim />
+            <Text variant="body1" py={3}>
+              <b>Daily challenge: </b>Complete transactions on Base to help your
+              guild earn the top spot
             </Text>
+            <CountdownTimer />
             <Stack direction="column" gap={1}>
               <ListRow
                 name={leaderboardData.topContributor.name}

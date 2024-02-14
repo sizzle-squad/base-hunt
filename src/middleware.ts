@@ -33,14 +33,10 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/art-reveal/:path*',
-    '/badges/:path*',
     '/challenges/:path*',
     '/guild/:path*',
     '/leaderboard/:path*',
     '/levels/:path*',
-    '/locations/:path*',
-    '/art-reveal-screen/:path*',
     '/api/:path*',
     '/',
   ],

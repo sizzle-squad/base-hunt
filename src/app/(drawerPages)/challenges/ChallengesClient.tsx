@@ -30,9 +30,8 @@ import { DrawerType } from '@/context/DrawerContext';
 import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
 import { useChallenges } from '@/hooks/useChallenges';
 import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
-import { useGuildState } from '@/hooks/useGuildState';
-import { useMutateGuildDailyChallenge } from '@/hooks/useMutateGuildDailyChallenge';
 import { useGameInfoContext } from '@/context/GameInfoContext';
+import { DailyChallengeClaim } from '@/components/Cards/DailyChallengeClaim';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
@@ -142,17 +141,6 @@ export default function ChallengesPageClient() {
     gameId: GAME_ID,
   });
   const { claimChallenge } = useCompleteChallenge();
-  const {
-    data: guildState,
-    isLoading: isGuildStateLoading,
-    error: guildStateError,
-    hasGuild,
-  } = useGuildState({
-    gameId: GAME_ID,
-    userAddress: address,
-  });
-
-  const { claimDailyChallenge } = useMutateGuildDailyChallenge();
 
   const challengeList = useMemo(() => {
     return challenges
@@ -341,70 +329,6 @@ export default function ChallengesPageClient() {
 
   ChallengeDrawerContent.displayName = 'ChallengeDrawerContent';
 
-  const handleGuildDailyChallengeClaimPress = useCallback(() => {
-    claimDailyChallenge.mutate({
-      gameId: GAME_ID,
-      userAddress: address,
-    });
-  }, [address, claimDailyChallenge]);
-
-  const guildDailyChallengeClaimCard = useMemo(() => {
-    if (!guildState?.claimablePoints) {
-      return null;
-    }
-
-    return (
-      <Grid item>
-        <Card
-          sx={{
-            width: '390px',
-            height: '100%',
-            p: 2,
-            borderRadius: '12px',
-            cursor: 'pointer',
-          }}
-        >
-          <Stack gap={2}>
-            <Stack
-              direction="row"
-              borderRadius={100}
-              bgcolor="var(--Yellow, #FFD200)"
-              display="flex"
-              padding="4px 8px"
-              alignItems="center"
-              width="fit-content"
-              gap={1}
-            >
-              <Text
-                flexGrow={1}
-                whiteSpace="nowrap"
-                fontSize={14}
-                lineHeight="17px"
-                fontWeight={400}
-                variant="h6"
-                textAlign="center"
-              >
-                Congratuation
-              </Text>
-            </Stack>
-            <Text variant="h5">Your guild won a Daily Challenge</Text>
-            <Button
-              variant="contained"
-              onClick={handleGuildDailyChallengeClaimPress}
-              isLoading={claimDailyChallenge.isLoading}
-            >
-              <Text variant="h6">Claim {guildState?.claimablePoints} pts</Text>
-            </Button>
-          </Stack>
-        </Card>
-      </Grid>
-    );
-  }, [
-    claimDailyChallenge.isLoading,
-    guildState?.claimablePoints,
-    handleGuildDailyChallengeClaimPress,
-  ]);
-
   return (
     <>
       <NoSsr>
@@ -420,7 +344,7 @@ export default function ChallengesPageClient() {
               <ListCard key={index} isLoading={isLoading} />
             ))}
           <Grid container gap={2} sx={{ width: '100%' }}>
-            {guildDailyChallengeClaimCard}
+            <DailyChallengeClaim />
             {challengeList &&
               challengeList?.map((item, index) => {
                 return (
