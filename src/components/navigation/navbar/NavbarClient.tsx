@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, Skeleton, Stack } from '@mui/material';
+import { Skeleton, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 
 import Circle from '@/components/Circle';
@@ -49,8 +49,8 @@ export const NavbarClient = () => {
     <Stack
       direction="row"
       width="100%"
-      justifyItems="center"
-      justifyContent="center"
+      justifyContent="flex-end"
+      paddingBottom={2}
     >
       <Stack
         data-testid="pill"
