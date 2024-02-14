@@ -229,53 +229,51 @@ export default function Challenges() {
   );
 
   return (
-    <>
+    <Stack
+      paddingX="1.25rem"
+      gap="12px"
+      paddingBottom="6rem"
+      className="pageContent"
+    >
+      <Hero />
       <Stack
-        paddingX="1.25rem"
-        gap="12px"
-        paddingBottom="6rem"
-        className="pageContent"
+        flexDirection="row"
+        justifyContent="center"
+        alignItems="flex-start"
+        gap="10px"
+        alignSelf="stretch"
       >
-        <Hero />
-        <Stack
-          flexDirection="row"
-          justifyContent="center"
-          alignItems="flex-start"
-          gap="10px"
-          alignSelf="stretch"
-        >
-          <Level
-            currentLevel={
-              collection.currentLevelIdx !== null
-                ? collection.levels[collection.currentLevelIdx]?.level ??
-                  undefined
-                : '0'
-            }
-            isLoading={isLevelsLoading}
-            score={score as number}
-          />
-          <Guild
-            name={guildState?.name}
-            position={guildState?.currentDailyRank}
-            isLoading={false}
-            imageUrl={guildState?.imageUrl}
-          />
-        </Stack>
-        <Box>
-          {(['bottom'] as const).map((anchor) => (
-            <Fragment key={anchor}>
-              <Drawer
-                anchor={anchor}
-                open={drawerStates.walletOperations[anchor]}
-                onClose={() => handleToggleDrawer(anchor)}
-              >
-                {list(anchor)}
-              </Drawer>
-            </Fragment>
-          ))}
-        </Box>
-        <ChallengesPageClient />
+        <Level
+          currentLevel={
+            collection.currentLevelIdx !== null
+              ? collection.levels[collection.currentLevelIdx]?.level ??
+                undefined
+              : '0'
+          }
+          isLoading={isLevelsLoading}
+          score={score as number}
+        />
+        <Guild
+          name={guildState?.name}
+          position={guildState?.currentDailyRank}
+          isLoading={false}
+          imageUrl={guildState?.imageUrl}
+        />
       </Stack>
-    </>
+      <Box>
+        {(['bottom'] as const).map((anchor) => (
+          <Fragment key={anchor}>
+            <Drawer
+              anchor={anchor}
+              open={drawerStates.walletOperations[anchor]}
+              onClose={() => handleToggleDrawer(anchor)}
+            >
+              {list(anchor)}
+            </Drawer>
+          </Fragment>
+        ))}
+      </Box>
+      <ChallengesPageClient />
+    </Stack>
   );
 }

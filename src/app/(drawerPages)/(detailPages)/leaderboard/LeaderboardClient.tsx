@@ -1,6 +1,6 @@
 'use client';
 
-import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 import { useState } from 'react';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
@@ -18,7 +18,7 @@ export default function LeaderboardClient({
   const [currentBoard, setCurrentBoard] = useState(selectedBoard);
 
   return (
-    <>
+    <Box pb={9}>
       <DetailsPageNavbar />
       <Stack
         direction="column"
@@ -68,6 +68,6 @@ export default function LeaderboardClient({
       ) : (
         <GuildLeaderboard />
       )}
-    </>
+    </Box>
   );
 }
