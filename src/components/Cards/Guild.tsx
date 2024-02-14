@@ -11,7 +11,7 @@ type Props = {
   name?: string;
   position?: number;
   isLoading?: boolean;
-  imageUrl?: string;
+  imageUrl?: string | null;
 };
 
 export function Guild({
@@ -29,12 +29,21 @@ export function Guild({
 
     return (
       <Stack flexDirection="column" alignItems="flex-start" gap={1.5}>
-        <Image
-          src={!name || !position ? '/images/solo.svg' : imageUrl}
-          alt="Guild badge"
-          width={64}
-          height={64}
-        />
+        <Box
+          sx={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          <Image
+            src={imageUrl ?? '/images/solo.svg'}
+            alt="Guild badge"
+            width={64}
+            height={64}
+          />
+        </Box>
         <Box>
           <Text variant="h5">{name ?? 'Solo player'}</Text>
           <Text variant="body2">
