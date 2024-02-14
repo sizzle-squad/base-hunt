@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Box, Grid, Skeleton, Stack } from '@mui/material';
 import Image from 'next/image';
 
-import { CountdownTimer } from '@/components/ArtRevealScreen/Countdown';
+import { CountdownTimer } from '@/components/Countdown';
 import Text from '@/components/Text';
 import useScreenSize from '@/hooks/useScreenSize';
 import { useTreasureBoxForRevealScreen } from '@/hooks/useTreasureBoxForRevealScreen';
