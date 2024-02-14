@@ -24,9 +24,10 @@ export function useMutateGuildDailyChallenge() {
       return axios.post(routes.guild.claim, data);
     },
     {
-      onSuccess: () => {
+      onSuccess: (_, data) => {
+        const { gameId, userAddress } = data;
         queryClient.invalidateQueries({
-          queryKey: ['profile/guild'],
+          queryKey: ['profile/guild', userAddress, gameId],
         });
       },
     }

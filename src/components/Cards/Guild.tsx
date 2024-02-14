@@ -8,8 +8,8 @@ import Link from '@/components/AnimatedLink';
 import Text from '@/components/Text';
 
 type Props = {
-  name: string;
-  position: string;
+  name?: string;
+  position?: number;
   isLoading?: boolean;
   imageUrl?: string;
 };
@@ -36,7 +36,7 @@ export function Guild({
           height={64}
         />
         <Box>
-          <Text variant="h5">{name ? name : 'Solo player'}</Text>
+          <Text variant="h5">{name ?? 'Solo player'}</Text>
           <Text variant="body2">
             {position ? `${position} place` : 'No guild'}
           </Text>

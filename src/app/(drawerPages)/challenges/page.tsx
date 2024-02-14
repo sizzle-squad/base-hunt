@@ -21,6 +21,7 @@ import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
 
 import { Guild } from '@/components/Cards/Guild';
+import { useGuildState } from '@/hooks/useGuildState';
 import ChallengesPageClient from './ChallengesClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
@@ -38,6 +39,15 @@ export default function Challenges() {
     isLoading,
     error,
   } = useGameState({ userAddress: address, gameId: GAME_ID });
+  const {
+    data: guildState,
+    isLoading: isGuildStateLoading,
+    error: guildStateError,
+    hasGuild,
+  } = useGuildState({
+    gameId: GAME_ID,
+    userAddress: address,
+  });
   const {
     data: collection,
     isLoading: isLevelsLoading,
@@ -244,7 +254,11 @@ export default function Challenges() {
             isLoading={isLevelsLoading}
             score={score as number}
           />
-          <Guild name="" position="" isLoading={false} />
+          <Guild
+            name={guildState?.name}
+            position={guildState?.currentDailyRank}
+            isLoading={false}
+          />
         </Stack>
         <Box>
           {(['bottom'] as const).map((anchor) => (
