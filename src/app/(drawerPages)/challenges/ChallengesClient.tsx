@@ -18,10 +18,8 @@ import { Button } from '@/components/assets/Button';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ToolBar from '@/components/drawer/Toolbar';
 import ListCard, { ListCardProps } from '@/components/ListCard';
-import Pill from '@/components/Pill';
 import { PointsPill } from '@/components/PointsPill';
 import Text from '@/components/Text';
-import { Color } from '@/constants/color';
 import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
 import { DrawerType } from '@/context/DrawerContext';
@@ -443,29 +441,30 @@ export default function ChallengesPageClient() {
                             width: '126px',
                           }}
                         />
-                        <Stack direction="column" gap={2}>
+                        <Stack
+                          direction="column"
+                          gap={2}
+                          justifyContent={'space-between'}
+                        >
                           <Stack
-                            direction="row"
+                            direction="column"
                             justifyContent="flex-start"
-                            gap={1}
+                            gap={0.5}
                             width="215px"
                           >
-                            <Pill
-                              backgroundColor={getChallengeTypeBgColor(
-                                item.type as ClientChallengeType
-                              )}
-                              textColor={Color.White}
-                            >
-                              <Text>{item.type}</Text>
-                            </Pill>
-                            <Pill
-                              backgroundColor={Color.CoinbaseBlue}
-                              textColor={Color.White}
-                            >
-                              <Text>{item.points.toString() + ' pts'}</Text>
-                            </Pill>
+                            <Text variant="body2">{item.type}</Text>
+                            <Text variant="h6">{item.title}</Text>
                           </Stack>
-                          <Text variant="h6">{item.title.toUpperCase()}</Text>
+                          <Button
+                            variant="outlined"
+                            bgColor="none"
+                            textColor="black"
+                            width="95px"
+                            px="12px"
+                            py="8px"
+                          >
+                            <Text>{item.points.toString() + ' pts'}</Text>
+                          </Button>
                         </Stack>
                       </Stack>
                     </Card>

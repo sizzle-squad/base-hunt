@@ -11,6 +11,10 @@ type Props = {
   disabled?: boolean;
   href?: string;
   bgColor?: string;
+  textColor?: string;
+  width?: string;
+  px?: string;
+  py?: string;
 };
 
 export function Button({
@@ -21,6 +25,10 @@ export function Button({
   disabled,
   href,
   bgColor = Color.Black,
+  textColor = 'white',
+  width = '100%',
+  px = '20px',
+  py = '16px',
 }: Props) {
   return (
     <LoadingButton
@@ -31,12 +39,13 @@ export function Button({
       onClick={onClick}
       fullWidth
       sx={{
-        px: '20px',
-        py: '16px',
+        px,
+        py,
         borderRadius: '1rem',
         backgroundColor: bgColor,
-        color: 'white',
+        color: textColor,
         textAlign: 'center',
+        width,
       }}
     >
       {children}
