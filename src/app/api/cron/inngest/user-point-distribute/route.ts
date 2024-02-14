@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { Inngest } from 'inngest';
 import { inngest } from '@/utils/inngest/client';
 import { InngestEvents } from '@/utils/inngest/functions';
 
@@ -15,9 +16,10 @@ export async function GET(request: NextRequest) {
     const gameIdString = searchParams.get('gameId') as string;
     const gameId = parseInt(gameIdString);
     await inngest.send({
-      name: InngestEvents.UserTxCount,
+      name: InngestEvents.UserPointDistribute,
       data: {
         gameId: gameId,
+        //we leave out from,to,claimId here so we get automated generation of values
       },
     });
   } catch (error) {

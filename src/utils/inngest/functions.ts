@@ -16,6 +16,11 @@ import {
   GuildScoreData,
 } from '../guild/helpers';
 
+export enum InngestEvents {
+  UserTxCount = 'events/user-tx-count',
+  UserPointDistribute = 'events/user-point-distribute',
+}
+
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_ANON_KEY as string
@@ -194,8 +199,12 @@ export const userPointDistribute = inngest.createFunction(
       to = new Date(event.data.to);
       claimId = event.data.claimId;
     } else {
-      [from, to] = await get5pmMstDateRangeFromCurrent(new Date());
-      claimId = to.getDate();
+      //Note: if the values are unset, then (check vercel.json) this cron is being run 15 mins past 17:00-07 (5:15pm MST)
+      // We want to analyze the winner UPTO and including the last events of the day !
+      const today = new Date();
+      [from, to] = await get5pmMstDateRangeFromCurrent(today);
+      to = today;
+      claimId = from.getDate();
     }
     const guildId: string | null = await step.run(
       'fetch-guild-with-highest-score',

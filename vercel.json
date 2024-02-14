@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/inngest/user-tx-count?gameId=0",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/inngest/user-point-distribute?gameId=0",
+      "schedule": "15 0 * * *"
     }
   ]
 }
