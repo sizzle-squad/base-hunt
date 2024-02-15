@@ -5,6 +5,7 @@ export const routes = {
     state: '/api/profile/state',
     guild: '/api/profile/guild',
     levels: '/api/profile/level',
+    optIn: '/api/profile/opt-in',
   },
   treasureBox: {
     rank: '/api/treasure-box/rank',
