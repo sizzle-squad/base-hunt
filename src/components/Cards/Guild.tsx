@@ -31,6 +31,22 @@ export function Guild({
     return '/leaderboard/guild';
   }, [id]);
 
+  const positionString = useMemo(() => {
+    if (!position) return 'No guild';
+
+    let message = 'place';
+    switch (position) {
+      case 1:
+        return `${position}st ${message}`;
+      case 2:
+        return `${position}nd ${message}`;
+      case 3:
+        return `${position}rd ${message}`;
+      default:
+        return `${position}th ${message}`;
+    }
+  }, [position]);
+
   const content = useMemo(() => {
     if (isLoading) {
       return (
@@ -65,13 +81,11 @@ export function Guild({
         </Box>
         <Box>
           <Text variant="h5">{name ?? 'Solo player'}</Text>
-          <Text variant="body2">
-            {position ? `${position} place` : 'No guild'}
-          </Text>
+          <Text variant="body2">{positionString}</Text>
         </Box>
       </Stack>
     );
-  }, [imageUrl, isLoading, name, position]);
+  }, [imageUrl, isLoading, name, positionString]);
 
   return (
     <Stack
