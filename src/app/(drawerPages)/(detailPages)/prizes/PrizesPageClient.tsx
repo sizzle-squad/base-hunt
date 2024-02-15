@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 
-import { Box, NoSsr, Stack } from '@mui/material';
+import { NoSsr, Stack } from '@mui/material';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 
@@ -48,7 +48,7 @@ export default function PrizesPageClient() {
                 height="100%"
                 width="336px"
               >
-                <Stack direction="row" alignItems="center" gap={0.5}>
+                <Stack direction="row" alignItems="center" gap={2}>
                   <Image
                     src={level.imageUrl ?? ''}
                     alt="jumbotron"
@@ -60,7 +60,14 @@ export default function PrizesPageClient() {
                     <Text variant="body1">{level.prizeDescription}</Text>
                   </Stack>
                 </Stack>
-                <Stack direction="column" alignItems="center" py={2}>
+                <Stack
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  py={2}
+                  width="300px"
+                  height="275px"
+                >
                   <Image
                     src={level.prizeImageUrl ?? ''}
                     alt="jumbotron"
@@ -75,6 +82,7 @@ export default function PrizesPageClient() {
                   disabled={isDisabled}
                   bgColor={Color.CoinbaseBlue}
                   onClick={handleClaimPress(level.ctaUrl)}
+                  textColor={Color.White}
                 >
                   {currentLevel >= index ? 'Claim' : 'Locked'}
                 </Button>
