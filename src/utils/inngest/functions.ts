@@ -171,9 +171,10 @@ export const userPointDistribute = inngest.createFunction(
   { event: 'events/user-point-distribute' },
   async ({ event, step }) => {
     //NOTE: the time passed in should be iso 8601 compatible string
-    const at = new Date(event.data.scheduleAt);
-
-    await step.sleepUntil('wait-for-scheduled', at);
+    if (event.data.scheduleAt) {
+      const at = new Date(event.data.scheduleAt);
+      await step.sleepUntil('wait-for-scheduled', at);
+    }
 
     let now = new Date();
     const challengeData = await supabase
@@ -206,63 +207,61 @@ export const userPointDistribute = inngest.createFunction(
       to = today;
       claimId = from.getDate();
     }
-    const guildId: string | null = await step.run(
-      'fetch-guild-with-highest-score',
-      async () => {
-        const { data, error } = await supabase
-          .from('guild_score')
-          .select('id,guild_id,score')
-          .eq('game_id', event.data.gameId as number)
-          .gte('timestamp', from.toISOString())
-          .lte('timestamp', to.toISOString())
-          .returns<GuildScoreData[]>();
+    const data = await step.run('fetch-guild-with-highest-score', async () => {
+      const { data, error } = await supabase
+        .from('guild_score')
+        .select('id,guild_id,score')
+        .eq('game_id', event.data.gameId as number)
+        .gte('timestamp', from.toISOString())
+        .lte('timestamp', to.toISOString())
+        .returns<GuildScoreData[]>();
 
-        if (error) {
-          console.error(error);
-          return null;
-        }
+      if (error) {
+        console.error(error);
+        return { error: error.message };
+      }
 
-        if (data.length === 0) {
-          return null;
-        }
+      if (data.length === 0) {
+        return { error: `No guilds found with gameId: ${event.data.gameId}` };
+      }
 
-        const scoreDifferences = await getGuildTxCounts(data);
+      const scoreDifferences = await getGuildTxCounts(data);
 
-        // Find the guild_id with the highest score difference
-        const sortedScoreDifferences = Object.entries(scoreDifferences).sort(
-          (a, b) => b[1] - a[1]
+      // Find the guild_id with the highest score difference
+      const sortedScoreDifferences = Object.entries(scoreDifferences).sort(
+        (a, b) => b[1] - a[1]
+      );
+
+      const guildId =
+        sortedScoreDifferences.length > 0 ? sortedScoreDifferences[0][0] : null;
+
+      if (guildId) {
+        //Save the winning guild in this claim period
+        const guildWinInsert = await supabase.from('guild_win').upsert(
+          {
+            guild_id: guildId,
+            game_id: event.data.gameId as number,
+            claim_id: claimId,
+            from: from.toISOString(),
+            to: to.toISOString(),
+            score: sortedScoreDifferences[0][1] || 0,
+            points: challenge?.points || 0,
+          },
+          { onConflict: 'game_id,claim_id' }
         );
 
-        const guildId =
-          sortedScoreDifferences.length > 0
-            ? sortedScoreDifferences[0][0]
-            : null;
-
-        if (guildId) {
-          //Save the winning guild in this claim period
-          const guildWinInsert = await supabase.from('guild_win').upsert(
-            {
-              guild_id: guildId,
-              game_id: event.data.gameId as number,
-              claim_id: claimId,
-              from: from.toISOString(),
-              to: to.toISOString(),
-              score: sortedScoreDifferences[0][1] || 0,
-              points: challenge?.points || 0,
-            },
-            { onConflict: 'game_id,claim_id' }
-          );
-
-          if (guildWinInsert.error) {
-            console.error(guildWinInsert.error);
-            return null;
-          }
-          return guildId;
+        if (guildWinInsert.error) {
+          console.error(guildWinInsert.error);
+          return { error: guildWinInsert.error.message };
         }
-        return null;
+        return {
+          sortedScoreDifferences: sortedScoreDifferences,
+          guildId: guildId,
+        };
       }
-    );
+      return { error: 'No guild found with highest score' };
+    });
 
-    return { data: guildId };
+    return { data: data };
   }
 );
