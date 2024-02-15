@@ -37,7 +37,7 @@ export const config = {
     '/guild/:path*',
     '/leaderboard/:path*',
     '/levels/:path*',
-    '/api/:path*',
+    '/(api(?!/inngest|/cron|/webhook|/frames|/mint|^/frames).*)',
     '/',
   ],
 };
