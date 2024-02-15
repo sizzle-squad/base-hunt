@@ -42,7 +42,7 @@ export function Level({ currentLevel, score, isLoading }: Props) {
           height={64}
         />
         <Box>
-          <Text variant="h5">Tier {currentLevel}</Text>
+          <Text variant="h5">Level {currentLevel}</Text>
           <Text variant="body2">{`${score} points`}</Text>
         </Box>
       </Stack>

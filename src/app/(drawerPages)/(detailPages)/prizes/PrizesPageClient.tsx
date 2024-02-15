@@ -88,7 +88,7 @@ export default function PrizesPageClient() {
                         height={44}
                       />
                       <Stack direction="column">
-                        <Text variant="h6">Tier {level.level}</Text>
+                        <Text variant="h6">Level {level.level}</Text>
                         <Text variant="body1">{level.prizeDescription}</Text>
                       </Stack>
                     </Stack>
