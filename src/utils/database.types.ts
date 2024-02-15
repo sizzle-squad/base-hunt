@@ -631,18 +631,21 @@ export type Database = {
           created_at: string
           game_id: number
           id: number
+          is_opt_in: boolean
           user_address: string
         }
         Insert: {
           created_at?: string
           game_id: number
           id?: number
+          is_opt_in?: boolean
           user_address: string
         }
         Update: {
           created_at?: string
           game_id?: number
           id?: number
+          is_opt_in?: boolean
           user_address?: string
         }
         Relationships: []
