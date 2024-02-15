@@ -259,6 +259,7 @@ export default function Challenges() {
           position={guildState?.currentDailyRank}
           isLoading={false}
           imageUrl={guildState?.imageUrl}
+          id={guildState?.guildId}
         />
       </Stack>
       <Box>

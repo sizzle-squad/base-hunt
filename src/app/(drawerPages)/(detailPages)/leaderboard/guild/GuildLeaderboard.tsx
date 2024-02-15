@@ -45,6 +45,7 @@ function generateGuildRankData() {
       rank: '0',
       isMock: true,
       imageUrl: null,
+      winShares: 0,
     });
   }
   return mockData;

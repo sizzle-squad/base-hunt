@@ -12,6 +12,7 @@ type Props = {
   position?: number;
   isLoading?: boolean;
   imageUrl?: string | null;
+  id?: string | null;
 };
 
 export function Guild({
@@ -19,8 +20,16 @@ export function Guild({
   position,
   imageUrl = '/images/solo.svg',
   isLoading,
+  id,
 }: Props) {
   const router = useRouter();
+
+  const redirectUrl = useMemo(() => {
+    if (id) {
+      return `/guild/${id}`;
+    }
+    return '/leaderboard/guild';
+  }, [id]);
 
   const content = useMemo(() => {
     if (isLoading) {
@@ -68,9 +77,9 @@ export function Guild({
         overflow: 'hidden',
         cursor: 'pointer',
       }}
-      onClick={() => router.push('/leaderboard/guild')}
+      onClick={() => router.push(redirectUrl)}
     >
-      <Link href="/leaderboard/guild">
+      <Link href={redirectUrl}>
         <Stack width="160px">{content}</Stack>
       </Link>
     </Stack>
