@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 
-import { Box, NoSsr, Stack } from '@mui/material';
+import { Box, Card, NoSsr, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 
 import Image from 'next/image';
@@ -69,9 +69,13 @@ export function GuildLeaderboard() {
     error,
   } = useGuild({ gameId: GAME_ID });
 
+  const isLoading = useMemo(() => {
+    return isGuildStateLoading || isTopGuildRanksLoading;
+  }, [isGuildStateLoading, isTopGuildRanksLoading]);
+
   const leaderboardData = useMemo(() => {
     // this is serving as a fallback while top guild ranks are loading
-    if (isTopGuildRanksLoading) {
+    if (isLoading) {
       const mocked = generateGuildRankData();
 
       return {
@@ -86,29 +90,26 @@ export function GuildLeaderboard() {
       restOfRanks: topGuildRanks.slice(1),
       totalCount: topGuildRanks.length,
     };
-  }, [isTopGuildRanksLoading, topGuildRanks]);
+  }, [isLoading, topGuildRanks]);
 
-  const isLoading = useMemo(() => {
-    return isGuildStateLoading || isTopGuildRanksLoading;
-  }, [isGuildStateLoading, isTopGuildRanksLoading]);
-
-  // TODO: better loading
-  if (isLoading) {
-    return <NoSsr />;
-  }
+  const description = useMemo(() => {
+    return (
+      <Text variant="body1" py={3}>
+        <b>Daily challenge: </b>Complete transactions on Base to help your guild
+        earn the top spot
+      </Text>
+    );
+  }, []);
 
   return (
     <NoSsr>
-      {!hasGuild && !isGuildStateLoading ? (
+      {!hasGuild && !isLoading ? (
         <GuildCardList guilds={topGuildRanks} />
       ) : (
         <>
           <Stack direction="column" mt="24px" gap={1}>
             <DailyChallengeClaim />
-            <Text variant="body1" py={3}>
-              <b>Daily challenge: </b>Complete transactions on Base to help your
-              guild earn the top spot
-            </Text>
+            {description}
             <CountdownTimer />
             <Stack direction="column" gap={1}>
               <ListRow
