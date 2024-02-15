@@ -6,7 +6,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Link,
   NoSsr,
   Snackbar,
   Stack,
@@ -28,9 +27,6 @@ import { useChallenges } from '@/hooks/useChallenges';
 import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
 import { useGameInfoContext } from '@/context/GameInfoContext';
 import { ChallengeList } from './ChallengeList';
-
-const satoshissecretLink =
-  'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
 
 export type ChallengeEntry = Omit<
   Challenge,
@@ -225,19 +221,25 @@ export default function ChallengesPageClient() {
   const ChallengeDrawerContent = memo(
     ({ item }: { item: ListCardPropsForChallenges }) => {
       const isActive = activeItem && activeItem.id === item.id;
-      const ctaButtonText =
-        isActive && item.ctaButtonText ? item.ctaButtonText : 'Claim Points';
       const ctaUrl = item.ctaUrl;
 
+      const ctaButtonText = useMemo(() => {
+        // Show CTA Text if there is a secondary action
+        if (isActive && hasChallengeCompleteError && item.ctaButtonText) {
+          return item.ctaButtonText;
+        }
+
+        return 'Claim Points';
+      }, [isActive, item.ctaButtonText]);
+
       const handleButtonAction = useCallback(() => {
-        if (item.type === 'SOCIAL') {
-          handleCompletePress();
-        } else if (isActive && ctaUrl) {
+        // trigger follow up CTA if claim has failed
+        if (isActive && hasChallengeCompleteError && ctaUrl) {
           handleCTAPress(ctaUrl);
         } else {
           handleCompletePress();
         }
-      }, [ctaUrl, isActive, item.type]);
+      }, [ctaUrl, isActive]);
 
       return (
         <Stack gap={3}>
@@ -254,20 +256,7 @@ export default function ChallengesPageClient() {
           >
             <Stack gap={1}>
               {!(isActive && hasChallengeCompleteError) && item.title && (
-                <>
-                  <Text>
-                    {item.description}{' '}
-                    {item.title.indexOf('Secret') > -1 && (
-                      <Link
-                        href={satoshissecretLink}
-                        target="_blank"
-                        underline="none"
-                      >
-                        here
-                      </Link>
-                    )}
-                  </Text>
-                </>
+                <Text>{item.description}</Text>
               )}
               {isActive && hasChallengeCompleteError && (
                 <Text color="red">

@@ -29,8 +29,13 @@ export function useCompleteChallenge() {
       onSuccess: (_, variables) => {
         const { userAddress, gameId } = variables;
 
-        queryClient.invalidateQueries(['challenges', userAddress, gameId]);
-        queryClient.invalidateQueries(['levels']);
+        queryClient.invalidateQueries({
+          queryKey: ['challenges', userAddress, gameId],
+        });
+
+        queryClient.refetchQueries({
+          queryKey: ['levels'],
+        });
       },
     }
   );
