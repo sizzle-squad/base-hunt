@@ -90,7 +90,7 @@ function SwipeUpDrawer({
         onClose={handleClose}
         onOpen={handleClose}
         swipeAreaWidth={drawerBleeding}
-        disableSwipeToOpen={false}
+        disableSwipeToOpen
         ModalProps={{
           keepMounted: true,
         }}
