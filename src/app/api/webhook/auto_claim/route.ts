@@ -94,6 +94,22 @@ export async function POST(req: Request) {
           throw new Error('user address is undefined');
         }
 
+        //Check user Opt-in
+        const userOptInData = await supabase
+          .from('user_address_opt_in')
+          .select('is_opt_in')
+          .eq('user_address', userAddress)
+          .eq('game_id', c.game_id as number)
+          .maybeSingle();
+        if (userOptInData.error) {
+          throw userOptInData.error;
+        }
+
+        if (!userOptInData.data || userOptInData.data.is_opt_in === false) {
+          console.warn('user not opted in:', userAddress, c.game_id, c.id);
+          return NextResponse.json({ status: 'ok' });
+        }
+
         const claim = await supabase
           .from('user_challenge_status')
           .upsert(
@@ -117,7 +133,7 @@ export async function POST(req: Request) {
     } catch (error) {
       console.error(
         'processing challenge:',
-        challenges.data[i],
+        challenges.data[i].id,
         'error:',
         error
       );
