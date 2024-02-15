@@ -274,7 +274,7 @@ export async function POST(request: NextRequest) {
   if (await checkFunc(d, provider)) {
     try {
       let userAddress =
-        MapChallengeTypeUserAddress[
+        await MapChallengeTypeUserAddress[
           challenge.function_type as keyof typeof CheckFunctions
         ](d);
       if (userAddress === undefined) {
