@@ -626,6 +626,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_address_opt_in: {
+        Row: {
+          created_at: string
+          game_id: number
+          id: number
+          user_address: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: number
+          id?: number
+          user_address: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: number
+          id?: number
+          user_address?: string
+        }
+        Relationships: []
+      }
       user_challenge_status: {
         Row: {
           challenge_id: number
