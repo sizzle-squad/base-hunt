@@ -2,6 +2,8 @@ import { isAfter, isBefore } from 'date-fns';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const bypassUrls = ['/api/inngest', '/api/cron', '/api/webhook'];
+
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
   const startDate = new Date(process.env.START_DATE as string);
@@ -13,6 +15,13 @@ export function middleware(request: NextRequest) {
   );
   const hasCookie = request.cookies.has(process.env.PASSWORD_COOKIE_NAME!);
   const url = request.nextUrl.clone();
+
+  const shoudlBypass = bypassUrls.some((url) =>
+    request.nextUrl.pathname.startsWith(url)
+  );
+  if (shoudlBypass) {
+    return;
+  }
 
   const response = NextResponse.redirect(url);
 
