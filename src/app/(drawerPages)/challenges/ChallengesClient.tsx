@@ -14,7 +14,6 @@ import {
   Snackbar,
   Stack,
 } from '@mui/material';
-import { deepOrange, green, purple, red } from '@mui/material/colors';
 import { useAccount } from 'wagmi';
 import { BootstrapDialog } from '@/components/BoostrapDialog';
 
@@ -235,19 +234,19 @@ export default function ChallengesPageClient() {
       }, [ctaUrl, isActive, item.type]);
 
       return (
-        <Stack gap="24px">
+        <Stack gap={3}>
           <ToolbarWithClose
             item={item}
             onClick={handleDrawerClose}
             title={item.title}
           />
-
           <Stack
             direction="row"
             justifyContent="space-between"
             alignItems="center"
+            gap={2}
           >
-            <Stack gap="8px">
+            <Stack gap={1}>
               {!(isActive && hasChallengeCompleteError) && item.title && (
                 <>
                   <Text>
@@ -376,7 +375,7 @@ export default function ChallengesPageClient() {
                             variant="outlined"
                             bgColor="none"
                             textColor="black"
-                            width="95px"
+                            width="fit-content"
                             px="12px"
                             py="8px"
                           >
