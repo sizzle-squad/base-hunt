@@ -203,9 +203,12 @@ export const userPointDistribute = inngest.createFunction(
       //Note: if the values are unset, then (check vercel.json) this cron is being run 15 mins past 17:00-07 (5:15pm MST)
       // We want to analyze the winner UPTO and including the last events of the day !
       const today = new Date();
+      //we move time back to within the previous day range to get the proper from
+      today.setUTCHours(today.getUTCHours() - 1);
       [from, to] = await get5pmMstDateRangeFromCurrent(today);
-      to = today;
-      claimId = from.getDate();
+      //we use the current time for to because the tx-count would have ran at the top of the hour
+      to = new Date();
+      claimId = from.getUTCDate();
     }
     const data = await step.run('fetch-guild-with-highest-score', async () => {
       const { data, error } = await supabase
@@ -257,6 +260,9 @@ export const userPointDistribute = inngest.createFunction(
         return {
           sortedScoreDifferences: sortedScoreDifferences,
           guildId: guildId,
+          from: from.toISOString(),
+          to: to.toISOString(),
+          claimId: claimId,
         };
       }
       return { error: 'No guild found with highest score' };
