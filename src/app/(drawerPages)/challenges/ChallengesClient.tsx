@@ -229,7 +229,7 @@ export default function ChallengesPageClient() {
           return item.ctaButtonText;
         }
 
-        return 'Claim Points';
+        return 'Check';
       }, [isActive, item.ctaButtonText]);
 
       const handleButtonAction = useCallback(() => {
@@ -347,7 +347,7 @@ export default function ChallengesPageClient() {
         open={showModal}
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          How to it works
+          How it works
         </DialogTitle>
         <DialogContent>
           <Text gutterBottom>
