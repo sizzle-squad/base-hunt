@@ -3,12 +3,9 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
-  Card,
-  CardMedia,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   Link,
   NoSsr,
   Snackbar,
@@ -20,7 +17,7 @@ import { BootstrapDialog } from '@/components/BoostrapDialog';
 import { Button } from '@/components/assets/Button';
 import SwipeUpDrawer from '@/components/Badges/BaseSwipeUpDrawer';
 import ToolBar from '@/components/drawer/Toolbar';
-import ListCard, { ListCardProps } from '@/components/ListCard';
+import { ListCardProps } from '@/components/ListCard';
 import { PointsPill } from '@/components/PointsPill';
 import Text from '@/components/Text';
 import { GAME_ID } from '@/constants/gameId';
@@ -30,13 +27,12 @@ import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
 import { useChallenges } from '@/hooks/useChallenges';
 import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
 import { useGameInfoContext } from '@/context/GameInfoContext';
-import { DailyChallengeClaim } from '@/components/Cards/DailyChallengeClaim';
-import { Color } from '@/constants/color';
+import { ChallengeList } from './ChallengeList';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
 
-type ChallengeEntry = Omit<
+export type ChallengeEntry = Omit<
   Challenge,
   'icon' | 'imageUrl' | 'challengeType' | 'name'
 > & {
@@ -122,34 +118,42 @@ ToggleDrawerButton.displayName = 'ToggleDrawerButton';
 export default function ChallengesPageClient() {
   const { address } = useAccount();
   const { showModal, setShowModal } = useGameInfoContext();
-  const loadingCollection = useMemo(() => [null, null, null, null], []);
-  const { data: challenges, isLoading } = useChallenges({
+
+  const { data: challenges, isLoading: isChallengesLoading } = useChallenges({
     userAddress: address,
     gameId: GAME_ID,
   });
   const { claimChallenge } = useCompleteChallenge();
 
-  const challengeList = useMemo(() => {
-    return challenges
-      ?.filter((challenge) => challenge.isEnabled)
-      .map((challenge) => {
-        return {
-          id: challenge.id,
-          title: challenge.name,
-          description: challenge.description,
-          type: mapChallengeType(challenge.challengeType as ChallengeTypeEnum),
-          contractAddress: challenge.contractAddress,
-          subtitle: '',
-          ctaUrl: challenge.ctaUrl,
-          ctaText: challenge.ctaText,
-          ctaButtonText: challenge.ctaButtonText,
-          points: challenge.points,
-          isCompleted: challenge.isCompleted,
-          isEnabled: challenge.isEnabled,
-          gameId: challenge.gameId,
-          checkFunction: challenge.checkFunction,
-        } as ChallengeEntry;
-      }) as ChallengeEntry[];
+  const listData = useMemo(() => {
+    const mapped =
+      (challenges
+        ?.filter((challenge) => challenge.isEnabled)
+        .map((challenge) => {
+          return {
+            id: challenge.id,
+            title: challenge.name,
+            description: challenge.description,
+            type: mapChallengeType(
+              challenge.challengeType as ChallengeTypeEnum
+            ),
+            contractAddress: challenge.contractAddress,
+            subtitle: '',
+            ctaUrl: challenge.ctaUrl,
+            ctaText: challenge.ctaText,
+            ctaButtonText: challenge.ctaButtonText,
+            points: challenge.points,
+            isCompleted: challenge.isCompleted,
+            isEnabled: challenge.isEnabled,
+            gameId: challenge.gameId,
+            checkFunction: challenge.checkFunction,
+          } as ChallengeEntry;
+        }) as ChallengeEntry[]) ?? [];
+
+    const challengeList = mapped.filter((challenge) => !challenge.isCompleted);
+    const completedList = mapped.filter((challenge) => challenge.isCompleted);
+
+    return { challengeList, completedList };
   }, [challenges]);
 
   const [activeItem, setActiveItem] =
@@ -320,80 +324,18 @@ export default function ChallengesPageClient() {
   return (
     <>
       <NoSsr>
-        <Stack gap={2} alignItems="flex-start">
-          <Text
-            variant="h6"
-            sx={{ fontWeight: 500, size: '16px', lineHeight: '16px' }}
-          >
-            Challenges
-          </Text>
-          {isLoading &&
-            loadingCollection.map((_, index) => (
-              <ListCard key={index} isLoading={isLoading} />
-            ))}
-          <Grid container gap={2} sx={{ width: '100%' }}>
-            <DailyChallengeClaim />
-            {challengeList &&
-              challengeList?.map((item, index) => {
-                return (
-                  <Grid item key={index}>
-                    <Card
-                      key={index}
-                      sx={{
-                        width: '390px',
-                        height: '100%',
-                        p: 2,
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => handleToggleDrawer(item)}
-                    >
-                      <Stack direction="row" gap={2}>
-                        <CardMedia
-                          component="img"
-                          image="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
-                          alt="green iguana"
-                          sx={{
-                            height: '126px',
-                            width: '126px',
-                          }}
-                        />
-                        <Stack
-                          direction="column"
-                          gap={2}
-                          justifyContent={'space-between'}
-                        >
-                          <Stack
-                            direction="column"
-                            justifyContent="flex-start"
-                            gap={0.5}
-                            width="215px"
-                          >
-                            <Text variant="body2">{item.type}</Text>
-                            <Text variant="h6">{item.title}</Text>
-                          </Stack>
-                          <Button
-                            variant="outlined"
-                            bgColor={item.isCompleted ? Color.GRAY : 'none'}
-                            textColor="black"
-                            width="fit-content"
-                            px="12px"
-                            py="8px"
-                          >
-                            <Text>
-                              {item.isCompleted
-                                ? 'Claimed'
-                                : item.points.toString() + ' pts'}
-                            </Text>
-                          </Button>
-                        </Stack>
-                      </Stack>
-                    </Card>
-                  </Grid>
-                );
-              })}
-          </Grid>
-        </Stack>
+        <ChallengeList
+          sectionTitle="Challenges"
+          list={listData.challengeList}
+          onClick={handleToggleDrawer}
+          isLoading={isChallengesLoading}
+          displayGuildChallenge
+        />
+        <ChallengeList
+          sectionTitle="Completed"
+          list={listData.completedList}
+          isLoading={isChallengesLoading}
+        />
         <SwipeUpDrawer
           toolbarTitle={PageConsts.drawerTitle}
           type={PageConsts.drawerType}
