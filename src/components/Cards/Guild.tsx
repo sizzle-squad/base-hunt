@@ -33,7 +33,17 @@ export function Guild({
 
   const content = useMemo(() => {
     if (isLoading) {
-      return <Skeleton variant="text" width={100} height={20} />;
+      return (
+        <Stack gap={2}>
+          <Skeleton variant="rounded" width={65} height={65} />
+          <Stack gap={2}>
+            <Stack gap={0.5}>
+              <Skeleton variant="text" width={150} height={30} />
+              <Skeleton variant="text" width={100} height={20} />
+            </Stack>
+          </Stack>
+        </Stack>
+      );
     }
 
     return (
