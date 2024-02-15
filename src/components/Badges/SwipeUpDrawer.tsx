@@ -13,7 +13,6 @@ import { useMobileCheck } from '@/context/MobileContext';
 import { BadgeTypeEnum } from '@/hooks/types';
 
 import ToolBar from '../drawer/Toolbar';
-import { BadgeLocationMap } from '../Map/BadgeLocationMap';
 
 const drawerBleeding = 110;
 const anchor = 'bottom';
@@ -134,13 +133,6 @@ function SwipeUpDrawer({
       return (
         <>
           <ToolBar title={title} onDismiss={() => setIsMapOpen(false)} />
-          <BadgeLocationMap
-            height="350px"
-            width="100%"
-            lat={lat}
-            lng={lng}
-            roundedBorder
-          />
           {isMobile ? (
             <Link href={getNavigationUrl(latLng)}>
               <Button variant="contained">Get Direction</Button>
