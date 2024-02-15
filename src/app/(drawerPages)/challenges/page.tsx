@@ -48,6 +48,7 @@ export default function Challenges() {
     gameId: GAME_ID,
     userAddress: address,
   });
+
   const {
     data: collection,
     isLoading: isLevelsLoading,

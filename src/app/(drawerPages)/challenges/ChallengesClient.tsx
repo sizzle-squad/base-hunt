@@ -93,19 +93,6 @@ function mapChallengeType(type: ChallengeTypeEnum): ClientChallengeType {
   }
 }
 
-function getChallengeTypeBgColor(type: ClientChallengeType) {
-  switch (type) {
-    case 'Social':
-      return deepOrange[500];
-    case 'Trivia':
-      return purple[500];
-    case 'NFT':
-      return red[500];
-    case 'OnBase':
-      return green[500];
-  }
-}
-
 const ToolbarWithClose = memo(
   ({
     title,

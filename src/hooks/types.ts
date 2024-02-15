@@ -181,4 +181,5 @@ export type Guild = {
   currentScore: number;
   rank: string;
   imageUrl: string | null;
+  winShares: number;
 };

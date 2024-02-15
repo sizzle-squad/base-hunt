@@ -9,7 +9,7 @@ import Footer from '@/components/navigation/footer';
 export default function Template({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const noShowRoutes = useMemo(
-    () => [/^\/levels$/, /^\/guild$/, /^\/thanks$/],
+    () => [/^\/levels$/, /^\/thanks$/, /^\/guild\/.+$/],
     []
   );
   const showFooter = useMemo(() => {
