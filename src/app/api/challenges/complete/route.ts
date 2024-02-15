@@ -226,7 +226,13 @@ export async function POST(request: NextRequest) {
     console.warn(
       `dynamic points not supported for streaming challenges:` + challenge.id
     );
-    return;
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'invalid-challenge',
+      },
+      { status: 405 }
+    );
   }
 
   if (
@@ -240,20 +246,30 @@ export async function POST(request: NextRequest) {
         ' function type:' +
         challenge.function_type
     );
-    return NextResponse.json({
-      success: false,
-      message: 'invalid-body-params',
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'invalid-body-params',
+      },
+      { status: 405 }
+    );
   }
 
   let checkFunc =
     CheckFunctions[challenge.function_type as keyof typeof CheckFunctions];
   if (checkFunc === undefined) {
-    throw new Error(
+    console.error(
       'check function is undefined:' +
         challenge.function_type +
         ' challenge id:' +
         challenge.id
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'invalid-check-function',
+      },
+      { status: 405 }
     );
   }
 
@@ -261,13 +277,27 @@ export async function POST(request: NextRequest) {
   const provider = providers[network];
 
   if (provider === undefined) {
-    throw new Error('provider is undefined for network:' + challenge.network);
+    console.error('provider is undefined for network:' + challenge.network);
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'invalid-challenge',
+      },
+      { status: 405 }
+    );
   }
 
   let challengeType =
     ChallengeType[challenge.type as keyof typeof ChallengeType];
   if (challengeType === undefined) {
-    throw new Error(`challenge type is undefined:` + challenge.type);
+    console.error(`challenge type is undefined:` + challenge.type);
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'invalid-challenge',
+      },
+      { status: 405 }
+    );
   }
 
   const d = { ...body, ...(challenge as object) };
@@ -278,7 +308,9 @@ export async function POST(request: NextRequest) {
           challenge.function_type as keyof typeof CheckFunctions
         ](d);
       if (userAddress === undefined) {
-        throw new Error('user address could not be map and is undefined:' + d);
+        throw new Error(
+          'user address could not be mapped and is undefined:' + d
+        );
       }
 
       const claim = await supabase
@@ -295,10 +327,16 @@ export async function POST(request: NextRequest) {
       }
     } catch (e) {
       console.error(e);
-      return NextResponse.json({ success: false, message: 'error-challenge' });
+      return NextResponse.json(
+        { success: false, message: 'error-challenge' },
+        { status: 400 }
+      );
     }
   } else {
-    return NextResponse.json({ success: false, message: 'failed-challenge' });
+    return NextResponse.json(
+      { success: false, message: 'failed-challenge' },
+      { status: 400 }
+    );
   }
 
   return NextResponse.json({ success: true, message: 'ok' });
