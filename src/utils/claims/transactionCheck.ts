@@ -6,6 +6,7 @@ import { WebhookData } from '../webhook';
 
 export type CheckExectionParams = {
   function: string;
+  userAddressInputArg?: number;
 } & WebhookData;
 
 export async function checkFunctionExecution(

@@ -85,12 +85,10 @@ export async function POST(req: Request) {
       if (challengeType === undefined) {
         throw new Error(`challenge type is undefined:` + c.type);
       }
-
       if (await checkFunc({ ...data, ...(c.params as object) }, provider)) {
-        let userAddress =
-          MapChallengeTypeUserAddress[
-            c.function_type as keyof typeof CheckFunctions
-          ](data);
+        let userAddress = await MapChallengeTypeUserAddress[
+          c.function_type as keyof typeof CheckFunctions
+        ]({ ...data, ...(c.params as object), provider: provider });
         if (userAddress === undefined) {
           throw new Error('user address is undefined');
         }

@@ -1,14 +1,17 @@
+import { ethers } from 'ethers';
 import {
   checkBalance,
   CheckBalanceParams,
   checkTokenIdBalance,
 } from './balanceCheck';
 import { checkMint } from './mintCheck';
-import { checkFunctionExecution } from './transactionCheck';
+import {
+  CheckExectionParams,
+  checkFunctionExecution,
+} from './transactionCheck';
 import { checkTrivia, CheckTriviaParams } from './triviaCheck';
 import { checkTxCountBatch, CheckTxCountBatchParams } from './txHistoryCheck';
-import { ChallengeType, CheckFunctionType } from '../database.enums';
-import { Database } from '../database.types';
+import { CheckFunctionType } from '../database.enums';
 import { WebhookData } from '../webhook';
 
 export const CheckFunctions: {
@@ -26,30 +29,57 @@ export const CheckFunctions: {
 };
 
 export const MapChallengeTypeUserAddress: {
-  [key in CheckFunctionType]: (w: any) => string | undefined;
+  [key in CheckFunctionType]: (w: any) => Promise<string | undefined>;
 } = {
-  [CheckFunctionType.checkMint]: (w: WebhookData) => w.to_address.toLowerCase(),
-  [CheckFunctionType.checkFunctionExecution]: (w: WebhookData) =>
-    w.from_address.toLowerCase(),
-  [CheckFunctionType.checkTokenIdBalance]: function (
+  [CheckFunctionType.checkMint]: async (w: WebhookData) =>
+    w.to_address.toLowerCase(),
+  [CheckFunctionType.checkFunctionExecution]: async (
+    w: CheckExectionParams & { provider: any }
+  ) => {
+    try {
+      //Note, this is necessary for relayed transactions where the beneficiary is actually somewhere in the tx data (sometimes :p)
+      if (w.userAddressInputArg !== undefined) {
+        const tx = await w.provider.getTransaction(w.transaction_hash);
+        const iface = new ethers.Interface(['function ' + w.function]);
+        if (!tx) {
+          return;
+        }
+        const decoded = iface.decodeFunctionData(
+          w.function.split('(')[0],
+          tx.data
+        );
+        return decoded[w.userAddressInputArg].toLowerCase();
+      } else {
+        return w.from_address.toLowerCase();
+      }
+    } catch (e) {
+      console.error(`error decoding user address from input args:`, e);
+      return;
+    }
+  },
+  [CheckFunctionType.checkTokenIdBalance]: async function (
     body: CheckBalanceParams
-  ): string {
+  ): Promise<string> {
     return body.userAddress.toLowerCase();
   },
-  [CheckFunctionType.checkTxCountBatch]: function (
+  [CheckFunctionType.checkTxCountBatch]: async function (
     body: CheckTxCountBatchParams
-  ): string | undefined {
+  ): Promise<string | undefined> {
     return body.userAddress.toLowerCase();
   },
-  [CheckFunctionType.checkTrivia]: function (body: CheckTriviaParams): string {
+  [CheckFunctionType.checkTrivia]: async function (
+    body: CheckTriviaParams
+  ): Promise<string> {
     return body.userAddress.toLowerCase();
   },
-  [CheckFunctionType.checkBalance]: function (
+  [CheckFunctionType.checkBalance]: async function (
     body: CheckBalanceParams
-  ): string {
+  ): Promise<string> {
     return body.userAddress.toLowerCase();
   },
-  [CheckFunctionType.checkJoinGuild]: function (body: any): string {
+  [CheckFunctionType.checkJoinGuild]: async function (
+    body: any
+  ): Promise<string> {
     throw new Error('Function not implemented.');
   },
 };
