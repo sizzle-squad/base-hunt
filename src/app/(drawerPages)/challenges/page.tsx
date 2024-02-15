@@ -48,6 +48,7 @@ export default function Challenges() {
     gameId: GAME_ID,
     userAddress: address,
   });
+
   const {
     data: collection,
     isLoading: isLevelsLoading,
@@ -258,6 +259,7 @@ export default function Challenges() {
           position={guildState?.currentDailyRank}
           isLoading={false}
           imageUrl={guildState?.imageUrl}
+          id={guildState?.guildId}
         />
       </Stack>
       <Box>
