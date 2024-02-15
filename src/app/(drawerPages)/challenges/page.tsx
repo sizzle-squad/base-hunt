@@ -257,7 +257,7 @@ export default function Challenges() {
         <Guild
           name={guildState?.name}
           position={guildState?.currentDailyRank}
-          isLoading={false}
+          isLoading={isGuildStateLoading}
           imageUrl={guildState?.imageUrl}
           id={guildState?.guildId}
         />
