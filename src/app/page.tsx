@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Box, Button, Link, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 import Head from 'next/head';
@@ -14,14 +14,22 @@ import { ConnectButton } from '@/components/assets/ConnectButton';
 import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
 import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
 import Text from '@/components/Text';
+import { useMutateOptIn } from '@/hooks/useMutateOptIn';
+import { GAME_ID } from '@/constants/gameId';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
+  const { optIn } = useMutateOptIn();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-  const { isConnected } = useAccount();
+
+  const { isConnected } = useAccount({
+    onConnect({ address }) {
+      optIn.mutate({ gameId: GAME_ID, userAddress: address });
+    },
+  });
   const router = useRouter();
 
   const handleStartExploring = useCallback(() => {
