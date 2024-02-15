@@ -315,12 +315,19 @@ export async function POST(request: NextRequest) {
 
       const claim = await supabase
         .from('user_challenge_status')
-        .insert({
-          user_address: userAddress,
-          challenge_id: challenge.id,
-          status: ChallengeStatus.COMPLETE,
-          points: challenge.points as number,
-        })
+        .upsert(
+          {
+            user_address: userAddress,
+            challenge_id: challenge.id,
+            status: ChallengeStatus.COMPLETE,
+            points: challenge.points as number,
+            game_id: gameIdInBigInt,
+          },
+          {
+            onConflict: 'game_id,user_address,challenge_id',
+            ignoreDuplicates: true,
+          }
+        )
         .select();
       if (claim.error) {
         throw claim.error;

@@ -876,7 +876,7 @@ CREATE UNIQUE INDEX treasure_box_entries_unique ON public.treasure_box_entries U
 
 CREATE UNIQUE INDEX treasure_box_state_unique ON public.treasure_box_state USING btree (game_id);
 
-CREATE UNIQUE INDEX user_challenge_status_user_address_challenge_id_idx ON public.user_challenge_status USING btree (game_id, user_address, challenge_id);
+CREATE UNIQUE INDEX user_challenge_status_game_id_user_address_challenge_id_idx ON public.user_challenge_status USING btree (game_id, user_address, challenge_id);
 
 CREATE UNIQUE INDEX user_guild_score_claim_game_id_guild_id_user_address_claim__idx ON public.user_guild_score_claim USING btree (game_id, guild_id, user_address, claim_id);
 
