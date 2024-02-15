@@ -32,8 +32,19 @@ function ListCard({
         alignSelf: 'stretch',
       }}
     >
-      <Stack direction="row" alignItems="flex-start">
-        <>
+      {isLoading ? (
+        <Stack direction="row" gap={2}>
+          <Skeleton variant="rounded" width={90} height={90} />
+          <Stack direction="column" gap={2}>
+            <Stack gap={0.5}>
+              <Skeleton variant="text" width={100} height={20} />
+              <Skeleton variant="text" width={150} height={25} />
+            </Stack>
+            <Skeleton variant="rounded" width={95} height={30} />
+          </Stack>
+        </Stack>
+      ) : (
+        <Stack direction="row" alignItems="flex-start">
           {/* Start Content */}
           {startContent && <Stack flexDirection="column">{startContent}</Stack>}
           <Stack gap="10px" sx={{ flexGrow: 1, overflow: 'hidden', px: 1 }}>
@@ -51,20 +62,16 @@ function ListCard({
                   )}
                 </Stack>
               )}
-              {isLoading && (
-                <Text lineHeight="19.2px" fontSize="16px" noWrap>
-                  <Skeleton variant="text" width={100} height={20} />
-                </Text>
-              )}
               {/* End Content */}
               {endContent && !isLoading && (
-                <Box sx={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
                   {endContent}
-                </Box>
-              )}
-              {isLoading && (
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Skeleton variant="text" width={20} height={20} />
                 </Box>
               )}
             </Stack>
@@ -74,14 +81,9 @@ function ListCard({
                 {subtitle}
               </Text>
             )}
-            {isLoading && (
-              <Text fontSize="14px" color="text.secondary" noWrap>
-                <Skeleton variant="text" width={200} height={20} />
-              </Text>
-            )}
           </Stack>
-        </>
-      </Stack>
+        </Stack>
+      )}
     </Card>
   );
 }
