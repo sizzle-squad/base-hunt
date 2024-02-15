@@ -37,18 +37,8 @@ export const MapChallengeTypeUserAddress: {
     w: CheckExectionParams & { provider: any }
   ) => {
     try {
-      //Note, this is necessary for relayed transactions where the beneficiary is actually somewhere in the tx data (sometimes :p)
-      if (w.userAddressInputArg !== undefined) {
-        const tx = await w.provider.getTransaction(w.transaction_hash);
-        const iface = new ethers.Interface(['function ' + w.function]);
-        if (!tx) {
-          return;
-        }
-        const decoded = iface.decodeFunctionData(
-          w.function.split('(')[0],
-          tx.data
-        );
-        return decoded[w.userAddressInputArg].toLowerCase();
+      if (DecodeDataFunction.hasOwnProperty(w.contract_address.toLowerCase())) {
+        return await DecodeDataFunction[w.contract_address.toLowerCase()](w);
       } else {
         return w.from_address.toLowerCase();
       }
@@ -133,5 +123,29 @@ export const ValidateBodyParams: {
   },
   [CheckFunctionType.checkJoinGuild]: function (body: object): boolean {
     throw new Error('Function not implemented.');
+  },
+};
+
+//Contract specific decoders
+export const DecodeDataFunction: {
+  [id: string]: (tx: any) => Promise<string | undefined>;
+} = {
+  '0xad27383460183fd7e21b71df3b4cac9480eb9a75': async function (
+    w: CheckExectionParams & { provider: any }
+  ): Promise<string | undefined> {
+    const tx = await w.provider.getTransaction(w.transaction_hash);
+    const iface = new ethers.Interface(['function ' + w.function]);
+    if (!tx) {
+      return;
+    }
+    const decoded = iface.decodeFunctionData(w.function.split('(')[0], tx.data);
+    console.log(decoded);
+    const receiveWithAuthorization_ = decoded[3];
+
+    const results = ethers.AbiCoder.defaultAbiCoder().decode(
+      ['address', 'address', 'uint256', 'uint256', 'uint256', 'bytes32'],
+      receiveWithAuthorization_
+    );
+    return results[0].toLowerCase();
   },
 };
