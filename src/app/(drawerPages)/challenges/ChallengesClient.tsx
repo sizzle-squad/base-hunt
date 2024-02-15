@@ -31,6 +31,7 @@ import { useChallenges } from '@/hooks/useChallenges';
 import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
 import { useGameInfoContext } from '@/context/GameInfoContext';
 import { DailyChallengeClaim } from '@/components/Cards/DailyChallengeClaim';
+import { Color } from '@/constants/color';
 
 const satoshissecretLink =
   'https://go.cb-w.com/messaging?address=0x25D5eE3851a1016AfaB42798d8Ba3658323e6498&messagePrompt=gm';
@@ -165,6 +166,7 @@ export default function ChallengesPageClient() {
 
   const handleToggleDrawer = useCallback(
     (item: ListCardPropsForChallenges | null) => {
+      if (item?.isCompleted) return;
       setActiveItem(item);
       toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
     },
@@ -342,7 +344,6 @@ export default function ChallengesPageClient() {
                         height: '100%',
                         p: 2,
                         borderRadius: '8px',
-                        opacity: item.isCompleted ? 1 : 0.5,
                         cursor: 'pointer',
                       }}
                       onClick={() => handleToggleDrawer(item)}
@@ -373,13 +374,17 @@ export default function ChallengesPageClient() {
                           </Stack>
                           <Button
                             variant="outlined"
-                            bgColor="none"
+                            bgColor={item.isCompleted ? Color.GRAY : 'none'}
                             textColor="black"
                             width="fit-content"
                             px="12px"
                             py="8px"
                           >
-                            <Text>{item.points.toString() + ' pts'}</Text>
+                            <Text>
+                              {item.isCompleted
+                                ? 'Claimed'
+                                : item.points.toString() + ' pts'}
+                            </Text>
                           </Button>
                         </Stack>
                       </Stack>

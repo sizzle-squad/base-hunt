@@ -4,4 +4,5 @@ export enum Color {
   White = '#FFFFFF',
   CoinbaseBlue = '#1652F0',
   Black = '#000000',
+  GRAY = '#CED2DB',
 }
