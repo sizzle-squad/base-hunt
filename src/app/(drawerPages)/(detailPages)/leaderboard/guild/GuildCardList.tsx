@@ -6,6 +6,7 @@ import { Box, Grid, Stack } from '@mui/material';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/assets/Button';
 import Text from '@/components/Text';
 import { Color } from '@/constants/color';
@@ -16,6 +17,14 @@ import { useMutateGuild } from '@/hooks/useMutateGuild';
 export function GuildCardList({ guilds }: { guilds: Guild[] }) {
   const { address } = useAccount();
   const { joinGuild } = useMutateGuild();
+  const router = useRouter();
+
+  const handleCardPress = useCallback(
+    (guildId: string) => () => {
+      return router.push(`/guild/${guildId}`);
+    },
+    [router]
+  );
 
   const handleJoinPress = useCallback(
     (guildId: string) => () => {
@@ -32,7 +41,12 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
     <Stack direction="column" alignItems="center" pb={10} sx={{ flexGrow: 1 }}>
       <Grid
         container
-        sx={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}
+        sx={{
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          pt: 3,
+        }}
       >
         {guilds.map((guild) => {
           return (
@@ -48,6 +62,7 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                 }}
                 height="100%"
                 width="336px"
+                onClick={handleCardPress(guild.id.toString())}
               >
                 <Stack direction="column" alignItems="center" gap="12px">
                   <Stack
