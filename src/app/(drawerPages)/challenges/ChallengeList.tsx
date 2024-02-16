@@ -43,16 +43,27 @@ export function ChallengeList({
         loadingCollection.map((_, index) => (
           <ListCard key={index} isLoading={isLoading} />
         ))}
-      <Grid container gap={2} sx={{ width: '100%' }}>
+      <Grid
+        container
+        gap={2}
+        sx={{ width: '100%', flexGrow: 1 }}
+        justifyContent="space-between"
+      >
         {displayGuildChallenge ? <DailyChallengeClaim /> : null}
         {list &&
           list.map((item, index) => {
             return (
-              <Grid item key={index}>
+              <Grid
+                item
+                key={index}
+                sx={{ width: '100%' }}
+                xs={12}
+                sm={5.5}
+                lg={2.75}
+              >
                 <Card
                   key={index}
                   sx={{
-                    width: '390px',
                     height: '100%',
                     p: 2,
                     borderRadius: '8px',
@@ -79,7 +90,7 @@ export function ChallengeList({
                         direction="column"
                         justifyContent="flex-start"
                         gap={0.5}
-                        width="215px"
+                        maxWidth="215px"
                       >
                         <Text variant="body2">{item.type}</Text>
                         <Text variant="h6">{item.title}</Text>

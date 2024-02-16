@@ -41,16 +41,25 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
     <Stack direction="column" alignItems="center" pb={10} sx={{ flexGrow: 1 }}>
       <Grid
         container
-        sx={{
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          pt: 3,
-        }}
+        sx={{ width: '100%', flexGrow: 1, pt: 3 }}
+        justifyContent="center"
       >
         {guilds.map((guild) => {
           return (
-            <Grid item md={3} key={guild.id} sx={{ pb: 2 }}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              lg={4}
+              key={guild.id}
+              spacing={1}
+              sx={{
+                pb: 2,
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
               <Stack
                 direction="column"
                 gap={1}
@@ -61,7 +70,8 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                   cursor: 'pointer',
                 }}
                 height="100%"
-                width="336px"
+                width="90%"
+                minWidth="336px"
                 onClick={handleCardPress(guild.id.toString())}
               >
                 <Stack direction="column" alignItems="center" gap="12px">

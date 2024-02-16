@@ -2,10 +2,11 @@
 
 import { useMemo } from 'react';
 
-import { Box, Card, NoSsr, Stack } from '@mui/material';
+import { Box, NoSsr, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import ListRow from '@/components/list/ListRow';
 import { TopContributorTag } from '@/components/list/TopContributorTag';
 import { GAME_ID } from '@/constants/gameId';
@@ -16,6 +17,7 @@ import Text from '@/components/Text';
 
 import { CountdownTimer } from '@/components/Countdown';
 import { DailyChallengeClaim } from '@/components/Cards/DailyChallengeClaim';
+import ListCard from '@/components/ListCard';
 import { GuildCardList } from './GuildCardList';
 
 type RankMock = GuildRank & {
@@ -53,6 +55,9 @@ function generateGuildRankData() {
 
 export function GuildLeaderboard() {
   const { address } = useAccount();
+  const searchParams = useSearchParams();
+  const hasNoGuild = Boolean(searchParams.get('hasNoGuild'));
+
   const {
     data: guildState,
     isLoading: isGuildStateLoading,
@@ -101,8 +106,26 @@ export function GuildLeaderboard() {
     );
   }, []);
 
+  const guildCardListSkeleton = useMemo(() => {
+    if (hasNoGuild && isLoading) {
+      return (
+        <Stack direction="column" gap={1} pt={3}>
+          <ListCard isLoading />
+          <ListCard isLoading />
+          <ListCard isLoading />
+          <ListCard isLoading />
+          <ListCard isLoading />
+          <ListCard isLoading />
+        </Stack>
+      );
+    }
+
+    return null;
+  }, [hasNoGuild, isLoading]);
+
   return (
     <NoSsr>
+      {guildCardListSkeleton}
       {!hasGuild && !isLoading ? (
         <GuildCardList guilds={topGuildRanks} />
       ) : (

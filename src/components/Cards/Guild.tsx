@@ -24,11 +24,11 @@ export function Guild({
 }: Props) {
   const router = useRouter();
 
-  const redirectUrl = useMemo(() => {
+  const redirectParams = useMemo(() => {
     if (id) {
       return `/guild/${id}`;
     }
-    return '/leaderboard/guild';
+    return '/leaderboard/guild?hasNoGuild=true';
   }, [id]);
 
   const positionString = useMemo(() => {
@@ -101,9 +101,9 @@ export function Guild({
         overflow: 'hidden',
         cursor: 'pointer',
       }}
-      onClick={() => router.push(redirectUrl)}
+      onClick={() => router.push(redirectParams)}
     >
-      <Link href={redirectUrl}>
+      <Link href={redirectParams}>
         <Stack width="160px">{content}</Stack>
       </Link>
     </Stack>
