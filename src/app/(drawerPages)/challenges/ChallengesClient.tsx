@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogTitle,
   NoSsr,
-  Snackbar,
   Stack,
 } from '@mui/material';
 import { useAccount } from 'wagmi';
@@ -194,21 +193,15 @@ export default function ChallengesPageClient() {
     window.open(ctaUrl, '_blank');
   }, []);
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-
-  const handleClose = useCallback((_: any, reason: string) => {
-    if (reason === Reason.CLICKAWAY) {
-      return;
-    }
-    setSnackbarOpen(false);
-  }, []);
+  const [isClaimSuccess, setIsClaimSuccess] = useState(false);
 
   useEffect(() => {
     if (claimChallenge.isSuccess) {
-      setSnackbarMessage('Points claimed.');
-      setSnackbarOpen(true);
-      handleToggleDrawer(activeItem!);
+      setIsClaimSuccess(true);
+      setTimeout(() => {
+        handleToggleDrawer(activeItem!);
+        setIsClaimSuccess(false);
+      }, 3000);
     }
 
     if (claimChallenge.isError) {
@@ -224,6 +217,10 @@ export default function ChallengesPageClient() {
       const ctaUrl = item.ctaUrl;
 
       const ctaButtonText = useMemo(() => {
+        if (isClaimSuccess) {
+          return 'Claimed!';
+        }
+
         // Show CTA Text if there is a secondary action
         if (isActive && hasChallengeCompleteError && item.ctaButtonText) {
           return item.ctaButtonText;
@@ -270,39 +267,13 @@ export default function ChallengesPageClient() {
               textColor="#151515"
             />
           </Stack>
-          {item.type === 'SOCIAL' ? (
-            <Button
-              variant="contained"
-              disabled={
-                (isActive && ctaButtonText === 'Check claim') ||
-                claimChallenge.isLoading
-              }
-            >
-              <a
-                href={item.type === 'SOCIAL' ? item.ctaUrl ?? '' : undefined}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleButtonAction}
-                style={{
-                  textDecoration: 'none',
-                  color: 'white',
-                }}
-              >
-                {ctaButtonText}
-              </a>
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              disabled={
-                (isActive && ctaButtonText === 'Check claim') ||
-                claimChallenge.isLoading
-              }
-              onClick={handleButtonAction}
-            >
-              {ctaButtonText}
-            </Button>
-          )}
+          <Button
+            variant="contained"
+            isLoading={claimChallenge.isLoading}
+            onClick={handleButtonAction}
+          >
+            {ctaButtonText}
+          </Button>
         </Stack>
       );
     }
@@ -334,13 +305,6 @@ export default function ChallengesPageClient() {
           {activeItem && <ChallengeDrawerContent item={activeItem} />}
         </SwipeUpDrawer>
       </NoSsr>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        message={snackbarMessage}
-      />
       <BootstrapDialog
         onClose={() => setShowModal(false)}
         aria-labelledby="customized-dialog-title"
@@ -350,19 +314,33 @@ export default function ChallengesPageClient() {
           How it works
         </DialogTitle>
         <DialogContent>
-          <Text gutterBottom>
-            1. Complete challenges to get points and level up.
+          <Text gutterBottom lineHeight="160%">
+            Base Hunt is an onchain game on Base. Have fun onchain, earn points,
+            and unlock exclusive prizes. Base Hunt will run for 10 days and ends
+            on March 3 at 4 P.M PST.
           </Text>
-          <Text gutterBottom>
-            2. Join guild to play with friends and to win guild specific prizes.
+          <Text gutterBottom lineHeight="160%" py={1}>
+            <b>How do I play?</b>
           </Text>
-          <Text gutterBottom>
-            3. Each level unlocks new merch and other prizes.
+          <Text gutterBottom lineHeight="160%">
+            • On the <b>“Challenges”</b> tab, you can view challenges to
+            complete. Each challenge will award points and get you closer to the
+            next level. You start at Level 0, and the highest level is Level 4.
+          </Text>
+          <Text gutterBottom lineHeight="160%">
+            • On the <b>“Leaderboard”</b> tab, you can see your rank and join a
+            guild to earn more points, have fun, and compete with other guilds.
+            If your guild has the most points by 5 P.M MST that day, each guild
+            member will receive 100 extra points.
+          </Text>
+          <Text gutterBottom lineHeight="160%">
+            • On the <b>“Prizes”</b> tab, you can redeem prizes are you level
+            up. You can redeem a prize for each level achieved.
           </Text>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowModal(false)}>
-            <Text>Ok!</Text>
+            <Text>Got it!</Text>
           </Button>
         </DialogActions>
       </BootstrapDialog>
