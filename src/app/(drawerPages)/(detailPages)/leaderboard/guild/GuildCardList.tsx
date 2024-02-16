@@ -90,7 +90,7 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                       }}
                     >
                       <Image
-                        src="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
+                        src={guild.imageUrl!}
                         alt="jumbotron"
                         height={90}
                         width={90}
