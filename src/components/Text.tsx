@@ -21,14 +21,15 @@ const Text: FC<CustomTypographyProps & { useMonoFont?: boolean }> = ({
   fontSize,
   color,
   useMonoFont,
+  lineHeight,
   ...props
 }) => {
   const fontStyle = useMonoFont ? { fontFamily: 'CoinbaseMono' } : {};
   return (
     <Typography
       variant={variant}
-      sx={{ ...commonStyles, ...fontStyle, fontSize, color }}
       {...props}
+      sx={{ ...commonStyles, ...fontStyle, fontSize, color, lineHeight }}
     >
       {children}
     </Typography>
