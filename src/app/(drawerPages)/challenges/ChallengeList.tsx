@@ -48,11 +48,10 @@ export function ChallengeList({
         {list &&
           list.map((item, index) => {
             return (
-              <Grid item key={index}>
+              <Grid item key={index} sx={{ width: '100%' }}>
                 <Card
                   key={index}
                   sx={{
-                    width: '390px',
                     height: '100%',
                     p: 2,
                     borderRadius: '8px',
@@ -79,7 +78,7 @@ export function ChallengeList({
                         direction="column"
                         justifyContent="flex-start"
                         gap={0.5}
-                        width="215px"
+                        maxWidth="215px"
                       >
                         <Text variant="body2">{item.type}</Text>
                         <Text variant="h6">{item.title}</Text>
