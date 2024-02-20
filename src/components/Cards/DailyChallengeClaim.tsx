@@ -60,7 +60,7 @@ export function DailyChallengeClaim() {
               variant="body1"
               textAlign="center"
             >
-              Congratuation
+              Congratulations
             </Text>
           </Stack>
           <Text variant="h5" align="center" width="200px">
