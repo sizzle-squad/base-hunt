@@ -65,7 +65,10 @@ export async function POST(req: NextRequest) {
       console.log(
         `user already in a guild verificationAddress:${verificationAddress} guildId:${memberData.data.guild_id}`
       );
-      const guild = await getGuildData(gameId as string, guildId as string);
+      const guild = await getGuildData(
+        gameId as string,
+        memberData.data.guild_id as string
+      );
       return new NextResponse(`
       <!DOCTYPE html><html><head>
       <meta property="fc:frame" content="vNext" />
