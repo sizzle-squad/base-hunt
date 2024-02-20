@@ -190,7 +190,7 @@ export default function ChallengesPageClient() {
   }, [address, activeItem]);
 
   const handleCTAPress = useCallback((ctaUrl: string) => {
-    window.open(ctaUrl, '_blank');
+    window.open(ctaUrl, ctaUrl.includes('https://') ? '_blank' : '_self');
   }, []);
 
   const [isClaimSuccess, setIsClaimSuccess] = useState(false);
@@ -248,7 +248,7 @@ export default function ChallengesPageClient() {
           <Stack
             direction="row"
             justifyContent="space-between"
-            alignItems="center"
+            alignItems="flex-start"
             gap={2}
           >
             <Stack gap={1}>
@@ -257,7 +257,8 @@ export default function ChallengesPageClient() {
               )}
               {isActive && hasChallengeCompleteError && (
                 <Text color="red">
-                  You are not eligible to complete this challenge.
+                  Complete the challenge first and then come back to claim your
+                  points.
                 </Text>
               )}
             </Stack>
