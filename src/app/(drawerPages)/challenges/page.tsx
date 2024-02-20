@@ -199,12 +199,7 @@ export default function Challenges() {
               padding: '1.25rem 1.5rem',
             }}
           >
-            <Text
-              fontSize="1rem"
-              sx={{
-                color: 'white',
-              }}
-            >
+            <Text color="white" fontSize="1rem">
               Disconnect wallet
             </Text>
             <Box>

@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
     to,
     guildsData.data
   );
+
   if (error) {
     return new Response(`Error getting guilds: ${error}`, {
       status: 400,
@@ -124,7 +125,7 @@ export async function GET(request: NextRequest) {
     imageUrl: guild.image_url,
     winShares: winShares[guild.guild_id] || 0,
   }));
-  return NextResponse.json(leaderboardResult);
+  return NextResponse.json(leaderboardResult.sort((a, b) => a.rank - b.rank));
 }
 
 export async function getGuildRanks(
