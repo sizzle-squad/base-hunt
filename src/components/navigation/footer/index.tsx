@@ -25,7 +25,7 @@ export default function Footer() {
   }, [pathname]);
 
   return (
-    <Box position={['fixed', 'unset']} bottom="0" width="100vw">
+    <Box position="fixed" bottom="0" width="100vw">
       <Paper
         sx={{
           bottom: 0,

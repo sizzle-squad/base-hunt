@@ -33,9 +33,6 @@ export default function Thanks() {
           gap=".6rem"
         >
           <HomePageSVGRow />
-          <Text textAlign="center" fontSize="1rem">
-            See Art. Mint Art. Reveal Art.
-          </Text>
         </Stack>
       </Stack>
       <Text fontSize="1.2rem" textAlign="center">

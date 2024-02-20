@@ -98,13 +98,10 @@ export default function Home() {
             gap=".6rem"
           >
             <HomePageSVGRow />
-            <Text textAlign="center" fontSize="1rem">
-              See Art. Mint Art. Reveal Art.
-            </Text>
           </Stack>
         </Stack>
         <Text fontSize="1.2rem" textAlign="center">
-          Collect onchain art, unlock exclusive Base merch.
+          Play onchain and unlock prizes.
         </Text>
         <Stack alignItems="center">
           <Stack

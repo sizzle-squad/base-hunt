@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { use, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import { Card, Grid, Stack } from '@mui/material';
 import { GAME_ID } from '@/constants/gameId';
@@ -33,7 +33,7 @@ export function DailyChallengeClaim() {
   }
 
   return (
-    <Grid item>
+    <Grid item justifyContent="center" display="flex">
       <Card
         sx={{
           width: '390px',
@@ -60,7 +60,7 @@ export function DailyChallengeClaim() {
               variant="body1"
               textAlign="center"
             >
-              Congratuation
+              Congratulations
             </Text>
           </Stack>
           <Text variant="h5" align="center" width="200px">
@@ -73,7 +73,9 @@ export function DailyChallengeClaim() {
             bgColor={Color.CoinbaseBlue}
           >
             <Text fontSize="16px" lineHeight="18px" fontWeight={400}>
-              Claim {guildState?.claimablePoints} points
+              {claimDailyChallenge.isSuccess
+                ? 'Point claimed!'
+                : `Claim ${guildState?.claimablePoints} points`}
             </Text>
           </Button>
         </Stack>
