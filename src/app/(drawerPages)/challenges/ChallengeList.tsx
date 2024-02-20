@@ -1,5 +1,12 @@
-import { Card, CardMedia, Grid, Stack } from '@mui/material';
-import { useCallback } from 'react';
+import {
+  Card,
+  CardMedia,
+  Grid,
+  Stack,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import { useCallback, useMemo } from 'react';
 import Text from '@/components/Text';
 import { Button } from '@/components/assets/Button';
 import { Color } from '@/constants/color';
@@ -24,6 +31,44 @@ export function ChallengeList({
   isLoading,
   displayGuildChallenge,
 }: Props) {
+  const theme = useTheme();
+  const greaterThanMid = useMediaQuery(theme.breakpoints.up('md'));
+
+  const fillerCards = useMemo(() => {
+    if (greaterThanMid) {
+      const fillerCount = list.length % 4;
+      const filler = [];
+      for (let i = 0; i < fillerCount; i++) {
+        filler.push(
+          <Grid
+            item
+            key={`fill-${i}`}
+            sx={{ width: '100%' }}
+            xs={12}
+            sm={5.5}
+            lg={2.75}
+          >
+            <Card
+              sx={{
+                height: '100%',
+                p: 2,
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'none',
+              }}
+            >
+              hello
+            </Card>
+          </Grid>
+        );
+      }
+
+      return filler;
+    }
+
+    return null;
+  }, [greaterThanMid, list]);
+
   const handlePress = useCallback(
     (item: ChallengeEntry) => () => {
       onClick?.(item);
@@ -62,7 +107,6 @@ export function ChallengeList({
                 lg={2.75}
               >
                 <Card
-                  key={index}
                   sx={{
                     height: '100%',
                     p: 2,
@@ -115,6 +159,7 @@ export function ChallengeList({
               </Grid>
             );
           })}
+        {fillerCards}
       </Grid>
     </Stack>
   );
