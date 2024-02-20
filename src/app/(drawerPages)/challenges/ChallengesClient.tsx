@@ -317,8 +317,8 @@ export default function ChallengesPageClient() {
         <DialogContent>
           <Text gutterBottom lineHeight="160%">
             Base Hunt is an onchain game on Base. Have fun onchain, earn points,
-            and unlock exclusive prizes. Base Hunt will run for 10 days and ends
-            on March 3 at 4 P.M PST.
+            and unlock exclusive prizes. Base Hunt will ends on March 3 at 4 P.M
+            PST.
           </Text>
           <Text gutterBottom lineHeight="160%" py={1}>
             <b>How do I play?</b>
