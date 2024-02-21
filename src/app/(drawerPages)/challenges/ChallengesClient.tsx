@@ -124,6 +124,7 @@ export default function ChallengesPageClient() {
     const mapped =
       (challenges
         ?.filter((challenge) => challenge.isEnabled)
+        .filter((challenge) => challenge.displayOrder > 0)
         .map((challenge) => {
           return {
             id: challenge.id,
@@ -142,10 +143,14 @@ export default function ChallengesPageClient() {
             isEnabled: challenge.isEnabled,
             gameId: challenge.gameId,
             checkFunction: challenge.checkFunction,
+            displayOrder: challenge.displayOrder,
           } as ChallengeEntry;
         }) as ChallengeEntry[]) ?? [];
 
     const challengeList = mapped.filter((challenge) => !challenge.isCompleted);
+    challengeList.sort((a, b) => {
+      return a.displayOrder - b.displayOrder;
+    });
     const completedList = mapped.filter((challenge) => challenge.isCompleted);
 
     return { challengeList, completedList };
