@@ -80,7 +80,9 @@ export function Guild({
           />
         </Box>
         <Box>
-          <Text variant="h5">{name ?? 'Solo player'}</Text>
+          <Text variant="h6" fontSize="18px">
+            {name ?? 'Solo player'}
+          </Text>
           <Text variant="body2">{positionString}</Text>
         </Box>
       </Stack>

@@ -9,27 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      address_gameid_configuration: {
-        Row: {
-          address: string | null
-          created_at: string
-          game_id: number | null
-          id: number
-        }
-        Insert: {
-          address?: string | null
-          created_at?: string
-          game_id?: number | null
-          id?: number
-        }
-        Update: {
-          address?: string | null
-          created_at?: string
-          game_id?: number | null
-          id?: number
-        }
-        Relationships: []
-      }
       badge_configuration: {
         Row: {
           artist_name: string | null

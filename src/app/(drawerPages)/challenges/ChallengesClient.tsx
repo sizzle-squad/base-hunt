@@ -164,18 +164,19 @@ export default function ChallengesPageClient() {
   );
 
   const handleToggleDrawer = useCallback(
-    (item: ListCardPropsForChallenges | null) => {
+    (item: ListCardPropsForChallenges) => {
       if (item?.isCompleted) return;
       setActiveItem(item);
-      toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
+      toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, true);
     },
-    [isOpen, toggleDrawer]
+    [toggleDrawer]
   );
 
   const handleDrawerClose = useCallback(() => {
-    handleToggleDrawer(null);
+    setActiveItem(null);
     setHasChallengeCompleteError(false);
-  }, [handleToggleDrawer]);
+    toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, false);
+  }, [toggleDrawer]);
 
   const handleCompletePress = useCallback(() => {
     claimChallenge.mutate({
@@ -303,7 +304,7 @@ export default function ChallengesPageClient() {
           handleClose={handleDrawerClose}
           open={isOpen}
         >
-          {activeItem && <ChallengeDrawerContent item={activeItem} />}
+          {activeItem ? <ChallengeDrawerContent item={activeItem} /> : null}
         </SwipeUpDrawer>
       </NoSsr>
       <BootstrapDialog
@@ -316,9 +317,8 @@ export default function ChallengesPageClient() {
         </DialogTitle>
         <DialogContent>
           <Text gutterBottom lineHeight="160%">
-            Base Hunt is an onchain game on Base. Have fun onchain, earn points,
-            and unlock exclusive prizes. Base Hunt will run for 10 days and ends
-            on March 3 at 4 P.M PST.
+            Base Hunt ends on March 3 at 4 P.M PST. Ensure you’re on the latest
+            version of the Coinbase Wallet app for the best playing experience.
           </Text>
           <Text gutterBottom lineHeight="160%" py={1}>
             <b>How do I play?</b>
@@ -335,8 +335,8 @@ export default function ChallengesPageClient() {
             member will receive 100 extra points.
           </Text>
           <Text gutterBottom lineHeight="160%">
-            • On the <b>“Prizes”</b> tab, you can redeem prizes are you level
-            up. You can redeem a prize for each level achieved.
+            • On the <b>“Prizes”</b> tab, you can redeem prizes as you level up.
+            Prizes can be redeemed IRL at ETH Denver or online.
           </Text>
         </DialogContent>
         <DialogActions>

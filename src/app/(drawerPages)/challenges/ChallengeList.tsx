@@ -136,7 +136,6 @@ export function ChallengeList({
                         gap={0.5}
                         maxWidth="215px"
                       >
-                        <Text variant="body2">{item.type}</Text>
                         <Text variant="h6">{item.title}</Text>
                       </Stack>
                       <Button
