@@ -23,6 +23,7 @@ type GuildData = {
   leader: string;
   name: string;
   total_member_count: number | null;
+  social_link: string | null;
 };
 
 // Fetch all guilds
@@ -114,7 +115,7 @@ export async function GET(request: NextRequest) {
     {} as Record<string, number>
   );
 
-  const leaderboardResult = guildsData.data.map((guild, index) => ({
+  const leaderboardResult = guildsData.data.map((guild) => ({
     id: guild.guild_id,
     name: guild.name,
     gameId: guild.game_id,
@@ -124,6 +125,7 @@ export async function GET(request: NextRequest) {
     rank: ranks[guild.guild_id].rank || 0, // TODO: add getGuildRank function in supabase
     imageUrl: guild.image_url,
     winShares: winShares[guild.guild_id] || 0,
+    socialLink: guild.social_link || '',
   }));
   return NextResponse.json(leaderboardResult.sort((a, b) => a.rank - b.rank));
 }

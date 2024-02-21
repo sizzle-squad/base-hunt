@@ -242,6 +242,7 @@ export type Database = {
           image_url: string | null
           leader: string
           name: string
+          social_link: string | null
           total_member_count: number | null
         }
         Insert: {
@@ -252,6 +253,7 @@ export type Database = {
           image_url?: string | null
           leader: string
           name: string
+          social_link?: string | null
           total_member_count?: number | null
         }
         Update: {
@@ -262,6 +264,7 @@ export type Database = {
           image_url?: string | null
           leader?: string
           name?: string
+          social_link?: string | null
           total_member_count?: number | null
         }
         Relationships: []
