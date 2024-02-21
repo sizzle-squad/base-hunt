@@ -21,6 +21,7 @@ export type ContentDataType = {
   cta_url: string | null;
   cta_text: string | null;
   cta_button_text: string | null;
+  display_order: number | 0;
 };
 
 async function mapChallengeState(
@@ -35,6 +36,7 @@ async function mapChallengeState(
     cta_url,
     cta_text,
     cta_button_text,
+    display_order,
   } = challenge.content_data as unknown as ContentDataType;
 
   return {
@@ -53,6 +55,7 @@ async function mapChallengeState(
     points: challenge.points,
     type: challenge.type,
     checkFunction: challenge.function_type,
+    displayOrder: display_order,
   };
 }
 
