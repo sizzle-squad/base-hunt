@@ -17,7 +17,11 @@ import {
 
 export const metadata: Metadata = {
   title: 'Base Hunt',
+<<<<<<< Updated upstream
   description: 'Base Hunt | ETHDenver 2024',
+=======
+  description: 'Base hunt game on Base network at ETH Denver 2024',
+>>>>>>> Stashed changes
 };
 
 export default function RootLayout({
