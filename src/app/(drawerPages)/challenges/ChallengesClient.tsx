@@ -164,18 +164,19 @@ export default function ChallengesPageClient() {
   );
 
   const handleToggleDrawer = useCallback(
-    (item: ListCardPropsForChallenges | null) => {
+    (item: ListCardPropsForChallenges) => {
       if (item?.isCompleted) return;
       setActiveItem(item);
-      toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, !isOpen);
+      toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, true);
     },
-    [isOpen, toggleDrawer]
+    [toggleDrawer]
   );
 
   const handleDrawerClose = useCallback(() => {
-    handleToggleDrawer(null);
+    setActiveItem(null);
     setHasChallengeCompleteError(false);
-  }, [handleToggleDrawer]);
+    toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, false);
+  }, [toggleDrawer]);
 
   const handleCompletePress = useCallback(() => {
     claimChallenge.mutate({
@@ -303,7 +304,7 @@ export default function ChallengesPageClient() {
           handleClose={handleDrawerClose}
           open={isOpen}
         >
-          {activeItem && <ChallengeDrawerContent item={activeItem} />}
+          {activeItem ? <ChallengeDrawerContent item={activeItem} /> : null}
         </SwipeUpDrawer>
       </NoSsr>
       <BootstrapDialog

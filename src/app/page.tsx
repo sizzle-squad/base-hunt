@@ -40,7 +40,7 @@ export default function Home() {
     const ctaText =
       process.env.NEXT_PUBLIC_KILL_SWITCH === 'true'
         ? 'Access Granted. Please Enter'
-        : 'Start Exploring';
+        : 'Start Playing';
     if (isClient) {
       return isConnected ? (
         <Button
