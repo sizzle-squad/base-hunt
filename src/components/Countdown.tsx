@@ -1,22 +1,24 @@
 'use client';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { setHours, startOfToday, startOfTomorrow } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 
 import { Stack } from '@mui/material';
 import accurateInterval from 'accurate-interval';
 
 import Text from '@/components/Text';
 
+const MST_TIMEZONE = 'America/Denver';
+
 function addLeadingZero(num: number) {
   return num < 10 ? `0${num}` : num;
 }
 
 export const CountdownTimer = memo(() => {
-  // targetDate is everyday at 5PM except the last day of the game
   const targetDate = setHours(startOfToday(), 17).getTime();
 
   const calculateInitialCount = () => {
-    const currentTime = new Date().getTime();
+    const currentTime = utcToZonedTime(new Date(), MST_TIMEZONE).getTime();
     let timeDifference = targetDate - currentTime;
     if (timeDifference < 0) {
       // need to get tmr 5pm
