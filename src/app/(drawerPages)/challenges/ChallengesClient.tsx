@@ -6,6 +6,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Link,
   NoSsr,
   Stack,
 } from '@mui/material';
@@ -342,6 +343,12 @@ export default function ChallengesPageClient() {
           <Text gutterBottom lineHeight="160%">
             • On the <b>“Prizes”</b> tab, you can redeem prizes as you level up.
             Prizes can be redeemed IRL at ETH Denver or online.
+          </Text>
+          <Text gutterBottom lineHeight="160%">
+            View the full{' '}
+            <Link target="_blank" href="https://basehunt.splashthat.com/">
+              rules and terms
+            </Link>
           </Text>
         </DialogContent>
         <DialogActions>

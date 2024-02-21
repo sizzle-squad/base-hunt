@@ -1,4 +1,5 @@
-import { Stack } from '@mui/material';
+import { Link, Stack } from '@mui/material';
+import { useMemo } from 'react';
 import Text from '@/components/Text';
 
 type Props = {
@@ -7,6 +8,18 @@ type Props = {
 };
 
 export function GuildDetailRow({ title, value }: Props) {
+  const valueContent = useMemo(() => {
+    if (typeof value === 'string' && value.includes('https://')) {
+      return (
+        <Link href={value} target="_blank">
+          <Text variant="body1">{value}</Text>
+        </Link>
+      );
+    }
+
+    return <Text variant="body1">{value}</Text>;
+  }, [value]);
+
   return (
     <Stack
       direction="row"
@@ -18,7 +31,7 @@ export function GuildDetailRow({ title, value }: Props) {
       }}
     >
       <Text variant="body1">{title}</Text>
-      <Text variant="body1">{value}</Text>
+      {valueContent}
     </Stack>
   );
 }

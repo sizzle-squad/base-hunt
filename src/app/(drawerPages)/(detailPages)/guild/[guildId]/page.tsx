@@ -171,7 +171,9 @@ export default function Page({ params }: { params: { guildId: string } }) {
               title="Members"
               value={currentGuild.totalMemberCount ?? 0}
             />
-            <GuildDetailRow title="Discord" value="---" />
+            {currentGuild.socialLink ? (
+              <GuildDetailRow title="Social" value={currentGuild.socialLink} />
+            ) : null}
           </Stack>
         </Stack>
       )}

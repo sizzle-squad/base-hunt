@@ -1,12 +1,12 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { Box, NoSsr, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import ListRow from '@/components/list/ListRow';
 import { TopContributorTag } from '@/components/list/TopContributorTag';
 import { GAME_ID } from '@/constants/gameId';
@@ -48,6 +48,7 @@ function generateGuildRankData() {
       isMock: true,
       imageUrl: null,
       winShares: 0,
+      socialLink: '',
     });
   }
   return mockData;
@@ -57,6 +58,7 @@ export function GuildLeaderboard() {
   const { address } = useAccount();
   const searchParams = useSearchParams();
   const hasNoGuild = Boolean(searchParams.get('hasNoGuild'));
+  const router = useRouter();
 
   const {
     data: guildState,
@@ -124,84 +126,91 @@ export function GuildLeaderboard() {
     return null;
   }, [hasNoGuild, isLoading]);
 
+  const handleCardPress = useCallback(
+    (guildId: string) => () => {
+      return router.push(`/guild/${guildId}`);
+    },
+    [router]
+  );
+
   return (
     <NoSsr>
       {guildCardListSkeleton}
       {!hasGuild && !isLoading ? (
         <GuildCardList guilds={topGuildRanks} />
       ) : (
-        <>
-          <Stack direction="column" mt="24px" gap={1}>
-            <DailyChallengeClaim />
-            {description}
-            <CountdownTimer />
-            <Stack direction="column" gap={1}>
-              <ListRow
-                name={leaderboardData.topContributor.name}
-                score={leaderboardData.topContributor.currentScore}
-                position={0}
-                offset={1}
-                isLast
-                isLoading={isTopGuildRanksLoading}
-                startContent={<TopContributorTag isGuild />}
-                profileTile={
-                  <Box
-                    sx={{
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      width: '45px',
-                      height: '45px',
-                    }}
-                  >
-                    <Image
-                      src={
-                        leaderboardData.topContributor.imageUrl ??
-                        '/images/solo.svg'
-                      }
-                      alt="guild profile picture"
-                      width={45}
-                      height={45}
-                    />
-                  </Box>
-                }
-              />
-            </Stack>
-            <Box>
-              {leaderboardData.restOfRanks.map(
-                (rank: GuildRank, index: number) => {
-                  return (
-                    <ListRow
-                      key={`guild-${rank}-${index}`}
-                      name={rank.name}
-                      position={index}
-                      offset={2}
-                      isLast={index === leaderboardData.restOfRanks.length - 1}
-                      score={rank.currentScore}
-                      isLoading={isTopGuildRanksLoading}
-                      profileTile={
-                        <Box
-                          sx={{
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            width: '45px',
-                            height: '45px',
-                          }}
-                        >
-                          <Image
-                            src={rank.imageUrl ?? '/images/solo.svg'}
-                            alt="guild profile picture"
-                            width={45}
-                            height={45}
-                          />
-                        </Box>
-                      }
-                    />
-                  );
-                }
-              )}
-            </Box>
+        <Stack direction="column" mt="24px" gap={1}>
+          <DailyChallengeClaim />
+          {description}
+          <CountdownTimer />
+          <Stack direction="column" gap={1}>
+            <ListRow
+              name={leaderboardData.topContributor.name}
+              score={leaderboardData.topContributor.currentScore}
+              position={0}
+              offset={1}
+              isLast
+              isLoading={isTopGuildRanksLoading}
+              startContent={<TopContributorTag isGuild />}
+              onClick={handleCardPress(leaderboardData.topContributor.id)}
+              profileTile={
+                <Box
+                  sx={{
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    width: '45px',
+                    height: '45px',
+                  }}
+                >
+                  <Image
+                    src={
+                      leaderboardData.topContributor.imageUrl ??
+                      '/images/solo.svg'
+                    }
+                    alt="guild profile picture"
+                    width={45}
+                    height={45}
+                  />
+                </Box>
+              }
+            />
           </Stack>
-        </>
+          <Box>
+            {leaderboardData.restOfRanks.map(
+              (rank: GuildRank, index: number) => {
+                return (
+                  <ListRow
+                    key={`guild-${rank}-${index}`}
+                    name={rank.name}
+                    position={index}
+                    offset={2}
+                    isLast={index === leaderboardData.restOfRanks.length - 1}
+                    score={rank.currentScore}
+                    isLoading={isTopGuildRanksLoading}
+                    onClick={handleCardPress(rank.id)}
+                    profileTile={
+                      <Box
+                        sx={{
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          width: '45px',
+                          height: '45px',
+                        }}
+                      >
+                        <Image
+                          src={rank.imageUrl ?? '/images/solo.svg'}
+                          alt="guild profile picture"
+                          width={45}
+                          height={45}
+                        />
+                      </Box>
+                    }
+                  />
+                );
+              }
+            )}
+          </Box>
+        </Stack>
       )}
     </NoSsr>
   );

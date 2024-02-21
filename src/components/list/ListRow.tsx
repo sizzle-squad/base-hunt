@@ -14,6 +14,7 @@ type Props = {
   score: number;
   startContent?: ReactNode;
   profileTile?: ReactNode;
+  onClick?: () => void;
 };
 
 export default function ListRow({
@@ -25,6 +26,7 @@ export default function ListRow({
   score,
   startContent,
   profileTile,
+  onClick,
 }: Props) {
   const borderRadiusStyle = useMemo(() => {
     // single row should have rounded corners
@@ -50,72 +52,74 @@ export default function ListRow({
   }, [isLoading, name]);
 
   return (
-    <>
+    <Stack
+      direction="column"
+      borderRadius={borderRadiusStyle}
+      display="flex"
+      padding="20px"
+      bgcolor="var(--White, #fff)"
+      gap={2}
+      onClick={onClick}
+      sx={{
+        cursor: 'pointer',
+      }}
+    >
+      {startContent}
       <Stack
-        direction="column"
-        borderRadius={borderRadiusStyle}
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        alignSelf="stretch"
+        gap="20px"
         display="flex"
-        padding="20px"
         bgcolor="var(--White, #fff)"
-        gap={2}
       >
-        {startContent}
+        <Box width="30px">
+          <Text variant="body1">{position + offset}</Text>
+        </Box>
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+          justifyContent="flex-start"
           alignSelf="stretch"
-          gap="20px"
           display="flex"
-          bgcolor="var(--White, #fff)"
+          gap="8px"
+          flexGrow={1}
         >
-          <Box width="30px">
-            <Text variant="body1">{position + offset}</Text>
-          </Box>
           <Stack
             direction="row"
             justifyContent="flex-start"
-            alignSelf="stretch"
-            display="flex"
             gap="8px"
-            flexGrow={1}
+            display="flex"
           >
-            <Stack
-              direction="row"
-              justifyContent="flex-start"
-              gap="8px"
-              display="flex"
-            >
-              {profileTile ?? (
-                <Avatar
-                  sx={{
-                    borderRadius: '100px',
-                    backgroundColor: stringToColor(name),
-                    width: '24px',
-                    height: '24px',
-                    flexDirection: 'column',
-                  }}
-                >
-                  {''}
-                </Avatar>
-              )}
-              <Stack direction="column" justifyContent="center">
-                {content}
-              </Stack>
+            {profileTile ?? (
+              <Avatar
+                sx={{
+                  borderRadius: '100px',
+                  backgroundColor: stringToColor(name),
+                  width: '24px',
+                  height: '24px',
+                  flexDirection: 'column',
+                }}
+              >
+                {''}
+              </Avatar>
+            )}
+            <Stack direction="column" justifyContent="center">
+              {content}
             </Stack>
           </Stack>
-
-          <Text
-            textAlign="right"
-            width={80}
-            variant="body1"
-            fontWeight={500}
-            noWrap
-          >
-            {`${score} pts`}
-          </Text>
         </Stack>
+
+        <Text
+          textAlign="right"
+          width={80}
+          variant="body1"
+          fontWeight={500}
+          noWrap
+        >
+          {`${score} pts`}
+        </Text>
       </Stack>
-    </>
+    </Stack>
   );
 }
