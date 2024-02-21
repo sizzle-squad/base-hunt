@@ -3,8 +3,11 @@
 import { Box, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 import { useState } from 'react';
+import { useAccount } from 'wagmi';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 
+import { useGuildState } from '@/hooks/useGuildState';
+import { GAME_ID } from '@/constants/gameId';
 import { GuildLeaderboard } from './guild/GuildLeaderboard';
 import { PlayerLeaderboard } from './PlayerLeaderboard';
 
@@ -15,7 +18,13 @@ type Props = {
 export default function LeaderboardClient({
   selectedBoard = 'leaderboard',
 }: Props) {
+  const { address } = useAccount();
   const [currentBoard, setCurrentBoard] = useState(selectedBoard);
+
+  useGuildState({
+    gameId: GAME_ID,
+    userAddress: address,
+  });
 
   return (
     <Box pb={9}>

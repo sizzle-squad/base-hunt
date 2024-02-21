@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react';
 
-import { Box, NoSsr, Stack } from '@mui/material';
+import { Box, Card, Grid, NoSsr, Skeleton, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 
 import Image from 'next/image';
@@ -17,7 +17,6 @@ import Text from '@/components/Text';
 
 import { CountdownTimer } from '@/components/Countdown';
 import { DailyChallengeClaim } from '@/components/Cards/DailyChallengeClaim';
-import ListCard from '@/components/ListCard';
 import { GuildCardList } from './GuildCardList';
 
 type RankMock = GuildRank & {
@@ -77,6 +76,7 @@ export function GuildLeaderboard() {
   } = useGuild({ gameId: GAME_ID });
 
   const isLoading = useMemo(() => {
+    console.log({ isGuildStateLoading, isTopGuildRanksLoading });
     return isGuildStateLoading || isTopGuildRanksLoading;
   }, [isGuildStateLoading, isTopGuildRanksLoading]);
 
@@ -110,21 +110,62 @@ export function GuildLeaderboard() {
   }, []);
 
   const guildCardListSkeleton = useMemo(() => {
-    if (hasNoGuild && isLoading) {
+    if (hasNoGuild && isGuildStateLoading) {
       return (
         <Stack direction="column" gap={1} pt={3}>
-          <ListCard isLoading />
-          <ListCard isLoading />
-          <ListCard isLoading />
-          <ListCard isLoading />
-          <ListCard isLoading />
-          <ListCard isLoading />
+          <Grid
+            container
+            sx={{ width: '100%', flexGrow: 1, pt: 3 }}
+            justifyContent="center"
+          >
+            {Array.from({ length: 6 }).map((_, index) => {
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  lg={4}
+                  key={`skeleton-${index}`}
+                  spacing={1}
+                  sx={{
+                    pb: 2,
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Card
+                    sx={{
+                      borderRadius: '12px',
+                      padding: '12px',
+                      alignSelf: 'stretch',
+                      width: '90%',
+                    }}
+                  >
+                    <Stack direction="column" gap={2}>
+                      <Stack direction="row" gap={2}>
+                        <Skeleton variant="rounded" width={90} height={90} />
+                        <Stack direction="column" gap={2}>
+                          <Stack gap={1}>
+                            <Skeleton variant="text" width={100} height={20} />
+                            <Skeleton variant="text" width={150} height={25} />
+                            <Skeleton variant="text" width={150} height={25} />
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                      <Skeleton variant="rounded" width="100%" height={50} />
+                    </Stack>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
         </Stack>
       );
     }
 
     return null;
-  }, [hasNoGuild, isLoading]);
+  }, [hasNoGuild, isGuildStateLoading]);
 
   const handleCardPress = useCallback(
     (guildId: string) => () => {
@@ -133,84 +174,102 @@ export function GuildLeaderboard() {
     [router]
   );
 
+  const leaderboard = useMemo(() => {
+    if (hasNoGuild) {
+      return null;
+    }
+
+    return (
+      <Stack direction="column" mt="24px" gap={1}>
+        <DailyChallengeClaim />
+        {description}
+        <CountdownTimer />
+        <Stack direction="column" gap={1}>
+          <ListRow
+            name={leaderboardData.topContributor.name}
+            score={leaderboardData.topContributor.currentScore}
+            position={0}
+            offset={1}
+            isLast
+            isLoading={isLoading}
+            startContent={<TopContributorTag isGuild />}
+            onClick={handleCardPress(leaderboardData.topContributor.id)}
+            profileTile={
+              <Box
+                sx={{
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  width: '45px',
+                  height: '45px',
+                }}
+              >
+                <Image
+                  src={
+                    leaderboardData.topContributor.imageUrl ??
+                    '/images/solo.svg'
+                  }
+                  alt="guild profile picture"
+                  width={45}
+                  height={45}
+                />
+              </Box>
+            }
+          />
+        </Stack>
+        <Box>
+          {leaderboardData.restOfRanks.map((rank: GuildRank, index: number) => {
+            return (
+              <ListRow
+                key={`guild-${rank}-${index}`}
+                name={rank.name}
+                position={index}
+                offset={2}
+                isLast={index === leaderboardData.restOfRanks.length - 1}
+                score={rank.currentScore}
+                isLoading={isLoading}
+                onClick={handleCardPress(rank.id)}
+                profileTile={
+                  <Box
+                    sx={{
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      width: '45px',
+                      height: '45px',
+                    }}
+                  >
+                    <Image
+                      src={rank.imageUrl ?? '/images/solo.svg'}
+                      alt="guild profile picture"
+                      width={45}
+                      height={45}
+                    />
+                  </Box>
+                }
+              />
+            );
+          })}
+        </Box>
+      </Stack>
+    );
+  }, [
+    description,
+    handleCardPress,
+    hasNoGuild,
+    isLoading,
+    leaderboardData.restOfRanks,
+    leaderboardData.topContributor.currentScore,
+    leaderboardData.topContributor.id,
+    leaderboardData.topContributor.imageUrl,
+    leaderboardData.topContributor.name,
+  ]);
+
   return (
     <NoSsr>
       {guildCardListSkeleton}
       {!hasGuild && !isLoading ? (
         <GuildCardList guilds={topGuildRanks} />
       ) : (
-        <Stack direction="column" mt="24px" gap={1}>
-          <DailyChallengeClaim />
-          {description}
-          <CountdownTimer />
-          <Stack direction="column" gap={1}>
-            <ListRow
-              name={leaderboardData.topContributor.name}
-              score={leaderboardData.topContributor.currentScore}
-              position={0}
-              offset={1}
-              isLast
-              isLoading={isTopGuildRanksLoading}
-              startContent={<TopContributorTag isGuild />}
-              onClick={handleCardPress(leaderboardData.topContributor.id)}
-              profileTile={
-                <Box
-                  sx={{
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    width: '45px',
-                    height: '45px',
-                  }}
-                >
-                  <Image
-                    src={
-                      leaderboardData.topContributor.imageUrl ??
-                      '/images/solo.svg'
-                    }
-                    alt="guild profile picture"
-                    width={45}
-                    height={45}
-                  />
-                </Box>
-              }
-            />
-          </Stack>
-          <Box>
-            {leaderboardData.restOfRanks.map(
-              (rank: GuildRank, index: number) => {
-                return (
-                  <ListRow
-                    key={`guild-${rank}-${index}`}
-                    name={rank.name}
-                    position={index}
-                    offset={2}
-                    isLast={index === leaderboardData.restOfRanks.length - 1}
-                    score={rank.currentScore}
-                    isLoading={isTopGuildRanksLoading}
-                    onClick={handleCardPress(rank.id)}
-                    profileTile={
-                      <Box
-                        sx={{
-                          borderRadius: '8px',
-                          overflow: 'hidden',
-                          width: '45px',
-                          height: '45px',
-                        }}
-                      >
-                        <Image
-                          src={rank.imageUrl ?? '/images/solo.svg'}
-                          alt="guild profile picture"
-                          width={45}
-                          height={45}
-                        />
-                      </Box>
-                    }
-                  />
-                );
-              }
-            )}
-          </Box>
-        </Stack>
+        leaderboard
       )}
     </NoSsr>
   );
