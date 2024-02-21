@@ -36,7 +36,7 @@ export default function Thanks() {
         </Stack>
       </Stack>
       <Text fontSize="1.2rem" textAlign="center">
-        Collect onchain art, unlock exclusive Base merch.
+        Play onchain and unlock prizes.
       </Text>
       <Stack width="100%" alignItems="center">
         <Stack
@@ -58,7 +58,7 @@ export default function Thanks() {
               fontWeight: 400,
             }}
           >
-            Thanks For Playing
+            Basehunt is coming...
           </Button>
         </Stack>
       </Stack>
