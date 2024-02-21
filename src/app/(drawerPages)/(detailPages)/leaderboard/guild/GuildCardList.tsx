@@ -38,7 +38,21 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
   );
 
   return (
-    <Stack direction="column" alignItems="center" pb={10} sx={{ flexGrow: 1 }}>
+    <Stack
+      direction="column"
+      alignItems="center"
+      pb={10}
+      sx={{ flexGrow: 1 }}
+      gap={1}
+    >
+      <Box pt={2}>
+        <Text textAlign="center">
+          Join a guild, earn more points and have more fun! If your guild has
+          the most points at the end of each day (5 P.M MST), you’ll earn an
+          extra 100 points for that day. You’ll have 7 opportunities to win the
+          daily guild challenge. Choose wisely!
+        </Text>
+      </Box>
       <Grid
         container
         sx={{ width: '100%', flexGrow: 1, pt: 3 }}
