@@ -17,7 +17,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'Base Hunt',
-  description: 'Base hunt game on Base network at Art Basel Miami 2023',
+  description: 'Base Hunt | ETHDenver 2024',
 };
 
 export default function RootLayout({
