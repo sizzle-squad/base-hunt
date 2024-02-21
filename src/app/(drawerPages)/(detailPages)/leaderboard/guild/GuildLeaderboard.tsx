@@ -53,17 +53,16 @@ function generateGuildRankData() {
   return mockData;
 }
 
-export function GuildLeaderboard() {
+export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
   const { address } = useAccount();
   const searchParams = useSearchParams();
-  const hasNoGuild = Boolean(searchParams.get('hasNoGuild'));
+  const hasNoGuild = Boolean(searchParams.get('hasNoGuild') || noGuild);
   const router = useRouter();
 
   const {
     data: guildState,
     isLoading: isGuildStateLoading,
     error: guildStateError,
-    hasGuild,
   } = useGuildState({
     gameId: GAME_ID,
     userAddress: address,
@@ -266,7 +265,7 @@ export function GuildLeaderboard() {
   return (
     <NoSsr>
       {guildCardListSkeleton}
-      {!hasGuild && !isLoading ? (
+      {hasNoGuild && !isLoading ? (
         <GuildCardList guilds={topGuildRanks} />
       ) : (
         leaderboard

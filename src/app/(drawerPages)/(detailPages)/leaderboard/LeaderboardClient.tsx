@@ -21,7 +21,7 @@ export default function LeaderboardClient({
   const { address } = useAccount();
   const [currentBoard, setCurrentBoard] = useState(selectedBoard);
 
-  useGuildState({
+  const { hasGuild } = useGuildState({
     gameId: GAME_ID,
     userAddress: address,
   });
@@ -75,7 +75,7 @@ export default function LeaderboardClient({
       {currentBoard === 'leaderboard' ? (
         <PlayerLeaderboard />
       ) : (
-        <GuildLeaderboard />
+        <GuildLeaderboard noGuild={!hasGuild} />
       )}
     </Box>
   );
