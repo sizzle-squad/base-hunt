@@ -46,6 +46,7 @@ export function Button({
         color: textColor,
         textAlign: 'center',
         width,
+        borderColor: '#656565',
       }}
     >
       {children}

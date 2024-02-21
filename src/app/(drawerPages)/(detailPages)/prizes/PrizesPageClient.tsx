@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react';
 
-import { NoSsr, Skeleton, Stack } from '@mui/material';
+import { Box, Grid, NoSsr, Skeleton, Stack } from '@mui/material';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 
@@ -12,6 +12,7 @@ import Text from '@/components/Text';
 import { Color } from '@/constants/color';
 import { GAME_ID } from '@/constants/gameId';
 import { useLevels } from '@/hooks/useLevels';
+import Pill from '@/components/Pill';
 
 export default function PrizesPageClient() {
   const { address } = useAccount();
@@ -58,8 +59,17 @@ export default function PrizesPageClient() {
   return (
     <Stack gap="24px" pb={10}>
       <DetailsPageNavbar title="Prizes" />
+      <Text textAlign="center">
+        Prizes can be claimed for free at ETHDenver (Spork Castle, Booth 301) or
+        ordered through the Slice merch store for a small processing fee.
+      </Text>
       <NoSsr>
-        <Stack direction="column" alignItems="center" gap={3}>
+        <Grid
+          container
+          gap={2}
+          sx={{ width: '100%', flexGrow: 1 }}
+          justifyContent="space-between"
+        >
           {isLevelsLoading
             ? loadingSkeleton
             : data.levels.map((level, index) => {
@@ -70,58 +80,78 @@ export default function PrizesPageClient() {
                 const isDisabled = currentLevel < index;
 
                 return (
-                  <Stack
-                    direction="column"
+                  <Grid
+                    item
                     key={`${level.id}-${index}`}
-                    gap={1}
-                    p={2}
-                    sx={{ background: Color.White }}
-                    height="100%"
-                    width="336px"
-                    borderRadius="16px"
+                    xs={12}
+                    sm={5.5}
+                    lg={2.75}
                   >
-                    <Stack direction="row" alignItems="center" gap={2}>
-                      <Image
-                        src={level.imageUrl ?? ''}
-                        alt="jumbotron"
-                        width={44}
-                        height={44}
-                      />
-                      <Stack direction="column">
-                        <Text variant="h6">Level {level.level}</Text>
-                        <Text variant="body1">{level.prizeDescription}</Text>
-                      </Stack>
-                    </Stack>
                     <Stack
                       direction="column"
+                      gap={1}
+                      p={2}
+                      sx={{ background: Color.White }}
+                      height="100%"
+                      width="100%"
+                      borderRadius="16px"
                       alignItems="center"
-                      justifyContent="center"
-                      py={2}
-                      width="300px"
-                      height="275px"
                     >
-                      <Image
-                        src={level.prizeImageUrl ?? ''}
-                        alt="jumbotron"
-                        width={200}
-                        height={200}
-                      />
-                    </Stack>
+                      <Stack direction="row" alignItems="flex-start" gap={2}>
+                        <Box pt={1}>
+                          <Image
+                            src={level.imageUrl ?? ''}
+                            alt="jumbotron"
+                            width={44}
+                            height={44}
+                          />
+                        </Box>
+                        <Stack direction="column">
+                          <Stack direction="row" gap={2}>
+                            <Text variant="h6">Level {level.level}</Text>
+                            {currentLevel === index && (
+                              <Pill>
+                                <Text useMonoFont fontSize="14px">
+                                  Current
+                                </Text>
+                              </Pill>
+                            )}
+                          </Stack>
+                          <Text variant="body1">{level.prizeDescription}</Text>
+                          <Text variant="body1">{`${level.thresholdPoints.toString()} points required`}</Text>
+                        </Stack>
+                      </Stack>
+                      <Stack
+                        direction="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        py={2}
+                        width="300px"
+                        height="275px"
+                      >
+                        <Image
+                          src={level.prizeImageUrl ?? ''}
+                          alt="jumbotron"
+                          width={200}
+                          height={200}
+                        />
+                      </Stack>
 
-                    <Button
-                      href={level.ctaUrl}
-                      variant="contained"
-                      disabled={isDisabled}
-                      bgColor={Color.CoinbaseBlue}
-                      onClick={handleClaimPress(level.ctaUrl)}
-                      textColor={Color.White}
-                    >
-                      {currentLevel >= index ? 'Claim' : 'Locked'}
-                    </Button>
-                  </Stack>
+                      <Button
+                        href={level.ctaUrl}
+                        variant="contained"
+                        disabled={isDisabled}
+                        bgColor={Color.CoinbaseBlue}
+                        onClick={handleClaimPress(level.ctaUrl)}
+                        textColor={Color.White}
+                      >
+                        {currentLevel >= index ? 'Claim' : 'Locked'}
+                      </Button>
+                    </Stack>
+                  </Grid>
                 );
               })}
-        </Stack>
+        </Grid>
       </NoSsr>
     </Stack>
   );
