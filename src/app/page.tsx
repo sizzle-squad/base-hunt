@@ -78,8 +78,7 @@ export default function Home() {
         justifyContent={['space-between', 'unset']}
         sx={{
           position: 'absolute',
-          px: '20px',
-          py: '35px',
+          p: '20px',
           width: '100vw',
           height: '100vh',
           backgroundImage: `url('/images/landing-bg.svg')`,
@@ -91,18 +90,18 @@ export default function Home() {
       >
         <Stack width="100%" justifyContent="center" alignItems="center">
           <BaseHuntAnimated width="100%" />
-          <Stack
-            width="100%"
-            justifyContent="center"
-            alignItems="center"
-            gap=".6rem"
-          >
-            <HomePageSVGRow />
-          </Stack>
         </Stack>
-        <Text fontSize="1.2rem" textAlign="center">
-          Play onchain and unlock prizes.
-        </Text>
+        <Stack
+          width="100%"
+          justifyContent="center"
+          alignItems="center"
+          gap=".6rem"
+        >
+          <HomePageSVGRow />
+          <Text fontSize="1.2rem" textAlign="center">
+            Play onchain and unlock prizes.
+          </Text>
+        </Stack>
         <Stack alignItems="center">
           <Stack
             paddingTop={5}
@@ -111,7 +110,7 @@ export default function Home() {
           >
             {ctaButton}
           </Stack>
-          <Stack alignItems="center">
+          <Stack alignItems="center" pb="50px">
             <RainbowConnectButton.Custom>
               {({ openConnectModal, mounted, account, chain }) => {
                 return (
