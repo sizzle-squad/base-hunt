@@ -75,7 +75,6 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
   } = useGuild({ gameId: GAME_ID });
 
   const isLoading = useMemo(() => {
-    console.log({ isGuildStateLoading, isTopGuildRanksLoading });
     return isGuildStateLoading || isTopGuildRanksLoading;
   }, [isGuildStateLoading, isTopGuildRanksLoading]);
 
