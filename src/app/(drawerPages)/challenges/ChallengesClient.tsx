@@ -206,10 +206,6 @@ export default function ChallengesPageClient() {
   useEffect(() => {
     if (claimChallenge.isSuccess) {
       setIsClaimSuccess(true);
-      setTimeout(() => {
-        handleToggleDrawer(activeItem!);
-        setIsClaimSuccess(false);
-      }, 3000);
     }
 
     if (claimChallenge.isError) {
