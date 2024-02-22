@@ -13,9 +13,10 @@ type Props = {
   currentLevel: LevelNumber | null;
   score: number;
   isLoading?: boolean;
+  rank?: string;
 };
 
-export function Level({ currentLevel, score, isLoading }: Props) {
+export function Level({ currentLevel, score, isLoading, rank }: Props) {
   const router = useRouter();
 
   const content = useMemo(() => {
@@ -42,12 +43,23 @@ export function Level({ currentLevel, score, isLoading }: Props) {
           height={64}
         />
         <Box>
-          <Text variant="h5">Level {currentLevel}</Text>
-          <Text variant="body2">{`${score} points`}</Text>
+          <Text variant="h6" fontSize="18px">
+            Level {currentLevel}
+          </Text>
+          <Stack
+            direction="row"
+            gap={1}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Text variant="body2">{`${score} points`}</Text>
+            <Text variant="body2">•</Text>
+            <Text variant="body2">{`Rank #${rank}`}</Text>
+          </Stack>
         </Box>
       </Stack>
     );
-  }, [currentLevel, isLoading, score]);
+  }, [currentLevel, isLoading, rank, score]);
 
   return (
     <Stack

@@ -248,6 +248,7 @@ export default function Challenges() {
           }
           isLoading={isLevelsLoading}
           score={score as number}
+          rank={rank?.rank}
         />
         <Guild
           name={guildState?.name}
