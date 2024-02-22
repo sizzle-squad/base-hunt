@@ -118,7 +118,10 @@ export function ChallengeList({
                   <Stack direction="row" gap={2}>
                     <CardMedia
                       component="img"
-                      image="https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg"
+                      image={
+                        item.imageUrl ??
+                        'https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg'
+                      }
                       alt="green iguana"
                       sx={{
                         height: '126px',

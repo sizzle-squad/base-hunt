@@ -30,7 +30,7 @@ import { ChallengeList } from './ChallengeList';
 
 export type ChallengeEntry = Omit<
   Challenge,
-  'icon' | 'imageUrl' | 'challengeType' | 'name'
+  'icon' | 'challengeType' | 'name'
 > & {
   title: string;
 };
@@ -145,6 +145,7 @@ export default function ChallengesPageClient() {
             gameId: challenge.gameId,
             checkFunction: challenge.checkFunction,
             displayOrder: challenge.displayOrder,
+            imageUrl: challenge.imageUrl,
           } as ChallengeEntry;
         }) as ChallengeEntry[]) ?? [];
 
