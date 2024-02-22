@@ -1,10 +1,9 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { Box, Skeleton, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 import Image from 'next/image';
-import Link from '@/components/AnimatedLink';
 import Text from '@/components/Text';
 
 type Props = {
@@ -30,6 +29,12 @@ export function Guild({
     }
     return '/leaderboard/guild?hasNoGuild=true';
   }, [id]);
+
+  const handlePress = useCallback(() => {
+    if (isLoading) return;
+
+    return router.push(redirectParams);
+  }, [isLoading, redirectParams, router]);
 
   const positionString = useMemo(() => {
     if (!position) return 'No guild';
@@ -103,11 +108,9 @@ export function Guild({
         overflow: 'hidden',
         cursor: 'pointer',
       }}
-      onClick={() => router.push(redirectParams)}
+      onClick={handlePress}
     >
-      <Link href={redirectParams}>
-        <Stack width="160px">{content}</Stack>
-      </Link>
+      <Stack width="160px">{content}</Stack>
     </Stack>
   );
 }

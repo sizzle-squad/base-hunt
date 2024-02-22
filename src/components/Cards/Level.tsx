@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { Box, Skeleton, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
@@ -18,6 +18,12 @@ type Props = {
 
 export function Level({ currentLevel, score, isLoading, rank }: Props) {
   const router = useRouter();
+
+  const handlePress = useCallback(() => {
+    if (isLoading) return;
+
+    return router.push('/levels');
+  }, [isLoading, router]);
 
   const content = useMemo(() => {
     if (isLoading) {
@@ -52,9 +58,9 @@ export function Level({ currentLevel, score, isLoading, rank }: Props) {
             justifyContent="center"
             alignItems="center"
           >
-            <Text variant="body2">{`${score} points`}</Text>
+            <Text variant="body2">{`${score} pts`}</Text>
             <Text variant="body2">•</Text>
-            <Text variant="body2">{`Rank #${rank}`}</Text>
+            <Text variant="body2">{`Rank ${rank ? `#${rank}` : 'N/A'}`}</Text>
           </Stack>
         </Box>
       </Stack>
@@ -75,11 +81,9 @@ export function Level({ currentLevel, score, isLoading, rank }: Props) {
         overflow: 'hidden',
         cursor: 'pointer',
       }}
-      onClick={() => router.push('/levels')}
+      onClick={handlePress}
     >
-      <Link href="/levels">
-        <Stack width="160px">{content}</Stack>
-      </Link>
+      <Stack width="160px">{content}</Stack>
     </Stack>
   );
 }
