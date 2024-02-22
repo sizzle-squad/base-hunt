@@ -16,6 +16,7 @@ type Props = {
   maxWidth?: string;
   px?: string;
   py?: string;
+  borderColor?: string;
 };
 
 export function Button({
@@ -31,6 +32,7 @@ export function Button({
   px = '20px',
   py = '16px',
   maxWidth,
+  borderColor = '#656565',
 }: Props) {
   return (
     <LoadingButton
@@ -48,7 +50,7 @@ export function Button({
         color: textColor,
         textAlign: 'center',
         width,
-        borderColor: '#656565',
+        borderColor,
         maxWidth,
       }}
     >
