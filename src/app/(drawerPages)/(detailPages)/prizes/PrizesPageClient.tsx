@@ -59,8 +59,9 @@ export default function PrizesPageClient() {
   return (
     <Stack gap="24px" pb={10}>
       <DetailsPageNavbar title="Prizes" />
-      <Text textAlign="center">
-        Prizes can be claimed for free at ETHDenver (Spork Castle, Booth 301) or
+      <Text textAlign="center" whiteSpace="pre-wrap">
+        Prizes can be claimed for free at ETHDenver (Spork Castle, Booth 301) or{' '}
+        <br />
         ordered through the Slice merch store for a small processing fee.
       </Text>
       <NoSsr>
