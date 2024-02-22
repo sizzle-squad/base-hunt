@@ -96,6 +96,7 @@ export default function PrizesPageClient() {
                       width="100%"
                       borderRadius="16px"
                       alignItems="center"
+                      justifyContent={'space-between'}
                     >
                       <Stack direction="row" alignItems="flex-start" gap={2}>
                         <Box pt={1}>
@@ -119,6 +120,14 @@ export default function PrizesPageClient() {
                           </Stack>
                           <Text variant="body1">{level.prizeDescription}</Text>
                           <Text variant="body1">{`${level.thresholdPoints.toString()} points required`}</Text>
+                          <Text
+                            variant="body1"
+                            visibility={
+                              level.level === '1' ? 'visible' : 'hidden'
+                            }
+                          >
+                            <i>IRL Redemption Only</i>
+                          </Text>
                         </Stack>
                       </Stack>
                       <Stack
