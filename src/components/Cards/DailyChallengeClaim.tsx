@@ -1,6 +1,6 @@
 import { use, useCallback } from 'react';
 import { useAccount } from 'wagmi';
-import { Card, Grid, Stack } from '@mui/material';
+import { Card, Grid, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { GAME_ID } from '@/constants/gameId';
 import { useMutateGuildDailyChallenge } from '@/hooks/useMutateGuildDailyChallenge';
 import { useGuildState } from '@/hooks/useGuildState';
@@ -10,6 +10,9 @@ import { Color } from '@/constants/color';
 
 export function DailyChallengeClaim() {
   const { address } = useAccount();
+  const theme = useTheme();
+  const greaterThanMid = useMediaQuery(theme.breakpoints.up('md'));
+
   const {
     data: guildState,
     isLoading: isGuildStateLoading,
@@ -33,17 +36,21 @@ export function DailyChallengeClaim() {
   }
 
   return (
-    <Grid item justifyContent="center" display="flex">
+    <Grid item width="100%" xs={12} sm={5.5} lg={2.75}>
       <Card
         sx={{
-          width: '390px',
           height: '100%',
           p: 2,
           borderRadius: '12px',
           cursor: 'pointer',
         }}
       >
-        <Stack alignItems="center" gap={2}>
+        <Stack
+          alignItems="center"
+          gap={2}
+          height="100%"
+          justifyContent="space-between"
+        >
           <Stack
             direction="row"
             borderRadius={100}
@@ -51,7 +58,6 @@ export function DailyChallengeClaim() {
             display="flex"
             padding="4px 8px"
             alignItems="center"
-            width="fit-content"
             gap={1}
           >
             <Text
@@ -63,7 +69,11 @@ export function DailyChallengeClaim() {
               Congratulations
             </Text>
           </Stack>
-          <Text variant="h5" align="center" width="200px">
+          <Text
+            variant={greaterThanMid ? 'h4' : 'h5'}
+            align="center"
+            width="200px"
+          >
             Your guild won a Daily Challenge
           </Text>
           <Button
