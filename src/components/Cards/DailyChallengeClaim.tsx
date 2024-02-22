@@ -33,10 +33,9 @@ export function DailyChallengeClaim() {
   }
 
   return (
-    <Grid item justifyContent="center" display="flex">
+    <Grid item width="100%" xs={12} sm={5.5} lg={2.75}>
       <Card
         sx={{
-          width: '390px',
           height: '100%',
           p: 2,
           borderRadius: '12px',
@@ -51,7 +50,6 @@ export function DailyChallengeClaim() {
             display="flex"
             padding="4px 8px"
             alignItems="center"
-            width="fit-content"
             gap={1}
           >
             <Text
