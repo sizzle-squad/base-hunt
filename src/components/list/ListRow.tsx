@@ -1,6 +1,13 @@
 import { ReactNode, useMemo } from 'react';
 
-import { Avatar, Box, Skeleton, Stack } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Skeleton,
+  Stack,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 
 import Text from '@/components/Text';
 import { stringToColor } from '@/utils/stringToColor';
@@ -28,6 +35,9 @@ export default function ListRow({
   profileTile,
   onClick,
 }: Props) {
+  const theme = useTheme();
+  const smallerThanSm = useMediaQuery(theme.breakpoints.down('sm'));
+
   const borderRadiusStyle = useMemo(() => {
     // single row should have rounded corners
     if (isLast && position === 0) return '12px';
@@ -45,11 +55,11 @@ export default function ListRow({
     }
 
     return (
-      <Text variant="body1" noWrap>
+      <Text variant="body1" noWrap width={smallerThanSm ? '160px' : 'auto'}>
         {name}
       </Text>
     );
-  }, [isLoading, name]);
+  }, [isLoading, name, smallerThanSm]);
 
   return (
     <Stack
@@ -75,15 +85,14 @@ export default function ListRow({
         bgcolor="var(--White, #fff)"
       >
         <Box width="30px">
-          <Text variant="body1">{position + offset}</Text>
+          <Text variant="body1">{position + offset}.</Text>
         </Box>
         <Stack
           direction="row"
           justifyContent="flex-start"
-          alignSelf="stretch"
           display="flex"
-          gap="8px"
-          flexGrow={1}
+          gap={1}
+          flex="1 1 0"
         >
           <Stack
             direction="row"
@@ -109,10 +118,9 @@ export default function ListRow({
             </Stack>
           </Stack>
         </Stack>
-
         <Text
           textAlign="right"
-          width={80}
+          width="95px"
           variant="body1"
           fontWeight={500}
           noWrap

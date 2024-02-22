@@ -1,7 +1,7 @@
 'use client';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { setHours, startOfToday, startOfTomorrow } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
+import { getTimezoneOffset, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
 import { Stack } from '@mui/material';
 import accurateInterval from 'accurate-interval';
@@ -15,18 +15,18 @@ function addLeadingZero(num: number) {
 }
 
 export const CountdownTimer = memo(() => {
-  const targetDate = utcToZonedTime(
+  const targetDate = zonedTimeToUtc(
     setHours(startOfToday(), 17),
     MST_TIMEZONE
   ).getTime();
 
   const calculateInitialCount = () => {
-    const currentTime = utcToZonedTime(new Date(), MST_TIMEZONE).getTime();
+    const currentTime = new Date().getTime();
     let timeDifference = targetDate - currentTime;
     if (timeDifference < 0) {
       // need to get tmr 5pm
       timeDifference =
-        utcToZonedTime(
+        zonedTimeToUtc(
           setHours(startOfTomorrow(), 17),
           MST_TIMEZONE
         ).getTime() - currentTime;
