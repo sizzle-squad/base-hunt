@@ -15,14 +15,21 @@ function addLeadingZero(num: number) {
 }
 
 export const CountdownTimer = memo(() => {
-  const targetDate = setHours(startOfToday(), 17).getTime();
+  const targetDate = utcToZonedTime(
+    setHours(startOfToday(), 17),
+    MST_TIMEZONE
+  ).getTime();
 
   const calculateInitialCount = () => {
     const currentTime = utcToZonedTime(new Date(), MST_TIMEZONE).getTime();
     let timeDifference = targetDate - currentTime;
     if (timeDifference < 0) {
       // need to get tmr 5pm
-      timeDifference = setHours(startOfTomorrow(), 17).getTime();
+      timeDifference =
+        utcToZonedTime(
+          setHours(startOfTomorrow(), 17),
+          MST_TIMEZONE
+        ).getTime() - currentTime;
     }
 
     return Math.floor(timeDifference / 1000); // Convert to seconds
