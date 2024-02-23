@@ -11,6 +11,7 @@ type Props = {
   score: number;
   name: string;
   startContent?: ReactNode;
+  rounded?: boolean;
 };
 
 export default function LeaderBoardRow({
@@ -20,6 +21,7 @@ export default function LeaderBoardRow({
   score,
   name,
   startContent,
+  rounded,
 }: Props) {
   const { data: userPublicProfile, isLoading } = useCBProfile({
     address: name as '0x${string}',
@@ -40,6 +42,7 @@ export default function LeaderBoardRow({
         name: displayName,
         score,
         startContent,
+        rounded,
       }}
     />
   );

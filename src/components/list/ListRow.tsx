@@ -22,6 +22,7 @@ type Props = {
   startContent?: ReactNode;
   profileTile?: ReactNode;
   onClick?: () => void;
+  rounded?: boolean;
 };
 
 export default function ListRow({
@@ -34,20 +35,21 @@ export default function ListRow({
   startContent,
   profileTile,
   onClick,
+  rounded,
 }: Props) {
   const theme = useTheme();
   const smallerThanSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   const borderRadiusStyle = useMemo(() => {
     // single row should have rounded corners
-    if (isLast && position === 0) return '12px';
+    if ((isLast && position === 0) || rounded) return '12px';
 
     // top row should have top rounded corners
     if (position === 0) return '12px 12px 0 0';
 
     // last row should have bottom rounded corners
     if (isLast) return '0 0 12px 12px';
-  }, [isLast, position]);
+  }, [isLast, position, rounded]);
 
   const content = useMemo(() => {
     if (isLoading) {

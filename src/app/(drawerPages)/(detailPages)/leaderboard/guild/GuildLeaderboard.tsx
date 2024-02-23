@@ -190,7 +190,7 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
             offset={1}
             isLast
             isLoading={isLoading}
-            startContent={<TopContributorTag isGuild />}
+            startContent={<TopContributorTag value="Top Guild" />}
             onClick={handleCardPress(leaderboardData.topContributor.id)}
             profileTile={
               <Box
