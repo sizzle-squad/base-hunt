@@ -60,19 +60,13 @@ export async function POST(request: NextRequest) {
 
   const claimChallengeData = await supabase
     .from('user_challenge_status')
-    .upsert(
-      {
-        user_address: params.user_address,
-        challenge_id: challengeData.data.id,
-        status: 'COMPLETE',
-        points: challengeData.data.points,
-        game_id: params.game_id,
-      },
-      {
-        onConflict: 'game_id,user_address,challenge_id',
-        ignoreDuplicates: true,
-      }
-    );
+    .insert({
+      user_address: params.user_address,
+      challenge_id: challengeData.data.id,
+      status: 'COMPLETE',
+      points: challengeData.data.points,
+      game_id: params.game_id,
+    });
 
   if (claimChallengeData.error) {
     console.error(claimChallengeData.error);
@@ -85,7 +79,7 @@ export async function POST(request: NextRequest) {
     const referrerData = await supabase.rpc('incrementuserscore', {
       _game_id: params.game_id,
       _user_address: body.referrerAddress.toLowerCase(),
-      _score: challengeData.data.points * 0.5,
+      _score: challengeData.data.points * 0.1,
     });
     if (referrerData.error) {
       console.error(`error incrementing referrerScore:${referrerData.error}`);
