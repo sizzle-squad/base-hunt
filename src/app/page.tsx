@@ -2,24 +2,38 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { Box, Button, Stack } from '@mui/material';
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 
 import { ConnectButton } from '@/components/assets/ConnectButton';
-import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
-import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
 import Text from '@/components/Text';
 import { useMutateOptIn } from '@/hooks/useMutateOptIn';
 import { GAME_ID } from '@/constants/gameId';
+import { LevelBadgesRow } from '@/components/assets/icons/LevelBadgesRow';
+import { BaseHuntHero } from '@/components/assets/BaseHuntHero';
+import { Color } from '@/constants/color';
+import { useGameInfoContext } from '@/context/GameInfoContext';
+import { BootstrapDialog } from '@/components/BoostrapDialog';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const { optIn } = useMutateOptIn();
+
+  const theme = useTheme();
+  const smallerThanSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const { showModal, setShowModal } = useGameInfoContext();
 
   useEffect(() => {
     setIsClient(true);
@@ -50,18 +64,22 @@ export default function Home() {
             py: '20px',
             px: 3,
             fontSize: '16px',
-            backgroundColor: '#000000',
+            backgroundColor: Color.CoinbaseBlue,
             width: '100%',
             borderRadius: '12px',
             fontFamily: 'CoinbaseMono',
             fontWeight: 400,
+            color: Color.White,
           }}
           onClick={handleStartExploring}
         >
           {ctaText}
         </Button>
       ) : (
-        <ConnectButton />
+        <ConnectButton
+          backgroundColor={Color.CoinbaseBlue}
+          color={Color.White}
+        />
       );
     }
   }, [isConnected, handleStartExploring, isClient]);
@@ -75,84 +93,106 @@ export default function Home() {
       </Head>
       <Stack
         direction="column"
-        justifyContent={['space-between', 'unset']}
+        justifyContent={'center'}
         sx={{
           position: 'absolute',
           p: '20px',
           width: '100vw',
           height: '100vh',
-          backgroundImage: `url('/images/landing-bg.svg')`,
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
+          backgroundColor: 'black',
         }}
         gap="4rem"
       >
-        <Stack width="100%" justifyContent="center" alignItems="center">
-          <BaseHuntAnimated width="100%" />
-        </Stack>
-        <Stack
-          width="100%"
-          justifyContent="center"
-          alignItems="center"
-          gap=".6rem"
-        >
-          <HomePageSVGRow />
-          <Text fontSize="1.2rem" textAlign="center">
-            Play onchain and unlock prizes.
-          </Text>
-        </Stack>
-        <Stack alignItems="center">
-          <Stack
-            paddingTop={5}
-            alignItems="center"
-            width={['100%', '60%', '40%']}
-          >
-            {ctaButton}
-          </Stack>
-          <Stack alignItems="center" pb="50px">
-            <RainbowConnectButton.Custom>
-              {({ openConnectModal, mounted, account, chain }) => {
-                return (
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    sx={{
-                      py: 1,
-                      px: 2,
-                      mt: 4,
-                      mb: 2,
-                      borderRadius: 20,
-                      bgcolor: 'white',
-                      gap: 1,
-                      ':hover': {
-                        cursor: 'pointer',
-                      },
-                    }}
-                    onClick={openConnectModal}
-                  >
-                    <Image
-                      src="/images/coinbase-wallet-logo.png"
-                      alt="Coinbase Wallet Logo"
-                      height={24}
-                      width={24}
-                    />
-                    <Typography fontSize={14}>
-                      Coinbase Wallet{' '}
-                      <Box component="span" fontWeight="bold">
-                        Recommended
-                      </Box>
-                    </Typography>
-                  </Stack>
-                );
-              }}
-            </RainbowConnectButton.Custom>
-            <Text align="center">
-              Instant and free mints only with Coinbase Wallet
+        <Stack width="100%" justifyContent="center" alignItems="center" gap={4}>
+          <LevelBadgesRow />
+          <BaseHuntHero />
+          <Stack pt={3} gap={3}>
+            <Text
+              variant="body1"
+              fontWeight={500}
+              lineHeight="16.8px"
+              textAlign="center"
+              color={Color.White}
+            >
+              ETHDENVER Feb 26 - Mar 3
+            </Text>
+            <Text variant="h5" textAlign="center" color={Color.White}>
+              Play onchain and unlock prizes.
+            </Text>
+            <Text variant="body2" textAlign="center" color={Color.White}>
+              Base Hunt spans 7 days and ends March 3rd at 5 PM MST.
             </Text>
           </Stack>
         </Stack>
+        <Stack
+          direction="row"
+          alignItems="center"
+          width="100%"
+          justifyContent="center"
+          gap={1}
+        >
+          <Stack
+            direction={smallerThanSm ? 'column' : 'row'}
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
+            width={'100%'}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                py: '20px',
+                px: 3,
+                fontSize: '16px',
+                backgroundColor: Color.White,
+                width: ['80%', '250px'],
+                borderRadius: '12px',
+                fontFamily: 'CoinbaseMono',
+                fontWeight: 400,
+                color: Color.Black,
+              }}
+              onClick={() => setShowModal(true)}
+            >
+              <Image
+                src="/images/coinbase-wallet-logo.png"
+                alt="Coinbase Wallet Logo"
+                height={24}
+                width={24}
+              />
+              <Typography pl={2} fontSize={14} textTransform="uppercase">
+                Get Coinbase Wallet
+              </Typography>
+            </Button>
+            <Stack alignItems="center" width={['80%', '250px']}>
+              {ctaButton}
+            </Stack>
+          </Stack>
+        </Stack>
+        <Text align="center" color={Color.White}>
+          Instant and free mints only with Coinbase Wallet
+        </Text>
       </Stack>
+      <BootstrapDialog
+        onClose={() => setShowModal(false)}
+        aria-labelledby="customized-dialog-title"
+        open={showModal}
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Download Coinbase Wallet
+        </DialogTitle>
+        <DialogContent>
+          <Text gutterBottom lineHeight="160%">
+            Get the best experience in the Coinbase Wallet Mobile App.
+          </Text>
+          <Image
+            src="/images/magic-mint.png"
+            alt="Coinbase Wallet QR Code"
+            height={500}
+            width={500}
+          />
+        </DialogContent>
+      </BootstrapDialog>
     </>
   );
 }

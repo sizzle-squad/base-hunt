@@ -7,12 +7,16 @@ type Props = {
   variant?: 'text' | 'outlined' | 'contained';
   fontSize?: string;
   px?: number;
+  backgroundColor?: string;
+  color?: string;
 };
 
 export function ConnectButton({
   variant = 'contained',
   fontSize = '22px',
   px = 5,
+  backgroundColor = '#000000',
+  color = '#FFFFFF',
 }: Props) {
   return (
     <RainbowConnectButton.Custom>
@@ -27,11 +31,12 @@ export function ConnectButton({
               py: '20px',
               px: 3,
               fontSize: '16px',
-              backgroundColor: '#000000',
+              backgroundColor,
               width: '100%',
               borderRadius: '12px',
               fontFamily: 'CoinbaseMono',
               fontWeight: 400,
+              color,
             }}
             onClick={openConnectModal}
           >
