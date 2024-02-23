@@ -33,9 +33,10 @@ export async function POST(request: NextRequest) {
       .from('user_address_opt_in')
       .select()
       .eq('user_address', address.toLowerCase())
+      .is('is_opt_in', true)
       .single();
     if (userData.error) {
-      console.error(`user not opted in:`, userData.error);
+      console.error(`user not opted in userAddress:`, address.toLowerCase());
       return NextResponse.json({ success: false });
     }
     await airdropNft(address, command);
