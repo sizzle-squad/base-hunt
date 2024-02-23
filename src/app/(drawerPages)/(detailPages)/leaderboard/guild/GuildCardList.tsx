@@ -125,6 +125,10 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                       joinGuild.isLoading &&
                       joinGuild.variables?.guildId === guild.id.toString()
                     }
+                    disabled={
+                      joinGuild.isLoading &&
+                      joinGuild.variables?.guildId !== guild.id.toString()
+                    }
                   >
                     Join guild
                   </Button>

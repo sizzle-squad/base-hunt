@@ -27,7 +27,6 @@ import ChallengesPageClient from './ChallengesClient';
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export default function Challenges() {
-  const isClient = useClientCheck();
   const router = useRouter();
   const { address, isConnected, isDisconnected } = useAccount();
   const { drawerStates, toggleDrawer } = useDrawer();

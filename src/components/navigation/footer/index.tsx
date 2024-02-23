@@ -31,7 +31,7 @@ export default function Footer() {
           bottom: 0,
           left: 0,
           right: 0,
-          padding: '1rem',
+          py: '8px',
         }}
         elevation={3}
       >

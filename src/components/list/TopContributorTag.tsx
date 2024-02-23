@@ -2,16 +2,26 @@ import { Stack } from '@mui/material';
 
 import Text from '@/components/Text';
 
-export function TopContributorTag({ isGuild }: { isGuild?: boolean }) {
+type Props = {
+  value: string;
+  bgColor?: string;
+  color?: string;
+};
+
+export function TopContributorTag({
+  value,
+  bgColor = 'var(--Yellow, #FFD200)',
+  color = 'var(--Black, #000000)',
+}: Props) {
   return (
     <Stack
       direction="row"
       borderRadius={100}
-      bgcolor="var(--Yellow, #FFD200)"
+      bgcolor={bgColor}
       display="flex"
       padding="4px 8px"
       alignItems="center"
-      width="93px"
+      width="fit-content"
       gap={1}
     >
       <Text
@@ -22,8 +32,9 @@ export function TopContributorTag({ isGuild }: { isGuild?: boolean }) {
         fontWeight={400}
         variant="h6"
         textAlign="center"
+        color={color}
       >
-        {`Top ${isGuild ? 'Guild' : 'Player'}`}
+        {value}
       </Text>
     </Stack>
   );

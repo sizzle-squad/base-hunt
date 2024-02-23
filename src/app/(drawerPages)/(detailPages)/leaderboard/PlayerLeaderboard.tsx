@@ -2,12 +2,15 @@ import { useMemo } from 'react';
 
 import { Box, NoSsr, Stack } from '@mui/material';
 
+import { useAccount } from 'wagmi';
 import LeaderBoardRow from '@/components/list/LeaderboardRow';
 import { TopContributorTag } from '@/components/list/TopContributorTag';
 import Text from '@/components/Text';
 import { GAME_ID } from '@/constants/gameId';
 import { PlayerRank } from '@/hooks/types';
 import { useTopRanks } from '@/hooks/useTopRanks';
+import { useRank } from '@/hooks/useRank';
+import { Color } from '@/constants/color';
 
 type RankMock = PlayerRank & {
   isMock: boolean;
@@ -28,7 +31,13 @@ function generateMockData(count: number) {
 }
 
 export function PlayerLeaderboard() {
+  const { address } = useAccount();
   const { data: topRanks, isLoading } = useTopRanks({ gameId: GAME_ID });
+  const { data: playerRank, isLoading: isRankLoading } = useRank({
+    userAddress: address ?? '',
+    gameId: GAME_ID,
+  });
+
   const leaderboardData = useMemo(() => {
     const realDataCount = topRanks.length;
     const mockDataCount = 10 - realDataCount;
@@ -63,12 +72,28 @@ export function PlayerLeaderboard() {
         <Stack direction="column" mt="24px" gap="24px">
           <Stack direction="column" gap={1}>
             <LeaderBoardRow
+              name={playerRank?.userAddress ?? ''}
+              score={playerRank?.currentScore ?? 0}
+              position={(playerRank && parseInt(playerRank?.rank)) ?? 0}
+              offset={1}
+              rounded
+              startContent={
+                <TopContributorTag
+                  value="Your Rank"
+                  bgColor={Color.CoinbaseBlue}
+                  color={Color.White}
+                />
+              }
+            />
+          </Stack>
+          <Stack direction="column" gap={1}>
+            <LeaderBoardRow
               name={leaderboardData.topContributor.userAddress}
               score={leaderboardData.topContributor.currentScore}
               position={0}
               offset={1}
               isLast
-              startContent={<TopContributorTag />}
+              startContent={<TopContributorTag value="Top Player" />}
             />
           </Stack>
           <Box>
