@@ -13,7 +13,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ArtIcon } from '@/components/assets/icons/ArtIcon';
 import { ArtRevealIcon } from '@/components/assets/icons/ArtRevealIcon';
 import { LocationIcon } from '@/components/assets/icons/LocationIcon';
-import { Color } from '@/constants/color';
+import { ChallengesSelectedIcon } from '@/components/assets/icons/ChallengesSelectedIcon';
+import { PrizeSelectedIcon } from '@/components/assets/icons/PrizesSelectedIcon';
+import { LeaderboardSelectedIcon } from '@/components/assets/icons/LeaderboardSelectedIcon';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -51,9 +53,11 @@ export default function Footer() {
             label="Challenges"
             value="/challenges"
             icon={
-              <ArtIcon
-                color={value === '/challenges' ? Color.Positive : 'none'}
-              />
+              value === '/challenges' ? (
+                <ChallengesSelectedIcon />
+              ) : (
+                <ArtIcon color="none" />
+              )
             }
           />
           <BottomNavigationAction
@@ -65,9 +69,11 @@ export default function Footer() {
             label="Leaderboard"
             value="/leaderboard"
             icon={
-              <LocationIcon
-                color={value.includes('leaderboard') ? Color.Positive : 'none'}
-              />
+              value.includes('leaderboard') ? (
+                <LeaderboardSelectedIcon />
+              ) : (
+                <ArtRevealIcon color="none" />
+              )
             }
           />
           <BottomNavigationAction
@@ -79,9 +85,11 @@ export default function Footer() {
             label="Prizes"
             value="/prizes"
             icon={
-              <ArtRevealIcon
-                color={value === '/prizes' ? Color.Positive : 'none'}
-              />
+              value === '/prizes' ? (
+                <PrizeSelectedIcon />
+              ) : (
+                <LocationIcon color="none" />
+              )
             }
           />
         </BottomNavigation>
