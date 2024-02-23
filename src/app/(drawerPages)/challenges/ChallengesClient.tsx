@@ -170,32 +170,37 @@ export default function ChallengesPageClient() {
     [drawerStates.boostsAction]
   );
 
-  const handleToggleDrawer = useCallback(
-    (item: ListCardPropsForChallenges) => {
-      if (item?.isCompleted) return;
-      setActiveItem(item);
-      toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, true);
-    },
-    [toggleDrawer]
-  );
-
   const handleDrawerClose = useCallback(() => {
     setActiveItem(null);
     setHasChallengeCompleteError(false);
     toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, false);
+    setIsClaimSuccess(false);
   }, [toggleDrawer]);
 
-  const handleCompletePress = useCallback(() => {
-    claimChallenge.mutate({
-      gameId: GAME_ID,
-      userAddress: address,
-      challengeId: activeItem!.id.toString(),
-      contractAddress: activeItem?.contractAddress,
-    });
-
+  const handleCompletePress = useCallback(
+    (item: ListCardPropsForChallenges) => {
+      claimChallenge.mutate({
+        gameId: GAME_ID,
+        userAddress: address,
+        challengeId: item!.id.toString(),
+        contractAddress: item?.contractAddress,
+      });
+    },
     // claimBoost should not be in there
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, activeItem]);
+    [address]
+  );
+
+  const handleToggleDrawer = useCallback(
+    (item: ListCardPropsForChallenges) => {
+      if (item?.isCompleted) return;
+
+      setActiveItem(item);
+      handleCompletePress(item);
+      toggleDrawer(PageConsts.drawerType, PageConsts.drawerAnchor, true);
+    },
+    [handleCompletePress, toggleDrawer]
+  );
 
   const handleCTAPress = useCallback((ctaUrl: string) => {
     window.open(ctaUrl, ctaUrl.includes('https://') ? '_blank' : '_self');
@@ -230,6 +235,7 @@ export default function ChallengesPageClient() {
           return item.ctaButtonText;
         }
 
+        // should not hit this but as a fallback
         return 'Check';
       }, [isActive, item.ctaButtonText]);
 
@@ -237,9 +243,10 @@ export default function ChallengesPageClient() {
         // trigger follow up CTA if claim has failed
         if (isActive && hasChallengeCompleteError && ctaUrl) {
           handleCTAPress(ctaUrl);
-        } else {
-          handleCompletePress();
         }
+
+        // dismiss drawer if claim was successful
+        handleDrawerClose();
       }, [ctaUrl, isActive]);
 
       return (

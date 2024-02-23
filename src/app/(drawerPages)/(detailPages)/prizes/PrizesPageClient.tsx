@@ -32,26 +32,41 @@ export default function PrizesPageClient() {
   const loadingSkeleton = useMemo(
     () =>
       Array.from({ length: 4 }).map((_, index) => (
-        <Stack
+        <Grid
+          item
+          xs={12}
+          sm={5.5}
+          lg={2.75}
           key={`skeleton-${index}`}
-          direction="column"
-          gap={1}
-          p={2}
-          sx={{ background: Color.White }}
-          height="100%"
-          width="336px"
-          borderRadius="16px"
+          spacing={1}
+          sx={{
+            pb: 2,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          <Stack direction="row" alignItems="center" gap={2}>
-            <Skeleton variant="circular" width={44} height={44} />
-            <Stack direction="column">
-              <Skeleton variant="text" width={100} height={30} />
-              <Skeleton variant="text" width={200} height={20} />
+          <Stack
+            direction="column"
+            gap={1}
+            p={2}
+            sx={{ background: Color.White }}
+            width="100%"
+            borderRadius="16px"
+            alignItems="center"
+          >
+            <Stack direction="row" alignItems="center" gap={2}>
+              <Skeleton variant="circular" width={44} height={44} />
+              <Stack direction="column">
+                <Skeleton variant="text" width={100} height={30} />
+                <Skeleton variant="text" width={200} height={20} />
+              </Stack>
             </Stack>
+            <Skeleton variant="rectangular" width={300} height={275} />
+            <Skeleton variant="rounded" width="100%" height={50} />
           </Stack>
-          <Skeleton variant="rectangular" width={300} height={275} />
-          <Skeleton variant="rounded" width={300} height={50} />
-        </Stack>
+        </Grid>
       )),
     []
   );
@@ -69,7 +84,7 @@ export default function PrizesPageClient() {
           container
           gap={2}
           sx={{ width: '100%', flexGrow: 1 }}
-          justifyContent="space-between"
+          justifyContent="center"
         >
           {isLevelsLoading
             ? loadingSkeleton
