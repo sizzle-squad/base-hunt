@@ -270,14 +270,9 @@ export default function ChallengesPageClient({ refreshData }: Props) {
             gap={2}
           >
             <Stack gap={1}>
-              {!(isActive && hasChallengeCompleteError) && item.title && (
-                <Text>{item.description}</Text>
-              )}
+              {isActive && item.title && <Text>{item.description}</Text>}
               {isActive && hasChallengeCompleteError && (
-                <Text color="red">
-                  Complete the challenge first and then come back to claim your
-                  points.
-                </Text>
+                <Text color="red">{`Complete the challenge first.`}</Text>
               )}
             </Stack>
             <PointsPill

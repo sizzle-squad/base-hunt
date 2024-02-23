@@ -161,9 +161,12 @@ export default function Page({ params }: { params: { guildId: string } }) {
             <Text variant="body1">{`${currentGuild.currentScore} tx today`}</Text>
           </Stack>
           <Stack direction="column">
-            <GuildDetailRow title={`Today's Rank`} value={currentGuild.rank} />
             <GuildDetailRow
-              title="Top Guild"
+              title={`Today's Rank`}
+              value={`#${currentGuild.rank}`}
+            />
+            <GuildDetailRow
+              title="Days Won"
               value={`${currentGuild.winShares}/7 days`}
             />
             {myGuildDetails}
