@@ -121,6 +121,10 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                   <Button
                     onClick={handleJoinPress(guild.id.toString())}
                     variant="contained"
+                    isLoading={
+                      joinGuild.isLoading &&
+                      joinGuild.variables?.guildId === guild.id.toString()
+                    }
                   >
                     Join guild
                   </Button>

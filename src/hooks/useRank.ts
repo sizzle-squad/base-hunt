@@ -15,7 +15,7 @@ type RankReturnType = {
 };
 
 export function useRank({ userAddress, gameId }: Props) {
-  const { data, isLoading, error } = useQuery<RankReturnType>(
+  const { data, isLoading, error, refetch } = useQuery<RankReturnType>(
     ['leaderboard/rank', userAddress, gameId],
     async () => {
       return await axios({
@@ -37,7 +37,8 @@ export function useRank({ userAddress, gameId }: Props) {
       data: data?.data,
       isLoading,
       error,
+      refetch,
     }),
-    [data, error, isLoading]
+    [data?.data, error, isLoading, refetch]
   );
 }

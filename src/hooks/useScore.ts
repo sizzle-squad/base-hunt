@@ -13,7 +13,7 @@ type Props = {
 };
 
 export function useScore({ userAddress, gameId }: Props) {
-  const { data, isLoading, error } = useQuery<ScoreState>(
+  const { data, isLoading, error, refetch } = useQuery<ScoreState>(
     ['profile/score', userAddress, gameId],
     async () => {
       const score = await axios({
@@ -36,7 +36,8 @@ export function useScore({ userAddress, gameId }: Props) {
       data,
       isLoading,
       error,
+      refetch,
     }),
-    [data, error, isLoading]
+    [data, error, isLoading, refetch]
   );
 }

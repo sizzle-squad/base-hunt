@@ -19,7 +19,7 @@ type LevelsReturnType = {
 };
 
 export function useLevels({ gameId, address }: Props) {
-  const { data, isLoading, error } = useQuery<LevelsReturnType>(
+  const { data, isLoading, error, refetch } = useQuery<LevelsReturnType>(
     ['levels'],
     async () => {
       const result = await axios({
@@ -46,7 +46,8 @@ export function useLevels({ gameId, address }: Props) {
       },
       isLoading,
       error,
+      refetch,
     }),
-    [data, error, isLoading]
+    [data, error, isLoading, refetch]
   );
 }
