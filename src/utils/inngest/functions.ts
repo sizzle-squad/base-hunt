@@ -101,13 +101,13 @@ export const userTxCount = inngest.createFunction(
         };
       });
 
-      const { data, error } = await supabase
-        .from('user_txcount')
-        .upsert(zipped, { onConflict: 'user_address,network' })
-        .select();
-      if (error) {
-        console.error(error);
-      }
+      // const { data, error } = await supabase
+      //   .from('user_txcount')
+      //   .upsert(zipped, { onConflict: 'user_address,network' })
+      //   .select();
+      // if (error) {
+      //   console.error(error);
+      // }
       //Note: we have to remap here becuase upsert complains if we include guildId
       return zipped.map((z, i) => {
         return { ...z, guild_id: users[i].guild_id };
