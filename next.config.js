@@ -21,7 +21,7 @@ module.exports = {
       },
       {
         protocol: 'https',
-        hostname: 'mint.fun',
+        hostname: 'basehunt.xyz',
       },
     ],
   },
