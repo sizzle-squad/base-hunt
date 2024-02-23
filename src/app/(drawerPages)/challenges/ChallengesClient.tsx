@@ -336,19 +336,17 @@ export default function ChallengesPageClient({ refreshData }: Props) {
             <b>How do I play?</b>
           </Text>
           <Text gutterBottom lineHeight="160%">
-            • On the <b>“Challenges”</b> tab, you can view challenges to
-            complete. Each challenge will award points and get you closer to the
-            next level. You start at Level 0, and the highest level is Level 4.
+            <b>Challenges</b>: Head to the “Challenges” tab, complete tasks,
+            earn points, and advance from Level 0 to Level 4.
           </Text>
           <Text gutterBottom lineHeight="160%">
-            • On the <b>“Leaderboard”</b> tab, you can see your rank and join a
-            guild to earn more points, have fun, and compete with other guilds.
-            If your guild has the most points by 5 P.M MST that day, each guild
-            member will receive 100 extra points.
+            • <b>Leaderboard</b>: Check your rank in the “Leaderboard” tab, join
+            a guild, and compete for extra points. The top guild each day wins
+            100 bonus points per member.
           </Text>
           <Text gutterBottom lineHeight="160%">
-            • On the <b>“Prizes”</b> tab, you can redeem prizes as you level up.
-            Prizes can be redeemed IRL at ETH Denver or online.
+            • <b>Prizes</b>: Redeem rewards through the “Prizes” tab as you
+            level up, available both at ETH Denver and online.
           </Text>
           <Text gutterBottom lineHeight="160%">
             View the full{' '}
