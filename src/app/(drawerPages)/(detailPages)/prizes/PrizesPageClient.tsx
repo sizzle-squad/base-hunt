@@ -2,9 +2,20 @@
 
 import { useCallback, useMemo } from 'react';
 
-import { Box, Grid, NoSsr, Skeleton, Stack } from '@mui/material';
+import {
+  Box,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  NoSsr,
+  Skeleton,
+  Stack,
+} from '@mui/material';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { Button } from '@/components/assets/Button';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
@@ -13,6 +24,8 @@ import { Color } from '@/constants/color';
 import { GAME_ID } from '@/constants/gameId';
 import { useLevels } from '@/hooks/useLevels';
 import Pill from '@/components/Pill';
+import { useGameInfoContext } from '@/context/GameInfoContext';
+import { BootstrapDialog } from '@/components/BoostrapDialog';
 
 export default function PrizesPageClient() {
   const { address } = useAccount();
@@ -21,6 +34,11 @@ export default function PrizesPageClient() {
     isLoading: isLevelsLoading,
     error: levelsError,
   } = useLevels({ gameId: GAME_ID, address: address ?? '' });
+  const { showModal, setShowModal } = useGameInfoContext();
+
+  const toggleModal = useCallback(() => {
+    setShowModal((prev) => !prev);
+  }, [setShowModal]);
 
   const handleClaimPress = useCallback(
     (ctaUrl: string) => () => {
@@ -74,6 +92,10 @@ export default function PrizesPageClient() {
   return (
     <Stack gap="24px" pb={10}>
       <DetailsPageNavbar title="Prizes" />
+      <Pill backgroundColor="none" onClick={toggleModal} hover>
+        <Text>How prizes work</Text>
+        {showModal ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+      </Pill>
       <Text textAlign="center" whiteSpace="pre-wrap">
         Prizes can be claimed for free at ETHDenver (Spork Castle, Booth 301) or{' '}
         <br />
@@ -177,6 +199,33 @@ export default function PrizesPageClient() {
                 );
               })}
         </Grid>
+        <BootstrapDialog
+          onClose={() => setShowModal(false)}
+          aria-labelledby="customized-dialog-title"
+          open={showModal}
+        >
+          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+            How prizes work
+          </DialogTitle>
+          <DialogContent>
+            <Text gutterBottom lineHeight="160%">
+              • Prizes can be claimed for free at ETHDenver (Spork Castle, Booth
+              301) or ordered through the Slice merch store (shipping and
+              processing fees apply).
+            </Text>
+            <Text gutterBottom lineHeight="160%">
+              • You are eligible to claim a prize from each level.
+            </Text>
+            <Text gutterBottom lineHeight="160%">
+              • Online orders must be placed by March 6, 11:59 EST.
+            </Text>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowModal(false)}>
+              <Text>Got it!</Text>
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
       </NoSsr>
     </Stack>
   );

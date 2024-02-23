@@ -30,7 +30,7 @@ const Hero = () => {
           paddingY="1.5rem"
         >
           <HeroSVG />
-          <Pill backgroundColor="non" onClick={toggleModal} hover>
+          <Pill backgroundColor="none" onClick={toggleModal} hover>
             <Text>How it works</Text>
             {showModal ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </Pill>

@@ -79,7 +79,7 @@ export function PlayerLeaderboard() {
               rounded
               startContent={
                 <TopContributorTag
-                  value="Current Player"
+                  value="Your Rank"
                   bgColor={Color.CoinbaseBlue}
                   color={Color.White}
                 />
