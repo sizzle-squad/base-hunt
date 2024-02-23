@@ -53,17 +53,32 @@ export default function Challenges() {
     data: collection,
     isLoading: isLevelsLoading,
     error: levelsError,
+    refetch: refetchLevels,
   } = useLevels({ gameId: GAME_ID, address: address ?? '' });
 
-  const { data: rank, isLoading: isRankLoading } = useRank({
+  const {
+    data: rank,
+    isLoading: isRankLoading,
+    refetch: refetchRank,
+  } = useRank({
     userAddress: address ?? '',
     gameId: GAME_ID,
   });
 
-  const { data, isLoading: isScoreLoading } = useScore({
+  const {
+    data,
+    isLoading: isScoreLoading,
+    refetch: refetchScore,
+  } = useScore({
     userAddress: address ?? '',
     gameId: GAME_ID,
   });
+
+  const refetches = useCallback(() => {
+    refetchLevels();
+    refetchRank();
+    refetchScore();
+  }, [refetchLevels, refetchRank, refetchScore]);
 
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {
@@ -246,7 +261,7 @@ export default function Challenges() {
                 undefined
               : '0'
           }
-          isLoading={isLevelsLoading}
+          isLoading={isLevelsLoading || isRankLoading || isScoreLoading}
           score={score as number}
           rank={rank?.rank}
         />
@@ -271,7 +286,7 @@ export default function Challenges() {
           </Fragment>
         ))}
       </Box>
-      <ChallengesPageClient />
+      <ChallengesPageClient refreshData={refetches} />
     </Stack>
   );
 }

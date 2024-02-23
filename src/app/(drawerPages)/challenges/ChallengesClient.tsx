@@ -111,7 +111,11 @@ const ToggleDrawerButton = memo(
 );
 ToggleDrawerButton.displayName = 'ToggleDrawerButton';
 
-export default function ChallengesPageClient() {
+type Props = {
+  refreshData: () => void;
+};
+
+export default function ChallengesPageClient({ refreshData }: Props) {
   const { address } = useAccount();
   const { showModal, setShowModal } = useGameInfoContext();
 
@@ -211,6 +215,9 @@ export default function ChallengesPageClient() {
   useEffect(() => {
     if (claimChallenge.isSuccess) {
       setIsClaimSuccess(true);
+
+      // refetch points
+      refreshData();
     }
 
     if (claimChallenge.isError) {
