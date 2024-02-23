@@ -28,6 +28,16 @@ export async function POST(request: NextRequest) {
     );
   }
   try {
+    //TODO: the airdrop command should include gameId in the future
+    const userData = await supabase
+      .from('user_address_opt_in')
+      .select()
+      .eq('user_address', address.toLowerCase())
+      .single();
+    if (userData.error) {
+      console.error(`user not opted in:`, userData.error);
+      return NextResponse.json({ success: false });
+    }
     await airdropNft(address, command);
   } catch (e) {
     console.error(e);
