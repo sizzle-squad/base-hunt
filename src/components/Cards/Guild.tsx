@@ -60,7 +60,7 @@ export function Guild({
     return (
       `https://warpcast.com/~/compose?embeds[]=` +
       encodeURIComponent(
-        `https://base-hunt-eth-denver-2024.vercel.app/api/frames/join?userAddress=${address}&gameId=${gameId}&guildId=${id}`
+        `https://basehunt.xyz/frames/join?userAddress=${address}&gameId=${gameId}&guildId=${id}`
       )
     );
   }, [address, gameId, id]);
@@ -102,7 +102,10 @@ export function Guild({
             {name ?? 'Solo player'}
           </Text>
           <Text variant="body2">
-            {positionString} • <Link href={referralLink}>referral link</Link>
+            {positionString} •{' '}
+            <Link target="_blank" href={referralLink}>
+              join link
+            </Link>
           </Text>
         </Box>
       </Stack>
