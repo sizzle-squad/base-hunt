@@ -270,6 +270,8 @@ export default function Challenges() {
           isLoading={isGuildStateLoading}
           imageUrl={guildState?.imageUrl}
           id={guildState?.guildId}
+          address={address}
+          gameId={GAME_ID}
         />
       </Stack>
       <Box>

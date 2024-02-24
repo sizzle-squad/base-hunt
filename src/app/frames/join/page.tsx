@@ -53,7 +53,7 @@ export async function generateMetadata(
         label: `Join ${guild.name}`,
       },
     ],
-    image: 'https://i.ibb.co/dtbDRxb/img.gif',
+    image: 'https://basehunt.xyz/images/eth-denver/square-title.png',
     postUrl: `https://base-hunt-eth-denver-2024.vercel.app/api/frames/join?userAddress=${userAddress}&gameId=${gameId}&guildId=${guild.guild_id}`,
   });
 
@@ -63,7 +63,7 @@ export async function generateMetadata(
     openGraph: {
       title: 'Base Hunt Guilds',
       description: 'Join a guild and start hunting!',
-      images: ['https://i.ibb.co/dtbDRxb/img.gif'],
+      images: ['https://basehunt.xyz/images/eth-denver/square-title.png'],
     },
     other: {
       ...frameMetadata,
