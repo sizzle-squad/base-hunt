@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       <meta property="fc:frame:image" content="${guild?.image_url}"/>
       <meta property="fc:frame:button:1" content="Happy Hunting ${fm.message.raw.action.interactor.display_name}" />
       <meta property="fc:frame:button:1:action" content="link" />
-      <meta property="fc:frame:button:1:target" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fbase-hunt-eth-denver-2024.vercel.app%2F" />
+      <meta property="fc:frame:button:1:target" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2F${DOMAIN}" />
       </head></html>`);
     }
 
@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
       <meta property="fc:frame:image" content="${guild?.image_url}"/>
       <meta property="fc:frame:button:1" content="Welcome ${fm.message.raw.action.interactor.display_name}" />
       <meta property="fc:frame:button:1:action" content="link" />
-      <meta property="fc:frame:button:1:target" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fbase-hunt-eth-denver-2024.vercel.app%2F" />
+      <meta property="fc:frame:button:1:target" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2F${DOMAIN}" />
       </head></html>`);
   } else {
     //no verification address found
@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
     <meta property="fc:frame:image" content="https://i.ibb.co/tzy655S/guild-base-glitch.png"/>
     <meta property="fc:frame:button:1" content="Verify CBWallet Address" />
     <meta property="fc:frame:button:1:action" content="link" />
-    <meta property="fc:frame:button:1:target" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fbase-hunt-eth-denver-2024.vercel.app%2F" />
+    <meta property="fc:frame:button:1:target" content="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2F${DOMAIN}" />
     </head></html>`;
   }
 }
