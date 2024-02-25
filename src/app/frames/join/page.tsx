@@ -13,6 +13,8 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY as string
 );
 
+const DOMAIN = process.env.DOMAIN as string; //NOTE: does not include protocol
+
 export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata
@@ -53,8 +55,8 @@ export async function generateMetadata(
         label: `Join ${guild.name}`,
       },
     ],
-    image: 'https://basehunt.xyz/images/eth-denver/square-title.png',
-    postUrl: `https://base-hunt-eth-denver-2024.vercel.app/api/frames/join?userAddress=${userAddress}&gameId=${gameId}&guildId=${guild.guild_id}`,
+    image: `${DOMAIN}/images/eth-denver/square-title.png`,
+    postUrl: `${DOMAIN}/api/frames/join?userAddress=${userAddress}&gameId=${gameId}&guildId=${guild.guild_id}`,
   });
 
   const _metadata: Metadata = {
@@ -63,7 +65,7 @@ export async function generateMetadata(
     openGraph: {
       title: 'Base Hunt Guilds',
       description: 'Join a guild and start hunting!',
-      images: ['https://basehunt.xyz/images/eth-denver/square-title.png'],
+      images: [`${DOMAIN}/images/eth-denver/square-title.png`],
     },
     other: {
       ...frameMetadata,
