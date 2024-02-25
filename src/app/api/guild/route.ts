@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     const referrerData = await supabase.rpc('incrementuserscore', {
       _game_id: params.game_id,
       _user_address: body.referrerAddress.toLowerCase(),
-      _score: challengeData.data.points * 0.5,
+      _score: challengeData.data.points * 0.1,
     });
     if (referrerData.error) {
       console.error(`error incrementing referrerScore:${referrerData.error}`);
