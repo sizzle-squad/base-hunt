@@ -98,7 +98,7 @@ export default function Home() {
       </Head>
       <Stack
         direction="column"
-        justifyContent={'center'}
+        justifyContent={smallerThanSm ? 'normal' : 'center'}
         sx={{
           position: 'absolute',
           p: '20px',
