@@ -18,6 +18,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 
+import Link from 'next/link';
 import { ConnectButton } from '@/components/assets/ConnectButton';
 import Text from '@/components/Text';
 import { useMutateOptIn } from '@/hooks/useMutateOptIn';
@@ -203,12 +204,34 @@ export default function Home() {
             Get the best experience in the Coinbase Wallet Mobile App.
           </Text>
           <Image
-            src="/images/magic-mint.png"
+            src="/images/eth-denver.png"
             alt="Coinbase Wallet QR Code"
             height={qrSizes}
             width={qrSizes}
           />
         </DialogContent>
+        <DialogActions>
+          <Button
+            sx={{
+              py: '20px',
+              px: 3,
+              fontSize: '16px',
+              backgroundColor: Color.CoinbaseBlue,
+              width: '100%',
+              borderRadius: '12px',
+              fontFamily: 'CoinbaseMono',
+              fontWeight: 400,
+              color: Color.White,
+              '&:hover': {
+                backgroundColor: '#4474f3',
+              },
+            }}
+          >
+            <Link href="https://go.cb-w.com/eth-denever" target="_blank">
+              Download Coinbase Wallet
+            </Link>
+          </Button>
+        </DialogActions>
       </BootstrapDialog>
     </>
   );

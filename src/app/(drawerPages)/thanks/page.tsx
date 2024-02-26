@@ -62,7 +62,7 @@ export default function Thanks() {
             <Text variant="body2" textAlign="center" color={Color.White}>
               Base Hunt spans 7 days and ends March 3rd at 5 PM MST.
             </Text>
-            <Text align="center" color={Color.White}>
+            <Text variant="body2" align="center" color={Color.White}>
               Trust us, use Coinbase Wallet if you want to win.
             </Text>
           </Box>
@@ -123,6 +123,7 @@ export default function Thanks() {
                 fontWeight: 400,
                 color: Color.White,
               }}
+              disabled
             >
               Basehunt is coming...
             </Button>
@@ -152,7 +153,7 @@ export default function Thanks() {
             Get the best experience in the Coinbase Wallet Mobile App.
           </Text>
           <Image
-            src="/images/magic-mint.png"
+            src="/images/eth-denver.png"
             alt="Coinbase Wallet QR Code"
             height={qrSizes}
             width={qrSizes}
