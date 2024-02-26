@@ -175,7 +175,7 @@ export default function PrizesPageClient() {
                           src={level.prizeImageUrl ?? ''}
                           alt="jumbotron"
                           width={200}
-                          height={200}
+                          height={level.level === '1' ? 100 : 200}
                         />
                       </Stack>
 
