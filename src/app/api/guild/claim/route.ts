@@ -3,7 +3,6 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { Database } from '@/utils/database.types';
 import { toBigInt } from '@/utils/toBigInt';
-import { airdropNft } from '@/utils/walletapi';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
