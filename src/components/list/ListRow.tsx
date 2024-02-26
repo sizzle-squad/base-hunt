@@ -87,7 +87,11 @@ export default function ListRow({
         bgcolor="var(--White, #fff)"
       >
         <Box width="30px">
-          <Text variant="body1">{position + offset}.</Text>
+          {isNaN(position) ? (
+            <Text variant="body1">-</Text>
+          ) : (
+            <Text variant="body1">{position + offset}.</Text>
+          )}
         </Box>
         <Stack
           direction="row"
