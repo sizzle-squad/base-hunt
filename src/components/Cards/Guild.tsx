@@ -90,9 +90,7 @@ export function Guild({
           <Text variant="h6" fontSize="18px">
             {name ?? 'Solo player'}
           </Text>
-          <Stack direction="row" gap={0.5}>
-            <Text variant="body2">{positionString}</Text>
-          </Stack>
+          <Text variant="body2">{positionString}</Text>
         </Box>
       </Stack>
     );

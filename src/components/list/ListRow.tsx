@@ -57,7 +57,7 @@ export default function ListRow({
     }
 
     return (
-      <Text variant="body1" noWrap width={smallerThanSm ? '160px' : 'auto'}>
+      <Text variant="body1" noWrap width={smallerThanSm ? '110px' : 'auto'}>
         {name}
       </Text>
     );

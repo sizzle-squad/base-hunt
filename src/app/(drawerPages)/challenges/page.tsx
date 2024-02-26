@@ -275,7 +275,6 @@ export default function Challenges() {
           gameId={GAME_ID}
         />
       </Stack>
-      <Referral />
       <Box>
         {(['bottom'] as const).map((anchor) => (
           <Fragment key={anchor}>
