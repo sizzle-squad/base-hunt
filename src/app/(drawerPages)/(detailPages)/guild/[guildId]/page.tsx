@@ -4,6 +4,7 @@ import { Box, Skeleton, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useGuildState } from '@/hooks/useGuildState';
 import { GAME_ID } from '@/constants/gameId';
@@ -15,6 +16,7 @@ import { GuildDetailRow } from './GuildDetailRow';
 
 export default function Page({ params }: { params: { guildId: string } }) {
   const { address } = useAccount();
+  const router = useRouter();
   const {
     data: myGuild,
     isLoading: isMyGuildLoading,
@@ -112,7 +114,7 @@ export default function Page({ params }: { params: { guildId: string } }) {
 
   return (
     <Stack className="pageContent" gap={3}>
-      <DetailsPageNavbar title="" />
+      <DetailsPageNavbar title="" goBack={router.back} />
       {isLoading || !currentGuild ? (
         loadingSkeleton
       ) : (

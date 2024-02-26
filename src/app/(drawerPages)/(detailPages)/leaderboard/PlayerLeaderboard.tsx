@@ -75,7 +75,7 @@ export function PlayerLeaderboard() {
               name={playerRank?.userAddress ?? ''}
               score={playerRank?.currentScore ?? 0}
               position={(playerRank && parseInt(playerRank?.rank)) ?? 0}
-              offset={1}
+              offset={0}
               rounded
               startContent={
                 <TopContributorTag
