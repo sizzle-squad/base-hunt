@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { Box, Link, Skeleton, Stack } from '@mui/material';
+import { Box, Skeleton, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 import Image from 'next/image';
@@ -19,11 +19,9 @@ type Props = {
 export function Guild({
   name,
   position,
-  imageUrl = '/images/solo.svg',
+  imageUrl = '/images/plus.png',
   isLoading,
   id,
-  address,
-  gameId,
 }: Props) {
   const router = useRouter();
 
@@ -41,7 +39,7 @@ export function Guild({
   }, [isLoading, redirectParams, router]);
 
   const positionString = useMemo(() => {
-    if (!position) return 'No guild';
+    if (!position) return 'Join a guild';
 
     let message = 'place';
     switch (position) {
@@ -55,15 +53,6 @@ export function Guild({
         return `${position}th ${message}`;
     }
   }, [position]);
-
-  const referralLink = useMemo(() => {
-    return (
-      `https://warpcast.com/~/compose?embeds[]=` +
-      encodeURIComponent(
-        `https://basehunt.xyz/frames/join?userAddress=${address}&gameId=${gameId}&guildId=${id}`
-      )
-    );
-  }, [address, gameId, id]);
 
   const content = useMemo(() => {
     if (isLoading) {
@@ -91,13 +80,13 @@ export function Guild({
           }}
         >
           <Image
-            src={imageUrl ?? '/images/solo.svg'}
+            src={imageUrl ?? '/images/plus.png'}
             alt="Guild badge"
             width={64}
             height={64}
           />
         </Box>
-        <Box>
+        <Box gap={0.5}>
           <Text variant="h6" fontSize="18px">
             {name ?? 'Solo player'}
           </Text>
