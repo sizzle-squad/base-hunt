@@ -160,7 +160,7 @@ export default function Page({ params }: { params: { guildId: string } }) {
               width={24}
               height={24}
             />
-            <Text variant="body1">{`${currentGuild.currentScore} tx today`}</Text>
+            <Text variant="body1">{`${currentGuild.currentScore} pts`}</Text>
           </Stack>
           <Stack direction="column">
             <GuildDetailRow
