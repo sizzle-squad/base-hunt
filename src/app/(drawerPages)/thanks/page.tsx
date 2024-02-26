@@ -1,48 +1,86 @@
 'use client';
 
-import { Button, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 
-import { HomePageSVGRow } from '@/components/assets/icons/HomePageSVGRow';
-import BaseHuntAnimated from '@/components/Badges/AnimatedHero';
+import Image from 'next/image';
+import { useMemo } from 'react';
 import Text from '@/components/Text';
+import { LevelBadgesRow } from '@/components/assets/icons/LevelBadgesRow';
+import { BaseHuntHero } from '@/components/assets/BaseHuntHero';
+import { Color } from '@/constants/color';
+import { useGameInfoContext } from '@/context/GameInfoContext';
+import { BootstrapDialog } from '@/components/BoostrapDialog';
 
 export default function Thanks() {
+  const theme = useTheme();
+  const smallerThanSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const { showModal, setShowModal } = useGameInfoContext();
+
+  const qrSizes = useMemo(() => {
+    return smallerThanSm ? 200 : 500;
+  }, [smallerThanSm]);
+
   return (
     <Stack
       direction="column"
-      justifyContent={['space-between', 'unset']}
+      justifyContent={'center'}
       sx={{
         position: 'absolute',
-        px: '20px',
-        pt: '35px',
+        p: '20px',
         width: '100%',
-        height: '100%',
-        backgroundImage: `url('/images/landing-bg.svg')`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
+        height: '100vh',
+        backgroundColor: 'black',
       }}
       gap="4rem"
     >
-      <Stack width="100%" justifyContent="center" alignItems="center">
-        <BaseHuntAnimated width="100%" />
-        <Stack
-          width="100%"
-          justifyContent="center"
-          alignItems="center"
-          gap=".6rem"
-        >
-          <HomePageSVGRow />
+      <Stack width="100%" justifyContent="center" alignItems="center" gap={4}>
+        <LevelBadgesRow />
+        <BaseHuntHero />
+        <Stack pt={3} gap={3}>
+          <Text
+            variant="body1"
+            fontWeight={500}
+            lineHeight="16.8px"
+            textAlign="center"
+            color={Color.White}
+          >
+            ETHDENVER Feb 26 - Mar 3
+          </Text>
+          <Text variant="h5" textAlign="center" color={Color.White}>
+            Play onchain and unlock prizes.
+          </Text>
+          <Box gap={2}>
+            <Text variant="body2" textAlign="center" color={Color.White}>
+              Base Hunt spans 7 days and ends March 3rd at 5 PM MST.
+            </Text>
+            <Text align="center" color={Color.White}>
+              Trust us, use Coinbase Wallet if you want to win.
+            </Text>
+          </Box>
         </Stack>
       </Stack>
-      <Text fontSize="1.2rem" textAlign="center">
-        Play onchain and unlock prizes.
-      </Text>
-      <Stack width="100%" alignItems="center">
+      <Stack
+        direction="column"
+        alignItems="center"
+        width="100%"
+        justifyContent="center"
+        gap={2}
+      >
         <Stack
-          paddingTop={5}
+          direction={smallerThanSm ? 'column' : 'row'}
           alignItems="center"
-          width={['100%', '60%', '40%']}
+          justifyContent="center"
+          gap={2}
+          width={'100%'}
         >
           <Button
             variant="contained"
@@ -51,17 +89,76 @@ export default function Thanks() {
               py: '20px',
               px: 3,
               fontSize: '16px',
-              backgroundColor: '#000000',
-              width: '100%',
+              backgroundColor: Color.White,
+              width: ['80%', '250px'],
               borderRadius: '12px',
               fontFamily: 'CoinbaseMono',
               fontWeight: 400,
+              color: Color.Black,
             }}
+            onClick={() => setShowModal(true)}
           >
-            Basehunt is coming...
+            <Image
+              src="/images/coinbase-wallet-logo.png"
+              alt="Coinbase Wallet Logo"
+              height={24}
+              width={24}
+            />
+            <Typography pl={2} fontSize={14} textTransform="uppercase">
+              Get Coinbase Wallet
+            </Typography>
           </Button>
+          <Stack alignItems="center" width={['80%', '250px']}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                py: '20px',
+                px: 3,
+                fontSize: '14px',
+                backgroundColor: Color.CoinbaseBlue,
+                width: '100%',
+                borderRadius: '12px',
+                fontFamily: 'CoinbaseMono',
+                fontWeight: 400,
+                color: Color.White,
+              }}
+            >
+              Basehunt is coming...
+            </Button>
+          </Stack>
         </Stack>
       </Stack>
+      <BootstrapDialog
+        onClose={() => setShowModal(false)}
+        aria-labelledby="customized-dialog-title"
+        open={showModal}
+      >
+        <DialogTitle
+          sx={{ m: 0, p: 2, alignContent: 'center', textAlign: 'center' }}
+          id="customized-dialog-title"
+        >
+          Download Coinbase Wallet
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <Text gutterBottom lineHeight="160%" align="center">
+            Get the best experience in the Coinbase Wallet Mobile App.
+          </Text>
+          <Image
+            src="/images/magic-mint.png"
+            alt="Coinbase Wallet QR Code"
+            height={qrSizes}
+            width={qrSizes}
+          />
+        </DialogContent>
+      </BootstrapDialog>
     </Stack>
   );
 }
