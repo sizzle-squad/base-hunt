@@ -18,7 +18,11 @@ const types = {
 
 const airdropUrl = process.env.AIRDROP_URL as string;
 
-export async function airdropNft(userAddress: string, command: string) {
+export async function airdropNft(
+  userAddress: string,
+  command: string,
+  nonce?: string
+) {
   const wallet = new Wallet(
     process.env.AUTHORIZER_PK as string,
     new ethers.JsonRpcProvider('https://mainnet.base.org')
@@ -28,7 +32,8 @@ export async function airdropNft(userAddress: string, command: string) {
   const message = {
     userAddress: userAddress,
     command: command,
-    nonce: ethers.hexlify(ethers.randomBytes(32)),
+    nonce:
+      nonce ?? ethers.keccak256(ethers.toUtf8Bytes('__eth_denver_base_hunt__')),
   };
 
   const signature = ethers.Signature.from(
@@ -52,6 +57,7 @@ export async function airdropNft(userAddress: string, command: string) {
         'Content-Type': 'application/json',
       },
     });
+    console.log('[AirdropNft] response:', response.data);
     if (response.status != 200) {
       console.error('[AirdropNft] error airdropping:', response.data);
       return;
