@@ -122,7 +122,7 @@ export default function ListRow({
             <Stack
               direction="column"
               justifyContent="center"
-              width={smallerThanSm ? '160px' : 'auto'}
+              width={smallerThanSm ? '100px' : 'auto'}
             >
               {content}
             </Stack>
