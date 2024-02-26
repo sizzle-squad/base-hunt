@@ -22,6 +22,7 @@ import { useUserName } from '@/hooks/useUsername';
 
 import { Guild } from '@/components/Cards/Guild';
 import { useGuildState } from '@/hooks/useGuildState';
+import { Referral } from '@/components/Cards/Referral';
 import ChallengesPageClient from './ChallengesClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
@@ -274,6 +275,7 @@ export default function Challenges() {
           gameId={GAME_ID}
         />
       </Stack>
+      <Referral />
       <Box>
         {(['bottom'] as const).map((anchor) => (
           <Fragment key={anchor}>
