@@ -101,16 +101,11 @@ export function Guild({
           <Text variant="h6" fontSize="18px">
             {name ?? 'Solo player'}
           </Text>
-          <Text variant="body2">
-            {positionString} •{' '}
-            <Link target="_blank" href={referralLink}>
-              join link
-            </Link>
-          </Text>
+          <Text variant="body2">{positionString}</Text>
         </Box>
       </Stack>
     );
-  }, [imageUrl, isLoading, name, positionString, referralLink]);
+  }, [imageUrl, isLoading, name, positionString]);
 
   return (
     <Stack
