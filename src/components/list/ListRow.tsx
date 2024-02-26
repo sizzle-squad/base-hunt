@@ -57,7 +57,12 @@ export default function ListRow({
     }
 
     return (
-      <Text variant="body1" noWrap width={smallerThanSm ? '160px' : 'auto'}>
+      <Text
+        variant="body1"
+        textOverflow="ellipsis"
+        noWrap
+        width={smallerThanSm ? '160px' : 'auto'}
+      >
         {name}
       </Text>
     );
@@ -119,7 +124,7 @@ export default function ListRow({
                 {''}
               </Avatar>
             )}
-            <Stack direction="column" justifyContent="center">
+            <Stack direction="column" justifyContent="center" width="100px">
               {content}
             </Stack>
           </Stack>
