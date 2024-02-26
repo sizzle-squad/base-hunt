@@ -128,7 +128,7 @@ export default function Home() {
               <Text variant="body2" textAlign="center" color={Color.White}>
                 Base Hunt spans 7 days and ends March 3rd at 5 PM MST.
               </Text>
-              <Text align="center" color={Color.White}>
+              <Text variant="body2" align="center" color={Color.White}>
                 Trust us, use Coinbase Wallet if you want to win.
               </Text>
             </Box>
