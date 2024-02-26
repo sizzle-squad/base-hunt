@@ -125,12 +125,15 @@ export default function Home() {
           </Stack>
         </Stack>
         <Stack
-          direction="row"
+          direction="column"
           alignItems="center"
           width="100%"
           justifyContent="center"
-          gap={1}
+          gap={2}
         >
+          <Text align="center" color={Color.White}>
+            Trust us, use Coinbase Wallet if you want to win.
+          </Text>
           <Stack
             direction={smallerThanSm ? 'column' : 'row'}
             alignItems="center"
@@ -169,9 +172,6 @@ export default function Home() {
             </Stack>
           </Stack>
         </Stack>
-        <Text align="center" color={Color.White}>
-          Instant and free mints only with Coinbase Wallet
-        </Text>
       </Stack>
       <BootstrapDialog
         onClose={() => setShowModal(false)}

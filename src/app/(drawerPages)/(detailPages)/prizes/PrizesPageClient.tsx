@@ -96,11 +96,6 @@ export default function PrizesPageClient() {
         <Text>How prizes work</Text>
         {showModal ? <ExpandLessIcon /> : <ExpandMoreIcon />}
       </Pill>
-      <Text textAlign="center" whiteSpace="pre-wrap">
-        Prizes can be claimed for free at ETHDenver (Spork Castle, Booth 301) or{' '}
-        <br />
-        ordered through the Slice merch store for a small processing fee.
-      </Text>
       <NoSsr>
         <Grid
           container
@@ -180,7 +175,7 @@ export default function PrizesPageClient() {
                           src={level.prizeImageUrl ?? ''}
                           alt="jumbotron"
                           width={200}
-                          height={200}
+                          height={level.level === '1' ? 100 : 200}
                         />
                       </Stack>
 
@@ -210,7 +205,7 @@ export default function PrizesPageClient() {
           <DialogContent>
             <Text gutterBottom lineHeight="160%">
               • Prizes can be claimed for free at ETHDenver (Spork Castle, Booth
-              301) or ordered through the Slice merch store (shipping and
+              401) or ordered through the Slice merch store (shipping and
               processing fees apply).
             </Text>
             <Text gutterBottom lineHeight="160%">

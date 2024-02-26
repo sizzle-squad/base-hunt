@@ -39,12 +39,14 @@ type TitleBarProps = {
   owned?: boolean;
   title?: string;
   backHref?: string;
+  goBack?: () => void;
 };
 
 export function TitleBar({
   owned = false,
   title = '',
   backHref = '/challenges',
+  goBack,
 }: TitleBarProps) {
   const chevronIcon = useMemo(() => {
     return owned ? <WhiteLeftChevron /> : <LeftChevron />;
@@ -58,8 +60,9 @@ export function TitleBar({
       justifyContent="space-between"
       alignItems="center"
       className="pageContent"
+      onClick={goBack}
     >
-      <Link href={backHref}>
+      <Link href={goBack ? '' : backHref}>
         <IconButton
           sx={{
             color: owned ? '#FFFFFF' : '#1D1818',

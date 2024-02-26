@@ -2,24 +2,11 @@
 
 import { useCallback, useMemo } from 'react';
 
-import {
-  Box,
-  Card,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  Link,
-  NoSsr,
-  Skeleton,
-  Stack,
-} from '@mui/material';
+import { Box, Card, Grid, NoSsr, Skeleton, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ListRow from '@/components/list/ListRow';
 import { TopContributorTag } from '@/components/list/TopContributorTag';
 import { GAME_ID } from '@/constants/gameId';
@@ -30,11 +17,10 @@ import Text from '@/components/Text';
 
 import { CountdownTimer } from '@/components/Countdown';
 import { DailyChallengeClaim } from '@/components/Cards/DailyChallengeClaim';
-import { BootstrapDialog } from '@/components/BoostrapDialog';
-import { Button } from '@/components/assets/Button';
 import { useGameInfoContext } from '@/context/GameInfoContext';
-import Pill from '@/components/Pill';
+import { ModalPill } from '@/components/ModalPill';
 import { GuildCardList } from './GuildCardList';
+import { GuildModal } from './GuildModal';
 
 type RankMock = GuildRank & {
   isMock: boolean;
@@ -75,11 +61,12 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
   const searchParams = useSearchParams();
   const hasNoGuild = Boolean(searchParams.get('hasNoGuild') || noGuild);
   const router = useRouter();
-  const { showModal, setShowModal } = useGameInfoContext();
+  const { setShowModal } = useGameInfoContext();
 
   const toggleModal = useCallback(() => {
     setShowModal((prev) => !prev);
   }, [setShowModal]);
+
   const {
     data: guildState,
     isLoading: isGuildStateLoading,
@@ -200,10 +187,7 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
 
     return (
       <Stack direction="column" mt="24px" gap={1}>
-        <Pill backgroundColor="none" onClick={toggleModal} hover>
-          <Text>How guilds work</Text>
-          {showModal ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </Pill>
+        <ModalPill value="How guilds work" onClick={toggleModal} />
         <DailyChallengeClaim />
         {description}
         <CountdownTimer />
@@ -284,7 +268,6 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
     leaderboardData.topContributor.id,
     leaderboardData.topContributor.imageUrl,
     leaderboardData.topContributor.name,
-    showModal,
     toggleModal,
   ]);
 
@@ -296,36 +279,7 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
       ) : (
         leaderboard
       )}
-      <BootstrapDialog
-        onClose={() => setShowModal(false)}
-        aria-labelledby="customized-dialog-title"
-        open={showModal}
-      >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          How guilds work
-        </DialogTitle>
-        <DialogContent>
-          <Text gutterBottom lineHeight="160%">
-            • If your guild has the most points at the end of each day (5 PM
-            MST), you’ll earn an <b>extra 100 points</b> for that day.
-          </Text>
-          <Text gutterBottom lineHeight="160%">
-            • 1 point = 1 transaction on Base. Guild points are updated hourly.
-          </Text>
-          <Text gutterBottom lineHeight="160%">
-            • The guild that wins the most days (out of 7) wins Base Hunt. In
-            the event of a tie, we’ll look at total points to break the tie.
-          </Text>
-          <Text gutterBottom lineHeight="160%">
-            • Once you’re in a guild, you cannot switch guilds. Choose wisely!
-          </Text>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowModal(false)}>
-            <Text>Got it!</Text>
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
+      <GuildModal />
     </NoSsr>
   );
 }

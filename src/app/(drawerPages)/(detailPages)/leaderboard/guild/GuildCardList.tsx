@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 
-import { Box, Grid, Stack } from '@mui/material';
+import { Box, Grid, Modal, Stack } from '@mui/material';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 
@@ -13,11 +13,19 @@ import { Color } from '@/constants/color';
 import { GAME_ID } from '@/constants/gameId';
 import { Guild } from '@/hooks/types';
 import { useMutateGuild } from '@/hooks/useMutateGuild';
+import { ModalPill } from '@/components/ModalPill';
+import { useGameInfoContext } from '@/context/GameInfoContext';
+import { GuildModal } from './GuildModal';
 
 export function GuildCardList({ guilds }: { guilds: Guild[] }) {
   const { address } = useAccount();
   const { joinGuild } = useMutateGuild();
   const router = useRouter();
+  const { setShowModal } = useGameInfoContext();
+
+  const toggleModal = useCallback(() => {
+    setShowModal((prev) => !prev);
+  }, [setShowModal]);
 
   const handleCardPress = useCallback(
     (guildId: string) => () => {
@@ -45,6 +53,9 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
       sx={{ flexGrow: 1 }}
       gap={1}
     >
+      <Box pt={3}>
+        <ModalPill value="How guilds work" onClick={toggleModal} />
+      </Box>
       <Box pt={2}>
         <Text textAlign="center" whiteSpace="pre-wrap">
           Join a guild, earn more points and have more fun! <br />
@@ -138,6 +149,7 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
           );
         })}
       </Grid>
+      <GuildModal />
     </Stack>
   );
 }

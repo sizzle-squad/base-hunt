@@ -70,7 +70,7 @@ export const CountdownTimer = memo(() => {
       <Text variant="h5" useMonoFont>
         {formatCountdown}
       </Text>
-      <Text variant="body1">Time remaining</Text>
+      <Text variant="body1">Time remaining until daily snapshot</Text>
     </Stack>
   );
 });

@@ -84,7 +84,7 @@ export function DailyChallengeClaim() {
           >
             <Text fontSize="16px" lineHeight="18px" fontWeight={400}>
               {claimDailyChallenge.isSuccess
-                ? 'Point claimed!'
+                ? 'Points claimed!'
                 : `Claim ${guildState?.claimablePoints} points`}
             </Text>
           </Button>
