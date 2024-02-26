@@ -129,7 +129,7 @@ export default function Page({ params }: { params: { guildId: string } }) {
               }}
             >
               <Image
-                src={currentGuild.imageUrl ?? '/images/solo.svg'}
+                src={currentGuild.imageUrl ?? '/images/plus.png'}
                 alt="Guild badge"
                 width={110}
                 height={110}

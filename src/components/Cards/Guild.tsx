@@ -19,7 +19,7 @@ type Props = {
 export function Guild({
   name,
   position,
-  imageUrl = '/images/solo.svg',
+  imageUrl = '/images/plus.png',
   isLoading,
   id,
   address,
@@ -41,7 +41,7 @@ export function Guild({
   }, [isLoading, redirectParams, router]);
 
   const positionString = useMemo(() => {
-    if (!position) return 'No guild';
+    if (!position) return 'Join a guild';
 
     let message = 'place';
     switch (position) {
@@ -91,7 +91,7 @@ export function Guild({
           }}
         >
           <Image
-            src={imageUrl ?? '/images/solo.svg'}
+            src={imageUrl ?? '/images/plus.png'}
             alt="Guild badge"
             width={64}
             height={64}
