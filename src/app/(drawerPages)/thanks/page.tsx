@@ -1,7 +1,10 @@
 'use client';
 
 import {
+  Box,
   Button,
+  DialogContent,
+  DialogTitle,
   Stack,
   Typography,
   useMediaQuery,
@@ -9,16 +12,22 @@ import {
 } from '@mui/material';
 
 import Image from 'next/image';
+import { useMemo } from 'react';
 import Text from '@/components/Text';
 import { LevelBadgesRow } from '@/components/assets/icons/LevelBadgesRow';
 import { BaseHuntHero } from '@/components/assets/BaseHuntHero';
 import { Color } from '@/constants/color';
 import { useGameInfoContext } from '@/context/GameInfoContext';
+import { BootstrapDialog } from '@/components/BoostrapDialog';
 
 export default function Thanks() {
   const theme = useTheme();
   const smallerThanSm = useMediaQuery(theme.breakpoints.down('sm'));
   const { showModal, setShowModal } = useGameInfoContext();
+
+  const qrSizes = useMemo(() => {
+    return smallerThanSm ? 200 : 500;
+  }, [smallerThanSm]);
 
   return (
     <Stack
@@ -49,9 +58,14 @@ export default function Thanks() {
           <Text variant="h5" textAlign="center" color={Color.White}>
             Play onchain and unlock prizes.
           </Text>
-          <Text variant="body2" textAlign="center" color={Color.White}>
-            Base Hunt spans 7 days and ends March 3rd at 5 PM MST.
-          </Text>
+          <Box gap={2}>
+            <Text variant="body2" textAlign="center" color={Color.White}>
+              Base Hunt spans 7 days and ends March 3rd at 5 PM MST.
+            </Text>
+            <Text align="center" color={Color.White}>
+              Trust us, use Coinbase Wallet if you want to win.
+            </Text>
+          </Box>
         </Stack>
       </Stack>
       <Stack
@@ -61,9 +75,6 @@ export default function Thanks() {
         justifyContent="center"
         gap={2}
       >
-        <Text align="center" color={Color.White}>
-          Trust us, use Coinbase Wallet if you want to win.
-        </Text>
         <Stack
           direction={smallerThanSm ? 'column' : 'row'}
           alignItems="center"
@@ -118,6 +129,36 @@ export default function Thanks() {
           </Stack>
         </Stack>
       </Stack>
+      <BootstrapDialog
+        onClose={() => setShowModal(false)}
+        aria-labelledby="customized-dialog-title"
+        open={showModal}
+      >
+        <DialogTitle
+          sx={{ m: 0, p: 2, alignContent: 'center', textAlign: 'center' }}
+          id="customized-dialog-title"
+        >
+          Download Coinbase Wallet
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <Text gutterBottom lineHeight="160%" align="center">
+            Get the best experience in the Coinbase Wallet Mobile App.
+          </Text>
+          <Image
+            src="/images/magic-mint.png"
+            alt="Coinbase Wallet QR Code"
+            height={qrSizes}
+            width={qrSizes}
+          />
+        </DialogContent>
+      </BootstrapDialog>
     </Stack>
   );
 }
