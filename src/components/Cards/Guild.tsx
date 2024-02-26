@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { Box, Skeleton, Stack } from '@mui/material';
+import { Box, Link, Skeleton, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 import Image from 'next/image';
@@ -12,6 +12,8 @@ type Props = {
   isLoading?: boolean;
   imageUrl?: string | null;
   id?: string | null;
+  address: `0x${string}` | undefined;
+  gameId: string;
 };
 
 export function Guild({
@@ -20,6 +22,8 @@ export function Guild({
   imageUrl = '/images/solo.svg',
   isLoading,
   id,
+  address,
+  gameId,
 }: Props) {
   const router = useRouter();
 
@@ -51,6 +55,15 @@ export function Guild({
         return `${position}th ${message}`;
     }
   }, [position]);
+
+  const referralLink = useMemo(() => {
+    return (
+      `https://warpcast.com/~/compose?embeds[]=` +
+      encodeURIComponent(
+        `https://basehunt.xyz/frames/join?userAddress=${address}&gameId=${gameId}&guildId=${id}`
+      )
+    );
+  }, [address, gameId, id]);
 
   const content = useMemo(() => {
     if (isLoading) {
