@@ -98,7 +98,7 @@ export default function Home() {
           position: 'absolute',
           p: '20px',
           width: '100vw',
-          height: '100vh',
+          height: '110vh',
           backgroundColor: 'black',
         }}
         gap="4rem"
@@ -131,7 +131,7 @@ export default function Home() {
           justifyContent="center"
           gap={2}
         >
-          <Text align="center" color={Color.White}>
+          <Text variant="body2" align="center" color={Color.White}>
             Trust us, use Coinbase Wallet if you want to win.
           </Text>
           <Stack

@@ -183,12 +183,19 @@ export default function ChallengesPageClient({ refreshData }: Props) {
 
   const handleCompletePress = useCallback(
     (item: ListCardPropsForChallenges) => {
-      claimChallenge.mutate({
-        gameId: GAME_ID,
-        userAddress: address,
-        challengeId: item!.id.toString(),
-        contractAddress: item?.contractAddress,
-      });
+      claimChallenge.mutate(
+        {
+          gameId: GAME_ID,
+          userAddress: address,
+          challengeId: item!.id.toString(),
+          contractAddress: item?.contractAddress,
+        },
+        {
+          onSuccess: () => {
+            refreshData();
+          },
+        }
+      );
     },
     // claimBoost should not be in there
     // eslint-disable-next-line react-hooks/exhaustive-deps
