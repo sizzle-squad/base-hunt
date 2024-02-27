@@ -49,9 +49,7 @@ export function Level({ currentLevel, score, isLoading, rank }: Props) {
           height={64}
         />
         <Box>
-          <Text variant="h6" fontSize="18px">
-            Level {currentLevel}
-          </Text>
+          <Text variant="h6">Level {currentLevel}</Text>
           <Stack
             direction="row"
             gap={1}

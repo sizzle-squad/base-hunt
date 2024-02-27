@@ -47,6 +47,12 @@ const config = createConfig({
 const theme = createTheme({
   typography: {
     fontFamily: `CoinbaseSans, Open Sans, sans-serif`,
+    h6: {
+      fontSize: '14px',
+    },
+    body2: {
+      fontSize: '12px',
+    },
     button: {
       textTransform: 'none',
     },

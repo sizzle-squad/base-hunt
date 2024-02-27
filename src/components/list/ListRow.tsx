@@ -39,6 +39,7 @@ export default function ListRow({
 }: Props) {
   const theme = useTheme();
   const smallerThanSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const smallerThanXs = useMediaQuery(theme.breakpoints.down(500));
 
   const borderRadiusStyle = useMemo(() => {
     // single row should have rounded corners
@@ -56,12 +57,14 @@ export default function ListRow({
       return <Skeleton variant="text" width={150} height={24} />;
     }
 
+    const width = smallerThanXs ? '110px' : smallerThanSm ? '150px' : 'auto';
+
     return (
-      <Text variant="body1" noWrap width={smallerThanSm ? '110px' : 'auto'}>
+      <Text variant="body1" noWrap width={width}>
         {name}
       </Text>
     );
-  }, [isLoading, name, smallerThanSm]);
+  }, [isLoading, name, smallerThanSm, smallerThanXs]);
 
   return (
     <Stack
@@ -130,7 +133,7 @@ export default function ListRow({
         </Stack>
         <Text
           textAlign="right"
-          width="95px"
+          width={smallerThanSm ? '95px' : 'fit-content'}
           variant="body1"
           fontWeight={500}
           noWrap
