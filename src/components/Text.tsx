@@ -20,7 +20,7 @@ const Text: FC<CustomTypographyProps & { useMonoFont?: boolean }> = ({
   variant,
   fontSize,
   color,
-  useMonoFont,
+  useMonoFont = true,
   lineHeight,
   ...props
 }) => {

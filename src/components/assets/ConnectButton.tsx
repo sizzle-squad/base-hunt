@@ -2,6 +2,7 @@
 
 import { Button } from '@mui/material';
 import { ConnectButton as RainbowConnectButton } from '@rainbow-me/rainbowkit';
+import Text from '@/components/Text';
 
 type Props = {
   variant?: 'text' | 'outlined' | 'contained';
@@ -9,14 +10,14 @@ type Props = {
   px?: number;
   backgroundColor?: string;
   color?: string;
+  py?: string;
 };
 
 export function ConnectButton({
   variant = 'contained',
-  fontSize = '22px',
-  px = 5,
   backgroundColor = '#000000',
   color = '#FFFFFF',
+  py = '20px',
 }: Props) {
   return (
     <RainbowConnectButton.Custom>
@@ -28,19 +29,17 @@ export function ConnectButton({
             variant={variant}
             color="primary"
             sx={{
-              py: '20px',
+              py,
               px: 3,
-              fontSize: '16px',
               backgroundColor,
               width: '100%',
               borderRadius: '12px',
-              fontFamily: 'CoinbaseMono',
-              fontWeight: 400,
-              color,
             }}
             onClick={openConnectModal}
           >
-            {!connected ? 'Connect Wallet' : 'Disconntect'}
+            <Text color={color}>
+              {!connected ? 'Connect Wallet' : 'Disconntect'}
+            </Text>
           </Button>
         );
       }}
