@@ -12,7 +12,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -23,11 +22,11 @@ import { ConnectButton } from '@/components/assets/ConnectButton';
 import Text from '@/components/Text';
 import { useMutateOptIn } from '@/hooks/useMutateOptIn';
 import { GAME_ID } from '@/constants/gameId';
-import { LevelBadgesRow } from '@/components/assets/icons/LevelBadgesRow';
 import { BaseHuntHero } from '@/components/assets/BaseHuntHero';
 import { Color } from '@/constants/color';
 import { useGameInfoContext } from '@/context/GameInfoContext';
 import { BootstrapDialog } from '@/components/BoostrapDialog';
+import { BadgesRow } from '@/components/assets/icons/BadgesRow';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -37,6 +36,10 @@ export default function Home() {
   const smallerThanSm = useMediaQuery(theme.breakpoints.down('sm'));
   const { showModal, setShowModal } = useGameInfoContext();
 
+  const buttonYPadding = useMemo(
+    () => (smallerThanSm ? '15px' : '20px'),
+    [smallerThanSm]
+  );
   const qrSizes = useMemo(() => {
     return smallerThanSm ? 200 : 500;
   }, [smallerThanSm]);
@@ -67,28 +70,25 @@ export default function Home() {
           variant="contained"
           color="primary"
           sx={{
-            py: '20px',
+            py: buttonYPadding,
             px: 3,
-            fontSize: '16px',
             backgroundColor: Color.CoinbaseBlue,
             width: '100%',
             borderRadius: '12px',
-            fontFamily: 'CoinbaseMono',
-            fontWeight: 400,
-            color: Color.White,
           }}
           onClick={handleStartExploring}
         >
-          {ctaText}
+          <Text color={Color.White}>{ctaText}</Text>
         </Button>
       ) : (
         <ConnectButton
           backgroundColor={Color.CoinbaseBlue}
           color={Color.White}
+          py={buttonYPadding}
         />
       );
     }
-  }, [isConnected, handleStartExploring, isClient]);
+  }, [isClient, isConnected, buttonYPadding, handleStartExploring]);
 
   return (
     <>
@@ -107,10 +107,15 @@ export default function Home() {
           height: '110vh',
           backgroundColor: 'black',
         }}
-        gap="4rem"
+        gap={smallerThanSm ? 3 : 4}
       >
-        <Stack width="100%" justifyContent="center" alignItems="center" gap={4}>
-          <LevelBadgesRow />
+        <Stack
+          width="100%"
+          justifyContent="center"
+          alignItems="center"
+          gap={smallerThanSm ? 3 : 4}
+        >
+          <BadgesRow />
           <BaseHuntHero />
           <Stack pt={3} gap={3}>
             <Text
@@ -153,27 +158,32 @@ export default function Home() {
               variant="contained"
               color="primary"
               sx={{
-                py: '20px',
+                py: buttonYPadding,
                 px: 3,
                 fontSize: '16px',
                 backgroundColor: Color.White,
                 width: ['80%', '250px'],
                 borderRadius: '12px',
-                fontFamily: 'CoinbaseMono',
-                fontWeight: 400,
-                color: Color.Black,
               }}
               onClick={() => setShowModal(true)}
             >
-              <Image
-                src="/images/coinbase-wallet-logo.png"
-                alt="Coinbase Wallet Logo"
-                height={24}
-                width={24}
-              />
-              <Typography pl={2} fontSize={14} textTransform="uppercase">
-                Get Coinbase Wallet
-              </Typography>
+              <Stack direction="row" gap={1} alignItems="center">
+                <Image
+                  src="/images/coinbase-wallet-logo.png"
+                  alt="Coinbase Wallet Logo"
+                  height={24}
+                  width={24}
+                />
+                <Text
+                  color={Color.Black}
+                  fontSize="14px"
+                  variant="body2"
+                  textTransform="uppercase"
+                  noWrap
+                >
+                  Get Coinbase Wallet
+                </Text>
+              </Stack>
             </Button>
             <Stack alignItems="center" width={['80%', '250px']}>
               {ctaButton}
