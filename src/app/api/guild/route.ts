@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { type NextRequest, NextResponse } from 'next/server';
 
+import { ethers } from 'ethers';
 import { GuildPostBodyData } from '@/hooks/useMutateGuild';
 import { Database } from '@/utils/database.types';
 import { ChallengeType, CheckFunctionType } from '@/utils/database.enums';
@@ -13,7 +14,13 @@ const supabase = createClient<Database>(
 // Register a user to a guild
 export async function POST(request: NextRequest) {
   const body: GuildPostBodyData = await request.json();
-  const { gameId, userAddress, guildId } = body;
+  const { gameId, userAddress, guildId, signature, secret } = body;
+
+  if (signature === undefined && secret === undefined) {
+    return new Response(`Missing authorization`, {
+      status: 405,
+    });
+  }
 
   if (!userAddress || !gameId || !guildId) {
     return new Response(
@@ -42,6 +49,33 @@ export async function POST(request: NextRequest) {
     console.error(challengeData.error);
     return new NextResponse(`Error getting challenge data`, {
       status: 400,
+    });
+  }
+
+  const guildData = await supabase
+    .from('guild_configuration')
+    .select()
+    .eq('guild_id', params.guild_id)
+    .eq('game_id', params.game_id)
+    .single();
+
+  if (guildData.error) {
+    return new NextResponse(`Error getting guild data`, {
+      status: 404,
+    });
+  }
+
+  const joinMessageTemplate = `Joining ${guildData.data.name}:${params.guild_id} with wallet:${params.user_address} for base-hunt:${params.game_id} for eth-denver`;
+  const recoveredAddress = ethers.verifyMessage(
+    joinMessageTemplate,
+    signature as string
+  );
+  if (
+    secret !== process.env.WEBHOOK_SECRET &&
+    recoveredAddress.toLowerCase() !== params.user_address
+  ) {
+    return new Response(`Unauthorized`, {
+      status: 405,
     });
   }
 
@@ -82,6 +116,10 @@ export async function POST(request: NextRequest) {
   }
 
   if (body.referrerAddress) {
+    console.log(
+      'applying referrer bonuse to:',
+      body.referrerAddress.toLowerCase()
+    );
     const referrerData = await supabase.rpc('incrementuserscore', {
       _game_id: params.game_id,
       _user_address: body.referrerAddress.toLowerCase(),

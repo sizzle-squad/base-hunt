@@ -86,6 +86,7 @@ export async function POST(req: NextRequest) {
         gameId: gameId,
         guildId: guildId,
         referrerAddress: referrerAddress.toLowerCase(),
+        secret: process.env.WEBHOOK_SECRET,
       },
       {
         headers: {
