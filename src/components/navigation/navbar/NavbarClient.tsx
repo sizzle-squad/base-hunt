@@ -13,6 +13,10 @@ import { useDrawer } from '@/context/DrawerContext';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
+import Pill from '@/components/Pill';
+import { Color } from '@/constants/color';
+import { useGuildState } from '@/hooks/useGuildState';
+import { getReferralLink } from '@/utils/guild/getReferralLink';
 
 export const NavbarClient = () => {
   const { address, isDisconnected, isConnecting } = useAccount();
@@ -23,12 +27,18 @@ export const NavbarClient = () => {
   const userName = useUserName({ address, userPublicProfile });
   const { toggleDrawer, drawerStates } = useDrawer();
 
+  const { hasGuild, data: guildData } = useGuildState({
+    gameId: gameId,
+    userAddress: address,
+  });
+
   // TODO: solidify types and figure out why this is returning undefined
   const { data, isLoading: isScoreLoading } = useScore({
     userAddress: address ?? '',
     gameId,
   });
 
+  // Why do we need this?
   const score = useMemo(() => {
     if (data && data.score?.currentScore) {
       return data.score.currentScore;
@@ -41,6 +51,12 @@ export const NavbarClient = () => {
     toggleDrawer('walletOperations', 'bottom', true);
   }, [toggleDrawer]);
 
+  const handleReferralPillPressed = useCallback(() => {
+    return window.open(
+      getReferralLink({ address, gameId, id: guildData?.guildId ?? '' })
+    );
+  }, [address, gameId, guildData?.guildId]);
+
   const isLoading = useMemo(() => {
     return isProfileLoading || isScoreLoading || isConnecting;
   }, [isConnecting, isProfileLoading, isScoreLoading]);
@@ -49,7 +65,7 @@ export const NavbarClient = () => {
     <Stack
       direction="row"
       width="100%"
-      justifyContent="flex-end"
+      justifyContent="space-between"
       paddingBottom={2}
     >
       <Stack
@@ -81,6 +97,13 @@ export const NavbarClient = () => {
           </>
         )}
       </Stack>
+      {hasGuild ? (
+        <Pill backgroundColor={Color.White} onClick={handleReferralPillPressed}>
+          <Text variant="body2" fontSize="14px">
+            Recruit friends
+          </Text>
+        </Pill>
+      ) : null}
     </Stack>
   );
 };

@@ -3,7 +3,7 @@
 import { Box, Skeleton, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 import Image from 'next/image';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import DetailsPageNavbar from '@/components/navigation/DetailsPageNavbar';
 import { useGuildState } from '@/hooks/useGuildState';
@@ -12,6 +12,8 @@ import { useGuild } from '@/hooks/useGuild';
 import Text from '@/components/Text';
 import Pill from '@/components/Pill';
 import { Color } from '@/constants/color';
+import { Button } from '@/components/assets/Button';
+import { getReferralLink } from '@/utils/guild/getReferralLink';
 import { GuildDetailRow } from './GuildDetailRow';
 
 export default function Page({ params }: { params: { guildId: string } }) {
@@ -112,6 +114,13 @@ export default function Page({ params }: { params: { guildId: string } }) {
     []
   );
 
+  const referralButtonPressed = useCallback(() => {
+    return window.open(
+      getReferralLink({ address, gameId: GAME_ID, id: '' }),
+      '_blank'
+    );
+  }, [address]);
+
   return (
     <Stack className="pageContent" gap={3}>
       <DetailsPageNavbar title="" goBack={router.back} />
@@ -144,6 +153,32 @@ export default function Page({ params }: { params: { guildId: string } }) {
               <Text variant="h5">{currentGuild.name}</Text>
               <Text variant="body1">{currentGuild.leader}</Text>
             </Stack>
+          </Stack>
+
+          <Stack
+            direction="column"
+            gap={1.5}
+            p={2}
+            borderRadius="14px"
+            sx={{
+              background: Color.White,
+            }}
+          >
+            <Text variant="h5" fontSize="20px">
+              Grow your guild
+            </Text>
+            <Text variant="body2" fontSize="14px">
+              Earn 10 pts for every friend who joins your guild through your
+              Warpcast link
+            </Text>
+            <Button
+              variant="outlined"
+              bgColor={Color.White}
+              textColor={Color.Black}
+              onClick={referralButtonPressed}
+            >
+              Recruit on Warpcast
+            </Button>
           </Stack>
           <Stack
             direction="row"
