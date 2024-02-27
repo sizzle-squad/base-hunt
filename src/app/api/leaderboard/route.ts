@@ -41,5 +41,12 @@ export async function GET(request: NextRequest) {
     userAddress: entry.user_address,
   }));
 
-  return NextResponse.json(result);
+  const response = NextResponse.json(result);
+
+  // cache for 10 seconds
+  response.headers.set('Cache-Control', 'public, s-maxage=10');
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=10');
+  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=10');
+
+  return response;
 }

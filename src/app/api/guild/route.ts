@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     guild_id: guildId,
   };
 
-  //claim the join guild challenge
+  // claim the join guild challenge
   const challengeData = await supabase
     .from('challenge_configuration')
     .select('id,points')
@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
     .eq('type', ChallengeType.SOCIAL)
     .eq('function_type', CheckFunctionType.checkJoinGuild)
     .single();
+
   if (challengeData.error) {
     console.error(challengeData.error);
     return new NextResponse(`Error getting challenge data`, {

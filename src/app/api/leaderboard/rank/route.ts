@@ -46,11 +46,19 @@ export async function GET(request: NextRequest) {
   }
 
   const playerRank = rank[0].j as RankType;
-  return NextResponse.json({
+
+  const response = NextResponse.json({
     rank: playerRank?.rank.toString(),
     userAddress: playerRank?.user_address,
     currentScore: playerRank?.current_score,
   });
+
+  // cache for 10 seconds
+  response.headers.set('Cache-Control', 'public, s-maxage=10');
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=10');
+  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=10');
+
+  return response;
 }
 
 /*

@@ -127,7 +127,17 @@ export async function GET(request: NextRequest) {
     winShares: winShares[guild.guild_id] || 0,
     socialLink: guild.social_link || '',
   }));
-  return NextResponse.json(leaderboardResult.sort((a, b) => a.rank - b.rank));
+
+  const response = NextResponse.json(
+    leaderboardResult.sort((a, b) => a.rank - b.rank)
+  );
+
+  // cache for 20 minutes (20*60)
+  response.headers.set('Cache-Control', 'public, s-maxage=1200');
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=1200');
+  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=1200');
+
+  return response;
 }
 
 export async function getGuildRanks(
