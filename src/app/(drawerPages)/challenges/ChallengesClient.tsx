@@ -183,6 +183,9 @@ export default function ChallengesPageClient({ refreshData }: Props) {
 
   const handleCompletePress = useCallback(
     (item: ListCardPropsForChallenges) => {
+      // do not mutate for joining guild challenge
+      if (item.id === 10) return;
+
       claimChallenge.mutate(
         {
           gameId: GAME_ID,

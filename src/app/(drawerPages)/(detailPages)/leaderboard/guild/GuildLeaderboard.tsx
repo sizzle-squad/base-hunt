@@ -275,7 +275,7 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
     <NoSsr>
       {guildCardListSkeleton}
       {hasNoGuild && !isLoading ? (
-        <GuildCardList guilds={topGuildRanks} />
+        <GuildCardList guilds={topGuildRanks.reverse()} />
       ) : (
         leaderboard
       )}

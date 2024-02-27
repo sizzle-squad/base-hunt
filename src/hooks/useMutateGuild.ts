@@ -27,8 +27,13 @@ export function useMutateGuild() {
       return axios.post(routes.guild.default, data);
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['profile/guild'] });
+      onSuccess: (_, variables) => {
+        const { gameId, userAddress } = variables;
+        queryClient.invalidateQueries({
+          queryKey: ['profile/guild', userAddress, gameId],
+        });
+        queryClient.invalidateQueries({ queryKey: ['guild', gameId] });
+        queryClient.refetchQueries({ queryKey: ['guild', gameId] });
       },
     }
   );
