@@ -9,6 +9,7 @@ export type GuildPostBodyData = {
   guildId: string;
   referrerAddress?: `0x${string}` | undefined;
   signature?: string;
+  secret?: string;
 };
 
 export function useMutateGuild() {
