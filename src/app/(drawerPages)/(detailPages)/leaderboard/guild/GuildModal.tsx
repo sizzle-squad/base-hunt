@@ -24,7 +24,7 @@ export function GuildModal() {
       <DialogContent>
         <Text gutterBottom lineHeight="160%">
           • If your guild has the most points at the end of each day (5 PM MST),
-          you’ll earn an <b>extra 100 points</b> for that day.
+          you’ll earn extra points for that day.
         </Text>
         <Text gutterBottom lineHeight="160%">
           • 1 point = 1 transaction on Base. Guild points are updated hourly.
