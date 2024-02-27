@@ -66,13 +66,12 @@ export async function POST(request: NextRequest) {
   }
 
   const joinMessageTemplate = `Joining ${guildData.data.name}:${params.guild_id} with wallet:${params.user_address} for base-hunt:${params.game_id} for eth-denver`;
-
   const recoveredAddress = ethers.verifyMessage(
     joinMessageTemplate,
     signature as string
   );
   if (
-    secret !== process.env.WEBHOOK_SECRET ||
+    secret !== process.env.WEBHOOK_SECRET &&
     recoveredAddress.toLowerCase() !== params.user_address
   ) {
     return new Response(`Unauthorized`, {
