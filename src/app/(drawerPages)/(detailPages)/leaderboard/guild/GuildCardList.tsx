@@ -60,8 +60,8 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
         <Text textAlign="center" whiteSpace="pre-wrap">
           Join a guild, earn more points and have more fun! <br />
           If your guild has the most points at the end of each day (5 PM MST),
-          you’ll earn an extra 100 points for that day. You’ll have 7
-          opportunities to win the daily guild challenge. Choose wisely!
+          you’ll earn extra points for that day. You’ll have 7 opportunities to
+          win the daily guild challenge. Choose wisely!
         </Text>
       </Box>
       <Grid
