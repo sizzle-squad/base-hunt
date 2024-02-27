@@ -104,7 +104,7 @@ export default function Home() {
           position: 'absolute',
           p: '20px',
           width: '100vw',
-          height: '110vh',
+          height: '100vh',
           backgroundColor: 'black',
         }}
         gap={smallerThanSm ? 3 : 4}
