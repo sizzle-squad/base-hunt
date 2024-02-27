@@ -2,9 +2,9 @@
 
 import { useCallback } from 'react';
 
-import { Box, Grid, Modal, Stack } from '@mui/material';
+import { Box, Grid, Stack } from '@mui/material';
 import Image from 'next/image';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
 
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/assets/Button';
@@ -19,6 +19,7 @@ import { GuildModal } from './GuildModal';
 
 export function GuildCardList({ guilds }: { guilds: Guild[] }) {
   const { address } = useAccount();
+  const { signMessageAsync } = useSignMessage();
   const { joinGuild } = useMutateGuild();
   const router = useRouter();
   const { setShowModal } = useGameInfoContext();
@@ -27,22 +28,27 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
     setShowModal((prev) => !prev);
   }, [setShowModal]);
 
-  const handleCardPress = useCallback(
-    (guildId: string) => () => {
-      return router.push(`/guild/${guildId}`);
-    },
-    [router]
-  );
-
   const handleJoinPress = useCallback(
-    (guildId: string) => () => {
-      joinGuild.mutate({
-        gameId: GAME_ID,
-        userAddress: address,
-        guildId: guildId,
+    (guildId: string, guildName: string) => async () => {
+      const signature = await signMessageAsync({
+        message: `Joining ${guildName}:${guildId} with wallet:${address?.toLowerCase()} for base-hunt:${GAME_ID} for eth-denver`,
       });
+
+      joinGuild.mutate(
+        {
+          gameId: GAME_ID,
+          userAddress: address,
+          guildId: guildId,
+          signature,
+        },
+        {
+          onSuccess: () => {
+            return router.push(`/guild/${guildId}`);
+          },
+        }
+      );
     },
-    [address, joinGuild]
+    [address, joinGuild, router, signMessageAsync]
   );
 
   return (
@@ -97,7 +103,6 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                 height="100%"
                 width="90%"
                 minWidth="336px"
-                onClick={handleCardPress(guild.id.toString())}
               >
                 <Stack direction="column" alignItems="center" gap="12px">
                   <Stack
@@ -130,7 +135,7 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                     </Stack>
                   </Stack>
                   <Button
-                    onClick={handleJoinPress(guild.id.toString())}
+                    onClick={handleJoinPress(guild.id.toString(), guild.name)}
                     variant="contained"
                     isLoading={
                       joinGuild.isLoading &&
