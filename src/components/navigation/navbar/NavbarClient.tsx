@@ -52,9 +52,12 @@ export const NavbarClient = () => {
   }, [toggleDrawer]);
 
   const handleReferralPillPressed = useCallback(() => {
-    return window.open(
-      getReferralLink({ address, gameId, id: guildData?.guildId ?? '' })
+    window.open(
+      getReferralLink({ address, gameId, id: guildData?.guildId ?? '' }),
+      '_blank',
+      'noopener,noreferrer'
     );
+    return;
   }, [address, gameId, guildData?.guildId]);
 
   const isLoading = useMemo(() => {
@@ -98,7 +101,17 @@ export const NavbarClient = () => {
         )}
       </Stack>
       {hasGuild ? (
-        <Pill backgroundColor={Color.White} onClick={handleReferralPillPressed}>
+        <Pill backgroundColor={Color.White}>
+          <a
+            href={getReferralLink({
+              address,
+              gameId,
+              id: guildData?.guildId ?? '',
+            })}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: 'none', color: Color.White }}
+          ></a>
           <Text variant="body2" fontSize="14px">
             Recruit friends
           </Text>
