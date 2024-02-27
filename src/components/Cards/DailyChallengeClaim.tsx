@@ -74,7 +74,7 @@ export function DailyChallengeClaim() {
             align="center"
             width="200px"
           >
-            Your guild won the Daily Challenge
+            Your guild won a Daily Challenge
           </Text>
           <Button
             variant="contained"
