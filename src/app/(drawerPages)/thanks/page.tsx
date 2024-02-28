@@ -129,7 +129,6 @@ export default function Thanks() {
                 fontWeight: 400,
                 color: Color.White,
               }}
-              disabled
             >
               {message}
             </Button>
