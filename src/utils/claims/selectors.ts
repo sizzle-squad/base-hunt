@@ -134,10 +134,11 @@ export const DecodeDataFunction: {
     w: CheckExectionParams & { provider: any }
   ): Promise<string | undefined> {
     const tx = await w.provider.getTransaction(w.transaction_hash);
-    const iface = new ethers.Interface(['function ' + w.function]);
     if (!tx) {
+      console.warn('Transaction not found', w.transaction_hash);
       return;
     }
+    const iface = new ethers.Interface(['function ' + w.function]);
     const decoded = iface.decodeFunctionData(w.function.split('(')[0], tx.data);
     console.log(decoded);
     const receiveWithAuthorization_ = decoded[3];

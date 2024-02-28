@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 'unknown' });
   }
   const data = (await req.json()) as WebhookData;
+  console.log('data:', data);
   const challenges = await supabase
     .from('challenge_configuration')
     .select()
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
         ChallengeType[data.event_type as keyof typeof ChallengeType];
 
       if (c.type !== eventType) {
-        console.error(
+        console.warn(
           'skipping challenge:',
           c.id,
           'type:',

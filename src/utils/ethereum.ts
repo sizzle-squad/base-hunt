@@ -16,6 +16,10 @@ fetchReq.setHeader(
 );
 
 export const providers: { [key in Networks]: ethers.JsonRpcProvider } = {
-  [Networks.networks_base_mainnet]: new ethers.JsonRpcProvider(fetchReq),
+  [Networks.networks_base_mainnet]: new ethers.JsonRpcProvider(
+    fetchReq,
+    ethers.Network.from(8453),
+    { staticNetwork: true }
+  ),
   [Networks.networks_eth_mainnet]: new ethers.JsonRpcProvider(ETH_NODE_URL),
 };
