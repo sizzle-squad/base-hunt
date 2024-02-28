@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Skeleton, Stack } from '@mui/material';
+import { Box, Link, Skeleton, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 import Image from 'next/image';
 import { useCallback, useMemo } from 'react';
@@ -114,12 +114,12 @@ export default function Page({ params }: { params: { guildId: string } }) {
     []
   );
 
-  const referralButtonPressed = useCallback(() => {
-    return window.open(
-      getReferralLink({ address, gameId: GAME_ID, id: '' }),
-      '_blank'
-    );
-  }, [address]);
+  // const referralButtonPressed = useCallback(() => {
+  //   return window.open(
+  //     ,
+  //     '_blank'
+  //   );
+  // }, [address]);
 
   return (
     <Stack className="pageContent" gap={3}>
@@ -175,9 +175,13 @@ export default function Page({ params }: { params: { guildId: string } }) {
               variant="outlined"
               bgColor={Color.White}
               textColor={Color.Black}
-              onClick={referralButtonPressed}
             >
-              Recruit on Warpcast
+              <Link
+                href={getReferralLink({ address, gameId: GAME_ID, id: '' })}
+                target="_blank"
+              >
+                <Text variant="body1">Recruit on Warpcast</Text>
+              </Link>
             </Button>
           </Stack>
           <Stack
