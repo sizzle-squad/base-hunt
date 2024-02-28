@@ -129,6 +129,8 @@ export async function POST(req: Request) {
         if (claim.error) {
           throw claim.error;
         }
+      } else {
+        console.warn('checkFunc failed:', c);
       }
     } catch (error) {
       console.error(
