@@ -27,6 +27,29 @@ import ChallengesPageClient from './ChallengesClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
+// export async function generateMetadata() {
+//   return {
+//     title: 'Base Hunt',
+//     description: 'Play Base Hunt',
+//     openGraph: {
+//       title: 'Base Hunt',
+//       description: 'Play Base Hunt',
+//       // images: [activeBadge?.image_url, ...previousImages],
+//       type: 'website',
+//       siteName: 'Warpcast',
+//     },
+//     warpcast: {
+//       title: 'Base Hunt',
+//       description: 'Play Base Hunt',
+//       site: '@CoinbaseWallet',
+//       creator: '@CoinbaseWallet',
+//       // images: [activeBadge?.image_url],
+//       card: 'summary_large_image',
+//     },
+//     themeColor: '#1ca0f2',
+//   };
+// }
+
 export default function Challenges() {
   const router = useRouter();
   const { address, isConnected, isDisconnected } = useAccount();
