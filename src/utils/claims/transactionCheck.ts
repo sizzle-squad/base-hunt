@@ -14,5 +14,8 @@ export async function checkFunctionExecution(
 ): Promise<boolean> {
   const selector = ethers.id(params.function).substring(0, 10);
   const tx = await provider.getTransaction(params.transaction_hash);
+  if (!tx) {
+    console.warn('Transaction not found', params.transaction_hash);
+  }
   return tx?.data.startsWith(selector) ?? false;
 }
