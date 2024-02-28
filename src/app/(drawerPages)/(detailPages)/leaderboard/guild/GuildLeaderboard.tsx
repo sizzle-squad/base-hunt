@@ -109,8 +109,8 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
     return (
       <Text variant="body1" py={3}>
         <b>Daily challenge: </b>The guild with the most transactions on Base at
-        the end of the day (5 PM MST) will receive 250 extra points for each
-        guild member.
+        the end of the day (5 PM MST) wins the daily challenge. Each member of
+        winning guild will receive 1,000 extra points.
       </Text>
     );
   }, []);
