@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 'unknown' });
   }
   const data = (await req.json()) as WebhookData;
+  console.log('webhook data:', data);
   const challenges = await supabase
     .from('challenge_configuration')
     .select()
@@ -130,7 +131,7 @@ export async function POST(req: Request) {
           throw claim.error;
         }
       } else {
-        console.warn('checkFunc failed:', c);
+        console.warn(`checkFunc failed ${c.display_name}:`);
       }
     } catch (error) {
       console.error(
