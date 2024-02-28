@@ -29,6 +29,12 @@ export default function Thanks() {
     return smallerThanSm ? 200 : 500;
   }, [smallerThanSm]);
 
+  const message = useMemo(() => {
+    return (
+      process.env.NEXT_PUBLIC_KILL_SWITCH_MESSAGE ?? 'Basehunt is coming...'
+    );
+  }, []);
+
   return (
     <Stack
       direction="column"
@@ -125,7 +131,7 @@ export default function Thanks() {
               }}
               disabled
             >
-              Basehunt is coming...
+              {message}
             </Button>
           </Stack>
         </Stack>
