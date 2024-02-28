@@ -40,10 +40,15 @@ export async function POST(req: NextRequest) {
   ) {
     const postUrl = new URL(fm.message.raw.action.url);
     if (postUrl.origin !== DOMAIN) {
-      console.error('invalid origin', postUrl.origin, DOMAIN);
-      // return new NextResponse(`Invalid Origin ${postUrl.origin}`, {
-      //   status: 400,
-      // });
+      console.error(
+        'invalid origin received:',
+        postUrl.origin,
+        'expected:',
+        DOMAIN
+      );
+      return new NextResponse(`Invalid Request`, {
+        status: 405,
+      });
     }
 
     let verificationAddress = fm.message.raw.action.interactor.verifications[0];

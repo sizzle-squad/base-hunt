@@ -66,11 +66,14 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const joinMessageTemplate = `Joining ${guildData.data.name}:${params.guild_id} with wallet:${params.user_address} for base-hunt:${params.game_id} for eth-denver`;
-  const recoveredAddress = ethers.verifyMessage(
-    joinMessageTemplate,
-    signature as string
-  );
+  let recoveredAddress: string = '0x0000000000000000000000000000000000000000';
+  if (signature !== undefined) {
+    const joinMessageTemplate = `Joining ${guildData.data.name}:${params.guild_id} with wallet:${params.user_address} for base-hunt:${params.game_id} for eth-denver`;
+    recoveredAddress = ethers.verifyMessage(
+      joinMessageTemplate,
+      signature as string
+    );
+  }
   if (
     secret !== process.env.WEBHOOK_SECRET &&
     recoveredAddress.toLowerCase() !== params.user_address
@@ -116,18 +119,21 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  if (body.referrerAddress) {
-    console.log(
-      'applying referrer bonuse to:',
-      body.referrerAddress.toLowerCase()
-    );
-    const referrerData = await supabase.rpc('incrementuserscore', {
-      _game_id: params.game_id,
-      _user_address: body.referrerAddress.toLowerCase(),
-      _score: challengeData.data.points * 0.1,
+  if (
+    body.referrerAddress &&
+    body.referrerAddress.toLowerCase() !== params.user_address.toLowerCase()
+  ) {
+    const referrerData = await supabase.from('guild_user_referral').insert({
+      guild_id: params.guild_id,
+      game_id: params.game_id,
+      join_user_address: params.user_address,
+      referrer_user_address: body.referrerAddress.toLowerCase(),
     });
     if (referrerData.error) {
-      console.error(`error incrementing referrerScore:${referrerData.error}`);
+      console.error(
+        `error inserting referrer:${body.referrerAddress.toLowerCase()}`,
+        referrerData.error
+      );
     }
   }
 
