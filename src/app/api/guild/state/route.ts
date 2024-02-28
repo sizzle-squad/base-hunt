@@ -24,6 +24,7 @@ type GuildData = {
   name: string;
   total_member_count: number | null;
   social_link: string | null;
+  is_enabled: boolean;
 };
 
 // Fetch all guilds
@@ -126,6 +127,7 @@ export async function GET(request: NextRequest) {
     imageUrl: guild.image_url,
     winShares: winShares[guild.guild_id] || 0,
     socialLink: guild.social_link || '',
+    isEnabled: guild.is_enabled,
   }));
 
   const response = NextResponse.json(

@@ -51,6 +51,7 @@ function generateGuildRankData() {
       imageUrl: null,
       winShares: 0,
       socialLink: '',
+      isEnabled: true,
     });
   }
   return mockData;
@@ -192,39 +193,42 @@ export function GuildLeaderboard({ noGuild }: { noGuild: boolean }) {
         {description}
         <CountdownTimer />
         <Stack direction="column" gap={1}>
-          <ListRow
-            name={leaderboardData.topContributor.name}
-            score={leaderboardData.topContributor.currentScore}
-            position={0}
-            offset={1}
-            isLast
-            isLoading={isLoading}
-            startContent={<TopContributorTag value="Top Guild" />}
-            onClick={handleCardPress(leaderboardData.topContributor.id)}
-            profileTile={
-              <Box
-                sx={{
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  width: '45px',
-                  height: '45px',
-                }}
-              >
-                <Image
-                  src={
-                    leaderboardData.topContributor.imageUrl ??
-                    '/images/solo.svg'
-                  }
-                  alt="guild profile picture"
-                  width={45}
-                  height={45}
-                />
-              </Box>
-            }
-          />
+          {leaderboardData.topContributor.isEnabled && (
+            <ListRow
+              name={leaderboardData.topContributor.name}
+              score={leaderboardData.topContributor.currentScore}
+              position={0}
+              offset={1}
+              isLast
+              isLoading={isLoading}
+              startContent={<TopContributorTag value="Top Guild" />}
+              onClick={handleCardPress(leaderboardData.topContributor.id)}
+              profileTile={
+                <Box
+                  sx={{
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    width: '45px',
+                    height: '45px',
+                  }}
+                >
+                  <Image
+                    src={
+                      leaderboardData.topContributor.imageUrl ??
+                      '/images/solo.svg'
+                    }
+                    alt="guild profile picture"
+                    width={45}
+                    height={45}
+                  />
+                </Box>
+              }
+            />
+          )}
         </Stack>
         <Box>
           {leaderboardData.restOfRanks.map((rank: GuildRank, index: number) => {
+            if (!rank.isEnabled) return;
             return (
               <ListRow
                 key={`guild-${rank}-${index}`}

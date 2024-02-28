@@ -76,6 +76,8 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
         justifyContent="center"
       >
         {guilds.map((guild) => {
+          if (!guild.isEnabled) return;
+
           return (
             <Grid
               item
