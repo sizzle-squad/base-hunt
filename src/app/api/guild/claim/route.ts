@@ -64,13 +64,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false });
   }
 
-  const { data, error } = await supabase.rpc('guilduserclaim', {
-    _game_id: gameIdNumber,
-    _user_address: userAddress.toLowerCase(),
+  const claimsData = await getClaimablev2(BigInt(gameIdNumber), userAddress);
+  if (claimsData.result === undefined) {
+    return NextResponse.json({ success: false });
+  }
+  const claims = claimsData.result.claimable.map((c) => {
+    return {
+      claim_id: c.claim_id,
+      game_id: c.game_id,
+      guild_id: c.guild_id,
+      user_address: userAddress.toLowerCase(),
+    };
   });
-
-  if (error) {
-    console.error(error);
+  const guildUserClaimData = await supabase
+    .from('guild_user_claim')
+    .insert(claims);
+  if (guildUserClaimData.error) {
+    console.error(guildUserClaimData.error);
     return NextResponse.json({ success: false });
   }
 
