@@ -184,4 +184,5 @@ export type Guild = {
   imageUrl: string | null;
   winShares: number;
   socialLink: string | null;
+  isEnabled: boolean;
 };
