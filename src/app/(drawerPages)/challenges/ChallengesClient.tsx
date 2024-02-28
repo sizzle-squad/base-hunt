@@ -241,6 +241,7 @@ export default function ChallengesPageClient({ refreshData }: Props) {
     ({ item }: { item: ListCardPropsForChallenges }) => {
       const isActive = activeItem && activeItem.id === item.id;
       const ctaUrl = item.ctaUrl;
+      const isJoinGuildChallenge = item.id === 10;
 
       const ctaButtonText = useMemo(() => {
         if (isClaimSuccess) {
@@ -248,23 +249,31 @@ export default function ChallengesPageClient({ refreshData }: Props) {
         }
 
         // Show CTA Text if there is a secondary action
-        if (isActive && hasChallengeCompleteError && item.ctaButtonText) {
+        if (
+          isActive &&
+          (hasChallengeCompleteError || isJoinGuildChallenge) &&
+          item.ctaButtonText
+        ) {
           return item.ctaButtonText;
         }
 
         // should not hit this but as a fallback
         return 'Check';
-      }, [isActive, item.ctaButtonText]);
+      }, [isActive, isJoinGuildChallenge, item.ctaButtonText]);
 
       const handleButtonAction = useCallback(() => {
         // trigger follow up CTA if claim has failed
-        if (isActive && hasChallengeCompleteError && ctaUrl) {
+        if (
+          isActive &&
+          (hasChallengeCompleteError || isJoinGuildChallenge) &&
+          ctaUrl
+        ) {
           handleCTAPress(ctaUrl);
         }
 
         // dismiss drawer if claim was successful
         handleDrawerClose();
-      }, [ctaUrl, isActive]);
+      }, [ctaUrl, isActive, isJoinGuildChallenge]);
 
       return (
         <Stack gap={3}>
