@@ -5,6 +5,8 @@ type Props = {
 };
 
 export function getReferralLink({ address, gameId, id }: Props) {
+  if (typeof window === 'undefined') return;
+
   return (
     `https://warpcast.com/~/compose?embeds[]=` +
     encodeURIComponent(
