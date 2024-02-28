@@ -136,10 +136,11 @@ export const DecodeDataFunction: {
     const tx = await w.provider.getTransaction(w.transaction_hash);
     const iface = new ethers.Interface(['function ' + w.function]);
     if (!tx) {
+      console.warn('tx-hash not found:', w.transaction_hash);
       return;
     }
     const decoded = iface.decodeFunctionData(w.function.split('(')[0], tx.data);
-    console.log(decoded);
+    console.log('decoded:', decoded);
     const receiveWithAuthorization_ = decoded[3];
 
     const results = ethers.AbiCoder.defaultAbiCoder().decode(
