@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 'unknown' });
   }
   const data = (await req.json()) as WebhookData;
+
   const challenges = await supabase
     .from('challenge_configuration')
     .select()
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
         ChallengeType[data.event_type as keyof typeof ChallengeType];
 
       if (c.type !== eventType) {
-        console.error(
+        console.warn(
           'skipping challenge:',
           c.id,
           'type:',
@@ -55,6 +56,8 @@ export async function POST(req: Request) {
           data.event_type
         );
         continue;
+      } else {
+        console.log('processing:', c);
       }
 
       if (c.is_dynamic_points) {
@@ -126,9 +129,12 @@ export async function POST(req: Request) {
             }
           )
           .select();
+        console.log('auto-claimed challenge', claim, c);
         if (claim.error) {
           throw claim.error;
         }
+      } else {
+        console.log('checkFunc failed for challenge:', c.id, 'data:', data);
       }
     } catch (error) {
       console.error(
