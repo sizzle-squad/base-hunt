@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo } from 'react';
 
 import { Box, Drawer, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
@@ -13,7 +13,6 @@ import Text from '@/components/Text';
 import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
 import { useCBProfile } from '@/hooks/useCBProfile';
-import { useClientCheck } from '@/hooks/useClientCheck';
 import { useGameState } from '@/hooks/useGameState';
 import { useLevels } from '@/hooks/useLevels';
 import { useRank } from '@/hooks/useRank';
@@ -22,7 +21,6 @@ import { useUserName } from '@/hooks/useUsername';
 
 import { Guild } from '@/components/Cards/Guild';
 import { useGuildState } from '@/hooks/useGuildState';
-import { Referral } from '@/components/Cards/Referral';
 import ChallengesPageClient from './ChallengesClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
