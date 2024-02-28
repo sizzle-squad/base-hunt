@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/inngest/user-tx-count?gameId=0",
-      "schedule": "0 * * * *"
+      "schedule": "0 */2 * * *"
     },
     {
       "path": "/api/cron/inngest/user-point-distribute?gameId=0",
