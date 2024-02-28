@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { ethers, JsonRpcProvider } from 'ethers';
 import {
   checkBalance,
   CheckBalanceParams,
@@ -131,7 +131,7 @@ export const DecodeDataFunction: {
   [id: string]: (tx: any) => Promise<string | undefined>;
 } = {
   '0xad27383460183fd7e21b71df3b4cac9480eb9a75': async function (
-    w: CheckExectionParams & { provider: any }
+    w: CheckExectionParams & { provider: JsonRpcProvider }
   ): Promise<string | undefined> {
     const tx = await w.provider.getTransaction(w.transaction_hash);
     const iface = new ethers.Interface(['function ' + w.function]);
