@@ -240,6 +240,7 @@ export type Database = {
           guild_id: string
           id: number
           image_url: string | null
+          is_enabled: boolean
           leader: string
           name: string
           social_link: string | null
@@ -251,6 +252,7 @@ export type Database = {
           guild_id: string
           id?: number
           image_url?: string | null
+          is_enabled?: boolean
           leader: string
           name: string
           social_link?: string | null
@@ -262,6 +264,7 @@ export type Database = {
           guild_id?: string
           id?: number
           image_url?: string | null
+          is_enabled?: boolean
           leader?: string
           name?: string
           social_link?: string | null
@@ -344,6 +347,33 @@ export type Database = {
           guild_id?: string
           id?: number
           user_address?: string
+        }
+        Relationships: []
+      }
+      guild_user_referral: {
+        Row: {
+          created_at: string
+          game_id: number
+          guild_id: string
+          id: number
+          join_user_address: string
+          referrer_user_address: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: number
+          guild_id: string
+          id?: number
+          join_user_address: string
+          referrer_user_address: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: number
+          guild_id?: string
+          id?: number
+          join_user_address?: string
+          referrer_user_address?: string
         }
         Relationships: []
       }
@@ -492,30 +522,6 @@ export type Database = {
         Relationships: []
       }
       score: {
-        Row: {
-          current_score: number
-          game_id: number
-          id: number
-          updated_at: string
-          user_address: string
-        }
-        Insert: {
-          current_score?: number
-          game_id: number
-          id?: number
-          updated_at?: string
-          user_address: string
-        }
-        Update: {
-          current_score?: number
-          game_id?: number
-          id?: number
-          updated_at?: string
-          user_address?: string
-        }
-        Relationships: []
-      }
-      score_duplicate: {
         Row: {
           current_score: number
           game_id: number
