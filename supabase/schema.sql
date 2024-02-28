@@ -169,9 +169,9 @@ declare
 begin
   select  coalesce(sum(ucs.points),0) into _sum_challenge_points from user_challenge_status as ucs where ucs.user_address = NEW.user_address and ucs.game_id= NEW.game_id; 
   select  coalesce(sum(gw.points),0) into _sum_guild_points from guild_user_claim as guc join guild_win as gw on guc.claim_id = gw.claim_id where guc.game_id = NEW.game_id and guc.user_address = NEW.user_address; 
-  UPDATE score_duplicate SET current_score = _sum_challenge_points + _sum_guild_points, updated_at = NOW()  WHERE user_address = NEW.user_address and game_id = NEW.game_id; 
+  UPDATE score SET current_score = _sum_challenge_points + _sum_guild_points, updated_at = NOW()  WHERE user_address = NEW.user_address and game_id = NEW.game_id; 
   IF NOT FOUND THEN 
-    INSERT INTO score_duplicate(current_score,user_address,game_id) values (_sum_challenge_points+_sum_guild_points, NEW.user_address, NEW.game_id); 
+    INSERT INTO score(current_score,user_address,game_id) values (_sum_challenge_points+_sum_guild_points, NEW.user_address, NEW.game_id); 
   END IF;      
   RETURN NEW;
 end; 
@@ -304,9 +304,9 @@ declare
 begin
   select  coalesce(sum(ucs.points),0) into _sum_challenge_points from user_challenge_status as ucs where ucs.user_address = NEW.user_address and ucs.game_id= NEW.game_id; 
   select  coalesce(sum(gw.points),0) into _sum_guild_points from guild_user_claim as guc join guild_win as gw on guc.claim_id = gw.claim_id where guc.game_id = NEW.game_id and guc.user_address = NEW.user_address; 
-  UPDATE score_duplicate SET current_score = _sum_challenge_points + _sum_guild_points, updated_at = NOW()  WHERE user_address = NEW.user_address and game_id = NEW.game_id; 
+  UPDATE score SET current_score = _sum_challenge_points + _sum_guild_points, updated_at = NOW()  WHERE user_address = NEW.user_address and game_id = NEW.game_id; 
   IF NOT FOUND THEN 
-    INSERT INTO score_duplicate(current_score,user_address,game_id) values (_sum_challenge_points+_sum_guild_points, NEW.user_address, NEW.game_id); 
+    INSERT INTO score(current_score,user_address,game_id) values (_sum_challenge_points+_sum_guild_points, NEW.user_address, NEW.game_id); 
   END IF;      
   RETURN NEW;
 end; 
@@ -983,6 +983,8 @@ CREATE OR REPLACE TRIGGER "score update => /api/webhook/airdrop" AFTER INSERT OR
 CREATE OR REPLACE TRIGGER "user_challenge_status_accumulate_v2_trigger" AFTER INSERT ON "public"."user_challenge_status" FOR EACH ROW EXECUTE FUNCTION "public"."user_challenge_status_accumulate_v2"();
 
 CREATE OR REPLACE TRIGGER "user_challenge_status_trigger" BEFORE INSERT ON "public"."user_challenge_status" FOR EACH ROW EXECUTE FUNCTION "public"."user_challenge_status_insert"();
+
+ALTER TABLE "public"."user_challenge_status" DISABLE TRIGGER "user_challenge_status_trigger";
 
 CREATE OR REPLACE TRIGGER "webhook_data_update_trigger" BEFORE INSERT ON "public"."webhook_data" FOR EACH ROW EXECUTE FUNCTION "public"."webhook_data_update"();
 
