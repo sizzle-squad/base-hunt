@@ -515,30 +515,6 @@ export type Database = {
         }
         Relationships: []
       }
-      score_duplicate: {
-        Row: {
-          current_score: number
-          game_id: number
-          id: number
-          updated_at: string
-          user_address: string
-        }
-        Insert: {
-          current_score?: number
-          game_id: number
-          id?: number
-          updated_at?: string
-          user_address: string
-        }
-        Update: {
-          current_score?: number
-          game_id?: number
-          id?: number
-          updated_at?: string
-          user_address?: string
-        }
-        Relationships: []
-      }
       treasure_box_configuration: {
         Row: {
           created_at: string

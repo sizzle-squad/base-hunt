@@ -179,8 +179,18 @@ export default function Page({ params }: { params: { guildId: string } }) {
               <Link
                 href={getReferralLink({ address, gameId: GAME_ID, id: '' })}
                 target="_blank"
+                sx={{
+                  textDecoration: 'none',
+                  color: Color.Black,
+                }}
               >
-                <Text variant="body1">Recruit on Warpcast</Text>
+                <Text
+                  variant="body1"
+                  color={Color.Black}
+                  sx={{ textDecoration: 'none' }}
+                >
+                  Recruit on Warpcast
+                </Text>
               </Link>
             </Button>
           </Stack>

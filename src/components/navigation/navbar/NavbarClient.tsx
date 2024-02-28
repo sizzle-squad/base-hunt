@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Skeleton, Stack } from '@mui/material';
+import { Link, Skeleton, Stack } from '@mui/material';
 import { useAccount } from 'wagmi';
 
 import Circle from '@/components/Circle';
@@ -102,19 +102,21 @@ export const NavbarClient = () => {
       </Stack>
       {hasGuild ? (
         <Pill backgroundColor={Color.White}>
-          <a
-            href={getReferralLink({
-              address,
-              gameId,
-              id: guildData?.guildId ?? '',
-            })}
+          <Link
+            href={
+              getReferralLink({
+                address,
+                gameId,
+                id: guildData?.guildId ?? '',
+              }) ?? ''
+            }
             target="_blank"
-            rel="noopener noreferrer"
-            style={{ textDecoration: 'none', color: Color.White }}
-          ></a>
-          <Text variant="body2" fontSize="14px">
-            Recruit friends
-          </Text>
+            sx={{ textDecoration: 'none', color: Color.Black }}
+          >
+            <Text variant="body2" fontSize="14px">
+              Recruit friends
+            </Text>
+          </Link>
         </Pill>
       ) : null}
     </Stack>
