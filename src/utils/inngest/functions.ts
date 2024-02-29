@@ -19,6 +19,7 @@ import {
 export enum InngestEvents {
   UserTxCount = 'events/user-tx-count',
   UserPointDistribute = 'events/user-point-distribute',
+  GuildTxCount = 'events/guild-tx-count',
 }
 
 const supabase = createClient<Database>(
