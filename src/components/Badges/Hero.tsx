@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { Box, Stack } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -8,6 +8,7 @@ import HeroSVG from '@/components/assets/HeroSVG';
 import Navbar from '@/components/navigation/navbar';
 import Text from '@/components/Text';
 import { useGameInfoContext } from '@/context/GameInfoContext';
+import { Color } from '@/constants/color';
 import Pill from '../Pill';
 
 const Hero = () => {

@@ -21,6 +21,7 @@ import { useUserName } from '@/hooks/useUsername';
 
 import { Guild } from '@/components/Cards/Guild';
 import { useGuildState } from '@/hooks/useGuildState';
+import { Color } from '@/constants/color';
 import ChallengesPageClient from './ChallengesClient';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
@@ -113,6 +114,25 @@ export default function Challenges() {
       router.push('/');
     }
   }, [isDisconnected, router]);
+
+  const banner = useMemo(() => {
+    const message = process.env.NEXT_PUBLIC_ANNOUNCEMENT_MESSAGE ?? '';
+
+    if (!message) return null;
+
+    return (
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ backgroundColor: Color.CoinbaseBlue }}
+      >
+        <Text variant="body2" fontSize="14px" color={Color.White}>
+          {message}
+        </Text>
+      </Stack>
+    );
+  }, []);
 
   const list = (anchor: Anchor) => (
     <Box
@@ -238,55 +258,58 @@ export default function Challenges() {
   );
 
   return (
-    <Stack
-      paddingX="1.25rem"
-      gap="12px"
-      paddingBottom="6rem"
-      className="pageContent"
-    >
-      <Hero />
+    <>
+      {banner}
       <Stack
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="flex-start"
-        gap="10px"
-        alignSelf="stretch"
+        paddingX="1.25rem"
+        gap="12px"
+        paddingBottom="6rem"
+        className="pageContent"
       >
-        <Level
-          currentLevel={
-            collection.currentLevelIdx !== null
-              ? collection.levels[collection.currentLevelIdx]?.level ??
-                undefined
-              : '0'
-          }
-          isLoading={isLevelsLoading || isRankLoading || isScoreLoading}
-          score={score as number}
-          rank={rank?.rank}
-        />
-        <Guild
-          name={guildState?.name}
-          position={guildState?.currentDailyRank}
-          isLoading={isGuildStateLoading}
-          imageUrl={guildState?.imageUrl}
-          id={guildState?.guildId}
-          address={address}
-          gameId={GAME_ID}
-        />
+        <Hero />
+        <Stack
+          flexDirection="row"
+          justifyContent="center"
+          alignItems="flex-start"
+          gap="10px"
+          alignSelf="stretch"
+        >
+          <Level
+            currentLevel={
+              collection.currentLevelIdx !== null
+                ? collection.levels[collection.currentLevelIdx]?.level ??
+                  undefined
+                : '0'
+            }
+            isLoading={isLevelsLoading || isRankLoading || isScoreLoading}
+            score={score as number}
+            rank={rank?.rank}
+          />
+          <Guild
+            name={guildState?.name}
+            position={guildState?.currentDailyRank}
+            isLoading={isGuildStateLoading}
+            imageUrl={guildState?.imageUrl}
+            id={guildState?.guildId}
+            address={address}
+            gameId={GAME_ID}
+          />
+        </Stack>
+        <Box>
+          {(['bottom'] as const).map((anchor) => (
+            <Fragment key={anchor}>
+              <Drawer
+                anchor={anchor}
+                open={drawerStates.walletOperations[anchor]}
+                onClose={() => handleToggleDrawer(anchor)}
+              >
+                {list(anchor)}
+              </Drawer>
+            </Fragment>
+          ))}
+        </Box>
+        <ChallengesPageClient refreshData={refetches} />
       </Stack>
-      <Box>
-        {(['bottom'] as const).map((anchor) => (
-          <Fragment key={anchor}>
-            <Drawer
-              anchor={anchor}
-              open={drawerStates.walletOperations[anchor]}
-              onClose={() => handleToggleDrawer(anchor)}
-            >
-              {list(anchor)}
-            </Drawer>
-          </Fragment>
-        ))}
-      </Box>
-      <ChallengesPageClient refreshData={refetches} />
-    </Stack>
+    </>
   );
 }
