@@ -134,10 +134,10 @@ export async function GET(request: NextRequest) {
     leaderboardResult.sort((a, b) => a.rank - b.rank)
   );
 
-  // cache for 20 minutes (20*60)
-  response.headers.set('Cache-Control', 'public, s-maxage=1200');
-  response.headers.set('CDN-Cache-Control', 'public, s-maxage=1200');
-  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=1200');
+  // cache for 5 minutes (5*60)
+  response.headers.set('Cache-Control', 'public, s-maxage=300');
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=300');
+  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=300');
 
   return response;
 }
