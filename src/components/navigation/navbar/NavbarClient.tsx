@@ -70,60 +70,62 @@ export const NavbarClient = () => {
   }, [isConnecting, isProfileLoading, isScoreLoading]);
 
   return (
-    <Stack
-      direction="row"
-      width="100%"
-      justifyContent="space-between"
-      paddingBottom={2}
-    >
+    <Stack direction="column">
       <Stack
-        data-testid="pill"
-        onClick={handleDrawerToggle}
         direction="row"
-        alignItems="center"
-        spacing=".25rem"
-        useFlexGap
-        sx={{
-          borderRadius: '6.25rem',
-          padding: '0.25rem 0.5rem',
-          backgroundColor: 'white',
-          cursor: 'pointer',
-        }}
+        width="100%"
+        justifyContent="space-between"
+        paddingBottom={2}
       >
-        {isDisconnected ? (
-          <Text>Not connected</Text>
-        ) : (
-          <>
-            <Circle color="yellow" size="1rem" />
-            {userName && !isLoading && userName}
-            {isLoading && <Skeleton width={80} height={20} />}
-            {drawerStates.walletOperations.bottom ? (
-              <ExpandLessIcon />
-            ) : (
-              <ExpandMoreIcon />
-            )}
-          </>
-        )}
+        <Stack
+          data-testid="pill"
+          onClick={handleDrawerToggle}
+          direction="row"
+          alignItems="center"
+          spacing=".25rem"
+          useFlexGap
+          sx={{
+            borderRadius: '6.25rem',
+            padding: '0.25rem 0.5rem',
+            backgroundColor: 'white',
+            cursor: 'pointer',
+          }}
+        >
+          {isDisconnected ? (
+            <Text>Not connected</Text>
+          ) : (
+            <>
+              <Circle color="yellow" size="1rem" />
+              {userName && !isLoading && userName}
+              {isLoading && <Skeleton width={80} height={20} />}
+              {drawerStates.walletOperations.bottom ? (
+                <ExpandLessIcon />
+              ) : (
+                <ExpandMoreIcon />
+              )}
+            </>
+          )}
+        </Stack>
+        {hasGuild && isBetaTester ? (
+          <Pill backgroundColor={Color.White}>
+            <Link
+              href={
+                getReferralLink({
+                  address,
+                  gameId,
+                  id: guildData?.guildId ?? '',
+                }) ?? ''
+              }
+              target="_blank"
+              sx={{ textDecoration: 'none', color: Color.Black }}
+            >
+              <Text variant="body2" fontSize="14px">
+                Recruit friends
+              </Text>
+            </Link>
+          </Pill>
+        ) : null}
       </Stack>
-      {hasGuild && isBetaTester ? (
-        <Pill backgroundColor={Color.White}>
-          <Link
-            href={
-              getReferralLink({
-                address,
-                gameId,
-                id: guildData?.guildId ?? '',
-              }) ?? ''
-            }
-            target="_blank"
-            sx={{ textDecoration: 'none', color: Color.Black }}
-          >
-            <Text variant="body2" fontSize="14px">
-              Recruit friends
-            </Text>
-          </Link>
-        </Pill>
-      ) : null}
     </Stack>
   );
 };
