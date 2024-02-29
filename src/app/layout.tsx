@@ -18,6 +18,21 @@ import {
 export const metadata: Metadata = {
   title: 'Base Hunt',
   description: 'Base Hunt | ETHDenver 2024',
+  openGraph: {
+    title: 'Base Hunt',
+    description: 'Base Hunt | ETHDenver 2024',
+    url: 'https://basehunt.xyz',
+    siteName: 'Base Hunt',
+    images: [
+      {
+        url: 'https://basehunt.xyz/images/basehunt-open-graph.png',
+        width: 1200,
+        height: 600,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
