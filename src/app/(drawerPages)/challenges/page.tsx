@@ -127,7 +127,12 @@ export default function Challenges() {
         justifyContent="center"
         sx={{ backgroundColor: Color.CoinbaseBlue }}
       >
-        <Text variant="body2" fontSize="14px" color={Color.White}>
+        <Text
+          variant="body2"
+          textAlign="center"
+          fontSize="14px"
+          color={Color.White}
+        >
           {message}
         </Text>
       </Stack>
