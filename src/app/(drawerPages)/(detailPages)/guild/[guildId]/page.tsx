@@ -163,8 +163,7 @@ export default function Page({ params }: { params: { guildId: string } }) {
                 Grow your guild
               </Text>
               <Text variant="body2" fontSize="14px">
-                Earn 10 pts for every friend who joins your guild through your
-                Warpcast link
+                Invite your friends to your guild using Wrapcast Frame
               </Text>
               <Button
                 variant="outlined"

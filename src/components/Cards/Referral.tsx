@@ -39,9 +39,6 @@ export function Referral({ address, gameId, id }: Props) {
     >
       <Stack direction="column" gap={2}>
         <Text variant="h5">Base Hunt is better as a team</Text>
-        <Text fontStyle="italic" variant="body2">
-          Earn 10 points per referral
-        </Text>
         <Button
           variant="outlined"
           textColor="black"
