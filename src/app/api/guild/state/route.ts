@@ -116,6 +116,11 @@ export async function GET(request: NextRequest) {
     {} as Record<string, number>
   );
 
+  const referralCount = await getGuildReferralCount(
+    gameId,
+    guildsData.data.map((g) => g.guild_id)
+  );
+
   const leaderboardResult = guildsData.data.map((guild) => ({
     id: guild.guild_id,
     name: guild.name,
@@ -128,18 +133,52 @@ export async function GET(request: NextRequest) {
     winShares: winShares[guild.guild_id] || 0,
     socialLink: guild.social_link || '',
     isEnabled: guild.is_enabled,
+    totalReferralCount: referralCount[guild.guild_id],
   }));
 
   const response = NextResponse.json(
     leaderboardResult.sort((a, b) => a.rank - b.rank)
   );
 
-  // cache for 20 minutes (20*60)
-  response.headers.set('Cache-Control', 'public, s-maxage=1200');
-  response.headers.set('CDN-Cache-Control', 'public, s-maxage=1200');
-  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=1200');
+  // cache for 5 minutes (5*60)
+  response.headers.set('Cache-Control', 'public, s-maxage=300');
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=300');
+  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=300');
 
   return response;
+}
+
+export async function getGuildReferralCount(
+  gameId: bigint,
+  guildIds: string[]
+): Promise<Record<string, number>> {
+  //get total member count
+
+  const guildScoreData = await Promise.all(
+    guildIds.map(async (guildId) => {
+      return supabase
+        .from('guild_user_referral')
+        .select('*', { count: 'exact', head: true })
+        .eq('game_id', gameId)
+        .eq('guild_id', guildId);
+    })
+  );
+
+  const result = guildScoreData
+    .map((gsd, idx) => {
+      return {
+        guildId: guildIds[idx],
+        count: gsd.error ? 0 : gsd.count ?? 0,
+      };
+    })
+    .reduce(
+      (acc, curr) => {
+        acc[curr.guildId] = curr.count;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+  return result;
 }
 
 export async function getGuildRanks(

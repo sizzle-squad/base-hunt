@@ -226,6 +226,10 @@ export default function Page({ params }: { params: { guildId: string } }) {
             {currentGuild.socialLink ? (
               <GuildDetailRow title="Social" value={currentGuild.socialLink} />
             ) : null}
+            <GuildDetailRow
+              title="Total Referral Count"
+              value={currentGuild.totalReferralCount ?? '-'}
+            />
           </Stack>
         </Stack>
       )}

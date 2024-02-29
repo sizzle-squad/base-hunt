@@ -178,6 +178,7 @@ export type Guild = {
   name: string;
   gameId: number;
   totalMemberCount: number | null;
+  totalReferralCount: number | null;
   leader: string;
   currentScore: number;
   rank: string;

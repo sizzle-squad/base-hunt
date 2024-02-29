@@ -71,6 +71,25 @@ export async function GET(req: NextRequest) {
 
   let totalMemberCount = totalMemberCountData.count ?? 0;
 
+  //get total member count
+  const totalReferralCountData = await supabase
+    .from('guild_user_referral')
+    .select('*', { count: 'exact', head: true })
+    .eq('game_id', gameId)
+    .eq('guild_id', userGuildData.data.guild_id);
+
+  if (totalReferralCountData.error) {
+    console.error(totalReferralCountData.error);
+    return new Response(
+      `Error getting total member count: guild_id: ${userGuildData.data.guild_id}, gameId: ${gameId}`,
+      {
+        status: 400,
+      }
+    );
+  }
+
+  let totalReferralCount = totalReferralCountData.count ?? 0;
+
   //Get guild data
   let guild: {
     guild_id: string;
@@ -174,6 +193,7 @@ export async function GET(req: NextRequest) {
       claimData?.result?.claimed.reduce((acc, curr) => acc + curr.points, 0) ??
       0,
     totalMemberCount: totalMemberCount,
+    totalReferralCount: totalReferralCount,
   } as GuildData);
 }
 
@@ -189,4 +209,5 @@ export type GuildData = {
   claimablePoints: number;
   claimedPoints: number;
   totalMemberCount: number;
+  totalReferralCount: number;
 };
