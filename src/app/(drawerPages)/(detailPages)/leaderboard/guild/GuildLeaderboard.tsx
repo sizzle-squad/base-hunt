@@ -52,6 +52,7 @@ function generateGuildRankData() {
       winShares: 0,
       socialLink: '',
       isEnabled: true,
+      totalReferralCount: 0,
     });
   }
   return mockData;
