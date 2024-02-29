@@ -7,7 +7,7 @@ type Props = {
   feature: string | undefined;
 };
 
-export function useIsBetaTesters({ address, feature }: Props) {
+export function useIsBetaTestersByFeature({ address, feature }: Props) {
   if (!address || !feature) return false;
 
   const betaTesters: string[] = (
@@ -18,5 +18,18 @@ export function useIsBetaTesters({ address, feature }: Props) {
   return (
     betaTesters.some((beta) => beta.toLowerCase() === address.toLowerCase()) ||
     !FEATURES[feature]
+  );
+}
+
+export function useIsBetaTesters({ address }: Omit<Props, 'feature'>) {
+  if (!address) return false;
+
+  const betaTesters: string[] = (
+    process.env.NEXT_PUBLIC_BETA_TESTERS ?? ''
+  ).split(',');
+
+  // beta testers get access OR feature flag is off from a feature
+  return betaTesters.some(
+    (beta) => beta.toLowerCase() === address.toLowerCase()
   );
 }

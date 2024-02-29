@@ -26,6 +26,7 @@ import { Challenge, ChallengeTypeEnum } from '@/hooks/types';
 import { useChallenges } from '@/hooks/useChallenges';
 import { useCompleteChallenge } from '@/hooks/useCompleteChallenge';
 import { useGameInfoContext } from '@/context/GameInfoContext';
+import { useIsBetaTesters } from '@/hooks/useIsBetaTester';
 import { ChallengeList } from './ChallengeList';
 
 export type ChallengeEntry = Omit<
@@ -118,6 +119,7 @@ type Props = {
 export default function ChallengesPageClient({ refreshData }: Props) {
   const { address } = useAccount();
   const { showModal, setShowModal } = useGameInfoContext();
+  const isBetaTester = useIsBetaTesters({ address });
 
   const { data: challenges, isLoading: isChallengesLoading } = useChallenges({
     userAddress: address,
@@ -129,7 +131,7 @@ export default function ChallengesPageClient({ refreshData }: Props) {
     const mapped =
       (challenges
         ?.filter((challenge) => challenge.isEnabled)
-        .filter((challenge) => challenge.displayOrder > 0)
+        .filter((challenge) => challenge.displayOrder > 0 || isBetaTester)
         .map((challenge) => {
           return {
             id: challenge.id,
@@ -160,7 +162,7 @@ export default function ChallengesPageClient({ refreshData }: Props) {
     const completedList = mapped.filter((challenge) => challenge.isCompleted);
 
     return { challengeList, completedList };
-  }, [challenges]);
+  }, [challenges, isBetaTester]);
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsForChallenges | null>(null);

@@ -14,12 +14,15 @@ import Pill from '@/components/Pill';
 import { Color } from '@/constants/color';
 import { Button } from '@/components/assets/Button';
 import { getReferralLink } from '@/utils/guild/getReferralLink';
-import { useIsBetaTesters } from '@/hooks/useIsBetaTester';
+import { useIsBetaTestersByFeature } from '@/hooks/useIsBetaTester';
 import { GuildDetailRow } from './GuildDetailRow';
 
 export default function Page({ params }: { params: { guildId: string } }) {
   const { address } = useAccount();
-  const isBetaTester = useIsBetaTesters({ address, feature: 'referrals' });
+  const isBetaTester = useIsBetaTestersByFeature({
+    address,
+    feature: 'referrals',
+  });
   const router = useRouter();
   const {
     data: myGuild,
