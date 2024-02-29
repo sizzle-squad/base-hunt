@@ -21,7 +21,7 @@ export async function getGuildTxCounts(
     const sorted = grouped[guild_id].sort((a, b) => a.id - b.id);
     const first = sorted[0];
     const last = sorted[sorted.length - 1];
-    scoreDifferences[guild_id] = last.score - first.score;
+    scoreDifferences[guild_id] = Math.max(0, last.score - first.score);
   }
   return scoreDifferences;
 }
