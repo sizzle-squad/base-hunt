@@ -17,11 +17,14 @@ import Pill from '@/components/Pill';
 import { Color } from '@/constants/color';
 import { useGuildState } from '@/hooks/useGuildState';
 import { getReferralLink } from '@/utils/guild/getReferralLink';
-import { useIsBetaTesters } from '@/hooks/useIsBetaTester';
+import { useIsBetaTestersByFeature } from '@/hooks/useIsBetaTester';
 
 export const NavbarClient = () => {
   const { address, isDisconnected, isConnecting } = useAccount();
-  const isBetaTester = useIsBetaTesters({ address, feature: 'referrals' });
+  const isBetaTester = useIsBetaTestersByFeature({
+    address,
+    feature: 'referrals',
+  });
   const gameId = process.env.NEXT_PUBLIC_GAME_ID ?? '0';
   const { data: userPublicProfile, isLoading: isProfileLoading } = useCBProfile(
     { address }
