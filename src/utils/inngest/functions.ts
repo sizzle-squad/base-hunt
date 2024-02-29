@@ -19,6 +19,7 @@ import {
 export enum InngestEvents {
   UserTxCount = 'events/user-tx-count',
   UserPointDistribute = 'events/user-point-distribute',
+  GuildTxCount = 'events/guild-tx-count',
 }
 
 const supabase = createClient<Database>(
@@ -28,6 +29,98 @@ const supabase = createClient<Database>(
 
 const BatchSize = parseInt(process.env.BATCH_SIZE as string) || 50;
 const queryBatchSize = 1000;
+export const guildTxCount = inngest.createFunction(
+  { id: 'guild-tx-count' },
+  { event: 'events/guild-tx-count' },
+  async ({ event, step }) => {
+    const users: { user_address: string }[] = [];
+    let uRange: string[] = [];
+    let iter: number = 0;
+    while (true && iter < 100) {
+      const uRange = await step.run('fetch guild users', async () => {
+        const { data, error } = await supabase
+          .from('guild_member_configuration')
+          .select('user_address')
+          .eq('game_id', event.data.gameId as number)
+          .eq('guild_id', event.data.guildId)
+          .range(iter * queryBatchSize, (iter + 1) * queryBatchSize - 1);
+        if (error) {
+          return [];
+        }
+        return data;
+      });
+      users.push(...uRange);
+      if (uRange.length < queryBatchSize) {
+        break;
+      }
+      iter++;
+    }
+    let bsize = event.data.batchSize || BatchSize;
+    let chunks = chunkArray(users, bsize);
+
+    let total: number = 0;
+    for (let i = 0; i < chunks.length; i++) {
+      const t = await step.run('get-tx-count', async () => {
+        const p = providers[Networks.networks_base_mainnet];
+        const reqs = chunks[i].map((u, idx) => {
+          return {
+            id: i * bsize + idx,
+            jsonrpc: '2.0',
+            method: 'eth_getTransactionCount',
+            params: [u.user_address, 'latest'],
+          };
+        }) as Array<{
+          id: number;
+          jsonrpc: '2.0';
+          method: string;
+          params: Array<any>;
+        }>;
+        const res = await Promise.all(
+          reqs.map(async (r) => {
+            return p._send(r);
+          })
+        );
+        //const res = await p._send(reqs);
+        return {
+          sum: res
+            .map((r: any) => r[0].result)
+            .map((r: any) => {
+              try {
+                return ethers.toNumber(r);
+              } catch (e) {
+                return ethers.toNumber(0);
+              }
+            })
+            .reduce((acc: number, item: number) => {
+              return acc + item;
+            }),
+          batchId: i,
+          progress: (i / chunks.length) * 100,
+        };
+      });
+      total += t.sum;
+      if (i % 10 == 0) {
+        await step.sleep('wait-a-moment', '200 ms');
+      }
+    }
+    const dbData = await step.run('update-guild-score', async () => {
+      const { data, error } = await supabase
+        .from('guild_score')
+        .insert({
+          guild_id: event.data.guildId,
+          score: total,
+          game_id: event.data.gameId as number,
+        })
+        .select();
+      if (error) {
+        return { error: error };
+      }
+      return { data: data };
+    });
+    return { data: dbData };
+  }
+);
+
 export const userTxCount = inngest.createFunction(
   { id: 'user-tx-count' },
   { event: 'events/user-tx-count' },
