@@ -163,7 +163,7 @@ export default function Page({ params }: { params: { guildId: string } }) {
                 Grow your guild
               </Text>
               <Text variant="body2" fontSize="14px">
-                Invite your friends to your guild using Wrapcast Frame
+                Invite your friends to your guild using Warpcast Frame
               </Text>
               <Button
                 variant="outlined"
