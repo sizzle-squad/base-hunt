@@ -662,6 +662,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_address_unique_challenge_status: {
+        Row: {
+          challenge_description: string
+          challenge_status: Database["public"]["Enums"]["challenge_status"]
+          challenge_uid: number
+          content_data: Json
+          created_at: string
+          game_id: number
+          id: number
+          points: number
+          update_at: string
+          user_address: string
+        }
+        Insert: {
+          challenge_description: string
+          challenge_status: Database["public"]["Enums"]["challenge_status"]
+          challenge_uid: number
+          content_data?: Json
+          created_at?: string
+          game_id: number
+          id?: number
+          points: number
+          update_at?: string
+          user_address: string
+        }
+        Update: {
+          challenge_description?: string
+          challenge_status?: Database["public"]["Enums"]["challenge_status"]
+          challenge_uid?: number
+          content_data?: Json
+          created_at?: string
+          game_id?: number
+          id?: number
+          points?: number
+          update_at?: string
+          user_address?: string
+        }
+        Relationships: []
+      }
       user_challenge_status: {
         Row: {
           challenge_id: number
