@@ -30,11 +30,12 @@ export async function get5pmMstDateRangeFromCurrent(
   now: Date
 ): Promise<[Date, Date]> {
   let from, to;
-  from = new Date(
-    `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}-${
-      now.getUTCDate() - 1
-    } 24:00:00.000Z`
-  ); //5pm MST from yesterday
+
+  from = new Date(now);
+  from.setUTCHours(0);
+  from.setUTCMinutes(0);
+  from.setUTCSeconds(0);
+  from.setUTCMilliseconds(0);
   to = now;
   return [from, to];
 }
