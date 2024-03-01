@@ -297,8 +297,11 @@ export const userPointDistribute = inngest.createFunction(
       // We want to analyze the winner UPTO and including the last events of the day !
       const today = new Date();
       //we move time back to within the previous day range to get the proper from
-      today.setUTCHours(today.getUTCHours() - 1);
+
+      //lets get the current days 5pm MT
       [from, to] = await get5pmMstDateRangeFromCurrent(today);
+      from.setUTCHours(from.getUTCHours() - 1);
+      [from, to] = await get5pmMstDateRangeFromCurrent(from);
       //we use the current time for to because the tx-count would have ran at the top of the hour
       to = new Date();
       claimId = from.getUTCDate();

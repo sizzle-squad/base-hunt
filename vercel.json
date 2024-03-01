@@ -2,11 +2,11 @@
   "crons": [
     {
       "path": "/api/cron/inngest/user-point-distribute?gameId=0",
-      "schedule": "0 0 * * *"
+      "schedule": "1 0 * * *"
     },
     {
       "path": "/api/cron/inngest/guild-tx-count?gameId=0&guildId=guild-0",
-      "schedule": "1 */1 * * *"
+      "schedule": "2 */1 * * *"
     },
     {
       "path": "/api/cron/inngest/guild-tx-count?gameId=0&guildId=guild-1",
