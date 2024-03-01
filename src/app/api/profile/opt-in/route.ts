@@ -28,17 +28,32 @@ export async function POST(request: NextRequest) {
     game_id: parseInt(gameId),
   };
 
-  const { error } = await supabase
+  const userOptInData = await supabase
     .from('user_address_opt_in')
-    .insert(params)
-    .select();
+    .select()
+    .eq('game_id', params.game_id)
+    .eq('user_address', params.user_address)
+    .maybeSingle();
 
-  if (error) {
-    console.error(error);
-
-    return new Response(`Error: failed to register address: ${userAddress}`, {
+  if (userOptInData.error) {
+    console.error(userOptInData.error);
+    return new Response(`Error getting user opt in data`, {
       status: 400,
     });
+  }
+
+  if (!userOptInData.data) {
+    const { error } = await supabase
+      .from('user_address_opt_in')
+      .insert(params)
+      .select();
+
+    if (error) {
+      console.error(error);
+      return new Response(`Error: failed to register address: ${userAddress}`, {
+        status: 400,
+      });
+    }
   }
 
   return NextResponse.json({ success: true });
