@@ -4,7 +4,12 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { ethers } from 'ethers';
 import { GuildPostBodyData } from '@/hooks/useMutateGuild';
 import { Database } from '@/utils/database.types';
-import { ChallengeType, CheckFunctionType } from '@/utils/database.enums';
+import {
+  ChallengeType,
+  CheckFunctionType,
+  Networks,
+} from '@/utils/database.enums';
+import { providers } from '@/utils/ethereum';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -87,6 +92,17 @@ export async function POST(request: NextRequest) {
     return new Response(`Unauthorized`, {
       status: 405,
     });
+  }
+
+  const provider = providers[Networks.networks_base_mainnet];
+  const txCount = await provider.getTransactionCount(params.user_address);
+  if (txCount < 1) {
+    return new Response(
+      `You need atleast 1 transaction on base to join a guild`,
+      {
+        status: 404,
+      }
+    );
   }
 
   const { error } = await supabase
