@@ -5,6 +5,10 @@
       "schedule": "1 0 * * *"
     },
     {
+      "path": "/api/cron/inngest/guild-tx-count?gameId=0&guildId=guild-0",
+      "schedule": "2 */1 * * *"
+    },
+    {
       "path": "/api/cron/inngest/guild-tx-count?gameId=0&guildId=guild-1",
       "schedule": "10 */1 * * *"
     },
