@@ -13,6 +13,11 @@ const supabase = createClient<Database>(
 
 // Register a user to a guild
 export async function POST(request: NextRequest) {
+  if (process.env.DISABLE_JOIN) {
+    return new Response(`Joining guild is currently disabled`, {
+      status: 405,
+    });
+  }
   const body: GuildPostBodyData = await request.json();
   const { gameId, userAddress, guildId, signature, secret } = body;
 
