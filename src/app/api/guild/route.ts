@@ -15,7 +15,7 @@ const supabase = createClient<Database>(
 export async function POST(request: NextRequest) {
   if (process.env.DISABLE_JOIN) {
     return new Response(`Joining guild is currently disabled`, {
-      status: 405,
+      status: 404,
     });
   }
   const body: GuildPostBodyData = await request.json();
