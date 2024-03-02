@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     .eq('game_id', BigInt(gameId))
     .order('current_score', { ascending: false })
     .order('updated_at', { ascending: true })
-    .limit(100);
+    .limit(25);
 
   if (error) {
     return new Response(`No top ranks found with gameId: ${gameId}`, {
