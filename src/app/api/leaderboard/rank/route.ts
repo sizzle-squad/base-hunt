@@ -53,10 +53,10 @@ export async function GET(request: NextRequest) {
     currentScore: playerRank?.current_score,
   });
 
-  // cache for 10 seconds
-  response.headers.set('Cache-Control', 'public, s-maxage=10');
-  response.headers.set('CDN-Cache-Control', 'public, s-maxage=10');
-  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=10');
+  // cache for 60 seconds
+  response.headers.set('Cache-Control', 'public, s-maxage=60');
+  response.headers.set('CDN-Cache-Control', 'public, s-maxage=60');
+  response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=60');
 
   return response;
 }
