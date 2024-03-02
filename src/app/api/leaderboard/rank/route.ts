@@ -28,9 +28,9 @@ export async function GET(request: NextRequest) {
       }
     );
   }
-  const rankData = await supabase.rpc('getscorerank', {
+  const rankData = await supabase.rpc('getscorerankv2', {
     _game_id: gameId,
-    _user_address: userAddress,
+    _user_address: userAddress.toLowerCase(),
   });
   if (rankData.error) {
     console.log(rankData.error);

@@ -876,6 +876,15 @@ export type Database = {
           j: Json
         }[]
       }
+      getscorerankv2: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: {
+          j: Json
+        }[]
+      }
       getuserrank: {
         Args: {
           _game_id: number
