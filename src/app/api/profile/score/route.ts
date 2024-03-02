@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
     let scoreData = (await supabase
       .from('score')
       .select()
-      .ilike('user_address', userAddress)
+      .eq('user_address', userAddress.toLowerCase())
       .eq('game_id', gameId)) as any;
 
     if (scoreData.error) {
