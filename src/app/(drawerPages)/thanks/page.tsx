@@ -3,6 +3,7 @@
 import {
   Box,
   Button,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Stack,
@@ -10,20 +11,25 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-
 import Image from 'next/image';
 import { useMemo } from 'react';
+import Link from 'next/link';
 import Text from '@/components/Text';
-import { LevelBadgesRow } from '@/components/assets/icons/LevelBadgesRow';
 import { BaseHuntHero } from '@/components/assets/BaseHuntHero';
 import { Color } from '@/constants/color';
 import { useGameInfoContext } from '@/context/GameInfoContext';
 import { BootstrapDialog } from '@/components/BoostrapDialog';
+import { BadgesRow } from '@/components/assets/icons/BadgesRow';
 
 export default function Thanks() {
   const theme = useTheme();
   const smallerThanSm = useMediaQuery(theme.breakpoints.down('sm'));
   const { showModal, setShowModal } = useGameInfoContext();
+
+  const buttonYPadding = useMemo(
+    () => (smallerThanSm ? '15px' : '20px'),
+    [smallerThanSm]
+  );
 
   const qrSizes = useMemo(() => {
     return smallerThanSm ? 200 : 500;
@@ -38,18 +44,23 @@ export default function Thanks() {
   return (
     <Stack
       direction="column"
-      justifyContent={'center'}
+      justifyContent={smallerThanSm ? 'normal' : 'center'}
       sx={{
         position: 'absolute',
         p: '20px',
         width: '100%',
-        height: '100vh',
+        height: '110vh',
         backgroundColor: 'black',
       }}
-      gap="4rem"
+      gap={smallerThanSm ? 3 : 4}
     >
-      <Stack width="100%" justifyContent="center" alignItems="center" gap={4}>
-        <LevelBadgesRow />
+      <Stack
+        width="100%"
+        justifyContent="center"
+        alignItems="center"
+        gap={smallerThanSm ? 3 : 4}
+      >
+        <BadgesRow />
         <BaseHuntHero />
         <Stack pt={3} gap={3}>
           <Text
@@ -101,6 +112,7 @@ export default function Thanks() {
               fontFamily: 'CoinbaseMono',
               fontWeight: 400,
               color: Color.Black,
+              display: 'none',
             }}
             onClick={() => setShowModal(true)}
           >
@@ -119,15 +131,12 @@ export default function Thanks() {
               variant="contained"
               color="primary"
               sx={{
-                py: '20px',
+                py: buttonYPadding,
                 px: 3,
-                fontSize: '14px',
                 backgroundColor: Color.CoinbaseBlue,
                 width: '100%',
                 borderRadius: '12px',
-                fontFamily: 'CoinbaseMono',
-                fontWeight: 400,
-                color: Color.White,
+                textAlign: 'center',
               }}
             >
               {message}
@@ -164,6 +173,28 @@ export default function Thanks() {
             width={qrSizes}
           />
         </DialogContent>
+        <DialogActions>
+          <Button
+            sx={{
+              py: '20px',
+              px: 3,
+              fontSize: '16px',
+              backgroundColor: Color.CoinbaseBlue,
+              width: '100%',
+              borderRadius: '12px',
+              fontFamily: 'CoinbaseMono',
+              fontWeight: 400,
+              color: Color.White,
+              '&:hover': {
+                backgroundColor: '#4474f3',
+              },
+            }}
+          >
+            <Link href="https://go.cb-w.com/eth-denever" target="_blank">
+              Download Coinbase Wallet
+            </Link>
+          </Button>
+        </DialogActions>
       </BootstrapDialog>
     </Stack>
   );
