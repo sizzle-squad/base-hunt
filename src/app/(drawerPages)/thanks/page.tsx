@@ -138,6 +138,9 @@ export default function Thanks() {
                 borderRadius: '12px',
                 textAlign: 'center',
               }}
+              onClick={() =>
+                window.open('https://basedmerch.slice.so/', '_blank')
+              }
             >
               {message}
             </Button>
