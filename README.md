@@ -4,12 +4,12 @@ Basehunt Dapp
 
 ### ENV
 - [ ] Make sure everyone can configure + build Locally
-  - [ ] Amhed
+  - [X] Amhed
   - [ ] Farid
   - [ ] Mike
-- [ ] Create supabase instance
-  - [ ] Run first schema script (migration?)
-- [ ] Create Vercel instance
+- [X] Create supabase instance
+  - [X] Run first schema script (migration?)
+- [X] Create Vercel instance
   - [ ] Update Vercel ENV variables
 - [ ] Configure vercel.json
 - [ ] Configure Prisma / CLI should allow performing migrations
@@ -22,15 +22,39 @@ Basehunt Dapp
 
 ## Getting Started
 
-1. Install dependencies
+1. Configure Supabase
+
+Install CLI
+```sh
+brew install supabase/tap/supabase
+```
+
+And then link to the correct instance
+```sh
+supabase link
+```
+
+2. Install npm dependencies
 
 ```sh
 yarn install
 ```
 
-Install Docker Desktop (https://www.docker.com/products/docker-desktop/)
+3. Install Docker Desktop (https://www.docker.com/products/docker-desktop/)
 
-2. Update ENV file. use `.env.sample.local` as starting point
+4. Configure your local supabase instance
 
-3. If this is a brand new environment, connect to the Postgres instance and run the `supabase/schema.sql` script to generate all tables
+This should download any necessary containers and configure a local database and dashboard for Supabase services
+```sh
+supabase start
+```
 
+<img src="./scripts/supabase_cli_sshot.png" width="600">
+
+5. Update ENV file. use `.env.sample.local` as starting point
+
+6. Download and run the latest migration from the server
+
+```sh
+supabase db reset
+```
