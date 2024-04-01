@@ -1,3 +1,5 @@
+include .env
+
 gen-types:
 	supabase gen types typescript --project-id $(SUPABASE_PROJECT_ID) > src/utils/database.types.ts
 	yarn run generate:enums
