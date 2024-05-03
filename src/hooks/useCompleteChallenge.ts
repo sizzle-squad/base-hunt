@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { routes } from '@/constants/routes';
 
@@ -13,8 +13,8 @@ export type ChallengeData = {
 export function useCompleteChallenge() {
   const queryClient = useQueryClient();
 
-  const claimChallenge = useMutation(
-    (data: ChallengeData) => {
+  const claimChallenge = useMutation({
+    mutationFn: (data: ChallengeData) => {
       const { gameId, userAddress, challengeId } = data;
 
       if (!userAddress || !gameId || !challengeId) {
@@ -25,19 +25,17 @@ export function useCompleteChallenge() {
 
       return axios.post(routes.challenges.complete, data);
     },
-    {
-      onSuccess: (_, variables) => {
-        const { userAddress, gameId } = variables;
+    onSuccess: (_, variables) => {
+      const { userAddress, gameId } = variables;
 
-        queryClient.invalidateQueries({
-          queryKey: ['challenges', userAddress, gameId],
-        });
+      queryClient.invalidateQueries({
+        queryKey: ['challenges', userAddress, gameId],
+      });
 
-        queryClient.refetchQueries({
-          queryKey: ['levels'],
-        });
-      },
-    }
-  );
+      queryClient.refetchQueries({
+        queryKey: ['levels'],
+      });
+    },
+  });
   return { claimChallenge };
 }

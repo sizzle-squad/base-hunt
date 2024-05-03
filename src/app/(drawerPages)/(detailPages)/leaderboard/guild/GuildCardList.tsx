@@ -140,11 +140,11 @@ export function GuildCardList({ guilds }: { guilds: Guild[] }) {
                     onClick={handleJoinPress(guild.id.toString(), guild.name)}
                     variant="contained"
                     isLoading={
-                      joinGuild.isLoading &&
+                      joinGuild.isPending &&
                       joinGuild.variables?.guildId === guild.id.toString()
                     }
                     disabled={
-                      joinGuild.isLoading &&
+                      joinGuild.isPending &&
                       joinGuild.variables?.guildId !== guild.id.toString()
                     }
                   >

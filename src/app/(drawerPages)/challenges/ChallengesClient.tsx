@@ -304,7 +304,7 @@ export default function ChallengesPageClient({ refreshData }: Props) {
           </Stack>
           <Button
             variant="contained"
-            isLoading={claimChallenge.isLoading}
+            isLoading={claimChallenge.isPending}
             onClick={handleButtonAction}
           >
             {ctaButtonText}

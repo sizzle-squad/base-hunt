@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { GuildData } from '@/app/api/profile/guild/route';
 import { routes } from '@/constants/routes';
@@ -12,9 +12,9 @@ type Props = {
 };
 
 export function useGuildState({ userAddress, gameId }: Props) {
-  const { data, isLoading, error } = useQuery<GuildData>(
-    ['profile/guild', userAddress, gameId],
-    async () => {
+  const { data, isLoading, error } = useQuery<GuildData>({
+    queryKey: ['profile/guild', userAddress, gameId],
+    queryFn: async () => {
       try {
         const guild = await axios({
           method: 'GET',
@@ -27,17 +27,10 @@ export function useGuildState({ userAddress, gameId }: Props) {
         return {} as GuildData;
       }
     },
-    {
-      enabled: !!userAddress && gameId !== undefined,
-      onError: (error) => {
-        console.error(error);
-        // Handle error appropriately
-        // return Promise.resolve({} as GuildData);
-      },
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      cacheTime: 1000 * 60 * 5, // 5 minutes
-    }
-  );
+    enabled: !!userAddress && gameId !== undefined,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 5, // 5 minutes
+  });
 
   return useMemo(
     () => ({

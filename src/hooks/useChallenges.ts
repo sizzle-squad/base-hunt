@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { routes } from '@/constants/routes';
 
@@ -13,9 +13,9 @@ type Props = {
 };
 
 export function useChallenges({ userAddress, gameId }: Props) {
-  const { data, isLoading, error } = useQuery<Challenge[]>(
-    ['challenges', userAddress, gameId],
-    async () => {
+  const { data, isLoading, error } = useQuery<Challenge[]>({
+    queryKey: ['challenges', userAddress, gameId],
+    queryFn: async () => {
       const challenges = await axios({
         method: 'GET',
         url: `${routes.challenges.default}`,
@@ -27,13 +27,8 @@ export function useChallenges({ userAddress, gameId }: Props) {
 
       return challenges.data;
     },
-    {
-      enabled: !!userAddress && gameId !== undefined,
-      onError: (error) => {
-        console.error(error);
-      },
-    }
-  );
+    enabled: !!userAddress && gameId !== undefined,
+  });
 
   return useMemo(
     () => ({

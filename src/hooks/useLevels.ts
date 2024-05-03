@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { LevelNumber } from '@/components/LevelsBadge';
 import { routes } from '@/constants/routes';
@@ -19,9 +19,9 @@ type LevelsReturnType = {
 };
 
 export function useLevels({ gameId, address }: Props) {
-  const { data, isLoading, error, refetch } = useQuery<LevelsReturnType>(
-    ['levels'],
-    async () => {
+  const { data, isLoading, error, refetch } = useQuery<LevelsReturnType>({
+    queryKey: ['levels', gameId, address],
+    queryFn: async () => {
       const result = await axios({
         method: 'GET',
         url: `${routes.profile.levels}?gameId=${gameId}&userAddress=${address}`,
@@ -29,14 +29,8 @@ export function useLevels({ gameId, address }: Props) {
 
       return result.data;
     },
-    {
-      enabled: gameId !== undefined,
-      onError: (error) => {
-        console.error(error);
-        // Handle error appropriately
-      },
-    }
-  );
+    enabled: gameId !== undefined,
+  });
 
   return useMemo(
     () => ({

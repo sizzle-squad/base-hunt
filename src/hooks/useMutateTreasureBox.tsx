@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { TreasureBoxType } from '@/app/api/treasure-box/route';
 import { routes } from '@/constants/routes';
@@ -28,8 +28,12 @@ export function useMutateTreasureBox({ gameId }: { gameId: string }) {
       return axios.post(routes.treasureBox.default, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['treasure-box', gameId]);
-      queryClient.invalidateQueries(['treasure-box-state', gameId]);
+      queryClient.invalidateQueries({
+        queryKey: ['treasure-box', gameId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['treasure-box-state', gameId],
+      });
     },
   });
 

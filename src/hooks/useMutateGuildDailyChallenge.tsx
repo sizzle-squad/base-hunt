@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { routes } from '@/constants/routes';
 
 export type GuildDailyChallengePostBodyData = {
@@ -11,8 +11,8 @@ export type GuildDailyChallengePostBodyData = {
 export function useMutateGuildDailyChallenge() {
   const queryClient = useQueryClient();
 
-  const claimDailyChallenge = useMutation(
-    (data: GuildDailyChallengePostBodyData) => {
+  const claimDailyChallenge = useMutation({
+    mutationFn: (data: GuildDailyChallengePostBodyData) => {
       const { gameId, userAddress } = data;
 
       if (!userAddress || !gameId) {
@@ -23,15 +23,13 @@ export function useMutateGuildDailyChallenge() {
 
       return axios.post(routes.guild.claim, data);
     },
-    {
-      onSuccess: (_, data) => {
-        const { gameId, userAddress } = data;
-        queryClient.invalidateQueries({
-          queryKey: ['profile/guild', userAddress, gameId],
-        });
-      },
-    }
-  );
+    onSuccess: (_, data) => {
+      const { gameId, userAddress } = data;
+      queryClient.invalidateQueries({
+        queryKey: ['profile/guild', userAddress, gameId],
+      });
+    },
+  });
 
   return { claimDailyChallenge };
 }

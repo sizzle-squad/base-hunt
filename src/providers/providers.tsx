@@ -7,14 +7,11 @@ import { CssBaseline } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
   DisclaimerComponent,
-  getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { base } from 'viem/chains';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { base } from 'wagmi/chains';
+import { createConfig, http, WagmiProvider } from 'wagmi';
 import '@fontsource/open-sans';
 import '@/globals.css';
 
@@ -26,22 +23,12 @@ type Props = {
   children: React.ReactNode;
 };
 
-const alchemyId = process.env.ALCHEMY_ID!;
-const { chains, publicClient } = configureChains(
-  [base],
-  [alchemyProvider({ apiKey: alchemyId }), publicProvider()]
-);
-
-const { connectors } = getDefaultWallets({
-  appName: 'Base Hunt',
-  projectId: 'base-hunt',
-  chains,
-});
-
+// const alchemyId = process.env.ALCHEMY_ID!;
 const config = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
+  chains: [base],
+  transports: {
+    [base.id]: http(),
+  },
 });
 
 const theme = createTheme({
@@ -75,13 +62,10 @@ const Providers = ({ children }: Props) => {
   const queryClient = new QueryClient();
   return (
     <MobileProvider>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <WagmiConfig config={config}>
-            <RainbowKitProvider
-              chains={chains}
-              appInfo={{ disclaimer: Disclaimer }}
-            >
+      <ThemeProvider theme={theme}>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <RainbowKitProvider appInfo={{ disclaimer: Disclaimer }}>
               <DesiredNetworkContextProvider>
                 <GameInfoProvider>
                   <CssBaseline />
@@ -89,9 +73,9 @@ const Providers = ({ children }: Props) => {
                 </GameInfoProvider>
               </DesiredNetworkContextProvider>
             </RainbowKitProvider>
-          </WagmiConfig>
-        </ThemeProvider>
-      </QueryClientProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
+      </ThemeProvider>
     </MobileProvider>
   );
 };

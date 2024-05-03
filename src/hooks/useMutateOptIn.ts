@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { routes } from '@/constants/routes';
 
@@ -9,16 +9,18 @@ export type OptInPostBodyType = {
 };
 
 export function useMutateOptIn() {
-  const optIn = useMutation((data: OptInPostBodyType) => {
-    const { gameId, userAddress } = data;
+  const optIn = useMutation({
+    mutationFn: (data: OptInPostBodyType) => {
+      const { gameId, userAddress } = data;
 
-    if (!userAddress || !gameId) {
-      throw new Error(
-        `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`
-      );
-    }
+      if (!userAddress || !gameId) {
+        throw new Error(
+          `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`
+        );
+      }
 
-    return axios.post(routes.profile.optIn, data);
+      return axios.post(routes.profile.optIn, data);
+    },
   });
 
   return { optIn };

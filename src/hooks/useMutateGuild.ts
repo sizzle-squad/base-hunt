@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { routes } from '@/constants/routes';
 
 export type GuildPostBodyData = {
@@ -14,8 +14,8 @@ export type GuildPostBodyData = {
 
 export function useMutateGuild() {
   const queryClient = useQueryClient();
-  const joinGuild = useMutation(
-    (data: GuildPostBodyData) => {
+  const joinGuild = useMutation({
+    mutationFn: (data: GuildPostBodyData) => {
       const { gameId, userAddress, guildId } = data;
 
       if (!userAddress || !gameId || !guildId) {
@@ -26,17 +26,15 @@ export function useMutateGuild() {
 
       return axios.post(routes.guild.default, data);
     },
-    {
-      onSuccess: (_, variables) => {
-        const { gameId, userAddress } = variables;
-        queryClient.invalidateQueries({
-          queryKey: ['profile/guild', userAddress, gameId],
-        });
-        queryClient.invalidateQueries({ queryKey: ['guild', gameId] });
-        queryClient.refetchQueries({ queryKey: ['guild', gameId] });
-      },
-    }
-  );
+    onSuccess: (_, variables) => {
+      const { gameId, userAddress } = variables;
+      queryClient.invalidateQueries({
+        queryKey: ['profile/guild', userAddress, gameId],
+      });
+      queryClient.invalidateQueries({ queryKey: ['guild', gameId] });
+      queryClient.refetchQueries({ queryKey: ['guild', gameId] });
+    },
+  });
 
   return { joinGuild };
 }

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { PlayerRank } from './types';
 
@@ -15,22 +15,16 @@ type RankReturnType = {
 };
 
 export function useRank({ userAddress, gameId }: Props) {
-  const { data, isLoading, error, refetch } = useQuery<RankReturnType>(
-    ['leaderboard/rank', userAddress, gameId],
-    async () => {
+  const { data, isLoading, error, refetch } = useQuery<RankReturnType>({
+    queryKey: ['leaderboard/rank', userAddress, gameId],
+    queryFn: async () => {
       return await axios({
         method: 'GET',
         url: `/api/leaderboard/rank?userAddress=${userAddress}&gameId=${gameId}`,
       });
     },
-    {
-      enabled: !!userAddress && gameId !== undefined,
-      onError: (error) => {
-        console.error(error);
-        // Handle error appropriately
-      },
-    }
-  );
+    enabled: !!userAddress && gameId !== undefined,
+  });
 
   return useMemo(
     () => ({
