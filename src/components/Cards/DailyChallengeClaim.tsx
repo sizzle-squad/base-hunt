@@ -79,7 +79,7 @@ export function DailyChallengeClaim() {
           <Button
             variant="contained"
             onClick={handleGuildDailyChallengeClaimPress}
-            isLoading={claimDailyChallenge.isLoading}
+            isLoading={claimDailyChallenge.isPending}
             bgColor={Color.CoinbaseBlue}
           >
             <Text fontSize="16px" lineHeight="18px" fontWeight={400}>

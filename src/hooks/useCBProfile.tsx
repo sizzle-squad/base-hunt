@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { routes } from '@/constants/routes';
 
@@ -12,9 +12,9 @@ type Props = {
 };
 
 export function useCBProfile({ address }: Props) {
-  const { data, error, isLoading } = useQuery<UserPublicProfile>(
-    ['getPublicProfileByAddress', address],
-    async () => {
+  const { data, error, isLoading } = useQuery<UserPublicProfile>({
+    queryKey: ['getPublicProfileByAddress', address],
+    queryFn: async () => {
       return await axios({
         method: 'GET',
         url: `${routes.cbProfile}?userAddress=${address}`,
@@ -23,16 +23,10 @@ export function useCBProfile({ address }: Props) {
         },
       });
     },
-    {
-      enabled: !!address && address !== '0x...',
-      staleTime: 1000 * 60 * 5,
-      cacheTime: 1000 * 60 * 5,
-      onError: (error) => {
-        console.error(error);
-        // Handle error appropriately
-      },
-    }
-  );
+    enabled: !!address && address !== '0x...',
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 5,
+  });
 
   return useMemo(
     () => ({

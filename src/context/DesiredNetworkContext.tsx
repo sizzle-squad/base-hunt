@@ -10,11 +10,10 @@ import {
   useState,
 } from 'react';
 
-import { useNetwork, useSwitchNetwork } from 'wagmi';
-import { WindowProvider } from 'wagmi';
+import { useAccount, useSwitchChain } from 'wagmi';
 import { base, baseGoerli, goerli, mainnet } from 'wagmi/chains';
 
-interface CustomWindowProvider extends WindowProvider {
+interface CustomWindowProvider extends Window {
   isCoinbaseBrowser?: boolean;
 }
 
@@ -46,29 +45,25 @@ export const DesiredNetworkContext = createContext<IDesiredNetworkContext>({
 export const DesiredNetworkContextProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
-  const currentNetwork = useNetwork();
-  const { switchNetwork } = useSwitchNetwork();
-  const switchNetworkRef = useRef(switchNetwork);
+  const { chainId } = useAccount();
+  const { switchChain } = useSwitchChain();
+  const switchNetworkRef = useRef(switchChain);
 
-  switchNetworkRef.current = switchNetwork;
+  switchNetworkRef.current = switchChain;
 
   const [desiredNetwork, setDesiredNetwork] = useState<typeof l1 | typeof l2>(
     l2
   );
 
-  const currentNetworkId = currentNetwork.chain?.id;
+  // const currentNetworkId = currentNetwork.chain?.id;
   const desiredNetworkId = desiredNetwork.id;
 
   useEffect(() => {
     const isCoinbaseBrowser = getIsCoinbaseBrowser();
-    if (
-      isCoinbaseBrowser &&
-      currentNetworkId &&
-      currentNetworkId !== desiredNetworkId
-    ) {
-      switchNetworkRef.current?.(desiredNetworkId);
+    if (isCoinbaseBrowser && chainId && chainId !== desiredNetworkId) {
+      switchNetworkRef.current?.({ chainId: desiredNetworkId });
     }
-  }, [desiredNetworkId, currentNetworkId]);
+  }, [desiredNetworkId, chainId]);
 
   return (
     <DesiredNetworkContext.Provider

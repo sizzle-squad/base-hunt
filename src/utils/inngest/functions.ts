@@ -172,7 +172,7 @@ export const userTxCount = inngest.createFunction(
       txCounts.push(t);
     }
 
-    let flatten: number[] = await step.run('flatten-tx-count', () => {
+    let flatten: number[] = await step.run('flatten-tx-count', (): number[] => {
       return txCounts
         .reduce((accumulator, value) => accumulator.concat(value), [])
         .map((r: any) => r.result)

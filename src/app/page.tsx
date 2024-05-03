@@ -15,7 +15,7 @@ import {
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useAccount } from 'wagmi';
+import { useAccount, useAccountEffect } from 'wagmi';
 
 import Link from 'next/link';
 import { ConnectButton } from '@/components/assets/ConnectButton';
@@ -48,7 +48,9 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
-  const { isConnected } = useAccount({
+  const { isConnected } = useAccount();
+
+  useAccountEffect({
     onConnect({ address }) {
       optIn.mutate({ gameId: GAME_ID, userAddress: address });
     },
