@@ -10,6 +10,7 @@ const supabase = createClient<Database>(
   process.env.SUPABASE_ANON_KEY as string
 );
 
+// return paginated leaderboard
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const gameId = toBigInt(searchParams.get('gameId') as string);
