@@ -15,10 +15,10 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const gameId = toBigInt(searchParams.get('gameId') as string);
   const page = parseInt(searchParams.get('page') || '1', 10);
-  let perPage = parseInt(searchParams.get('perPage') || '100', 10);
+  let limit = parseInt(searchParams.get('limit') || '100', 10);
 
   // Limit per page to 200
-  perPage = Math.min(perPage, 200);
+  limit = Math.min(limit, 200);
 
   if (gameId === null) {
     return new Response(`Missing parameters: gameId: ${gameId}`, {
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     });
   }
   
-  const offset = (page - 1) * perPage;
+  const offset = (page - 1) * limit;
 
   const { data, error } = await supabase
     .from('score')
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     .eq('game_id', BigInt(gameId))
     .order('current_score', { ascending: false })
     .order('updated_at', { ascending: true })
-    .range(offset, offset + perPage - 1);
+    .range(offset, offset + limit - 1);
 
   if (error) {
     return new Response(`No top ranks found with gameId: ${gameId}`, {
