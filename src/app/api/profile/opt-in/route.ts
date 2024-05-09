@@ -6,7 +6,7 @@ import { OptInPostBodyType } from '@/hooks/useMutateOptIn';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_ANON_KEY as string
+  process.env.SUPABASE_SERVICE_KEY as string
 );
 
 // Opt in to the game

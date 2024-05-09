@@ -34,11 +34,6 @@ export default function Challenges() {
   const userName = useUserName({ address, userPublicProfile });
   const { disconnectAsync } = useDisconnect();
   const {
-    data: badges,
-    isLoading,
-    error,
-  } = useGameState({ userAddress: address, gameId: GAME_ID });
-  const {
     data: guildState,
     isLoading: isGuildStateLoading,
     error: guildStateError,
