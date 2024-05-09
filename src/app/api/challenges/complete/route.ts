@@ -142,7 +142,7 @@ async function verifyTransactions(
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_ANON_KEY as string
+  process.env.SUPABASE_SERVICE_KEY as string
 );
 
 export type BoostsClaimRequest = {
@@ -165,7 +165,6 @@ export interface ChallengeWithStatus {
   network: string;
   difficulty_type: string;
   function_type: string;
-  is_dynamic_points: boolean;
   user_challenge_status: Status[];
 }
 
@@ -220,19 +219,6 @@ export async function POST(request: NextRequest) {
       `challenge already claimed: ${challenge.user_challenge_status[0].status}`
     );
     return NextResponse.json({ success: true, message: 'challenge-claimed' });
-  }
-
-  if (challenge.is_dynamic_points) {
-    console.warn(
-      `dynamic points not supported for streaming challenges:` + challenge.id
-    );
-    return NextResponse.json(
-      {
-        success: false,
-        message: 'invalid-challenge',
-      },
-      { status: 405 }
-    );
   }
 
   if (

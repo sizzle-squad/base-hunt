@@ -16,7 +16,7 @@ import { verifyWebhookSecret, WebhookData } from '@/utils/webhook';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_ANON_KEY as string
+  process.env.SUPABASE_SERVICE_KEY as string
 );
 
 export async function POST(req: Request) {
@@ -54,13 +54,6 @@ export async function POST(req: Request) {
           c.type,
           'event_type:',
           data.event_type
-        );
-        continue;
-      }
-
-      if (c.is_dynamic_points) {
-        console.warn(
-          `dynamic points not supported for streaming challenges:` + c.id
         );
         continue;
       }

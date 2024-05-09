@@ -10,7 +10,7 @@ type Props = {
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_ANON_KEY as string
+  process.env.SUPABASE_SERVICE_KEY as string
 );
 
 const DOMAIN = process.env.DOMAIN as string; //NOTE: does not include protocol

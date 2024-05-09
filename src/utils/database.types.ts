@@ -9,229 +9,59 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      badge_configuration: {
-        Row: {
-          artist_name: string | null
-          contract_address: string
-          cta_text: string | null
-          cta_url: string | null
-          description: string | null
-          game_id: number
-          id: number
-          image_url: string | null
-          lat_lng: string | null
-          level: number | null
-          minter: string
-          name: string
-          token_id: number
-          type: Database["public"]["Enums"]["badge_type"]
-        }
-        Insert: {
-          artist_name?: string | null
-          contract_address: string
-          cta_text?: string | null
-          cta_url?: string | null
-          description?: string | null
-          game_id?: number
-          id?: number
-          image_url?: string | null
-          lat_lng?: string | null
-          level?: number | null
-          minter: string
-          name: string
-          token_id: number
-          type?: Database["public"]["Enums"]["badge_type"]
-        }
-        Update: {
-          artist_name?: string | null
-          contract_address?: string
-          cta_text?: string | null
-          cta_url?: string | null
-          description?: string | null
-          game_id?: number
-          id?: number
-          image_url?: string | null
-          lat_lng?: string | null
-          level?: number | null
-          minter?: string
-          name?: string
-          token_id?: number
-          type?: Database["public"]["Enums"]["badge_type"]
-        }
-        Relationships: []
-      }
-      boost_configuration: {
-        Row: {
-          available_time: string | null
-          boost_type: Database["public"]["Enums"]["boost_type"]
-          contract_addresses: string[]
-          cta_button_text: string | null
-          cta_text: string | null
-          cta_url: string | null
-          description: string
-          game_id: number
-          icon: Database["public"]["Enums"]["boost_icon"]
-          id: number
-          image_url: string | null
-          is_enabled: boolean
-          max_threshold: number | null
-          name: string
-          network: string
-          nft_amount: number | null
-          points: number
-          refresh_time: string | null
-          transaction_from: string | null
-          transaction_to: string | null
-          transaction_value_threshold: number | null
-        }
-        Insert: {
-          available_time?: string | null
-          boost_type?: Database["public"]["Enums"]["boost_type"]
-          contract_addresses: string[]
-          cta_button_text?: string | null
-          cta_text?: string | null
-          cta_url?: string | null
-          description?: string
-          game_id?: number
-          icon?: Database["public"]["Enums"]["boost_icon"]
-          id?: number
-          image_url?: string | null
-          is_enabled?: boolean
-          max_threshold?: number | null
-          name: string
-          network?: string
-          nft_amount?: number | null
-          points?: number
-          refresh_time?: string | null
-          transaction_from?: string | null
-          transaction_to?: string | null
-          transaction_value_threshold?: number | null
-        }
-        Update: {
-          available_time?: string | null
-          boost_type?: Database["public"]["Enums"]["boost_type"]
-          contract_addresses?: string[]
-          cta_button_text?: string | null
-          cta_text?: string | null
-          cta_url?: string | null
-          description?: string
-          game_id?: number
-          icon?: Database["public"]["Enums"]["boost_icon"]
-          id?: number
-          image_url?: string | null
-          is_enabled?: boolean
-          max_threshold?: number | null
-          name?: string
-          network?: string
-          nft_amount?: number | null
-          points?: number
-          refresh_time?: string | null
-          transaction_from?: string | null
-          transaction_to?: string | null
-          transaction_value_threshold?: number | null
-        }
-        Relationships: []
-      }
       challenge_configuration: {
         Row: {
-          auto_claim: boolean | null
+          challenge_id: string
           content_data: Json | null
           contract_address: string | null
           created_at: string
           display_name: string
-          end_timestamp: string | null
           function_type:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id: number | null
           id: number
-          is_dynamic_points: boolean
           is_enabled: boolean
           network: Database["public"]["Enums"]["networks"] | null
           params: Json | null
           points: number
-          start_timestamp: string | null
           type: Database["public"]["Enums"]["challenge_type"]
         }
         Insert: {
-          auto_claim?: boolean | null
+          challenge_id?: string
           content_data?: Json | null
           contract_address?: string | null
           created_at?: string
           display_name: string
-          end_timestamp?: string | null
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id?: number | null
           id?: number
-          is_dynamic_points?: boolean
           is_enabled: boolean
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
           points: number
-          start_timestamp?: string | null
           type: Database["public"]["Enums"]["challenge_type"]
         }
         Update: {
-          auto_claim?: boolean | null
+          challenge_id?: string
           content_data?: Json | null
           contract_address?: string | null
           created_at?: string
           display_name?: string
-          end_timestamp?: string | null
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id?: number | null
           id?: number
-          is_dynamic_points?: boolean
           is_enabled?: boolean
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
           points?: number
-          start_timestamp?: string | null
           type?: Database["public"]["Enums"]["challenge_type"]
         }
         Relationships: []
-      }
-      claimed_boost: {
-        Row: {
-          boost_id: number
-          contract_address: string | null
-          game_id: number
-          id: number
-          transaction_hash: string | null
-          updated_at: string
-          user_address: string
-        }
-        Insert: {
-          boost_id: number
-          contract_address?: string | null
-          game_id: number
-          id?: number
-          transaction_hash?: string | null
-          updated_at?: string
-          user_address: string
-        }
-        Update: {
-          boost_id?: number
-          contract_address?: string | null
-          game_id?: number
-          id?: number
-          transaction_hash?: string | null
-          updated_at?: string
-          user_address?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "claimed_boost_boost_id_fkey"
-            columns: ["boost_id"]
-            isOneToOne: false
-            referencedRelation: "boost_configuration"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       guild_configuration: {
         Row: {
@@ -377,42 +207,6 @@ export type Database = {
         }
         Relationships: []
       }
-      guild_win: {
-        Row: {
-          claim_id: number
-          created_at: string
-          from: string
-          game_id: number
-          guild_id: string
-          id: number
-          points: number
-          score: number
-          to: string
-        }
-        Insert: {
-          claim_id: number
-          created_at?: string
-          from: string
-          game_id: number
-          guild_id: string
-          id?: number
-          points?: number
-          score: number
-          to: string
-        }
-        Update: {
-          claim_id?: number
-          created_at?: string
-          from?: string
-          game_id?: number
-          guild_id?: string
-          id?: number
-          points?: number
-          score?: number
-          to?: string
-        }
-        Relationships: []
-      }
       level_configuration: {
         Row: {
           airdrop_command: string
@@ -545,99 +339,6 @@ export type Database = {
         }
         Relationships: []
       }
-      treasure_box_configuration: {
-        Row: {
-          created_at: string
-          cta_url: string | null
-          game_id: number
-          id: number
-          image_url: string | null
-          location: string | null
-          name: string
-          total_hitpoints: number
-        }
-        Insert: {
-          created_at?: string
-          cta_url?: string | null
-          game_id: number
-          id?: number
-          image_url?: string | null
-          location?: string | null
-          name: string
-          total_hitpoints: number
-        }
-        Update: {
-          created_at?: string
-          cta_url?: string | null
-          game_id?: number
-          id?: number
-          image_url?: string | null
-          location?: string | null
-          name?: string
-          total_hitpoints?: number
-        }
-        Relationships: []
-      }
-      treasure_box_entries: {
-        Row: {
-          cbid: string | null
-          created_at: string
-          ens_name: string | null
-          game_id: number
-          id: number
-          tap_count: number
-          total_hitpoints: number
-          updated_at: string
-          user_address: string
-        }
-        Insert: {
-          cbid?: string | null
-          created_at?: string
-          ens_name?: string | null
-          game_id: number
-          id?: number
-          tap_count?: number
-          total_hitpoints: number
-          updated_at?: string
-          user_address: string
-        }
-        Update: {
-          cbid?: string | null
-          created_at?: string
-          ens_name?: string | null
-          game_id?: number
-          id?: number
-          tap_count?: number
-          total_hitpoints?: number
-          updated_at?: string
-          user_address?: string
-        }
-        Relationships: []
-      }
-      treasure_box_state: {
-        Row: {
-          created_at: string
-          current_hitpoints: number
-          game_id: number | null
-          id: number
-          is_open: boolean
-        }
-        Insert: {
-          created_at?: string
-          current_hitpoints: number
-          game_id?: number | null
-          id?: number
-          is_open?: boolean
-        }
-        Update: {
-          created_at?: string
-          current_hitpoints?: number
-          game_id?: number | null
-          id?: number
-          is_open?: boolean
-        }
-        Relationships: []
-      }
       user_address_opt_in: {
         Row: {
           created_at: string
@@ -658,45 +359,6 @@ export type Database = {
           game_id?: number
           id?: number
           is_opt_in?: boolean
-          user_address?: string
-        }
-        Relationships: []
-      }
-      user_address_unique_challenge_status: {
-        Row: {
-          challenge_description: string
-          challenge_status: Database["public"]["Enums"]["challenge_status"]
-          challenge_uid: number
-          content_data: Json
-          created_at: string
-          game_id: number
-          id: number
-          points: number
-          update_at: string
-          user_address: string
-        }
-        Insert: {
-          challenge_description: string
-          challenge_status: Database["public"]["Enums"]["challenge_status"]
-          challenge_uid: number
-          content_data?: Json
-          created_at?: string
-          game_id: number
-          id?: number
-          points: number
-          update_at?: string
-          user_address: string
-        }
-        Update: {
-          challenge_description?: string
-          challenge_status?: Database["public"]["Enums"]["challenge_status"]
-          challenge_uid?: number
-          content_data?: Json
-          created_at?: string
-          game_id?: number
-          id?: number
-          points?: number
-          update_at?: string
           user_address?: string
         }
         Relationships: []
@@ -738,39 +400,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      user_guild_score_claim: {
-        Row: {
-          claim_id: number
-          created_at: string
-          game_id: number
-          guild_id: string
-          id: number
-          is_claimed: boolean
-          points: number
-          user_address: string
-        }
-        Insert: {
-          claim_id?: number
-          created_at?: string
-          game_id?: number
-          guild_id: string
-          id?: number
-          is_claimed?: boolean
-          points?: number
-          user_address: string
-        }
-        Update: {
-          claim_id?: number
-          created_at?: string
-          game_id?: number
-          guild_id?: string
-          id?: number
-          is_claimed?: boolean
-          points?: number
-          user_address?: string
-        }
-        Relationships: []
       }
       user_txcount: {
         Row: {

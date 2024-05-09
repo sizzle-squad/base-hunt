@@ -7,7 +7,7 @@ import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_ANON_KEY as string
+  process.env.SUPABASE_SERVICE_KEY as string
 );
 
 // return paginated leaderboard
@@ -25,16 +25,20 @@ export async function GET(request: NextRequest) {
       status: 400,
     });
   }
-  
+
   const offset = (page - 1) * limit;
+
+  console.log({ supabase });
 
   const { data, error } = await supabase
     .from('score')
     .select('*')
-    .eq('game_id', BigInt(gameId))
-    .order('current_score', { ascending: false })
-    .order('updated_at', { ascending: true })
-    .range(offset, offset + limit - 1);
+    .eq('game_id', BigInt(gameId));
+  // .order('current_score', { ascending: false })
+  // .order('updated_at', { ascending: true })
+  // .range(offset, offset + limit - 1);
+
+  console.log({ data });
 
   if (error) {
     return new Response(`No top ranks found with gameId: ${gameId}`, {

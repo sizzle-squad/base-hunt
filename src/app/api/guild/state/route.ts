@@ -11,7 +11,7 @@ import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_ANON_KEY as string
+  process.env.SUPABASE_SERVICE_KEY as string
 );
 
 type GuildData = {

@@ -13,50 +13,7 @@ type Props = {
   gameId: string;
 };
 
-type GameStateReturnType = {
-  data: Badge[];
-};
-
+// TODO: implemet this function to return user game state for OCS
 export function useGameState({ userAddress, gameId }: Props) {
-  const { data, isLoading, error } = useQuery<GameStateReturnType>({
-    queryKey: ['profile/state', userAddress, gameId],
-    queryFn: async () => {
-      return await axios({
-        method: 'GET',
-        url: `${routes.profile.state}?userAddress=${userAddress}&gameId=${gameId}`,
-      });
-    },
-    enabled: !!userAddress && gameId !== undefined,
-  });
-
-  return useMemo(() => {
-    const irlBadges =
-      data?.data
-        .filter((badge) => badge.type === BadgeTypeEnum.IRL)
-        .sort((a, b) => sortWithBigInt(a.tokenId, b.tokenId)) || [];
-
-    const onlineBadges =
-      data?.data
-        .filter((badge) => badge.type === BadgeTypeEnum.Online)
-        .sort((a, b) => sortWithBigInt(a.tokenId, b.tokenId)) || [];
-
-    const completedIRLBadgeCount = irlBadges.filter(
-      (badge) => badge.isCompleted
-    ).length;
-    const completedOnlineBadgeCount = onlineBadges.filter(
-      (badge) => badge.isCompleted
-    ).length;
-
-    return {
-      data: {
-        irlBadges,
-        completedIRLBadgeCount,
-        onlineBadges,
-        completedOnlineBadgeCount,
-        badges: data?.data || [],
-      },
-      isLoading,
-      error,
-    };
-  }, [data?.data, error, isLoading]);
+  return {};
 }
