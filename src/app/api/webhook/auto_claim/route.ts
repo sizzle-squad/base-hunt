@@ -58,13 +58,6 @@ export async function POST(req: Request) {
         continue;
       }
 
-      if (c.is_dynamic_points) {
-        console.warn(
-          `dynamic points not supported for streaming challenges:` + c.id
-        );
-        continue;
-      }
-
       let checkFunc =
         CheckFunctions[c.function_type as keyof typeof CheckFunctions];
       if (checkFunc === undefined) {
