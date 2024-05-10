@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
+import { routes } from '@/constants/routes';
 import { PlayerRank } from './types';
 
 type Props = {
@@ -20,7 +21,7 @@ export function useRank({ userAddress, gameId }: Props) {
     queryFn: async () => {
       return await axios({
         method: 'GET',
-        url: `/api/leaderboard/rank?userAddress=${userAddress}&gameId=${gameId}`,
+        url: `${routes.leaderboard.rank}?userAddress=${userAddress}&gameId=${gameId}`,
       });
     },
     enabled: !!userAddress && gameId !== undefined,

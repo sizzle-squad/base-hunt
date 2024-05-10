@@ -28,17 +28,13 @@ export async function GET(request: NextRequest) {
 
   const offset = (page - 1) * limit;
 
-  console.log({ supabase });
-
   const { data, error } = await supabase
     .from('score')
     .select('*')
-    .eq('game_id', BigInt(gameId));
-  // .order('current_score', { ascending: false })
-  // .order('updated_at', { ascending: true })
-  // .range(offset, offset + limit - 1);
-
-  console.log({ data });
+    .eq('game_id', BigInt(gameId))
+    .order('current_score', { ascending: false })
+    .order('updated_at', { ascending: true })
+    .range(offset, offset + limit - 1);
 
   if (error) {
     return new Response(`No top ranks found with gameId: ${gameId}`, {

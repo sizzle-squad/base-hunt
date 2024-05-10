@@ -11,7 +11,6 @@ import Text from '@/components/Text';
 import { Button } from '@/components/assets/Button';
 import { Color } from '@/constants/color';
 import ListCard from '@/components/ListCard';
-import { DailyChallengeClaim } from '@/components/Cards/DailyChallengeClaim';
 import { ChallengeEntry } from './ChallengesClient';
 
 type Props = {
@@ -248,7 +247,6 @@ export function ChallengeList({
         sx={{ width: '100%', flexGrow: 1 }}
         justifyContent="space-between"
       >
-        {displayGuildChallenge ? <DailyChallengeClaim /> : null}
         {cards}
         {fillerCards}
       </Grid>

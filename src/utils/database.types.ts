@@ -532,22 +532,6 @@ export type Database = {
           count: number
         }[]
       }
-      guilduserclaim: {
-        Args: {
-          _game_id: number
-          _user_address: string
-        }
-        Returns: boolean
-      }
-      guildwinshares: {
-        Args: {
-          _game_id: number
-        }
-        Returns: {
-          guild: string
-          count: number
-        }[]
-      }
       incrementuserscore: {
         Args: {
           _game_id: number
@@ -563,26 +547,6 @@ export type Database = {
           _read_only: boolean
         }
         Returns: number
-      }
-      upserttreasurebox: {
-        Args: {
-          _game_id: number
-          _user_address: string
-          _cbid: string
-          _ens_name: string
-          _increment: number
-          _tap_count: number
-        }
-        Returns: {
-          j: Json
-        }[]
-      }
-      user_claim_guild_score: {
-        Args: {
-          _game_id: number
-          _user_address: string
-        }
-        Returns: boolean
       }
     }
     Enums: {

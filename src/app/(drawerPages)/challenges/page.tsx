@@ -13,14 +13,11 @@ import Text from '@/components/Text';
 import { GAME_ID } from '@/constants/gameId';
 import { useDrawer } from '@/context/DrawerContext';
 import { useCBProfile } from '@/hooks/useCBProfile';
-import { useGameState } from '@/hooks/useGameState';
 import { useLevels } from '@/hooks/useLevels';
 import { useRank } from '@/hooks/useRank';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
 
-import { Guild } from '@/components/Cards/Guild';
-import { useGuildState } from '@/hooks/useGuildState';
 import { Color } from '@/constants/color';
 import ChallengesPageClient from './ChallengesClient';
 
@@ -33,15 +30,6 @@ export default function Challenges() {
   const { data: userPublicProfile } = useCBProfile({ address });
   const userName = useUserName({ address, userPublicProfile });
   const { disconnectAsync } = useDisconnect();
-  const {
-    data: guildState,
-    isLoading: isGuildStateLoading,
-    error: guildStateError,
-    hasGuild,
-  } = useGuildState({
-    gameId: GAME_ID,
-    userAddress: address,
-  });
 
   const {
     data: collection,
@@ -284,15 +272,6 @@ export default function Challenges() {
             isLoading={isLevelsLoading || isRankLoading || isScoreLoading}
             score={score as number}
             rank={rank?.rank}
-          />
-          <Guild
-            name={guildState?.name}
-            position={guildState?.currentDailyRank}
-            isLoading={isGuildStateLoading}
-            imageUrl={guildState?.imageUrl}
-            id={guildState?.guildId}
-            address={address}
-            gameId={GAME_ID}
           />
         </Stack>
         <Box>
