@@ -202,7 +202,6 @@ export async function POST(request: NextRequest) {
     .eq('id', challengeIdBigInt)
     .eq('game_id', gameIdInBigInt)
     .eq('is_enabled', true)
-    .eq('auto_claim', false)
     .eq('user_challenge_status.user_address', userAddress.toLowerCase())
     .single();
   if (challengeData.error) {
@@ -267,7 +266,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: 'invalid-challenge',
+        message: 'invalid-provider',
       },
       { status: 405 }
     );
@@ -280,7 +279,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: 'invalid-challenge',
+        message: 'invalid-challenge=type',
       },
       { status: 405 }
     );
@@ -315,6 +314,7 @@ export async function POST(request: NextRequest) {
           }
         )
         .select();
+
       if (claim.error) {
         throw claim.error;
       }

@@ -7,11 +7,9 @@ export const routes = {
     levels: '/api/profile/level',
     optIn: '/api/profile/opt-in',
   },
-  treasureBox: {
-    rank: '/api/treasure-box/rank',
-    topRanks: '/api/treasure-box/top-ranks',
-    state: '/api/treasure-box/state',
-    default: '/api/treasure-box',
+  leaderboard: {
+    rank: '/api/leaderboard/rank',
+    top: '/api/leaderboard',
   },
   challenges: {
     default: '/api/challenges',
