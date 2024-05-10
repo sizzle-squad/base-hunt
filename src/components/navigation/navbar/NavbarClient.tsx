@@ -13,9 +13,6 @@ import { useDrawer } from '@/context/DrawerContext';
 import { useCBProfile } from '@/hooks/useCBProfile';
 import { useScore } from '@/hooks/useScore';
 import { useUserName } from '@/hooks/useUsername';
-import Pill from '@/components/Pill';
-import { Color } from '@/constants/color';
-import { useGuildState } from '@/hooks/useGuildState';
 import { getReferralLink } from '@/utils/guild/getReferralLink';
 import { useIsBetaTestersByFeature } from '@/hooks/useIsBetaTester';
 
@@ -31,11 +28,6 @@ export const NavbarClient = () => {
   );
   const userName = useUserName({ address, userPublicProfile });
   const { toggleDrawer, drawerStates } = useDrawer();
-
-  const { hasGuild, data: guildData } = useGuildState({
-    gameId: gameId,
-    userAddress: address,
-  });
 
   // TODO: solidify types and figure out why this is returning undefined
   const { data, isLoading: isScoreLoading } = useScore({
@@ -58,12 +50,12 @@ export const NavbarClient = () => {
 
   const handleReferralPillPressed = useCallback(() => {
     window.open(
-      getReferralLink({ address, gameId, id: guildData?.guildId ?? '' }),
+      getReferralLink({ address, gameId, id: '' }),
       '_blank',
       'noopener,noreferrer'
     );
     return;
-  }, [address, gameId, guildData?.guildId]);
+  }, [address, gameId]);
 
   const isLoading = useMemo(() => {
     return isProfileLoading || isScoreLoading || isConnecting;
@@ -106,25 +98,6 @@ export const NavbarClient = () => {
             </>
           )}
         </Stack>
-        {hasGuild && isBetaTester ? (
-          <Pill backgroundColor={Color.White}>
-            <Link
-              href={
-                getReferralLink({
-                  address,
-                  gameId,
-                  id: guildData?.guildId ?? '',
-                }) ?? ''
-              }
-              target="_blank"
-              sx={{ textDecoration: 'none', color: Color.Black }}
-            >
-              <Text variant="body2" fontSize="14px">
-                Recruit friends
-              </Text>
-            </Link>
-          </Pill>
-        ) : null}
       </Stack>
     </Stack>
   );

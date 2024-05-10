@@ -15,9 +15,4 @@ export const routes = {
     default: '/api/challenges',
     complete: '/api/challenges/complete',
   },
-  guild: {
-    default: '/api/guild',
-    state: '/api/guild/state',
-    claim: 'api/guild/claim',
-  },
 };
