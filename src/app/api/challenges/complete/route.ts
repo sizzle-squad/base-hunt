@@ -335,7 +335,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ success: true, message: 'ok' });
 }
 
-export async function Option(request: NextRequest) {
+export async function OPTIONS(request: NextRequest) {
   const origin = request.headers.get('origin');
   if (!origin || !ALLOWED_ORGINS.includes(origin)) {
     return new Response('Forbidden', { status: 403 });
