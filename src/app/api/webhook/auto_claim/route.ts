@@ -29,7 +29,6 @@ export async function POST(req: Request) {
     .from('challenge_configuration')
     .select()
     .is('auto_claim', true)
-    .is('is_enabled', true)
     .like('contract_address', data.contract_address);
   if (challenges.error) {
     console.error(challenges);

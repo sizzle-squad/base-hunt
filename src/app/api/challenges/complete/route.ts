@@ -159,7 +159,6 @@ export interface ChallengeWithStatus {
   params: object;
   contract_address: string;
   points: number;
-  is_enabled: boolean;
   game_id: number;
   type: string;
   network: string;
@@ -201,7 +200,6 @@ export async function POST(request: NextRequest) {
     )
     .eq('id', challengeIdBigInt)
     .eq('game_id', gameIdInBigInt)
-    .eq('is_enabled', true)
     .eq('user_challenge_status.user_address', userAddress.toLowerCase())
     .single();
   if (challengeData.error) {

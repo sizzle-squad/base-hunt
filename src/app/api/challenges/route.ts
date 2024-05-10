@@ -51,7 +51,6 @@ async function mapChallengeState(
     ctaText: cta_text,
     ctaButtonText: cta_button_text,
     challengeType: challenge.type,
-    isEnabled: challenge.is_enabled,
     points: challenge.points,
     type: challenge.type,
     checkFunction: challenge.function_type,
@@ -77,7 +76,6 @@ export async function GET(request: NextRequest) {
     .from('challenge_configuration')
     .select(`*, user_challenge_status (*)`)
     .eq('game_id', gameId)
-    .eq('is_enabled', true)
     .eq('user_challenge_status.user_address', userAddress.toLowerCase());
 
   if (challengesData.error) {
