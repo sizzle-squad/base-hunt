@@ -200,7 +200,6 @@ export async function POST(request: NextRequest) {
     )
     .eq('id', challengeIdBigInt)
     .eq('game_id', gameIdInBigInt)
-    .eq('auto_claim', false)
     .eq('user_challenge_status.user_address', userAddress.toLowerCase())
     .single();
   if (challengeData.error) {
