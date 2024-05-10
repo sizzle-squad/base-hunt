@@ -130,8 +130,7 @@ export default function ChallengesPageClient({ refreshData }: Props) {
   const listData = useMemo(() => {
     const mapped =
       (challenges
-        ?.filter((challenge) => challenge.isEnabled)
-        .filter((challenge) => challenge.displayOrder > 0 || isBetaTester)
+        ?.filter((challenge) => challenge.displayOrder > 0 || isBetaTester)
         .map((challenge) => {
           return {
             id: challenge.id,
@@ -147,7 +146,6 @@ export default function ChallengesPageClient({ refreshData }: Props) {
             ctaButtonText: challenge.ctaButtonText,
             points: challenge.points,
             isCompleted: challenge.isCompleted,
-            isEnabled: challenge.isEnabled,
             gameId: challenge.gameId,
             checkFunction: challenge.checkFunction,
             displayOrder: challenge.displayOrder,
