@@ -9,16 +9,9 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'picsum.photos',
-      },
-      {
-        protocol: 'https',
         hostname: 'go.wallet.coinbase.com',
       },
-      {
-        protocol: 'https',
-        hostname: 'media.contextcdn.com',
-      },
+
       {
         protocol: 'https',
         hostname: 'basehunt.xyz',
