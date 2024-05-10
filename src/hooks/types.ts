@@ -114,7 +114,6 @@ export type Challenge = {
   ctaText: string | null;
   ctaButtonText: string | null;
   challengeType: string;
-  isEnabled: boolean | null;
   points: number;
   type: string;
   checkFunction: string | null;
