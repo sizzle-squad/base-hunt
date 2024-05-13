@@ -80,6 +80,23 @@ export type ScoreState = {
   score: Score | null;
 };
 
+export type ReferralData = {
+  referralCode: string;
+  numReferrals: bigint;
+}
+
+export type levelData = {
+  currentLevel: Level | null;
+  nextLevel: Level | null;
+}
+
+export type ProfileState = {
+  scoreData: Score | null;
+  levelData: levelData;
+  referralData: ReferralData;
+  numChallengesCompleted: bigint;
+}
+
 export type TreasureBoxState = {
   id: bigint;
   createdAt: Date;
