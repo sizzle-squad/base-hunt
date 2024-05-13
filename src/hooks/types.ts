@@ -87,6 +87,7 @@ export type ReferralData = {
 export type ProfileBadge = {
   id: string;
   name: string;
+  gameId: string;
 }
 
 export type LevelData = {

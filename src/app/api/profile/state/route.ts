@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 
 import { toBigInt } from '@/utils/toBigInt';
 
-import { BadgeTypeEnum, ProfileBadge, ProfileState } from '../../../../hooks/types';
+import { ProfileBadge, ProfileState } from '../../../../hooks/types';
 import { ChallengeStatus } from '@/utils/database.enums';
 
 const supabase = createClient(
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
       console.error(levelsError);
       throw new Error(levelsError.message);
     }
-    const [currentLevel] = getLevelData(levelsData, score, currentScore)
+    const [currentLevel, nextLevel] = getLevelData(levelsData, score, currentScore)
 
     // fetch challenge data
     const { error, count: numChallengesCompleted } = await supabase
@@ -85,30 +85,18 @@ export async function GET(req: NextRequest) {
       throw new Error(error.message);
     }
 
-    // fetch user badges
-    const { error: badgeError, data: userBadges } = await supabase
-      .from('user_badges')
-      .select('*')
-      .eq('user_address', userAddress.toLowerCase())
-      .eq('game_id', gameId);
-
-    if (badgeError) {
-      console.error(error);
-      throw new Error(badgeError.message);
+    // fetch user badges and join with badge_configuration
+    const userBadgesResponse = await supabase.rpc('getuserbadges', {
+      _game_id: gameId,
+      _user_address: userAddress.toLowerCase(),
+    });
+    if (userBadgesResponse.error) {
+      console.log(userBadgesResponse.error);
+      return new Response('', { status: 500 });
     }
+    const userBadges = userBadgesResponse.data as ProfileBadge[];
 
-    const { error: allBadgesError, data: allBadges } = await supabase
-      .from('badge_configuration')
-      .select('*');
-
-    if (allBadgesError) {
-      console.error(error);
-      throw new Error(allBadgesError.message);
-    }
-
-    const formattedUserBadges = getFormattedBadges(userBadges, allBadges)
-
-    return NextResponse.json(mapToProfileState(currentLevel, score, BigInt(numChallengesCompleted || 0), formattedUserBadges));
+    return NextResponse.json(mapToProfileState(currentLevel, nextLevel, score, gameId, BigInt(numChallengesCompleted || 0), userBadges));
   } catch (e) {
     console.error(e);
     NextResponse.error();
@@ -188,30 +176,61 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
   return [currentLevel, nextLevel]
 }
 
-function mapToProfileState(currentLevel: any, scoreData: any, numChallengesCompleted: bigint, formattedUserBadges: ProfileBadge[]): ProfileState {
+function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallengesCompleted: bigint, formattedUserBadges: ProfileBadge[]): ProfileState {
   return {
     numChallengesCompleted: numChallengesCompleted,
     referralData: { // todo: get referral data
       numReferrals: BigInt(0),
       referralCode: ""
     },
-    currentLevelName: currentLevel ? currentLevel.name : "zero level",
-    points: scoreData ? scoreData.current_score : BigInt(0),
+    levelData: {
+      currentLevel: c
+        ? {
+          id: c.id,
+          gameId: c.game_id,
+          name: c.name,
+          thresholdPoints: c.threshold_points,
+          level: c.level,
+          description: c.description,
+          ctaUrl: c.cta_url,
+          prizeImageUrl: c.prize_image_url,
+          prizeDescription: c.prize_description,
+          imageUrl: c.image_url,
+        }
+        : {
+          id: '',
+          gameId: gameId.toString(),
+          name: 'zero level',
+          thresholdPoints: BigInt(0),
+          level: '1',
+          description: '',
+          ctaUrl: '',
+          prizeImageUrl: '',
+          prizeDescription: '',
+          imageUrl: '',
+        },
+      nextLevel: {
+        id: n.id,
+        gameId: n.game_id,
+        name: n.name,
+        thresholdPoints: n.threshold_points,
+        level: n.level,
+        description: n.description,
+        ctaUrl: n.cta_url,
+        prizeImageUrl: n.prize_image_url,
+        prizeDescription: n.prize_description,
+        imageUrl: n.image_url,
+      },
+    },
+    scoreData: s
+      ? {
+        id: s.id,
+        gameId: s.game_id,
+        userAddress: s.user_address,
+        currentScore: s.current_score,
+        updatedAt: s.updated_at,
+      }
+      : null,
     badges: formattedUserBadges
   };
-}
-
-function getFormattedBadges(userBadges: any[], allBadges: any[]): ProfileBadge[] {
-  return userBadges.reduce((formattedBadges, userBadge) => {
-    const badge = allBadges.find(b => b.id === userBadge.badge_id);
-    if (badge) {
-      formattedBadges.push({
-        id: userBadge.id,
-        name: badge.name,
-      });
-    } else {
-      console.error(`Badge with ID ${userBadge.badge_id} does not exist.`);
-    }
-    return formattedBadges;
-  }, []);
 }
