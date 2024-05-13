@@ -85,9 +85,14 @@ export type ReferralData = {
   numReferrals: bigint;
 }
 
+export type LevelData = {
+  currentLevel: Level | null;
+  nextLevel: Level | null;
+}
+
 export type ProfileState = {
-  points: bigint;
-  currentLevelName: string;
+  scoreData: Score | null;
+  levelData: LevelData;
   referralData: ReferralData;
   numChallengesCompleted: bigint;
 }

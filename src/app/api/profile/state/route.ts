@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 
 import { toBigInt } from '@/utils/toBigInt';
 
-import { BadgeTypeEnum, ProfileState } from '../../../../hooks/types';
+import { ProfileState } from '../../../../hooks/types';
 import { ChallengeStatus } from '@/utils/database.enums';
 
 const supabase = createClient(
@@ -13,22 +13,25 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
-type QueryData = {
-  id: bigint;
+type LevelDataType = {
+  id: number;
+  created_at: string;
+  game_id: bigint;
   name: string;
-  image_url: string;
-  to_address: string;
-  type: BadgeTypeEnum;
-  transaction_hash: string;
-  created_at: Date;
+  threshold_points: number;
+  airdrop_command: string;
+  level: string;
   contract_address: string;
-  token_id: bigint;
-  cta_text: string;
-  cta_url: string;
-  lat_lng: string;
+  minter: string;
+  image_url: string | null;
+  badge_type: string;
+  token_id: number;
   description: string;
-  artist_name: string;
+  cta_url: string | null;
+  prize_image_url: string | null;
+  prize_description: string | null;
 };
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
@@ -68,7 +71,7 @@ export async function GET(req: NextRequest) {
       console.error(levelsError);
       throw new Error(levelsError.message);
     }
-    const [currentLevel] = getLevelData(levelsData, score, currentScore)
+    const [currentLevel, nextLevel] = getLevelData(levelsData, score, currentScore)
 
     // fetch challenge data
     const { error, count: numChallengesCompleted } = await supabase
@@ -82,7 +85,7 @@ export async function GET(req: NextRequest) {
       throw new Error(error.message);
     }
 
-    return NextResponse.json(mapToProfileState(currentLevel, score, BigInt(numChallengesCompleted || 0)));
+    return NextResponse.json(mapToProfileState(currentLevel, nextLevel, score, gameId, BigInt(numChallengesCompleted || 0)));
   } catch (e) {
     console.error(e);
     NextResponse.error();
@@ -91,16 +94,35 @@ export async function GET(req: NextRequest) {
 }
 
 function getLevelData(levelsData: any, score: any, currentScore: any) {
-  let levels = levelsData.data as any[];
+  let levels = levelsData.data as LevelDataType[];
   let nextLevel = null;
   let currentLevel = null;
 
   if (!levels || levels.length === 0) {
     return [currentLevel, nextLevel]
   }
-  levels.push({});
+  const emptyLevel: LevelDataType = {
+    id: 0,
+    created_at: '',
+    game_id: BigInt(0),
+    name: '',
+    threshold_points: 0,
+    airdrop_command: '',
+    level: '',
+    contract_address: '',
+    minter: '',
+    image_url: null,
+    badge_type: '',
+    token_id: 0,
+    description: '',
+    cta_url: null,
+    prize_image_url: null,
+    prize_description: null
+  };
+
+  levels.push(emptyLevel);
   //inplace sort by threshold points
-  levels.sort((a: any, b: any) => {
+  levels.sort((a: LevelDataType, b: LevelDataType) => {
     if (a.threshold_points > b.threshold_points) {
       return 1;
     } else if (a.threshold_points < b.threshold_points) {
@@ -143,14 +165,60 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
   return [currentLevel, nextLevel]
 }
 
-function mapToProfileState(currentLevel: any, scoreData: any, numChallengesCompleted: bigint): ProfileState {
+function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallengesCompleted: bigint): ProfileState {
   return {
     numChallengesCompleted: numChallengesCompleted,
     referralData: { // todo: get referral data
       numReferrals: BigInt(0),
       referralCode: ""
     },
-    currentLevelName: currentLevel ? currentLevel.name : "zero level",
-    points: scoreData ? scoreData.current_score : BigInt(0)
+    levelData: {
+      currentLevel: c
+        ? {
+          id: c.id,
+          gameId: c.game_id,
+          name: c.name,
+          thresholdPoints: c.threshold_points,
+          level: c.level,
+          description: c.description,
+          ctaUrl: c.cta_url,
+          prizeImageUrl: c.prize_image_url,
+          prizeDescription: c.prize_description,
+          imageUrl: c.image_url,
+        }
+        : {
+          id: '',
+          gameId: gameId.toString(),
+          name: 'zero level',
+          thresholdPoints: BigInt(0),
+          level: '1',
+          description: '',
+          ctaUrl: '',
+          prizeImageUrl: '',
+          prizeDescription: '',
+          imageUrl: '',
+        },
+      nextLevel: {
+        id: n.id,
+        gameId: n.game_id,
+        name: n.name,
+        thresholdPoints: n.threshold_points,
+        level: n.level,
+        description: n.description,
+        ctaUrl: n.cta_url,
+        prizeImageUrl: n.prize_image_url,
+        prizeDescription: n.prize_description,
+        imageUrl: n.image_url,
+      },
+    },
+    scoreData: s
+      ? {
+        id: s.id,
+        gameId: s.game_id,
+        userAddress: s.user_address,
+        currentScore: s.current_score,
+        updatedAt: s.updated_at,
+      }
+      : null,
   };
 }
