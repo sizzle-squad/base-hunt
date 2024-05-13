@@ -218,7 +218,7 @@ export async function POST(request: NextRequest) {
     console.log(
       `challenge already claimed: ${challenge.user_challenge_status[0].status}`
     );
-    createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt)
+    await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt)
     return NextResponse.json({ success: true, message: 'challenge-claimed' });
   }
 
@@ -321,7 +321,7 @@ export async function POST(request: NextRequest) {
         throw claim.error;
       }
 
-      createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt)
+      await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt)
     } catch (e) {
       console.error(e);
       return NextResponse.json(
