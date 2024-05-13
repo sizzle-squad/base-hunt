@@ -117,7 +117,7 @@ async function hasToken(
   const filterByBalance = tokenBalanceRes.tokenBalances.filter(
     (balance) =>
       Number(balance.tokenBalance) /
-        Math.pow(10, metadata.decimals as number) >=
+      Math.pow(10, metadata.decimals as number) >=
       threshold
   );
   return filterByBalance.length > 0;
@@ -166,6 +166,7 @@ export interface ChallengeWithStatus {
   network: string;
   difficulty_type: string;
   function_type: string;
+  badge_id: number;
   user_challenge_status: Status[];
 }
 
@@ -217,6 +218,7 @@ export async function POST(request: NextRequest) {
     console.log(
       `challenge already claimed: ${challenge.user_challenge_status[0].status}`
     );
+    await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt)
     return NextResponse.json({ success: true, message: 'challenge-claimed' });
   }
 
@@ -227,9 +229,9 @@ export async function POST(request: NextRequest) {
   ) {
     console.error(
       'invalid body params for challenge:' +
-        challenge.id +
-        ' function type:' +
-        challenge.function_type
+      challenge.id +
+      ' function type:' +
+      challenge.function_type
     );
     return NextResponse.json(
       {
@@ -245,9 +247,9 @@ export async function POST(request: NextRequest) {
   if (checkFunc === undefined) {
     console.error(
       'check function is undefined:' +
-        challenge.function_type +
-        ' challenge id:' +
-        challenge.id
+      challenge.function_type +
+      ' challenge id:' +
+      challenge.id
     );
     return NextResponse.json(
       {
@@ -318,6 +320,8 @@ export async function POST(request: NextRequest) {
       if (claim.error) {
         throw claim.error;
       }
+
+      await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt)
     } catch (e) {
       console.error(e);
       return NextResponse.json(
@@ -349,4 +353,28 @@ export async function OPTIONS(request: NextRequest) {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   });
+}
+
+// creates badge for user if it exists on challenge
+async function createUserBadge(badgeId: number, userAddress: string, gameIdInBigInt: bigint | null) {
+  if (badgeId) {
+    const badgeUpsert = await supabase
+      .from('user_badges')
+      .upsert(
+        {
+          user_address: userAddress.toLowerCase(),
+          game_id: gameIdInBigInt,
+          badge_id: badgeId,
+        },
+        {
+          onConflict: 'game_id,user_address,badge_id',
+          ignoreDuplicates: true,
+        }
+      )
+      .select();
+
+    if (badgeUpsert.error) {
+      throw badgeUpsert.error;
+    }
+  }
 }

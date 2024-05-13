@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 
 import { toBigInt } from '@/utils/toBigInt';
 
-import { ProfileState } from '../../../../hooks/types';
+import { ProfileBadge, ProfileState } from '../../../../hooks/types';
 import { ChallengeStatus } from '@/utils/database.enums';
 
 const supabase = createClient(
@@ -85,7 +85,18 @@ export async function GET(req: NextRequest) {
       throw new Error(error.message);
     }
 
-    return NextResponse.json(mapToProfileState(currentLevel, nextLevel, score, gameId, BigInt(numChallengesCompleted || 0)));
+    // fetch user badges and join with badge_configuration
+    const userBadgesResponse = await supabase.rpc('getuserbadges', {
+      _game_id: gameId,
+      _user_address: userAddress.toLowerCase(),
+    });
+    if (userBadgesResponse.error) {
+      console.log(userBadgesResponse.error);
+      return new Response('', { status: 500 });
+    }
+    const userBadges = userBadgesResponse.data as ProfileBadge[];
+
+    return NextResponse.json(mapToProfileState(currentLevel, nextLevel, score, gameId, BigInt(numChallengesCompleted || 0), userBadges));
   } catch (e) {
     console.error(e);
     NextResponse.error();
@@ -165,7 +176,7 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
   return [currentLevel, nextLevel]
 }
 
-function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallengesCompleted: bigint): ProfileState {
+function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallengesCompleted: bigint, formattedUserBadges: ProfileBadge[]): ProfileState {
   return {
     numChallengesCompleted: numChallengesCompleted,
     referralData: { // todo: get referral data
@@ -220,5 +231,6 @@ function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallenges
         updatedAt: s.updated_at,
       }
       : null,
+    badges: formattedUserBadges
   };
 }

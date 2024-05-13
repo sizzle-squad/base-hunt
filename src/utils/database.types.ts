@@ -9,8 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      badge_configuration: {
+        Row: {
+          game_id: number | null
+          id: number
+          name: string | null
+        }
+        Insert: {
+          game_id?: number | null
+          id?: number
+          name?: string | null
+        }
+        Update: {
+          game_id?: number | null
+          id?: number
+          name?: string | null
+        }
+        Relationships: []
+      }
       challenge_configuration: {
         Row: {
+          badge_id: number | null
           challenge_id: string
           content_data: Json | null
           contract_address: string | null
@@ -21,13 +40,13 @@ export type Database = {
             | null
           game_id: number | null
           id: number
-          is_enabled: boolean
           network: Database["public"]["Enums"]["networks"] | null
           params: Json | null
           points: number
           type: Database["public"]["Enums"]["challenge_type"]
         }
         Insert: {
+          badge_id?: number | null
           challenge_id?: string
           content_data?: Json | null
           contract_address?: string | null
@@ -38,13 +57,13 @@ export type Database = {
             | null
           game_id?: number | null
           id?: number
-          is_enabled: boolean
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
           points: number
           type: Database["public"]["Enums"]["challenge_type"]
         }
         Update: {
+          badge_id?: number | null
           challenge_id?: string
           content_data?: Json | null
           contract_address?: string | null
@@ -55,13 +74,20 @@ export type Database = {
             | null
           game_id?: number | null
           id?: number
-          is_enabled?: boolean
           network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
           points?: number
           type?: Database["public"]["Enums"]["challenge_type"]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "challenge_configuration_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badge_configuration"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       guild_configuration: {
         Row: {
@@ -362,6 +388,38 @@ export type Database = {
           user_address?: string
         }
         Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: number | null
+          created_at: string
+          game_id: number | null
+          id: number
+          user_address: string | null
+        }
+        Insert: {
+          badge_id?: number | null
+          created_at?: string
+          game_id?: number | null
+          id?: number
+          user_address?: string | null
+        }
+        Update: {
+          badge_id?: number | null
+          created_at?: string
+          game_id?: number | null
+          id?: number
+          user_address?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badge_configuration"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_challenge_status: {
         Row: {
