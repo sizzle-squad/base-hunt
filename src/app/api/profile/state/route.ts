@@ -5,29 +5,33 @@ import { createClient } from '@supabase/supabase-js';
 
 import { toBigInt } from '@/utils/toBigInt';
 
-import { Badge, BadgeTypeEnum } from '../../../../hooks/types';
+import { ProfileState } from '../../../../hooks/types';
+import { ChallengeStatus } from '@/utils/database.enums';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
-type QueryData = {
-  id: bigint;
+type LevelDataType = {
+  id: number;
+  created_at: string;
+  game_id: bigint;
   name: string;
-  image_url: string;
-  to_address: string;
-  type: BadgeTypeEnum;
-  transaction_hash: string;
-  created_at: Date;
+  threshold_points: number;
+  airdrop_command: string;
+  level: string;
   contract_address: string;
-  token_id: bigint;
-  cta_text: string;
-  cta_url: string;
-  lat_lng: string;
+  minter: string;
+  image_url: string | null;
+  badge_type: string;
+  token_id: number;
   description: string;
-  artist_name: string;
+  cta_url: string | null;
+  prize_image_url: string | null;
+  prize_description: string | null;
 };
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
@@ -41,67 +45,180 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const { data, error } = await supabase.rpc('getbadgestate', {
-    _game_id: gameId,
-    _user_address: userAddress,
+  try {
+    // fetch score data
+    let scoreData = (await supabase
+      .from('score')
+      .select()
+      .eq('user_address', userAddress.toLowerCase())
+      .eq('game_id', gameId)) as any;
+
+    if (scoreData.error) {
+      console.error(scoreData.error);
+      throw new Error(scoreData.error.message);
+    }
+    const score = scoreData.data[0];
+    let currentScore = score ? score.current_score : BigInt(0);
+
+    // fetch level data
+    const levelsData = (await supabase
+      .from('level_configuration')
+      .select()
+      .eq('game_id', gameId)) as any;
+
+    const levelsError = levelsData.error;
+    if (levelsError) {
+      console.error(levelsError);
+      throw new Error(levelsError.message);
+    }
+    const [currentLevel, nextLevel] = getLevelData(levelsData, score, currentScore)
+
+    // fetch challenge data
+    const { error, count: numChallengesCompleted } = await supabase
+      .from('user_challenge_status')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_address', userAddress.toLowerCase())
+      .eq('status', ChallengeStatus.COMPLETE);
+
+    if (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+
+    return NextResponse.json(mapToProfileState(currentLevel, nextLevel, score, gameId, BigInt(numChallengesCompleted || 0)));
+  } catch (e) {
+    console.error(e);
+    NextResponse.error();
+  }
+
+}
+
+function getLevelData(levelsData: any, score: any, currentScore: any) {
+  let levels = levelsData.data as LevelDataType[];
+  let nextLevel = null;
+  let currentLevel = null;
+
+  if (!levels || levels.length === 0) {
+    return [currentLevel, nextLevel]
+  }
+  const emptyLevel: LevelDataType = {
+    id: 0,
+    created_at: '',
+    game_id: BigInt(0),
+    name: '',
+    threshold_points: 0,
+    airdrop_command: '',
+    level: '',
+    contract_address: '',
+    minter: '',
+    image_url: null,
+    badge_type: '',
+    token_id: 0,
+    description: '',
+    cta_url: null,
+    prize_image_url: null,
+    prize_description: null
+  };
+
+  levels.push(emptyLevel);
+  //inplace sort by threshold points
+  levels.sort((a: LevelDataType, b: LevelDataType) => {
+    if (a.threshold_points > b.threshold_points) {
+      return 1;
+    } else if (a.threshold_points < b.threshold_points) {
+      return -1;
+    } else {
+      return 0;
+    }
   });
 
-  if (error) {
-    console.error(error);
-    throw new Error(error.message);
-  }
-
-  //Note: remove duplicate badges from the same contract:tokenId
-  const addressSet: Set<string> = new Set();
-  let results: Badge[] = [];
-  for (const d of data as any[]) {
-    const key = d.j.contract_address + '::' + d.j.token_id;
-    if (!addressSet.has(key)) {
-      addressSet.add(key);
-      results.push(mapToBadge(d.j));
+  if (score) {
+    for (let i = 0; i < levels.length; i++) {
+      if (levels[i].threshold_points > currentScore) {
+        nextLevel = levels[i];
+        if (i > 0) {
+          currentLevel = levels[i - 1];
+        }
+        break;
+      }
     }
   }
+  if (currentLevel === null) {
+    currentLevel = {
+      id: '',
+      name: 'level-0',
+      thresholdPoints: 0,
+      level: '1',
+    };
+    nextLevel = levels[0];
+  }
 
-  return NextResponse.json(results);
+  if (nextLevel === null) {
+    nextLevel = {
+      id: '',
+      name: 'max level',
+      thresholdPoints: 0,
+      level: 'max level',
+    };
+    currentLevel = levels[levels.length - 1];
+  }
+  return [currentLevel, nextLevel]
 }
 
-function mapToBadge(b: QueryData): Badge {
+function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallengesCompleted: bigint): ProfileState {
   return {
-    id: b.id.toString(),
-    name: b.name,
-    imageUrl: new URL(b.image_url),
-    isCompleted: b.to_address != null,
-    type: b.type,
-    txHash: b.transaction_hash,
-    completedTimestamp: b.created_at,
-    contractAddress: b.contract_address,
-    tokenId: b.token_id,
-    ctaText: b.cta_text,
-    ctaUrl: b.cta_url,
-    latLng: b.lat_lng,
-    description: b.description,
-    artistName: b.artist_name,
+    numChallengesCompleted: numChallengesCompleted,
+    referralData: { // todo: get referral data
+      numReferrals: BigInt(0),
+      referralCode: ""
+    },
+    levelData: {
+      currentLevel: c
+        ? {
+          id: c.id,
+          gameId: c.game_id,
+          name: c.name,
+          thresholdPoints: c.threshold_points,
+          level: c.level,
+          description: c.description,
+          ctaUrl: c.cta_url,
+          prizeImageUrl: c.prize_image_url,
+          prizeDescription: c.prize_description,
+          imageUrl: c.image_url,
+        }
+        : {
+          id: '',
+          gameId: gameId.toString(),
+          name: 'zero level',
+          thresholdPoints: BigInt(0),
+          level: '1',
+          description: '',
+          ctaUrl: '',
+          prizeImageUrl: '',
+          prizeDescription: '',
+          imageUrl: '',
+        },
+      nextLevel: {
+        id: n.id,
+        gameId: n.game_id,
+        name: n.name,
+        thresholdPoints: n.threshold_points,
+        level: n.level,
+        description: n.description,
+        ctaUrl: n.cta_url,
+        prizeImageUrl: n.prize_image_url,
+        prizeDescription: n.prize_description,
+        imageUrl: n.image_url,
+      },
+    },
+    scoreData: s
+      ? {
+        id: s.id,
+        gameId: s.game_id,
+        userAddress: s.user_address,
+        currentScore: s.current_score,
+        updatedAt: s.updated_at,
+      }
+      : null,
   };
 }
-
-/*
-database function:
-
-create or replace function getBadgeState(
-    _game_id bigint,
-    _user_address text
-) 
-returns table ( j json ) 
-language plpgsql
-as $$
-declare 
-
-begin
- RETURN QUERY select to_json(temp) from (select b.id,b.name,b.image_url,b.contract_address,b.token_id,b.cta_url,b.cta_text,b.type,w.to_address,w.transaction_hash,w.created_at,w.event_type from badge_configuration as b LEFT join webhook_data as w
-  on LOWER(b.contract_address) = LOWER(w.contract_address) and b.token_id::bigint = ('x'||lpad(trim( leading '0' from substring(w.value,3)),16,'0'))::bit(64)::bigint and LOWER(w.from_address) = LOWER(b.minter)
-  and w.to_address ILIKE _user_address and b.game_id = _game_id) as temp;
-end; 
-$$
-
-
-*/

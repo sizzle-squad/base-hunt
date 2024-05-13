@@ -53,14 +53,14 @@ export type Level = {
   id: string;
   gameId: string;
   name:
-    | 'level-0'
-    | 'level-1'
-    | 'level-2'
-    | 'level-3'
-    | 'level-4'
-    | 'level-5'
-    | 'level-6'
-    | 'level-7';
+  | 'level-0'
+  | 'level-1'
+  | 'level-2'
+  | 'level-3'
+  | 'level-4'
+  | 'level-5'
+  | 'level-6'
+  | 'level-7';
   thresholdPoints: bigint;
   level: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7';
   description: string;
@@ -79,6 +79,23 @@ export type ScoreState = {
   nextLevel: Level | null;
   score: Score | null;
 };
+
+export type ReferralData = {
+  referralCode: string;
+  numReferrals: bigint;
+}
+
+export type LevelData = {
+  currentLevel: Level | null;
+  nextLevel: Level | null;
+}
+
+export type ProfileState = {
+  scoreData: Score | null;
+  levelData: LevelData;
+  referralData: ReferralData;
+  numChallengesCompleted: bigint;
+}
 
 export type TreasureBoxState = {
   id: bigint;
