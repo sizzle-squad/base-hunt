@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
       console.error(levelsError);
       throw new Error(levelsError.message);
     }
-    const [currentLevel, nextLevel] = getLevelData(levelsData, score, currentScore)
+    const [currentLevel] = getLevelData(levelsData, score, currentScore)
 
     // fetch challenge data
     const { error, count: numChallengesCompleted } = await supabase
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
       throw new Error(error.message);
     }
 
-    return NextResponse.json(mapToProfileState(currentLevel, nextLevel, score, gameId, BigInt(numChallengesCompleted || 0)));
+    return NextResponse.json(mapToProfileState(currentLevel, score, BigInt(numChallengesCompleted || 0)));
   } catch (e) {
     console.error(e);
     NextResponse.error();
@@ -143,60 +143,14 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
   return [currentLevel, nextLevel]
 }
 
-function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallengesCompleted: bigint): ProfileState {
+function mapToProfileState(currentLevel: any, scoreData: any, numChallengesCompleted: bigint): ProfileState {
   return {
     numChallengesCompleted: numChallengesCompleted,
     referralData: { // todo: get referral data
       numReferrals: BigInt(0),
       referralCode: ""
     },
-    levelData: {
-      currentLevel: c
-        ? {
-          id: c.id,
-          gameId: c.game_id,
-          name: c.name,
-          thresholdPoints: c.threshold_points,
-          level: c.level,
-          description: c.description,
-          ctaUrl: c.cta_url,
-          prizeImageUrl: c.prize_image_url,
-          prizeDescription: c.prize_description,
-          imageUrl: c.image_url,
-        }
-        : {
-          id: '',
-          gameId: gameId.toString(),
-          name: 'zero level',
-          thresholdPoints: BigInt(0),
-          level: '1',
-          description: '',
-          ctaUrl: '',
-          prizeImageUrl: '',
-          prizeDescription: '',
-          imageUrl: '',
-        },
-      nextLevel: {
-        id: n.id,
-        gameId: n.game_id,
-        name: n.name,
-        thresholdPoints: n.threshold_points,
-        level: n.level,
-        description: n.description,
-        ctaUrl: n.cta_url,
-        prizeImageUrl: n.prize_image_url,
-        prizeDescription: n.prize_description,
-        imageUrl: n.image_url,
-      },
-    },
-    scoreData: s
-      ? {
-        id: s.id,
-        gameId: s.game_id,
-        userAddress: s.user_address,
-        currentScore: s.current_score,
-        updatedAt: s.updated_at,
-      }
-      : null,
+    currentLevelName: currentLevel ? currentLevel.name : "zero level",
+    points: scoreData ? scoreData.current_score : BigInt(0)
   };
 }
