@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 
 import { toBigInt } from '@/utils/toBigInt';
 
-import { ProfileState } from '../../../../hooks/types';
+import { BadgeTypeEnum, ProfileBadge, ProfileState } from '../../../../hooks/types';
 import { ChallengeStatus } from '@/utils/database.enums';
 
 const supabase = createClient(
@@ -85,7 +85,30 @@ export async function GET(req: NextRequest) {
       throw new Error(error.message);
     }
 
-    return NextResponse.json(mapToProfileState(currentLevel, score, BigInt(numChallengesCompleted || 0)));
+    // fetch user badges
+    const { error: badgeError, data: userBadges } = await supabase
+      .from('user_badges')
+      .select('*')
+      .eq('user_address', userAddress.toLowerCase())
+      .eq('game_id', gameId);
+
+    if (badgeError) {
+      console.error(error);
+      throw new Error(badgeError.message);
+    }
+
+    const { error: allBadgesError, data: allBadges } = await supabase
+      .from('badge_configuration')
+      .select('*');
+
+    if (allBadgesError) {
+      console.error(error);
+      throw new Error(allBadgesError.message);
+    }
+
+    const formattedUserBadges = getFormattedBadges(userBadges, allBadges)
+
+    return NextResponse.json(mapToProfileState(currentLevel, score, BigInt(numChallengesCompleted || 0), formattedUserBadges));
   } catch (e) {
     console.error(e);
     NextResponse.error();
@@ -165,7 +188,7 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
   return [currentLevel, nextLevel]
 }
 
-function mapToProfileState(currentLevel: any, scoreData: any, numChallengesCompleted: bigint): ProfileState {
+function mapToProfileState(currentLevel: any, scoreData: any, numChallengesCompleted: bigint, formattedUserBadges: ProfileBadge[]): ProfileState {
   return {
     numChallengesCompleted: numChallengesCompleted,
     referralData: { // todo: get referral data
@@ -173,6 +196,22 @@ function mapToProfileState(currentLevel: any, scoreData: any, numChallengesCompl
       referralCode: ""
     },
     currentLevelName: currentLevel ? currentLevel.name : "zero level",
-    points: scoreData ? scoreData.current_score : BigInt(0)
+    points: scoreData ? scoreData.current_score : BigInt(0),
+    badges: formattedUserBadges
   };
+}
+
+function getFormattedBadges(userBadges: any[], allBadges: any[]): ProfileBadge[] {
+  return userBadges.reduce((formattedBadges, userBadge) => {
+    const badge = allBadges.find(b => b.id === userBadge.badge_id);
+    if (badge) {
+      formattedBadges.push({
+        id: userBadge.id,
+        name: badge.name,
+      });
+    } else {
+      console.error(`Badge with ID ${userBadge.badge_id} does not exist.`);
+    }
+    return formattedBadges;
+  }, []);
 }

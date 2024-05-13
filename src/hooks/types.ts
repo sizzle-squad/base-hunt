@@ -84,6 +84,10 @@ export type ReferralData = {
   referralCode: string;
   numReferrals: bigint;
 }
+export type ProfileBadge = {
+  id: string;
+  name: string;
+}
 
 export type LevelData = {
   currentLevel: Level | null;
@@ -95,6 +99,7 @@ export type ProfileState = {
   levelData: LevelData;
   referralData: ReferralData;
   numChallengesCompleted: bigint;
+  badges: ProfileBadge[];
 }
 
 export type TreasureBoxState = {
