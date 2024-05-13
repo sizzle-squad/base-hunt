@@ -6,6 +6,7 @@ import { routes } from '@/constants/routes';
 export type OptInPostBodyType = {
   userAddress: `0x${string}` | undefined;
   gameId: string;
+  referralId?: string;
 };
 
 export function useMutateOptIn() {
