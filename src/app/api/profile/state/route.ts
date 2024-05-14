@@ -110,8 +110,10 @@ export async function GET(req: NextRequest) {
     const numChallengesCompleted = BigInt(challengeData.count || 0);
     const userBadges = userBadgesResponse.data as ProfileBadge[];
     const referralData: ReferralData = {
-      referralCode: referrals.data[0].referral_id ?? '',
-      numReferrals: BigInt(referrals.data[0].count) ?? BigInt(0),
+      referralCode: referrals.data[0]?.referral_id ?? '',
+      numReferrals: referrals.data[0]?.count
+        ? BigInt(referrals.data[0]?.count)
+        : BigInt(0),
     };
 
     const response = NextResponse.json(
