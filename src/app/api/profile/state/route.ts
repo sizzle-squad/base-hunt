@@ -50,82 +50,90 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // fetch score data
-    let scoreData = (await supabase
-      .from('score')
-      .select()
-      .eq('user_address', userAddress.toLowerCase())
-      .eq('game_id', gameId)) as any;
+    const [
+      scoreData,
+      levelsData,
+      challengeData,
+      userBadgesResponse,
+      referrals,
+    ] = await Promise.all([
+      // fetch score data
+      supabase
+        .from('score')
+        .select()
+        .eq('user_address', userAddress.toLowerCase())
+        .eq('game_id', gameId),
+      // fetch level data
+      supabase.from('level_configuration').select().eq('game_id', gameId),
+      // fetch challenge data
+      supabase
+        .from('user_challenge_status')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_address', userAddress.toLowerCase())
+        .eq('status', ChallengeStatus.COMPLETE),
+      // fetch user badges
+      supabase.rpc('getuserbadges', {
+        _game_id: gameId,
+        _user_address: userAddress.toLowerCase(),
+      }),
+      supabase.rpc('get_referral_data', {
+        _game_id: gameId,
+        _user_address: userAddress.toLowerCase(),
+      }),
+    ]);
 
     if (scoreData.error) {
       console.error(scoreData.error);
       throw new Error(scoreData.error.message);
     }
-    const score = scoreData.data[0];
-    let currentScore = score ? score.current_score : BigInt(0);
-
-    // fetch level data
-    const levelsData = (await supabase
-      .from('level_configuration')
-      .select()
-      .eq('game_id', gameId)) as any;
-
-    const levelsError = levelsData.error;
-    if (levelsError) {
-      console.error(levelsError);
-      throw new Error(levelsError.message);
+    if (levelsData.error) {
+      console.error(levelsData.error);
+      throw new Error(levelsData.error.message);
     }
+    if (challengeData.error) {
+      console.error(challengeData.error);
+      throw new Error(challengeData.error.message);
+    }
+    if (userBadgesResponse.error) {
+      console.error(userBadgesResponse.error);
+      throw new Error(userBadgesResponse.error.message);
+    }
+
+    // Extract data
+    const score = scoreData.data[0];
+    const currentScore = score ? score.current_score : BigInt(0);
     const [currentLevel, nextLevel] = getLevelData(
       levelsData,
       score,
       currentScore
     );
-
-    // fetch challenge data
-    const { error, count: numChallengesCompleted } = await supabase
-      .from('user_challenge_status')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_address', userAddress.toLowerCase())
-      .eq('status', ChallengeStatus.COMPLETE);
-
-    if (error) {
-      console.error(error);
-      throw new Error(error.message);
-    }
-
-    // fetch referral data
-    const referrals = await supabase.rpc('get_referral_data', {
-      _game_id: gameId,
-      _user_address: userAddress.toLowerCase(),
-    });
-
-    // fetch user badges and join with badge_configuration
-    const userBadgesResponse = await supabase.rpc('getuserbadges', {
-      _game_id: gameId,
-      _user_address: userAddress.toLowerCase(),
-    });
-    if (userBadgesResponse.error) {
-      console.log(userBadgesResponse.error);
-      return new Response('', { status: 500 });
-    }
+    const numChallengesCompleted = BigInt(challengeData.count || 0);
     const userBadges = userBadgesResponse.data as ProfileBadge[];
-
     const referralData: ReferralData = {
-      referralCode: referrals.data[0].referral_id ?? '',
-      numReferrals: BigInt(referrals.data[0].count) ?? BigInt(0),
+      referralCode: referrals.data[0]?.referral_id ?? '',
+      numReferrals: referrals.data[0]?.count
+        ? BigInt(referrals.data[0]?.count)
+        : BigInt(0),
     };
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       mapToProfileState(
         currentLevel,
         nextLevel,
         score,
         gameId,
-        BigInt(numChallengesCompleted || 0),
+        numChallengesCompleted,
         userBadges,
         referralData
       )
     );
+
+    // cache for 60 seconds
+    response.headers.set('Cache-Control', 'public, s-maxage=60');
+    response.headers.set('CDN-Cache-Control', 'public, s-maxage=60');
+    response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=60');
+
+    return response;
   } catch (e) {
     console.error(e);
     NextResponse.error();
@@ -145,7 +153,7 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
     created_at: '',
     game_id: BigInt(0),
     name: '',
-    threshold_points: 0,
+    threshold_points: Number.MAX_SAFE_INTEGER,
     airdrop_command: '',
     level: '',
     contract_address: '',
