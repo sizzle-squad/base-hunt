@@ -36,6 +36,12 @@ type LevelDataType = {
   prize_description: string | null;
 };
 
+type BadgeDataType = {
+  id: number;
+  name: string;
+  game_id: bigint;
+};
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
@@ -122,7 +128,7 @@ export async function GET(req: NextRequest) {
         score,
         gameId,
         numChallengesCompleted,
-        mapToBadges(userBadgesResponse.data),
+        mapToBadges(userBadgesResponse.data as BadgeDataType[]),
         referralData
       )
     );
@@ -275,10 +281,10 @@ function mapToProfileState(
   };
 }
 
-function mapToBadges(badgesData: any): ProfileBadge[] {
-  return badgesData.map((badge: any) => ({
-    id: badge.id,
+function mapToBadges(badgesData: BadgeDataType[]): ProfileBadge[] {
+  return badgesData.map((badge: BadgeDataType) => ({
+    id: badge.id.toString(),
     name: badge.name,
-    gameId: badge.game_id,
+    gameId: badge.game_id.toString(),
   }));
 }
