@@ -12,7 +12,7 @@ const supabase = createClient<Database>(
 // Opt in to the game
 export async function POST(request: NextRequest) {
   const body: OptInPostBodyType = await request.json();
-  const { gameId, userAddress } = body;
+  const { gameId, userAddress, referralId } = body;
 
   if (!userAddress || !gameId) {
     return new Response(
@@ -28,33 +28,16 @@ export async function POST(request: NextRequest) {
     game_id: parseInt(gameId),
   };
 
-  const userOptInData = await supabase
-    .from('user_address_opt_in')
-    .select()
-    .eq('game_id', params.game_id)
-    .eq('user_address', params.user_address)
-    .maybeSingle();
-
-  if (userOptInData.error) {
-    console.error(userOptInData.error);
-    return new Response(`Error getting user opt in data`, {
-      status: 400,
-    });
-  }
-
-  if (!userOptInData.data) {
-    const { error } = await supabase
-      .from('user_address_opt_in')
-      .insert(params)
-      .select();
-
-    if (error) {
-      console.error(error);
-      return new Response(`Error: failed to register address: ${userAddress}`, {
-        status: 400,
-      });
+  const optInAndReferralData = await supabase.rpc(
+    'opt_in_and_track_referrals',
+    {
+      _game_id: params.game_id,
+      _user_address: params.user_address,
+      _referral_id: referralId ?? '',
     }
-  }
+  );
 
-  return NextResponse.json({ success: true });
+  return optInAndReferralData.status === 200
+    ? NextResponse.json({ success: true })
+    : NextResponse.json({ success: false });
 }

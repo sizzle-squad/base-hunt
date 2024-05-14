@@ -459,6 +459,33 @@ export type Database = {
           },
         ]
       }
+      user_referrals: {
+        Row: {
+          created_at: string
+          game_id: number
+          id: number
+          referral_id: string
+          referred_by_id: string | null
+          user_address: string
+        }
+        Insert: {
+          created_at?: string
+          game_id?: number
+          id?: number
+          referral_id?: string
+          referred_by_id?: string | null
+          user_address: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: number
+          id?: number
+          referral_id?: string
+          referred_by_id?: string | null
+          user_address?: string
+        }
+        Relationships: []
+      }
       user_txcount: {
         Row: {
           created_at: string
@@ -536,6 +563,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_referral_data: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: {
+          referral_id: string
+          count: number
+        }[]
+      }
       getbadgestate: {
         Args: {
           _game_id: number
@@ -572,6 +609,13 @@ export type Database = {
           j: Json
         }[]
       }
+      getuserbadges: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: Json
+      }
       getuserrank: {
         Args: {
           _game_id: number
@@ -595,6 +639,14 @@ export type Database = {
           _game_id: number
           _user_address: string
           _score: number
+        }
+        Returns: boolean
+      }
+      opt_in_and_track_referrals: {
+        Args: {
+          _game_id: number
+          _user_address: string
+          _referral_id: string
         }
         Returns: boolean
       }

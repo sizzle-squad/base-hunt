@@ -5,8 +5,12 @@ import { createClient } from '@supabase/supabase-js';
 
 import { toBigInt } from '@/utils/toBigInt';
 
-import { ProfileBadge, ProfileState } from '../../../../hooks/types';
 import { ChallengeStatus } from '@/utils/database.enums';
+import {
+  ProfileBadge,
+  ProfileState,
+  ReferralData,
+} from '../../../../hooks/types';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -71,7 +75,11 @@ export async function GET(req: NextRequest) {
       console.error(levelsError);
       throw new Error(levelsError.message);
     }
-    const [currentLevel, nextLevel] = getLevelData(levelsData, score, currentScore)
+    const [currentLevel, nextLevel] = getLevelData(
+      levelsData,
+      score,
+      currentScore
+    );
 
     // fetch challenge data
     const { error, count: numChallengesCompleted } = await supabase
@@ -85,6 +93,12 @@ export async function GET(req: NextRequest) {
       throw new Error(error.message);
     }
 
+    // fetch referral data
+    const referrals = await supabase.rpc('get_referral_data', {
+      _game_id: gameId,
+      _user_address: userAddress.toLowerCase(),
+    });
+
     // fetch user badges and join with badge_configuration
     const userBadgesResponse = await supabase.rpc('getuserbadges', {
       _game_id: gameId,
@@ -96,12 +110,26 @@ export async function GET(req: NextRequest) {
     }
     const userBadges = userBadgesResponse.data as ProfileBadge[];
 
-    return NextResponse.json(mapToProfileState(currentLevel, nextLevel, score, gameId, BigInt(numChallengesCompleted || 0), userBadges));
+    const referralData: ReferralData = {
+      referralCode: referrals.data[0].referral_id ?? '',
+      numReferrals: BigInt(referrals.data[0].count) ?? BigInt(0),
+    };
+
+    return NextResponse.json(
+      mapToProfileState(
+        currentLevel,
+        nextLevel,
+        score,
+        gameId,
+        BigInt(numChallengesCompleted || 0),
+        userBadges,
+        referralData
+      )
+    );
   } catch (e) {
     console.error(e);
     NextResponse.error();
   }
-
 }
 
 function getLevelData(levelsData: any, score: any, currentScore: any) {
@@ -110,7 +138,7 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
   let currentLevel = null;
 
   if (!levels || levels.length === 0) {
-    return [currentLevel, nextLevel]
+    return [currentLevel, nextLevel];
   }
   const emptyLevel: LevelDataType = {
     id: 0,
@@ -128,7 +156,7 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
     description: '',
     cta_url: null,
     prize_image_url: null,
-    prize_description: null
+    prize_description: null,
   };
 
   levels.push(emptyLevel);
@@ -173,42 +201,47 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
     };
     currentLevel = levels[levels.length - 1];
   }
-  return [currentLevel, nextLevel]
+  return [currentLevel, nextLevel];
 }
 
-function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallengesCompleted: bigint, formattedUserBadges: ProfileBadge[]): ProfileState {
+function mapToProfileState(
+  c: any,
+  n: any,
+  s: any,
+  gameId: bigint,
+  numChallengesCompleted: bigint,
+  formattedUserBadges: ProfileBadge[],
+  referrals: ReferralData
+): ProfileState {
   return {
     numChallengesCompleted: numChallengesCompleted,
-    referralData: { // todo: get referral data
-      numReferrals: BigInt(0),
-      referralCode: ""
-    },
+    referralData: referrals,
     levelData: {
       currentLevel: c
         ? {
-          id: c.id,
-          gameId: c.game_id,
-          name: c.name,
-          thresholdPoints: c.threshold_points,
-          level: c.level,
-          description: c.description,
-          ctaUrl: c.cta_url,
-          prizeImageUrl: c.prize_image_url,
-          prizeDescription: c.prize_description,
-          imageUrl: c.image_url,
-        }
+            id: c.id,
+            gameId: c.game_id,
+            name: c.name,
+            thresholdPoints: c.threshold_points,
+            level: c.level,
+            description: c.description,
+            ctaUrl: c.cta_url,
+            prizeImageUrl: c.prize_image_url,
+            prizeDescription: c.prize_description,
+            imageUrl: c.image_url,
+          }
         : {
-          id: '',
-          gameId: gameId.toString(),
-          name: 'zero level',
-          thresholdPoints: BigInt(0),
-          level: '1',
-          description: '',
-          ctaUrl: '',
-          prizeImageUrl: '',
-          prizeDescription: '',
-          imageUrl: '',
-        },
+            id: '',
+            gameId: gameId.toString(),
+            name: 'zero level',
+            thresholdPoints: BigInt(0),
+            level: '1',
+            description: '',
+            ctaUrl: '',
+            prizeImageUrl: '',
+            prizeDescription: '',
+            imageUrl: '',
+          },
       nextLevel: {
         id: n.id,
         gameId: n.game_id,
@@ -224,13 +257,13 @@ function mapToProfileState(c: any, n: any, s: any, gameId: bigint, numChallenges
     },
     scoreData: s
       ? {
-        id: s.id,
-        gameId: s.game_id,
-        userAddress: s.user_address,
-        currentScore: s.current_score,
-        updatedAt: s.updated_at,
-      }
+          id: s.id,
+          gameId: s.game_id,
+          userAddress: s.user_address,
+          currentScore: s.current_score,
+          updatedAt: s.updated_at,
+        }
       : null,
-    badges: formattedUserBadges
+    badges: formattedUserBadges,
   };
 }
