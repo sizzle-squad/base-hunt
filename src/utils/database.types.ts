@@ -484,15 +484,7 @@ export type Database = {
           referred_by_id?: string | null
           user_address?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_referrals_user_address_fkey"
-            columns: ["user_address"]
-            isOneToOne: true
-            referencedRelation: "user_address_opt_in"
-            referencedColumns: ["user_address"]
-          },
-        ]
+        Relationships: []
       }
       user_txcount: {
         Row: {
@@ -571,6 +563,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_referral_data: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: {
+          referral_id: string
+          count: number
+        }[]
+      }
       getbadgestate: {
         Args: {
           _game_id: number

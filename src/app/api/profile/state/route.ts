@@ -6,7 +6,11 @@ import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
 
 import { ChallengeStatus } from '@/utils/database.enums';
-import { ProfileBadge, ProfileState } from '../../../../hooks/types';
+import {
+  ProfileBadge,
+  ProfileState,
+  ReferralData,
+} from '../../../../hooks/types';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -89,6 +93,12 @@ export async function GET(req: NextRequest) {
       throw new Error(error.message);
     }
 
+    // fetch referral data
+    const referrals = await supabase.rpc('get_referral_data', {
+      _game_id: gameId,
+      _user_address: userAddress.toLowerCase(),
+    });
+
     // fetch user badges and join with badge_configuration
     const userBadgesResponse = await supabase.rpc('getuserbadges', {
       _game_id: gameId,
@@ -107,7 +117,8 @@ export async function GET(req: NextRequest) {
         score,
         gameId,
         BigInt(numChallengesCompleted || 0),
-        userBadges
+        userBadges,
+        referrals.data as ReferralData
       )
     );
   } catch (e) {
@@ -194,15 +205,12 @@ function mapToProfileState(
   s: any,
   gameId: bigint,
   numChallengesCompleted: bigint,
-  formattedUserBadges: ProfileBadge[]
+  formattedUserBadges: ProfileBadge[],
+  referrals: ReferralData
 ): ProfileState {
   return {
     numChallengesCompleted: numChallengesCompleted,
-    referralData: {
-      // todo: get referral data
-      numReferrals: BigInt(0),
-      referralCode: '',
-    },
+    referralData: referrals,
     levelData: {
       currentLevel: c
         ? {

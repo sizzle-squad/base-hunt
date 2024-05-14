@@ -29,7 +29,6 @@ export async function GET(req: NextRequest) {
       .eq('user_address', userAddress.toLowerCase())
       .eq('game_id', gameId);
 
-    console.log(referralData);
     return NextResponse.json({ success: true, data: referralData.data });
   } catch (error) {
     console.error(error);
