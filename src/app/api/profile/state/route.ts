@@ -50,32 +50,37 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const [scoreData, levelsData, challengeData, userBadgesResponse, referrals] =
-      await Promise.all([
-        // fetch score data
-        supabase
-          .from('score')
-          .select()
-          .eq('user_address', userAddress.toLowerCase())
-          .eq('game_id', gameId),
-        // fetch level data
-        supabase.from('level_configuration').select().eq('game_id', gameId),
-        // fetch challenge data
-        supabase
-          .from('user_challenge_status')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_address', userAddress.toLowerCase())
-          .eq('status', ChallengeStatus.COMPLETE),
-        // fetch user badges
-        supabase.rpc('getuserbadges', {
-          _game_id: gameId,
-          _user_address: userAddress.toLowerCase(),
-        }),
-        supabase.rpc('get_referral_data', {
-          _game_id: gameId,
-          _user_address: userAddress.toLowerCase(),
-        })
-      ]);
+    const [
+      scoreData,
+      levelsData,
+      challengeData,
+      userBadgesResponse,
+      referrals,
+    ] = await Promise.all([
+      // fetch score data
+      supabase
+        .from('score')
+        .select()
+        .eq('user_address', userAddress.toLowerCase())
+        .eq('game_id', gameId),
+      // fetch level data
+      supabase.from('level_configuration').select().eq('game_id', gameId),
+      // fetch challenge data
+      supabase
+        .from('user_challenge_status')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_address', userAddress.toLowerCase())
+        .eq('status', ChallengeStatus.COMPLETE),
+      // fetch user badges
+      supabase.rpc('getuserbadges', {
+        _game_id: gameId,
+        _user_address: userAddress.toLowerCase(),
+      }),
+      supabase.rpc('get_referral_data', {
+        _game_id: gameId,
+        _user_address: userAddress.toLowerCase(),
+      }),
+    ]);
 
     if (scoreData.error) {
       console.error(scoreData.error);
