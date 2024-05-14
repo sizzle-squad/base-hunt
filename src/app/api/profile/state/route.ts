@@ -110,6 +110,11 @@ export async function GET(req: NextRequest) {
     }
     const userBadges = userBadgesResponse.data as ProfileBadge[];
 
+    const referralData: ReferralData = {
+      referralCode: referrals.data[0].referral_id ?? '',
+      numReferrals: BigInt(referrals.data[0].count) ?? BigInt(0),
+    };
+
     return NextResponse.json(
       mapToProfileState(
         currentLevel,
@@ -118,7 +123,7 @@ export async function GET(req: NextRequest) {
         gameId,
         BigInt(numChallengesCompleted || 0),
         userBadges,
-        referrals.data as ReferralData
+        referralData
       )
     );
   } catch (e) {
