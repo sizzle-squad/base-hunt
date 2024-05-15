@@ -56,37 +56,55 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const [
-      scoreData,
-      levelsData,
-      challengeData,
-      userBadgesResponse,
-      referrals,
-    ] = await Promise.all([
-      // fetch score data
-      supabase
-        .from('score')
-        .select()
-        .eq('user_address', userAddress.toLowerCase())
-        .eq('game_id', gameId),
-      // fetch level data
-      supabase.from('level_configuration').select().eq('game_id', gameId),
-      // fetch challenge data
-      supabase
-        .from('user_challenge_status')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_address', userAddress.toLowerCase())
-        .eq('status', ChallengeStatus.COMPLETE),
-      // fetch user badges
-      supabase.rpc('getuserbadges', {
-        _game_id: gameId,
-        _user_address: userAddress.toLowerCase(),
-      }),
-      supabase.rpc('get_referral_data', {
-        _game_id: gameId,
-        _user_address: userAddress.toLowerCase(),
-      }),
-    ]);
+    const referrals = await supabase.rpc('get_referral_data', {
+      _game_id: gameId,
+      _user_address: userAddress.toLowerCase(),
+    });
+
+    if (referrals.error) {
+      console.error(referrals.error);
+      throw new Error(referrals.error.message);
+    }
+
+    const isOptedIn = referrals.data && referrals.data.length > 0;
+
+    if (!isOptedIn) {
+      const notOptedInResponse: ProfileState = {
+        isOptedIn: false,
+        numChallengesCompleted: BigInt(0),
+        referralData: { referralCode: '', numReferrals: BigInt(0) },
+        levelData: {
+          currentLevel: null,
+          nextLevel: null,
+        },
+        scoreData: null,
+        badges: [],
+      };
+      return NextResponse.json(notOptedInResponse);
+    }
+
+    const [scoreData, levelsData, challengeData, userBadgesResponse] =
+      await Promise.all([
+        // fetch score data
+        supabase
+          .from('score')
+          .select()
+          .eq('user_address', userAddress.toLowerCase())
+          .eq('game_id', gameId),
+        // fetch level data
+        supabase.from('level_configuration').select().eq('game_id', gameId),
+        // fetch challenge data
+        supabase
+          .from('user_challenge_status')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_address', userAddress.toLowerCase())
+          .eq('status', ChallengeStatus.COMPLETE),
+        // fetch user badges
+        supabase.rpc('getuserbadges', {
+          _game_id: gameId,
+          _user_address: userAddress.toLowerCase(),
+        }),
+      ]);
 
     if (scoreData.error) {
       console.error(scoreData.error);
@@ -129,7 +147,8 @@ export async function GET(req: NextRequest) {
         gameId,
         numChallengesCompleted,
         mapToBadges(userBadgesResponse.data as BadgeDataType[]),
-        referralData
+        referralData,
+        isOptedIn
       )
     );
 
@@ -224,9 +243,11 @@ function mapToProfileState(
   gameId: bigint,
   numChallengesCompleted: bigint,
   formattedUserBadges: ProfileBadge[],
-  referrals: ReferralData
+  referrals: ReferralData,
+  isOptedIn: boolean
 ): ProfileState {
   return {
+    isOptedIn: isOptedIn,
     numChallengesCompleted: numChallengesCompleted,
     referralData: referrals,
     levelData: {
@@ -282,6 +303,9 @@ function mapToProfileState(
 }
 
 function mapToBadges(badgesData: BadgeDataType[]): ProfileBadge[] {
+  if (!badgesData) {
+    return [];
+  }
   return badgesData.map((badge: BadgeDataType) => ({
     id: badge.id.toString(),
     name: badge.name,
