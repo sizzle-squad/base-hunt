@@ -282,6 +282,9 @@ function mapToProfileState(
 }
 
 function mapToBadges(badgesData: BadgeDataType[]): ProfileBadge[] {
+  if (!badgesData) {
+    return [];
+  }
   return badgesData.map((badge: BadgeDataType) => ({
     id: badge.id.toString(),
     name: badge.name,
