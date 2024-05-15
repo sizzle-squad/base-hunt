@@ -254,13 +254,13 @@ function mapToProfileState(
   gameId: bigint,
   numChallengesCompleted: bigint,
   formattedUserBadges: ProfileBadge[],
-  referrals: ReferralData | null,
+  referrals: ReferralData,
   isOptedIn: boolean
 ): ProfileState {
   return {
     isOptedIn: isOptedIn,
     numChallengesCompleted: numChallengesCompleted,
-    referralData: referrals ?? { referralCode: '', numReferrals: BigInt(0) },
+    referralData: referrals,
     levelData: {
       currentLevel: c
         ? {
