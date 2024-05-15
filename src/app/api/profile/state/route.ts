@@ -56,6 +56,35 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    let userOptinResponse = (await supabase
+      .from('user_address_opt_in')
+      .select()
+      .eq('user_address', userAddress.toLowerCase())
+      .eq('game_id', gameId)) as any;
+
+    if (userOptinResponse.error) {
+      console.error(userOptinResponse.error);
+      throw new Error(userOptinResponse.error.message);
+    }
+
+    const isOptedIn =
+      userOptinResponse.data && userOptinResponse.data.length > 0;
+
+    if (!isOptedIn) {
+      const notOptedInResponse: ProfileState = {
+        isOptedIn: false,
+        numChallengesCompleted: BigInt(0),
+        referralData: { referralCode: '', numReferrals: BigInt(0) },
+        levelData: {
+          currentLevel: null,
+          nextLevel: null,
+        },
+        scoreData: null,
+        badges: [],
+      };
+      return NextResponse.json(notOptedInResponse);
+    }
+
     const [
       scoreData,
       levelsData,
@@ -129,7 +158,8 @@ export async function GET(req: NextRequest) {
         gameId,
         numChallengesCompleted,
         mapToBadges(userBadgesResponse.data as BadgeDataType[]),
-        referralData
+        referralData,
+        isOptedIn
       )
     );
 
@@ -224,11 +254,13 @@ function mapToProfileState(
   gameId: bigint,
   numChallengesCompleted: bigint,
   formattedUserBadges: ProfileBadge[],
-  referrals: ReferralData
+  referrals: ReferralData | null,
+  isOptedIn: boolean
 ): ProfileState {
   return {
+    isOptedIn: isOptedIn,
     numChallengesCompleted: numChallengesCompleted,
-    referralData: referrals,
+    referralData: referrals ?? { referralCode: '', numReferrals: BigInt(0) },
     levelData: {
       currentLevel: c
         ? {

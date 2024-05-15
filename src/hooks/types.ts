@@ -96,6 +96,7 @@ export type LevelData = {
 };
 
 export type ProfileState = {
+  isOptedIn: boolean;
   scoreData: Score | null;
   levelData: LevelData;
   referralData: ReferralData;
