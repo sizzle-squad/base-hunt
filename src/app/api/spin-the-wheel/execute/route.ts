@@ -3,8 +3,6 @@ import '@/utils/helper';
 
 import { createClient } from '@supabase/supabase-js';
 
-import { toBigInt } from '@/utils/toBigInt';
-
 import {
   SpinData,
   SpinOption,
@@ -19,6 +17,8 @@ import {
   UserSpinType,
 } from '../spinHelper';
 
+const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
+
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
   process.env.SUPABASE_SERVICE_KEY as string
@@ -28,6 +28,22 @@ type SpinTheWheelExecuteRequest = {
   gameId: string;
   userAddress: string;
 };
+
+export async function OPTIONS(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  if (!origin || !ALLOWED_ORGINS.includes(origin)) {
+    return new Response('Forbidden', { status: 403 });
+  }
+
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': origin || '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
 
 export async function POST(request: NextRequest) {
   const body: SpinTheWheelExecuteRequest = await request.json();
