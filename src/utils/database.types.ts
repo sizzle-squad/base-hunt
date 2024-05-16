@@ -486,6 +486,44 @@ export type Database = {
         }
         Relationships: []
       }
+      user_spins: {
+        Row: {
+          created_at: string
+          game_id: number | null
+          id: number
+          last_spin: number | null
+          last_spin_at: string | null
+          total_spins: number | null
+          user_address: string | null
+        }
+        Insert: {
+          created_at?: string
+          game_id?: number | null
+          id?: number
+          last_spin?: number | null
+          last_spin_at?: string | null
+          total_spins?: number | null
+          user_address?: string | null
+        }
+        Update: {
+          created_at?: string
+          game_id?: number | null
+          id?: number
+          last_spin?: number | null
+          last_spin_at?: string | null
+          total_spins?: number | null
+          user_address?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_spins_last_spin_fkey"
+            columns: ["last_spin"]
+            isOneToOne: false
+            referencedRelation: "wheel_configuration"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_txcount: {
         Row: {
           created_at: string
@@ -558,6 +596,36 @@ export type Database = {
         }
         Relationships: []
       }
+      wheel_configuration: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          game_id: number | null
+          id: number
+          points: number | null
+          probability: number | null
+          type: Database["public"]["Enums"]["spin_type"] | null
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          game_id?: number | null
+          id?: number
+          points?: number | null
+          probability?: number | null
+          type?: Database["public"]["Enums"]["spin_type"] | null
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          game_id?: number | null
+          id?: number
+          points?: number | null
+          probability?: number | null
+          type?: Database["public"]["Enums"]["spin_type"] | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -570,6 +638,15 @@ export type Database = {
         }
         Returns: {
           referral_id: string
+          count: number
+        }[]
+      }
+      get_top_referrers: {
+        Args: {
+          _game_id: number
+        }
+        Returns: {
+          user_address: string
           count: number
         }[]
       }
@@ -609,10 +686,24 @@ export type Database = {
           j: Json
         }[]
       }
+      getspindata: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: Json
+      }
       getuserbadges: {
         Args: {
           _game_id: number
           _user_address: string
+        }
+        Returns: Json
+      }
+      getuserguild: {
+        Args: {
+          _user_address: string
+          _game_id: number
         }
         Returns: Json
       }
@@ -658,6 +749,17 @@ export type Database = {
         }
         Returns: number
       }
+      update_spin_and_points: {
+        Args: {
+          _game_id: number
+          _user_address: string
+          _last_spin_id: number
+          _total_spins: number
+          _points_increment: number
+          _last_spin_at: string
+        }
+        Returns: Record<string, unknown>
+      }
     }
     Enums: {
       badge_type: "online" | "irl" | "level"
@@ -698,6 +800,7 @@ export type Database = {
         | "checkTxCountBatch"
         | "checkJoinGuild"
       networks: "networks/base-mainnet" | "networks/eth-mainnet"
+      spin_type: "POINTS"
     }
     CompositeTypes: {
       [_ in never]: never
