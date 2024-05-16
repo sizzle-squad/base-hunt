@@ -5,7 +5,12 @@ import { createClient } from '@supabase/supabase-js';
 
 import { toBigInt } from '@/utils/toBigInt';
 
-import { getAllSpins, getEnabledSpins, getUserSpinData } from './spinHelper';
+import {
+  calculateTimeUntilMidnightUTC,
+  getAllSpins,
+  getEnabledSpins,
+  getUserSpinData,
+} from './spinHelper';
 import { SpinData, SpinOption, SpinTheWheelState } from '../../../hooks/types';
 
 const supabase = createClient(
@@ -47,10 +52,12 @@ export async function GET(req: NextRequest) {
       mapToSpinTheWheelState(spinData, currentlyEnabledSpins)
     );
 
-    // // cache for 60 seconds
-    // response.headers.set('Cache-Control', 'public, s-maxage=60');
-    // response.headers.set('CDN-Cache-Control', 'public, s-maxage=60');
-    // response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=60');
+    // if user has no spins left, and there is more than one hour left in the UTC day, cache for 1 hour
+    if (!spinData.hasAvailableSpin && shouldCache()) {
+      response.headers.set('Cache-Control', 'public, s-maxage=3600');
+      response.headers.set('CDN-Cache-Control', 'public, s-maxage=3600');
+      response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600');
+    }
 
     return response;
   } catch (e) {
@@ -67,4 +74,14 @@ function mapToSpinTheWheelState(
     spinOptions: spinOptions,
     spinData: spinData,
   };
+}
+
+function shouldCache() {
+  const timeUntilMidnightMs = calculateTimeUntilMidnightUTC();
+  // if more than 1 hour remaining, cache for 1 hour
+  const oneHourMs = 3600000;
+  if (timeUntilMidnightMs > oneHourMs) {
+    return true;
+  }
+  return false;
 }

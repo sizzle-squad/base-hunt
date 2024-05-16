@@ -14,18 +14,32 @@ export function currentTimeUTC(): string {
   return new Date().toISOString();
 }
 
-export function hasAvailableSpin(lastSpinAt: string): boolean {
+function getTodayResetTime(): Date {
   const now = new Date();
   // Reset time to 23:59:59 UTC of the previous day
   const todayResetTime = new Date(now);
   todayResetTime.setUTCHours(23, 59, 59, 999);
   todayResetTime.setUTCDate(todayResetTime.getUTCDate() - 1);
+  return todayResetTime;
+}
+
+export function hasAvailableSpin(lastSpinAt: string): boolean {
+  const todayResetTime = getTodayResetTime();
 
   // Convert last_spin_at to a timestamp
   const lastSpinTime = new Date(lastSpinAt).getTime();
 
   // If lastSpinTime is before today's reset time, the user has a spin available
   return lastSpinTime <= todayResetTime.getTime();
+}
+
+export function calculateTimeUntilMidnightUTC(): number {
+  const now = new Date();
+  // Set to midnight UTC of the next day
+  const nextMidnightUTC = new Date(now);
+  nextMidnightUTC.setUTCHours(24, 0, 0, 0);
+
+  return nextMidnightUTC.getTime() - now.getTime();
 }
 
 export function getRandomOutcome(spinOptions: SpinOption[]): SpinOption {
