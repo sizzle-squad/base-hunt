@@ -104,6 +104,32 @@ export type ProfileState = {
   badges: ProfileBadge[];
 };
 
+export enum SpinOptionTypeEnum {
+  POINTS = 'POINTS',
+  // can have different spin rewards in the future
+}
+
+export type SpinOption = {
+  id: number;
+  points: number;
+  probability: number;
+  type: SpinOptionTypeEnum;
+};
+
+export type SpinData = {
+  id: string;
+  gameId: string;
+  userAddress: string;
+  hasAvailableSpin: boolean;
+  lastSpinResult: SpinOption | null;
+  totalSpins: number;
+};
+
+export type SpinTheWheelState = {
+  spinOptions: SpinOption[]; // array of possible spin the wheel options
+  spinData: SpinData;
+};
+
 export type TreasureBoxState = {
   id: bigint;
   createdAt: Date;
