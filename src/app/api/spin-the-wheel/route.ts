@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
 
 import {
-  calculateTimeUntilMidnightUTC,
+  calculateTimeUntilResetTime,
   getAllSpins,
   getEnabledSpins,
   getUserSpinData,
@@ -77,7 +77,7 @@ function mapToSpinTheWheelState(
 }
 
 function shouldCache() {
-  const timeUntilMidnightMs = calculateTimeUntilMidnightUTC();
+  const timeUntilMidnightMs = calculateTimeUntilResetTime();
   // if more than 1 hour remaining, cache for 1 hour
   const oneHourMs = 3600000;
   if (timeUntilMidnightMs > oneHourMs) {
