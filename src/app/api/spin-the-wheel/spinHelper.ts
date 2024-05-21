@@ -10,16 +10,20 @@ export type UserSpinType = {
   total_spins: number;
 };
 
+const resetHourUtc = 16; // Reset time for STW is 9 AM PST = 4PM UTC
+
 export function currentTimeUTC(): string {
   return new Date().toISOString();
 }
 
 function getTodayResetTime(): Date {
   const now = new Date();
-  // Reset time to 23:59:59 UTC of the previous day
   const todayResetTime = new Date(now);
-  todayResetTime.setUTCHours(23, 59, 59, 999);
-  todayResetTime.setUTCDate(todayResetTime.getUTCDate() - 1);
+  todayResetTime.setUTCHours(resetHourUtc, 0, 0, 0);
+  // If the current time is before the reset time, set the reset time to the previous day
+  if (now < todayResetTime) {
+    todayResetTime.setDate(todayResetTime.getDate() - 1);
+  }
   return todayResetTime;
 }
 
@@ -33,13 +37,13 @@ export function hasAvailableSpin(lastSpinAt: string): boolean {
   return lastSpinTime <= todayResetTime.getTime();
 }
 
-export function calculateTimeUntilMidnightUTC(): number {
+export function calculateTimeUntilResetTime(): number {
   const now = new Date();
-  // Set to midnight UTC of the next day
-  const nextMidnightUTC = new Date(now);
-  nextMidnightUTC.setUTCHours(24, 0, 0, 0);
 
-  return nextMidnightUTC.getTime() - now.getTime();
+  const nextResetUtc = new Date(now);
+  nextResetUtc.setUTCHours(resetHourUtc, 0, 0, 0);
+
+  return nextResetUtc.getTime() - now.getTime();
 }
 
 export function getRandomOutcome(spinOptions: SpinOption[]): SpinOption {
@@ -72,17 +76,16 @@ export function getAllSpins(spinOptions: any): SpinOption[] {
 
 export function getEnabledSpins(spinOptions: any): SpinOption[] {
   if (!spinOptions) return [];
-  return spinOptions.map((spinOption: any) => {
-    if (spinOption.enabled) {
+  return spinOptions
+    .filter((spinOption: any) => spinOption.enabled)
+    .map((spinOption: any) => {
       return {
         id: spinOption.id,
         points: spinOption.points,
         probability: spinOption.probability,
         type: spinOption.type,
       };
-    }
-    return;
-  });
+    });
 }
 
 export function getUserSpinData(
@@ -108,5 +111,5 @@ export function getUserSpinData(
     lastSpinResult:
       spinOptions.find((option) => option.id == spinData.last_spin) ?? null,
     totalSpins: spinData.total_spins,
-  };
+  } as SpinData;
 }
