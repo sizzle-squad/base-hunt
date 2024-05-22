@@ -133,7 +133,7 @@ export type SpinTheWheelState = {
 export type ChallengeMetricsState = {
   id: number;
   challengeId: string;
-  count: number;
+  numCompletions: number;
   name: string;
   points: number;
 };
