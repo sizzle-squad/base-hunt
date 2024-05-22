@@ -631,6 +631,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_challenge_completion_count: {
+        Args: {
+          _game_id: number
+        }
+        Returns: Json
+      }
+      get_challenge_count_by_challenges: {
+        Args: {
+          _game_id: number
+          _challenge_ids: Json
+        }
+        Returns: Json
+      }
       get_referral_data: {
         Args: {
           _game_id: number
