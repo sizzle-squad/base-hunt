@@ -130,6 +130,14 @@ export type SpinTheWheelState = {
   spinData: SpinData;
 };
 
+export type ChallengeMetricsState = {
+  id: number;
+  challengeId: string;
+  numCompletions: number;
+  name: string;
+  points: number;
+};
+
 export type TreasureBoxState = {
   id: bigint;
   createdAt: Date;
