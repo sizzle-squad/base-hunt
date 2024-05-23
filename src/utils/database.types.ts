@@ -688,6 +688,8 @@ export type Database = {
       get_challenge_completion_count: {
         Args: {
           _game_id: number
+          _limit: number
+          _offset: number
         }
         Returns: Json
       }
