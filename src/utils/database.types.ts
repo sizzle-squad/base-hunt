@@ -344,24 +344,72 @@ export type Database = {
       score: {
         Row: {
           current_score: number
-          game_id: number
+          game_id: number | null
           id: number
-          updated_at: string
-          user_address: string
+          updated_at: string | null
+          user_address: string | null
         }
         Insert: {
-          current_score?: number
-          game_id: number
+          current_score: number
+          game_id?: number | null
           id?: number
-          updated_at?: string
-          user_address: string
+          updated_at?: string | null
+          user_address?: string | null
         }
         Update: {
           current_score?: number
-          game_id?: number
+          game_id?: number | null
           id?: number
-          updated_at?: string
-          user_address?: string
+          updated_at?: string | null
+          user_address?: string | null
+        }
+        Relationships: []
+      }
+      score_greater_than_250: {
+        Row: {
+          current_score: number
+          game_id: number | null
+          id: number
+          updated_at: string | null
+          user_address: string | null
+        }
+        Insert: {
+          current_score: number
+          game_id?: number | null
+          id: number
+          updated_at?: string | null
+          user_address?: string | null
+        }
+        Update: {
+          current_score?: number
+          game_id?: number | null
+          id?: number
+          updated_at?: string | null
+          user_address?: string | null
+        }
+        Relationships: []
+      }
+      score_less_than_or_equal_to_250: {
+        Row: {
+          current_score: number
+          game_id: number | null
+          id: number
+          updated_at: string | null
+          user_address: string | null
+        }
+        Insert: {
+          current_score: number
+          game_id?: number | null
+          id: number
+          updated_at?: string | null
+          user_address?: string | null
+        }
+        Update: {
+          current_score?: number
+          game_id?: number | null
+          id?: number
+          updated_at?: string | null
+          user_address?: string | null
         }
         Relationships: []
       }
@@ -631,6 +679,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_all_badges: {
+        Args: {
+          _game_id: number
+        }
+        Returns: Json
+      }
       get_challenge_completion_count: {
         Args: {
           _game_id: number

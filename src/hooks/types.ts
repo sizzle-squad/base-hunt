@@ -138,6 +138,14 @@ export type ChallengeMetricsState = {
   points: number;
 };
 
+export type BadgeState = {
+  badgeId: number;
+  badgeName: string;
+  challengeId: string;
+  checkFunction: string;
+  challengeType: string;
+};
+
 export type TreasureBoxState = {
   id: bigint;
   createdAt: Date;
