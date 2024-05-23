@@ -18,24 +18,36 @@ interface ChallengeCompletionCountType {
   challenge_id: string;
   name: string;
 }
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const gameId = toBigInt(searchParams.get('gameId') as string);
-  try {
-    if (gameId === null) {
-      return new Response(`Missing parameters: gameId: ${gameId}`, {
-        status: 400,
-      });
-    }
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  let limit = parseInt(searchParams.get('limit') || '100', 10);
 
+  // Limit per page to 200
+  limit = Math.min(limit, 200);
+
+  if (gameId === null) {
+    return new Response(`Missing parameters: gameId: ${gameId}`, {
+      status: 400,
+    });
+  }
+
+  const offset = (page - 1) * limit;
+
+  try {
     const challengeCompletionCountRes = await supabase.rpc(
       'get_challenge_completion_count',
       {
         _game_id: Number(gameId),
+        _offset: offset,
+        _limit: limit,
       }
     );
+
     if (challengeCompletionCountRes.error) {
-      console.log(challengeCompletionCountRes.error);
+      console.error(challengeCompletionCountRes.error);
       return new Response('', { status: 500 });
     }
 
@@ -46,8 +58,9 @@ export async function GET(request: NextRequest) {
       mapToChallengeMetricsState(challengeCompletionCount)
     );
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
-      { error: `No available boosts found for gameId: ${gameId}` },
+      { error: `No available metrics found for gameId: ${gameId}` },
       { status: 400 }
     );
   }
