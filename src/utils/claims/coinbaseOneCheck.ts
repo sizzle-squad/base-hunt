@@ -60,7 +60,6 @@ export async function generateGetAttestations({ recipientAddress }: Params) {
     }
 
     const result: AttestationsResponse = await response.json();
-    console.log(result.data);
     return result.data;
   } catch (error) {
     console.error('Base easscan fetch failed:', error);
