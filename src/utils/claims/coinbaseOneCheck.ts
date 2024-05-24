@@ -4,7 +4,7 @@ const COINBASE_ONE_EAS_ATTESTER_ADDRESS =
   '0x357458739F90461b99789350868CD7CF330Dd7EE';
 const COINBASE_ONE_EAS_SCHEMA_ID =
   '0x254bd1b63e0591fefa66818ca054c78627306f253f86be6023725a67ee6bf9f4';
-const EAS_BASE_EASSCAN_GRAPHQL_URL = 'https://base.easscan.org/gdraphql';
+const EAS_BASE_EASSCAN_GRAPHQL_URL = 'https://base.easscan.org/graphql';
 type Params = {
   recipientAddress: string;
 };
