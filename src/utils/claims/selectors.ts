@@ -11,6 +11,7 @@ import {
 } from './transactionCheck';
 import { checkTrivia, CheckTriviaParams } from './triviaCheck';
 import { checkTxCountBatch, CheckTxCountBatchParams } from './txHistoryCheck';
+import { CheckCoinbaseOne, checkCoinbaseOne } from './coinbaseOneCheck';
 import { CheckFunctionType } from '../database.enums';
 import { WebhookData } from '../webhook';
 
@@ -23,6 +24,7 @@ export const CheckFunctions: {
   [CheckFunctionType.checkBalance]: checkBalance,
   [CheckFunctionType.checkTokenIdBalance]: checkTokenIdBalance,
   [CheckFunctionType.checkTxCountBatch]: checkTxCountBatch,
+  [CheckFunctionType.checkCoinbaseOne]: checkCoinbaseOne,
   [CheckFunctionType.checkJoinGuild]: function (body: any): Promise<boolean> {
     throw new Error('Function not implemented.');
   },
@@ -67,6 +69,11 @@ export const MapChallengeTypeUserAddress: {
   ): Promise<string> {
     return body.userAddress.toLowerCase();
   },
+  [CheckFunctionType.checkCoinbaseOne]: async function (
+    body: CheckCoinbaseOne
+  ): Promise<string> {
+    return body.userAddress.toLowerCase();
+  },
   [CheckFunctionType.checkJoinGuild]: async function (
     body: any
   ): Promise<string> {
@@ -95,6 +102,9 @@ export const ScoreFunctions: {
   [CheckFunctionType.checkTxCountBatch]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
+  [CheckFunctionType.checkCoinbaseOne]: function (w: any): number {
+    throw new Error('Function not implemented.');
+  },
   [CheckFunctionType.checkJoinGuild]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
@@ -119,6 +129,9 @@ export const ValidateBodyParams: {
     return true;
   },
   [CheckFunctionType.checkTxCountBatch]: function (body: object): boolean {
+    return body && body.hasOwnProperty('userAddress');
+  },
+  [CheckFunctionType.checkCoinbaseOne]: function (body: object): boolean {
     return body && body.hasOwnProperty('userAddress');
   },
   [CheckFunctionType.checkJoinGuild]: function (body: object): boolean {

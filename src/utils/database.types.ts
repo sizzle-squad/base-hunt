@@ -868,6 +868,7 @@ export type Database = {
         | "checkTokenIdBalance"
         | "checkTxCountBatch"
         | "checkJoinGuild"
+        | "checkCoinbaseOne"
       networks: "networks/base-mainnet" | "networks/eth-mainnet"
       spin_type: "POINTS"
     }
