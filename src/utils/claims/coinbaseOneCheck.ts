@@ -6,7 +6,7 @@ const COINBASE_ONE_EAS_SCHEMA_ID =
   '0x254bd1b63e0591fefa66818ca054c78627306f253f86be6023725a67ee6bf9f4';
 const EAS_BASE_EASSCAN_GRAPHQL_URL = 'https://base.easscan.org/graphql';
 type Params = {
-  recipientAddress: string;
+  recipientAddress: `0x${string}`;
 };
 
 export type CheckCoinbaseOne = {
@@ -56,14 +56,14 @@ export async function generateGetAttestations({ recipientAddress }: Params) {
     });
     if (!response.ok) {
       console.error('Base easscan fetch failed:', response.status);
-      return { attestations: [] };
+      return null;
     }
 
     const result: AttestationsResponse = await response.json();
     return result.data;
   } catch (error) {
     console.error('Base easscan fetch failed:', error);
-    return { attestations: [] };
+    return null;
   }
 }
 
@@ -71,18 +71,14 @@ export async function checkCoinbaseOne(
   params: CheckCoinbaseOne,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
+  const userAddress: `0x${string}` = params.userAddress as `0x${string}`;
   const result = await generateGetAttestations({
-    recipientAddress: params.userAddress,
+    recipientAddress: userAddress,
   });
-  const attestations = result.attestations;
-  if (attestations.length === 0) {
+  if (!result) {
     return false;
   }
+  const attestations = result.attestations;
   // if user has one attestation that is not revoked, they have coinbase one
-  for (const attestation of attestations) {
-    if (attestation.revoked === false) {
-      return true;
-    }
-  }
-  return false;
+  return attestations.some((attestation) => attestation.revoked === false);
 }
