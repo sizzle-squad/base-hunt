@@ -12,6 +12,11 @@ import {
 import { checkTrivia, CheckTriviaParams } from './triviaCheck';
 import { checkTxCountBatch, CheckTxCountBatchParams } from './txHistoryCheck';
 import { CheckCoinbaseOne, checkCoinbaseOne } from './coinbaseOneCheck';
+import {
+  checkNftTokensCount,
+  CheckTokensCount,
+  checkTokensCount,
+} from './genericBalanceCheck';
 import { CheckFunctionType } from '../database.enums';
 import { WebhookData } from '../webhook';
 
@@ -25,6 +30,8 @@ export const CheckFunctions: {
   [CheckFunctionType.checkTokenIdBalance]: checkTokenIdBalance,
   [CheckFunctionType.checkTxCountBatch]: checkTxCountBatch,
   [CheckFunctionType.checkCoinbaseOne]: checkCoinbaseOne,
+  [CheckFunctionType.checkTokensCount]: checkTokensCount,
+  [CheckFunctionType.checkNftTokensCount]: checkNftTokensCount,
   [CheckFunctionType.checkJoinGuild]: function (body: any): Promise<boolean> {
     throw new Error('Function not implemented.');
   },
@@ -74,6 +81,16 @@ export const MapChallengeTypeUserAddress: {
   ): Promise<string> {
     return body.userAddress.toLowerCase();
   },
+  [CheckFunctionType.checkTokensCount]: async function (
+    body: CheckTokensCount
+  ): Promise<string> {
+    return body.userAddress.toLowerCase();
+  },
+  [CheckFunctionType.checkNftTokensCount]: async function (
+    body: CheckTokensCount
+  ): Promise<string> {
+    return body.userAddress.toLowerCase();
+  },
   [CheckFunctionType.checkJoinGuild]: async function (
     body: any
   ): Promise<string> {
@@ -105,6 +122,12 @@ export const ScoreFunctions: {
   [CheckFunctionType.checkCoinbaseOne]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
+  [CheckFunctionType.checkTokensCount]: function (w: any): number {
+    throw new Error('Function not implemented.');
+  },
+  [CheckFunctionType.checkNftTokensCount]: function (w: any): number {
+    throw new Error('Function not implemented.');
+  },
   [CheckFunctionType.checkJoinGuild]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
@@ -132,6 +155,12 @@ export const ValidateBodyParams: {
     return body && body.hasOwnProperty('userAddress');
   },
   [CheckFunctionType.checkCoinbaseOne]: function (body: object): boolean {
+    return body && body.hasOwnProperty('userAddress');
+  },
+  [CheckFunctionType.checkTokensCount]: function (body: object): boolean {
+    return body && body.hasOwnProperty('userAddress');
+  },
+  [CheckFunctionType.checkNftTokensCount]: function (body: object): boolean {
     return body && body.hasOwnProperty('userAddress');
   },
   [CheckFunctionType.checkJoinGuild]: function (body: object): boolean {
