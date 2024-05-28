@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { WALLET_API_BASE_URL, networkToChainId } from '../constants';
+import { networkToChainId, WALLET_API_BASE_URL } from '../constants';
 
 type Params = {
   userAddress: `0x${string}`;

@@ -12,13 +12,13 @@ import {
 import { checkTrivia, CheckTriviaParams } from './triviaCheck';
 import { checkTxCountBatch, CheckTxCountBatchParams } from './txHistoryCheck';
 import { CheckCoinbaseOne, checkCoinbaseOne } from './coinbaseOneCheck';
-import { CheckFunctionType } from '../database.enums';
-import { WebhookData } from '../webhook';
 import {
   checkNftTokensCount,
   CheckTokensCount,
   checkTokensCount,
 } from './genericBalanceCheck';
+import { CheckFunctionType } from '../database.enums';
+import { WebhookData } from '../webhook';
 
 export const CheckFunctions: {
   [key in CheckFunctionType]: (...args: any[]) => Promise<boolean>;
