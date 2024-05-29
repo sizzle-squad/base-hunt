@@ -192,7 +192,7 @@ type ExploreContentResponse = {
   };
 };
 
-export async function getContentByIdUnauth(contentId: string) {
+async function getContentByIdUnauth(contentId: string) {
   const url = `${WALLET_API_BASE_URL}/rpc/v2/explore/getContentByIdUnauth?surface=1&id=${contentId}`;
 
   try {
