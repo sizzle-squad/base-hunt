@@ -351,23 +351,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const params = challenge.params;
+  const { params } = challenge;
   params.tokenId = tokenId;
-  const d = {
+  const checkFuncData = {
     ...body,
-    ...(challenge as object),
+    ...challenge,
     contract_address: contractAddress,
     params,
   };
-  if (await checkFunc(d, provider)) {
+  if (await checkFunc(checkFuncData, provider)) {
     try {
       let userAddress =
         await MapChallengeTypeUserAddress[
           challenge.function_type as keyof typeof CheckFunctions
-        ](d);
+        ](checkFuncData);
       if (userAddress === undefined) {
         throw new Error(
-          'user address could not be mapped and is undefined:' + d
+          'user address could not be mapped and is undefined:' + checkFuncData
         );
       }
 
