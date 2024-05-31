@@ -16,6 +16,7 @@ import {
 } from '@/utils/database.enums';
 import { providers } from '@/utils/ethereum';
 import { toBigInt } from '@/utils/toBigInt';
+import { WALLET_API_BASE_URL } from '@/utils/constants';
 
 class Blockscout {
   apiKey: string | undefined;
@@ -117,7 +118,7 @@ async function hasToken(
   const filterByBalance = tokenBalanceRes.tokenBalances.filter(
     (balance) =>
       Number(balance.tokenBalance) /
-      Math.pow(10, metadata.decimals as number) >=
+        Math.pow(10, metadata.decimals as number) >=
       threshold
   );
   return filterByBalance.length > 0;
@@ -153,12 +154,17 @@ export type BoostsClaimRequest = {
   challengeId: string;
 };
 
+interface Params {
+  gte: number;
+  tokenId: string;
+}
+
 export interface ChallengeWithStatus {
   id: number;
   created_at: string;
   display_name: string;
   auto_claim: boolean;
-  params: object;
+  params: Params;
   contract_address: string;
   points: number;
   game_id: number;
@@ -167,12 +173,47 @@ export interface ChallengeWithStatus {
   difficulty_type: string;
   function_type: string;
   badge_id: number;
+  challenge_id: string;
   user_challenge_status: Status[];
 }
 
 export interface Status {
   status: string;
   user_address: string;
+}
+
+type ExploreContentResponse = {
+  content: {
+    ocsChallengeCard: {
+      contractAddress: string;
+      tokenId: string;
+      points: number;
+    };
+  };
+};
+
+async function getContentByIdUnauth(contentId: string) {
+  const url = `${WALLET_API_BASE_URL}/rpc/v2/explore/getContentByIdUnauth?surface=1&id=${contentId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Coinbase API fetch failed:', response.status);
+      return null;
+    }
+
+    const result: ExploreContentResponse = await response.json();
+    return result.content;
+  } catch (error) {
+    console.error('Coinbase API fetch failed:', error);
+    return null;
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -213,12 +254,20 @@ export async function POST(request: NextRequest) {
     );
   }
   const challenge = challengeData.data;
+  const exploreChaellengeId = challenge.challenge_id;
+  if (!exploreChaellengeId) {
+    console.error('explore challenge id not found');
+    return new Response(
+      `Unable to claim challenge for challengeId: ${challengeId}, gameId: ${gameId}.`,
+      { status: 400 }
+    );
+  }
   if (challenge.user_challenge_status.length > 0) {
     //challenge already claimed
     console.log(
       `challenge already claimed: ${challenge.user_challenge_status[0].status}`
     );
-    await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt)
+    await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt);
     return NextResponse.json({ success: true, message: 'challenge-claimed' });
   }
 
@@ -229,9 +278,9 @@ export async function POST(request: NextRequest) {
   ) {
     console.error(
       'invalid body params for challenge:' +
-      challenge.id +
-      ' function type:' +
-      challenge.function_type
+        challenge.id +
+        ' function type:' +
+        challenge.function_type
     );
     return NextResponse.json(
       {
@@ -247,9 +296,9 @@ export async function POST(request: NextRequest) {
   if (checkFunc === undefined) {
     console.error(
       'check function is undefined:' +
-      challenge.function_type +
-      ' challenge id:' +
-      challenge.id
+        challenge.function_type +
+        ' challenge id:' +
+        challenge.id
     );
     return NextResponse.json(
       {
@@ -259,6 +308,21 @@ export async function POST(request: NextRequest) {
       { status: 405 }
     );
   }
+
+  const exploreContent = await getContentByIdUnauth(exploreChaellengeId);
+  if (!exploreContent) {
+    console.error(
+      `explore content not found for exploreChaellengeId: ${exploreChaellengeId}`
+    );
+    return new Response(
+      `Unable to claim challenge for challengeId: ${challengeId}, gameId: ${gameId}.`,
+      { status: 400 }
+    );
+  }
+
+  const tokenId = exploreContent?.ocsChallengeCard?.tokenId;
+  const contractAddress = exploreContent?.ocsChallengeCard?.contractAddress;
+  const points = exploreContent?.ocsChallengeCard?.points;
 
   const network = challenge.network as Networks;
   const provider = providers[network];
@@ -287,16 +351,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const d = { ...body, ...(challenge as object) };
-  if (await checkFunc(d, provider)) {
+  const { params } = challenge;
+  params.tokenId = tokenId;
+  const checkFuncData = {
+    ...body,
+    ...challenge,
+    contract_address: contractAddress,
+    params,
+  };
+  if (await checkFunc(checkFuncData, provider)) {
     try {
       let userAddress =
         await MapChallengeTypeUserAddress[
           challenge.function_type as keyof typeof CheckFunctions
-        ](d);
+        ](checkFuncData);
       if (userAddress === undefined) {
         throw new Error(
-          'user address could not be mapped and is undefined:' + d
+          'user address could not be mapped and is undefined:' + checkFuncData
         );
       }
 
@@ -307,7 +378,7 @@ export async function POST(request: NextRequest) {
             user_address: userAddress,
             challenge_id: challenge.id,
             status: ChallengeStatus.COMPLETE,
-            points: challenge.points as number,
+            points: points,
             game_id: gameIdInBigInt,
           },
           {
@@ -321,7 +392,7 @@ export async function POST(request: NextRequest) {
         throw claim.error;
       }
 
-      await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt)
+      await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt);
     } catch (e) {
       console.error(e);
       return NextResponse.json(
@@ -356,7 +427,11 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 // creates badge for user if it exists on challenge
-async function createUserBadge(badgeId: number, userAddress: string, gameIdInBigInt: bigint | null) {
+async function createUserBadge(
+  badgeId: number,
+  userAddress: string,
+  gameIdInBigInt: bigint | null
+) {
   if (badgeId) {
     const badgeUpsert = await supabase
       .from('user_badges')
