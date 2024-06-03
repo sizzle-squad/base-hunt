@@ -359,11 +359,12 @@ export async function POST(request: NextRequest) {
     contract_address: contractAddress,
     params,
   };
-  let userCompletedChallenge = await checkFunc(checkFuncData, provider)
-  if(userAddress.toLowerCase().startsWith('0x000000')) {
+  let userCompletedChallenge = await checkFunc(checkFuncData, provider);
+  if (userAddress.toLowerCase().startsWith('0x000000')) {
     // temporary loadtest bypass, loadtest user address starts with 0x000000
+    // 50% chance to complete challenge
     // TODO: Remove before launch
-    userCompletedChallenge = true;
+    userCompletedChallenge = Math.random() < 0.5;
   }
   if (userCompletedChallenge) {
     try {
