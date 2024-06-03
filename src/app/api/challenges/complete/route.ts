@@ -246,6 +246,7 @@ export async function POST(request: NextRequest) {
     .eq('game_id', gameIdInBigInt)
     .eq('user_challenge_status.user_address', userAddress.toLowerCase())
     .single();
+
   if (challengeData.error) {
     console.error(challengeData.error);
     return new Response(
@@ -253,6 +254,7 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
+
   const challenge = challengeData.data;
   const exploreChaellengeId = challenge.challenge_id;
   if (!exploreChaellengeId) {

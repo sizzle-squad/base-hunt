@@ -9,6 +9,8 @@ const supabase = createClient<Database>(
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
+const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
+
 // Opt in to the game
 export async function POST(request: NextRequest) {
   const body: OptInPostBodyType = await request.json();
@@ -40,4 +42,20 @@ export async function POST(request: NextRequest) {
   return optInAndReferralData.status === 200
     ? NextResponse.json({ success: true })
     : NextResponse.json({ success: false });
+}
+
+export async function OPTIONS(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  if (!origin || !ALLOWED_ORGINS.includes(origin)) {
+    return new Response('Forbidden', { status: 403 });
+  }
+
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': origin || '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }
