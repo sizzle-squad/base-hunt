@@ -351,7 +351,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { params } = challenge;
+  var { params } = challenge;
+  if (!params) {
+    params = {
+      gte: 0,
+      tokenId: '',
+    };
+  }
   params.tokenId = tokenId;
   const checkFuncData = {
     ...body,
