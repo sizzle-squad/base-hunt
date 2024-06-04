@@ -219,7 +219,7 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
       id: '',
       name: 'level-0',
       thresholdPoints: 0,
-      level: '1',
+      level: '0',
     };
     nextLevel = levels[0];
   }
