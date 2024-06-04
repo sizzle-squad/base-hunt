@@ -60,7 +60,19 @@ export async function POST(req: Request) {
   if (levelData.data && levelData.data.length > 0) {
     for (let i = 0; i < levelData.data.length; i++) {
       const level = levelData.data[i];
-      await airdropNft(body.record.user_address, level.airdrop_command);
+
+      try {
+        await airdropNft(body.record.user_address, level.airdrop_command);
+        await supabase
+          .from('level_data')
+          .upsert({ value: level }, { ignoreDuplicates: true });
+      } catch (error) {
+        console.log(error);
+        return NextResponse.json({
+          status: 'error',
+          message: `failed to airdrop ${level} NFT`,
+        });
+      }
     }
   } else {
     console.log(
@@ -76,5 +88,5 @@ export async function POST(req: Request) {
     );
   }
 
-  return NextResponse.json({});
+  return NextResponse.json({ status: 'ok' });
 }

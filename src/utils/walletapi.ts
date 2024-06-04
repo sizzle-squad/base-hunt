@@ -33,7 +33,8 @@ export async function airdropNft(
     userAddress: userAddress,
     command: command,
     nonce:
-      nonce ?? ethers.keccak256(ethers.toUtf8Bytes('__eth_denver_base_hunt__')),
+      nonce ??
+      ethers.keccak256(ethers.toUtf8Bytes('__ocs_gamification_2024__')),
   };
 
   const signature = ethers.Signature.from(
