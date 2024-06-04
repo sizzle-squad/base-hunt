@@ -63,9 +63,6 @@ export async function POST(req: Request) {
 
       try {
         await airdropNft(body.record.user_address, level.airdrop_command);
-        await supabase
-          .from('level_data')
-          .upsert({ value: level }, { ignoreDuplicates: true });
       } catch (error) {
         console.log(error);
         return NextResponse.json({

@@ -172,14 +172,14 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
   if (!levels || levels.length === 0) {
     return [currentLevel, nextLevel];
   }
-  const emptyLevel: LevelDataType = {
+  const maxLevel: LevelDataType = {
     id: 0,
     created_at: '',
-    game_id: BigInt(0),
-    name: '',
+    game_id: BigInt(2),
+    name: 'max level',
     threshold_points: Number.MAX_SAFE_INTEGER,
     airdrop_command: '',
-    level: '',
+    level: 'max level',
     contract_address: '',
     minter: '',
     image_url: null,
@@ -191,7 +191,7 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
     prize_description: null,
   };
 
-  levels.push(emptyLevel);
+  levels.push(maxLevel);
   //inplace sort by threshold points
   levels.sort((a: LevelDataType, b: LevelDataType) => {
     if (a.threshold_points > b.threshold_points) {
