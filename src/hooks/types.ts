@@ -138,6 +138,12 @@ export type ChallengeMetricsState = {
   points: number;
 };
 
+export type ChallengeCompletionState = {
+  id: number;
+  challengeId: string;
+  hasCompleted: boolean;
+};
+
 export type BadgeState = {
   badgeId: number;
   badgeName: string;
