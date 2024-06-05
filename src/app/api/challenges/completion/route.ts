@@ -26,9 +26,9 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const gameId = toBigInt(searchParams.get('gameId') as string);
   const userAddress = searchParams.get('userAddress') as string;
-  const challengeIds = searchParams.getAll('challengeIds').map(String);
+  const challengeIds = searchParams.get('challengeIds')?.split(',').map(String);
 
-  if (!gameId || !userAddress || challengeIds.length === 0) {
+  if (!gameId || !userAddress || !challengeIds || challengeIds.length === 0) {
     return new Response(
       'Missing parameters: gameId, userAddress, or challengeIds',
       {
@@ -80,26 +80,21 @@ export async function GET(request: NextRequest) {
     }
 
     if (!userChallengeStatusData || userChallengeStatusData.length === 0) {
-      return NextResponse.json(
-        {
-          error: `No available metrics found for gameId: ${gameId} and userAddress: ${userAddress}`,
-        },
-        { status: 400 }
-      );
+      return NextResponse.json([]);
     }
 
-    let challengeConfigurationsMap = new Map<
-      number,
-      ChallengeConfigurationType
-    >();
-    challengeConfigurations.forEach((config) => {
-      challengeConfigurationsMap.set(config.id, config);
+    let userChallengeStatusMap = new Map<number, UserChallengeStatusType>();
+    userChallengeStatusData.forEach((userChallengeStatus) => {
+      userChallengeStatusMap.set(
+        userChallengeStatus.challenge_id,
+        userChallengeStatus
+      );
     });
 
     return NextResponse.json(
       mapToChallengeCompletionState(
-        userChallengeStatusData,
-        challengeConfigurationsMap
+        challengeConfigurations,
+        userChallengeStatusMap
       )
     );
   } catch (error) {
@@ -114,16 +109,19 @@ export async function GET(request: NextRequest) {
 }
 
 function mapToChallengeCompletionState(
-  userChallengeStatusData: UserChallengeStatusType[],
-  challengeConfigurationsMap: Map<number, ChallengeConfigurationType>
+  challengeConfigurations: ChallengeConfigurationType[],
+  challengeConfigurationsMap: Map<number, UserChallengeStatusType>
 ): ChallengeCompletionState[] {
-  return userChallengeStatusData.map((userChallengeStatus) => {
+  return challengeConfigurations.map((challengeConfiguration) => {
+    let userChallengeStatus = challengeConfigurationsMap.get(
+      challengeConfiguration.id
+    );
     return {
-      id: userChallengeStatus.challenge_id,
-      challengeId:
-        challengeConfigurationsMap.get(userChallengeStatus.challenge_id)
-          ?.challenge_id ?? '',
-      hasCompleted: userChallengeStatus.status === ChallengeStatus.COMPLETE,
+      id: challengeConfiguration.id,
+      challengeId: challengeConfiguration.challenge_id,
+      hasCompleted: userChallengeStatus
+        ? userChallengeStatus.status === ChallengeStatus.COMPLETE
+        : false,
     };
   });
 }
