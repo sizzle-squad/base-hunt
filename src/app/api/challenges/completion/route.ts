@@ -47,10 +47,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (!userChallengeStatusData || userChallengeStatusData.length === 0) {
-      return NextResponse.json([]);
-    }
-
     let userChallengeStatusMap = new Map<string, UserChallengeStatusType>();
     userChallengeStatusData.forEach((userChallengeStatus) => {
       userChallengeStatusMap.set(
