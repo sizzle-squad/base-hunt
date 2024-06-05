@@ -47,7 +47,7 @@ export type Database = {
         }
         Insert: {
           badge_id?: number | null
-          challenge_id?: string
+          challenge_id: string
           content_data?: Json | null
           contract_address?: string | null
           created_at?: string
@@ -471,7 +471,7 @@ export type Database = {
       }
       user_challenge_status: {
         Row: {
-          challenge_id: number
+          challenge_id: string
           created_at: string
           game_id: number
           id: number
@@ -480,7 +480,7 @@ export type Database = {
           user_address: string
         }
         Insert: {
-          challenge_id: number
+          challenge_id: string
           created_at?: string
           game_id?: number
           id?: number
@@ -489,7 +489,7 @@ export type Database = {
           user_address: string
         }
         Update: {
-          challenge_id?: number
+          challenge_id?: string
           created_at?: string
           game_id?: number
           id?: number
@@ -497,15 +497,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["challenge_status"]
           user_address?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_challenge_status_challenge_id_fkey"
-            columns: ["challenge_id"]
-            isOneToOne: false
-            referencedRelation: "challenge_configuration"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       user_referrals: {
         Row: {
@@ -718,6 +710,13 @@ export type Database = {
           user_address: string
           count: number
         }[]
+      }
+      get_user_challenge_status: {
+        Args: {
+          _user_address: string
+          _challenge_ids: Json
+        }
+        Returns: Json
       }
       getbadgestate: {
         Args: {

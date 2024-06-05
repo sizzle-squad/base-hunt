@@ -108,7 +108,7 @@ export async function POST(req: Request) {
           .upsert(
             {
               user_address: userAddress,
-              challenge_id: c.id,
+              challenge_id: c.id.toString(),
               status: ChallengeStatus.COMPLETE,
               points: c.points as number,
               game_id: c.game_id as number,
