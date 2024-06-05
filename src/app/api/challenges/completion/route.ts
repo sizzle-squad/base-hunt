@@ -10,15 +10,10 @@ const supabase = createClient<Database>(
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
-interface ChallengeConfigurationType {
-  id: number;
-  challenge_id: string;
-}
-
 interface UserChallengeStatusType {
   id: number;
   user_address: string;
-  challenge_id: number;
+  challenge_id: string;
   status: string;
 }
 
@@ -38,38 +33,11 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Fetch challenge configuration based on challengeIds
-    const { data: challengeConfigurations, error: configError } = await supabase
-      .from('challenge_configuration')
-      .select('*')
-      .in('challenge_id', challengeIds);
-
-    if (configError) {
-      console.error(configError);
-      return new Response('Error querying challenge configurations', {
-        status: 500,
-      });
-    }
-
-    if (!challengeConfigurations || challengeConfigurations.length === 0) {
-      return NextResponse.json(
-        {
-          error: `No challenge configurations found for the provided challengeIds`,
-        },
-        { status: 400 }
-      );
-    }
-
-    // Extract challenge IDs from fetched challenge configurations
-    const challengeIdsFromConfigurations = challengeConfigurations.map(
-      (config) => config.id
-    );
-
     // Fetch user challenge status based on userAddress and the challenge IDs from configurations
     const { data: userChallengeStatusData, error: statusError } = await supabase
       .from('user_challenge_status')
       .select('*')
-      .in('challenge_id', challengeIdsFromConfigurations)
+      .in('challenge_id', challengeIds)
       .eq('user_address', userAddress.toLowerCase());
 
     if (statusError) {
@@ -83,7 +51,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json([]);
     }
 
-    let userChallengeStatusMap = new Map<number, UserChallengeStatusType>();
+    let userChallengeStatusMap = new Map<string, UserChallengeStatusType>();
     userChallengeStatusData.forEach((userChallengeStatus) => {
       userChallengeStatusMap.set(
         userChallengeStatus.challenge_id,
@@ -91,11 +59,23 @@ export async function GET(request: NextRequest) {
       );
     });
 
+    // add missing challenges with status NOT_STARTED
+    challengeIds.forEach((challengeId) => {
+      if (!userChallengeStatusMap.has(challengeId)) {
+        userChallengeStatusData.push({
+          id: 0,
+          user_address: userAddress,
+          challenge_id: challengeId,
+          status: ChallengeStatus.NOT_STARTED,
+          created_at: '',
+          game_id: 0,
+          points: 0,
+        });
+      }
+    });
+
     return NextResponse.json(
-      mapToChallengeCompletionState(
-        challengeConfigurations,
-        userChallengeStatusMap
-      )
+      mapToChallengeCompletionState(userChallengeStatusData)
     );
   } catch (error) {
     console.error(error);
@@ -109,19 +89,13 @@ export async function GET(request: NextRequest) {
 }
 
 function mapToChallengeCompletionState(
-  challengeConfigurations: ChallengeConfigurationType[],
-  challengeConfigurationsMap: Map<number, UserChallengeStatusType>
+  userChallengeData: UserChallengeStatusType[]
 ): ChallengeCompletionState[] {
-  return challengeConfigurations.map((challengeConfiguration) => {
-    let userChallengeStatus = challengeConfigurationsMap.get(
-      challengeConfiguration.id
-    );
+  return userChallengeData.map((userChallenge) => {
     return {
-      id: challengeConfiguration.id,
-      challengeId: challengeConfiguration.challenge_id,
-      hasCompleted: userChallengeStatus
-        ? userChallengeStatus.status === ChallengeStatus.COMPLETE
-        : false,
+      id: userChallenge.id,
+      challengeId: userChallenge.challenge_id,
+      hasCompleted: userChallenge.status === ChallengeStatus.COMPLETE,
     };
   });
 }
