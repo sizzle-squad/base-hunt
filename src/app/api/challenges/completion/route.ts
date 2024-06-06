@@ -59,12 +59,12 @@ export async function GET(request: NextRequest) {
     challengeIds.forEach((challengeId) => {
       if (!userChallengeStatusMap.has(challengeId)) {
         userChallengeStatusData.push({
-          id: 0,
+          id: Math.floor(Math.random() * 1000) + 1000, // ID doesn't matter, generate random int
           user_address: userAddress,
           challenge_id: challengeId,
           status: ChallengeStatus.NOT_STARTED,
           created_at: '',
-          game_id: 0,
+          game_id: Number(gameId),
           points: 0,
         });
       }
