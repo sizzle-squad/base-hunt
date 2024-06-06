@@ -559,7 +559,15 @@ export type Database = {
           status?: Database["public"]["Enums"]["challenge_status"]
           user_address?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_status_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_configuration"
+            referencedColumns: ["challenge_id"]
+          },
+        ]
       }
       user_referrals: {
         Row: {
