@@ -231,7 +231,6 @@ export async function POST(request: NextRequest) {
   }
 
   const gameIdInBigInt = toBigInt(gameId as string);
-  const challengeIdBigInt = toBigInt(challengeId as string);
   const challengeData = await supabase
     .from('challenge_configuration')
     .select<string, ChallengeWithStatus>(
@@ -242,7 +241,7 @@ export async function POST(request: NextRequest) {
       status
     )`
     )
-    .eq('id', challengeIdBigInt)
+    .eq('challenge_id', challengeId)
     .eq('game_id', gameIdInBigInt)
     .eq('user_challenge_status.user_address', userAddress.toLowerCase())
     .single();
@@ -256,8 +255,8 @@ export async function POST(request: NextRequest) {
   }
 
   const challenge = challengeData.data;
-  const exploreChaellengeId = challenge.challenge_id;
-  if (!exploreChaellengeId) {
+  const exploreChallengeId = challenge.challenge_id;
+  if (!exploreChallengeId) {
     console.error('explore challenge id not found');
     return new Response(
       `Unable to claim challenge for challengeId: ${challengeId}, gameId: ${gameId}.`,
@@ -311,10 +310,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const exploreContent = await getContentByIdUnauth(exploreChaellengeId);
+  const exploreContent = await getContentByIdUnauth(exploreChallengeId);
   if (!exploreContent) {
     console.error(
-      `explore content not found for exploreChaellengeId: ${exploreChaellengeId}`
+      `explore content not found for exploreChaellengeId: ${exploreChallengeId}`
     );
     return new Response(
       `Unable to claim challenge for challengeId: ${challengeId}, gameId: ${gameId}.`,

@@ -89,6 +89,68 @@ export type Database = {
           },
         ]
       }
+      challenge_configuration_duplicate: {
+        Row: {
+          badge_id: number | null
+          challenge_id: string
+          content_data: Json | null
+          contract_address: string | null
+          created_at: string
+          display_name: string
+          function_type:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
+          game_id: number | null
+          id: number
+          network: Database["public"]["Enums"]["networks"] | null
+          params: Json | null
+          points: number
+          type: Database["public"]["Enums"]["challenge_type"]
+        }
+        Insert: {
+          badge_id?: number | null
+          challenge_id: string
+          content_data?: Json | null
+          contract_address?: string | null
+          created_at?: string
+          display_name: string
+          function_type?:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
+          game_id?: number | null
+          id?: number
+          network?: Database["public"]["Enums"]["networks"] | null
+          params?: Json | null
+          points: number
+          type: Database["public"]["Enums"]["challenge_type"]
+        }
+        Update: {
+          badge_id?: number | null
+          challenge_id?: string
+          content_data?: Json | null
+          contract_address?: string | null
+          created_at?: string
+          display_name?: string
+          function_type?:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
+          game_id?: number | null
+          id?: number
+          network?: Database["public"]["Enums"]["networks"] | null
+          params?: Json | null
+          points?: number
+          type?: Database["public"]["Enums"]["challenge_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_configuration_duplicate_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badge_configuration"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guild_configuration: {
         Row: {
           created_at: string
@@ -497,7 +559,15 @@ export type Database = {
           status?: Database["public"]["Enums"]["challenge_status"]
           user_address?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_status_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_configuration"
+            referencedColumns: ["challenge_id"]
+          },
+        ]
       }
       user_referrals: {
         Row: {
