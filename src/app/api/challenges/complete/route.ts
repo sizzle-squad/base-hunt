@@ -360,12 +360,14 @@ export async function POST(request: NextRequest) {
     contract_address: contractAddress,
     params,
   };
+
   let userCompletedChallenge = await checkFunc(checkFuncData, provider);
   if (userAddress.toLowerCase().startsWith('0x000000')) {
     // temporary loadtest bypass, loadtest user address starts with 0x000000
     // TODO: Remove before launch
     userCompletedChallenge = true;
   }
+
   if (userCompletedChallenge) {
     try {
       let userAddress =
@@ -383,7 +385,7 @@ export async function POST(request: NextRequest) {
         .upsert(
           {
             user_address: userAddress,
-            challenge_id: challenge.id,
+            challenge_id: challenge.challenge_id,
             status: ChallengeStatus.COMPLETE,
             points: points,
             game_id: gameIdInBigInt,
@@ -414,7 +416,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ success: true, message: 'ok' });
+  return NextResponse.json({ success: true, message: 'challenge-completed' });
 }
 
 export async function OPTIONS(request: NextRequest) {
