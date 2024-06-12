@@ -879,6 +879,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      reward_referral: {
+        Args: {
+          _game_id: number
+          _referree_address: string
+        }
+        Returns: undefined
+      }
       update_accumulate_user_score: {
         Args: {
           _game_id: number
