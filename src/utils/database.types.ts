@@ -601,33 +601,27 @@ export type Database = {
           created_at: string
           game_id: number | null
           id: number
-          last_spin: number | null
-          last_spin_at: string | null
-          total_spins: number | null
+          spin_result: number | null
           user_address: string | null
         }
         Insert: {
           created_at?: string
           game_id?: number | null
           id?: number
-          last_spin?: number | null
-          last_spin_at?: string | null
-          total_spins?: number | null
+          spin_result?: number | null
           user_address?: string | null
         }
         Update: {
           created_at?: string
           game_id?: number | null
           id?: number
-          last_spin?: number | null
-          last_spin_at?: string | null
-          total_spins?: number | null
+          spin_result?: number | null
           user_address?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "user_spins_last_spin_fkey"
-            columns: ["last_spin"]
+            foreignKeyName: "user_spins_spin_result_fkey"
+            columns: ["spin_result"]
             isOneToOne: false
             referencedRelation: "wheel_configuration"
             referencedColumns: ["id"]

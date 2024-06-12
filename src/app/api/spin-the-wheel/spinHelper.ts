@@ -5,9 +5,7 @@ export type UserSpinType = {
   created_at: string;
   game_id: number;
   user_address: string;
-  last_spin_at: string;
   last_spin_id: number;
-  total_spins: number;
 };
 
 const resetHourUtc = 16; // Reset time for STW is 9 AM PST = 4PM UTC
@@ -30,7 +28,7 @@ function getTodayResetTime(): Date {
 export function hasAvailableSpin(lastSpinAt: string): boolean {
   const todayResetTime = getTodayResetTime();
 
-  // Convert last_spin_at to a timestamp
+  // Convert lastSpinAt to a timestamp
   const lastSpinTime = new Date(lastSpinAt).getTime();
 
   // If lastSpinTime is before today's reset time, the user has a spin available
@@ -99,7 +97,6 @@ export function getUserSpinData(
       userAddress: '',
       hasAvailableSpin: true,
       lastSpinResult: null,
-      totalSpins: 0,
     };
   }
 
@@ -107,9 +104,8 @@ export function getUserSpinData(
     id: spinData.id,
     gameId: spinData.game_id,
     userAddress: spinData.user_address,
-    hasAvailableSpin: hasAvailableSpin(spinData.last_spin_at),
+    hasAvailableSpin: hasAvailableSpin(spinData.created_at),
     lastSpinResult:
-      spinOptions.find((option) => option.id == spinData.last_spin) ?? null,
-    totalSpins: spinData.total_spins,
+      spinOptions.find((option) => option.id == spinData.spin_result) ?? null,
   } as SpinData;
 }
