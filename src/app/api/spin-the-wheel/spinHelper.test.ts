@@ -41,10 +41,8 @@ const mockSpinOptions = [
 const mockUserSpinData = {
   id: 34,
   game_id: 2,
-  last_spin: 2,
-  created_at: '2024-05-17T18:05:51.071315+00:00',
-  total_spins: 1,
-  last_spin_at: '2024-05-17T18:05:50.817+00:00',
+  spin_result: 2,
+  created_at: '2024-05-17T18:05:50.817+00:00',
   user_address: '0xf4491fffa96382d48949cb4fffa39a3d6eb9b11a',
 };
 
@@ -76,7 +74,6 @@ describe('getUserSpinData', () => {
         probability: 25,
         type: SpinOptionTypeEnum.POINTS,
       },
-      totalSpins: 1,
     });
   });
 
@@ -90,7 +87,6 @@ describe('getUserSpinData', () => {
       userAddress: '',
       hasAvailableSpin: true,
       lastSpinResult: null,
-      totalSpins: 0,
     });
   });
 });

@@ -122,7 +122,6 @@ export type SpinData = {
   userAddress: string;
   hasAvailableSpin: boolean;
   lastSpinResult: SpinOption | null;
-  totalSpins: number;
 };
 
 export type SpinTheWheelState = {
