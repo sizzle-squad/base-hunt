@@ -893,9 +893,7 @@ export type Database = {
           _game_id: number
           _user_address: string
           _last_spin_id: number
-          _total_spins: number
           _points_increment: number
-          _last_spin_at: string
         }
         Returns: Record<string, unknown>
       }

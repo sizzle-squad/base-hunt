@@ -9,7 +9,6 @@ import {
   SpinTheWheelState,
 } from '../../../../hooks/types';
 import {
-  currentTimeUTC,
   getAllSpins,
   getEnabledSpins,
   getRandomOutcome,
@@ -90,9 +89,7 @@ export async function POST(request: NextRequest) {
       _game_id: gameId,
       _user_address: userAddress.toLowerCase(),
       _last_spin_id: generatedSpin.id,
-      _total_spins: 0,
       _points_increment: generatedSpin.points,
-      _last_spin_at: currentTimeUTC(),
     });
 
     if (saveSpin.error) {
