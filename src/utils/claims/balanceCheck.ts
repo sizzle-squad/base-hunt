@@ -53,11 +53,9 @@ const balanceOfTokenIdABI = [
 ];
 
 export type CheckBalanceConfiguration = {
-  contract_address: string;
-  params: {
-    gte: number;
-    tokenId?: number;
-  };
+  contractAddress: string;
+  tokenAmount: string;
+  tokenId?: string;
 };
 
 export type CheckBalanceParams = {
@@ -69,13 +67,13 @@ export async function checkBalance(
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const contract = new ethers.Contract(
-    params.contract_address,
+    params.contractAddress,
     balanceOfABI,
     provider
   );
   const balance = await contract.balanceOf(params.userAddress);
   const b = ethers.getBigInt(balance);
-  return b >= ethers.toBigInt(params.params.gte);
+  return b >= ethers.toBigInt(params.tokenAmount);
 }
 
 export async function checkTokenIdBalance(
@@ -83,14 +81,11 @@ export async function checkTokenIdBalance(
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const contract = new ethers.Contract(
-    params.contract_address,
+    params.contractAddress,
     balanceOfTokenIdABI,
     provider
   );
-  const balance = await contract.balanceOf(
-    params.userAddress,
-    params.params.tokenId
-  );
+  const balance = await contract.balanceOf(params.userAddress, params.tokenId);
   const b = ethers.getBigInt(balance);
-  return b >= ethers.toBigInt(params.params.gte);
+  return b >= ethers.toBigInt(params.tokenAmount);
 }

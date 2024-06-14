@@ -188,6 +188,7 @@ type ExploreContentResponse = {
       contractAddress: string;
       tokenId: string;
       points: number;
+      tokenAmount: string;
     };
   };
 };
@@ -316,14 +317,17 @@ export async function POST(request: NextRequest) {
       `explore content not found for exploreChaellengeId: ${exploreChallengeId}`
     );
     return new Response(
-      `Unable to claim challenge for challengeId: ${challengeId}, gameId: ${gameId}.`,
+      `Experience not found for challengeId: ${challengeId}, gameId: ${gameId}.`,
       { status: 400 }
     );
   }
 
+  console.log(exploreContent.ocsChallengeCard);
+
   const tokenId = exploreContent?.ocsChallengeCard?.tokenId;
   const contractAddress = exploreContent?.ocsChallengeCard?.contractAddress;
   const points = exploreContent?.ocsChallengeCard?.points;
+  const tokenAmount = exploreContent?.ocsChallengeCard?.tokenAmount;
 
   const network = challenge.network as Networks;
   const provider = providers[network];
@@ -352,13 +356,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { params } = challenge;
-  params.tokenId = tokenId;
   const checkFuncData = {
     ...body,
     ...challenge,
-    contract_address: contractAddress,
-    params,
+    contractAddress,
+    tokenAmount,
+    tokenId,
   };
 
   let userCompletedChallenge = await checkFunc(checkFuncData, provider);
