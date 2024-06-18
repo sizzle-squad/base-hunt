@@ -7,11 +7,10 @@ import {
   MapChallengeTypeUserAddress,
   ValidateBodyParams,
 } from '@/utils/claims/selectors';
-import { ChallengeStatus } from '@/utils/database.enums';
+import { ChallengeStatus, CheckFunctionType } from '@/utils/database.enums';
 import { providers } from '@/utils/ethereum';
 import { toBigInt } from '@/utils/toBigInt';
 import { WALLET_API_BASE_URL } from '@/utils/constants';
-import { checkBalance, checkTokenIdBalance } from '@/utils/claims/balanceCheck';
 
 const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
 
@@ -35,16 +34,7 @@ export interface ChallengeWithStatus {
   id: number;
   created_at: string;
   display_name: string;
-  auto_claim: boolean;
-  params: Params;
-  contract_address: string;
-  points: number;
   game_id: number;
-  type: string;
-  network: string;
-  difficulty_type: string;
-  function_type: string;
-  badge_id: number;
   challenge_id: string;
   user_challenge_status: Status[];
 }
@@ -106,72 +96,34 @@ export async function POST(request: NextRequest) {
   }
 
   const gameIdInBigInt = toBigInt(gameId as string);
-  const challengeData = await supabase
-    .from('challenge_configuration')
-    .select<string, ChallengeWithStatus>(
-      `
-    *,
-    user_challenge_status (
-      user_address,
-      status
-    )`
-    )
-    .eq('challenge_id', challengeId)
+  const userChallengeStatusData = await supabase
+    .from('user_challenge_status')
+    .select('user_address, status')
     .eq('game_id', gameIdInBigInt)
-    .eq('user_challenge_status.user_address', userAddress.toLowerCase())
-    .single();
+    .eq('user_address', userAddress.toLowerCase())
+    .eq('challenge_id', challengeId);
 
-  if (challengeData.error) {
-    console.error(challengeData.error);
+  if (userChallengeStatusData.error) {
+    console.error(userChallengeStatusData.error);
     return new Response(
       `Unable to claim challenge for challengeId: ${challengeId}, gameId: ${gameId}.`,
       { status: 400 }
     );
   }
 
-  const challenge = challengeData.data;
-  const exploreChallengeId = challenge.challenge_id;
-  if (!exploreChallengeId) {
-    console.error('explore challenge id not found');
-    return new Response(
-      `Unable to claim challenge for challengeId: ${challengeId}, gameId: ${gameId}.`,
-      { status: 400 }
-    );
-  }
+  const challengeStatus = userChallengeStatusData.data;
 
-  if (challenge.user_challenge_status.length > 0) {
+  if (challengeStatus.length > 0) {
     //challenge already claimed
-    console.log(
-      `challenge already claimed: ${challenge.user_challenge_status[0].status}`
-    );
+    console.log(`challenge already claimed: ${challengeStatus[0].status}`);
     // await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt);
     return NextResponse.json({ success: true, message: 'challenge-claimed' });
   }
 
-  if (
-    !ValidateBodyParams[challenge.function_type as keyof typeof CheckFunctions](
-      body
-    )
-  ) {
-    console.error(
-      'invalid body params for challenge:' +
-        challenge.id +
-        ' function type:' +
-        challenge.function_type
-    );
-    return NextResponse.json(
-      {
-        success: false,
-        message: 'invalid-body-params',
-      },
-      { status: 405 }
-    );
-  }
-
-  const exploreContent = await getContentByIdUnauth(exploreChallengeId);
+  const exploreContent = await getContentByIdUnauth(challengeId);
   if (!exploreContent) {
     console.error(
-      `explore content not found for exploreChaellengeId: ${exploreChallengeId}`
+      `explore content not found for exploreChaellengeId: ${challengeId}`
     );
     return new Response(
       `Experience not found for challengeId: ${challengeId}, gameId: ${gameId}.`,
@@ -187,16 +139,13 @@ export async function POST(request: NextRequest) {
   // Provider is always base mainnet
   const provider = providers['networks/base-mainnet'];
 
-  const checkFunc = getValidateFunction(
+  const checkFunctionType = getValidateFunctionType(
     exploreContent.ocsChallengeCard as ocsChallengeCard
   );
 
-  if (checkFunc === undefined) {
+  if (checkFunctionType === undefined) {
     console.error(
-      'check function is undefined:' +
-        challenge.function_type +
-        ' challenge id:' +
-        challenge.id
+      'check function is undefined:' + ' challenge id:' + challengeId
     );
 
     return NextResponse.json(
@@ -208,12 +157,21 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (provider === undefined) {
-    console.error('provider is undefined for network:' + challenge.network);
+  const checkFunc = CheckFunctions[checkFunctionType];
+
+  if (
+    !ValidateBodyParams[checkFunctionType as keyof typeof CheckFunctions](body)
+  ) {
+    console.error(
+      'invalid body params for challenge:' +
+        challengeId +
+        ' function type:' +
+        checkFunctionType
+    );
     return NextResponse.json(
       {
         success: false,
-        message: 'invalid-provider',
+        message: 'invalid-body-params',
       },
       { status: 405 }
     );
@@ -221,7 +179,7 @@ export async function POST(request: NextRequest) {
 
   const checkFuncData = {
     ...body,
-    ...challenge,
+    ...challengeStatus,
     contractAddress,
     tokenAmount,
     tokenId,
@@ -238,7 +196,7 @@ export async function POST(request: NextRequest) {
     try {
       let userAddress =
         await MapChallengeTypeUserAddress[
-          challenge.function_type as keyof typeof CheckFunctions
+          checkFunctionType as keyof typeof CheckFunctions
         ](checkFuncData);
       if (userAddress === undefined) {
         throw new Error(
@@ -251,7 +209,7 @@ export async function POST(request: NextRequest) {
         .upsert(
           {
             user_address: userAddress,
-            challenge_id: challenge.challenge_id,
+            challenge_id: challengeId,
             status: ChallengeStatus.COMPLETE,
             points: points,
             game_id: gameIdInBigInt,
@@ -329,10 +287,12 @@ export async function OPTIONS(request: NextRequest) {
 //   }
 // }
 
-function getValidateFunction(challenge: ocsChallengeCard) {
+function getValidateFunctionType(challenge: ocsChallengeCard) {
   if (!challenge.contractAddress) {
     return undefined;
   }
 
-  return challenge.tokenId ? checkTokenIdBalance : checkBalance;
+  return challenge.tokenId
+    ? CheckFunctionType.checkTokenIdBalance
+    : CheckFunctionType.checkBalance;
 }

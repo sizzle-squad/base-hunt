@@ -13,47 +13,12 @@ const supabase = createClient<Database>(
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
-export type ContentDataType = {
-  icon: string;
-  description: string;
-  image_url: string | null;
-  game_id: bigint;
-  cta_url: string | null;
-  cta_text: string | null;
-  cta_button_text: string | null;
-  display_order: number | 0;
-};
-
 async function mapChallengeState(
   challenge: Tables<'challenge_configuration'>
 ): Promise<Challenge> {
-  // forced to use unknown because of lack of support in Supabase type mapping
-  const {
-    icon,
-    description,
-    image_url,
-    game_id,
-    cta_url,
-    cta_text,
-    cta_button_text,
-    display_order,
-  } = challenge.content_data as unknown as ContentDataType;
-
   return {
     id: challenge.id,
-    name: challenge.display_name,
-    contractAddress: challenge.contract_address,
-    icon,
-    description,
-    imageUrl: image_url,
-    gameId: game_id as bigint,
-    ctaUrl: cta_url,
-    ctaText: cta_text,
-    ctaButtonText: cta_button_text,
-    challengeType: challenge.type,
-    type: challenge.type,
-    checkFunction: challenge.function_type,
-    displayOrder: display_order,
+    challengeId: challenge.challenge_id,
   };
 }
 
@@ -100,7 +65,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(formattedChallenges);
   } catch (error) {
     return NextResponse.json(
-      { error: `No available boosts found for gameId: ${gameId}` },
+      { error: `No available challenges found for gameId: ${gameId}` },
       { status: 400 }
     );
   }

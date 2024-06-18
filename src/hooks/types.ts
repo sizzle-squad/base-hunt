@@ -175,20 +175,7 @@ export enum BoostIconEnum {
 
 export type Challenge = {
   id: number;
-  name: string;
-  description: string;
-  contractAddress: string | null;
-  icon: string;
-  imageUrl: string | null;
-  gameId: bigint;
-  ctaUrl: string | null;
-  ctaText: string | null;
-  ctaButtonText: string | null;
-  challengeType: string;
-  type: string;
-  checkFunction: string | null;
-  isCompleted?: boolean;
-  displayOrder: number | 0;
+  challengeId: string;
 };
 
 export enum ChallengeTypeEnum {

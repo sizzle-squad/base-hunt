@@ -28,12 +28,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const badgeDataRes = await supabase.rpc(
-      'get_all_badges',
-      {
-        _game_id: Number(gameId),
-      }
-    );
+    const badgeDataRes = await supabase.rpc('get_all_badges', {
+      _game_id: Number(gameId),
+    });
     if (badgeDataRes.error) {
       console.log(badgeDataRes.error);
       return new Response('', { status: 500 });
@@ -41,20 +38,16 @@ export async function GET(request: NextRequest) {
 
     const badgeData = badgeDataRes.data as unknown as BadgeDataType[];
 
-    return NextResponse.json(
-      mapToBadgeState(badgeData)
-    );
+    return NextResponse.json(mapToBadgeState(badgeData));
   } catch (error) {
     return NextResponse.json(
-      { error: `No available boosts found for gameId: ${gameId}` },
+      { error: `No available badges found for gameId: ${gameId}` },
       { status: 400 }
     );
   }
 }
 
-function mapToBadgeState(
-  badgeData: BadgeDataType[]
-): BadgeState[] {
+function mapToBadgeState(badgeData: BadgeDataType[]): BadgeState[] {
   return badgeData.map((badgeDataItem) => {
     return {
       badgeId: badgeDataItem.badge_id,
