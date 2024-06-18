@@ -8,9 +8,7 @@ type Params = {
 
 export type CheckTokensConfiguration = {
   network: string;
-  params: {
-    gte: number;
-  };
+  tokenAmount: number;
 };
 
 export type CheckTokensCount = {
@@ -97,7 +95,7 @@ export async function checkTokensCount(
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const userAddress: `0x${string}` = params.userAddress as `0x${string}`;
-  const gte = params.params.gte || 5;
+  const gte = params.tokenAmount || 5;
   const chainId = networkToChainId[params.network] || 8453;
   const result = await getAllBalancesForChain({
     userAddress: userAddress,
@@ -124,7 +122,7 @@ export async function checkNftTokensCount(
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const userAddress: `0x${string}` = params.userAddress as `0x${string}`;
-  const gte = params.params.gte || 5;
+  const gte = params.tokenAmount || 5;
   const chainId = networkToChainId[params.network] || 8453;
   const numTokens = await getCollectiblesPortfolioTokens({
     userAddress: userAddress,

@@ -35,9 +35,7 @@ export interface TxHistoryTransaction {
 
 export type CheckTxCountBatchConfiguration = {
   contract_address: string;
-  params: {
-    gte?: number;
-  };
+  tokenAmount: number;
 };
 
 export type CheckTxCountBatchParams = {
@@ -81,7 +79,7 @@ export async function checkTxCountBatch(
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
   const rr = await getTxCountBatch([params.userAddress], provider);
-  return rr >= ethers.toBigInt(params.params.gte as number);
+  return rr >= ethers.toBigInt(params.tokenAmount as number);
 }
 
 export async function getTxCountBatch(
