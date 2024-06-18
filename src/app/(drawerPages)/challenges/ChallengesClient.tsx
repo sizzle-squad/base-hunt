@@ -127,38 +127,8 @@ export default function ChallengesPageClient({ refreshData }: Props) {
   const { claimChallenge } = useCompleteChallenge();
 
   const listData = useMemo(() => {
-    const mapped =
-      (challenges
-        ?.filter((challenge) => challenge.displayOrder > 0 || isBetaTester)
-        .map((challenge) => {
-          return {
-            id: challenge.id,
-            title: challenge.name,
-            description: challenge.description,
-            type: mapChallengeType(
-              challenge.challengeType as ChallengeTypeEnum
-            ),
-            contractAddress: challenge.contractAddress,
-            subtitle: '',
-            ctaUrl: challenge.ctaUrl,
-            ctaText: challenge.ctaText,
-            ctaButtonText: challenge.ctaButtonText,
-            isCompleted: challenge.isCompleted,
-            gameId: challenge.gameId,
-            checkFunction: challenge.checkFunction,
-            displayOrder: challenge.displayOrder,
-            imageUrl: challenge.imageUrl,
-          } as ChallengeEntry;
-        }) as ChallengeEntry[]) ?? [];
-
-    const challengeList = mapped.filter((challenge) => !challenge.isCompleted);
-    challengeList.sort((a, b) => {
-      return a.displayOrder - b.displayOrder;
-    });
-    const completedList = mapped.filter((challenge) => challenge.isCompleted);
-
-    return { challengeList, completedList };
-  }, [challenges, isBetaTester]);
+    return { challengeList: [], completedList: [] };
+  }, []);
 
   const [activeItem, setActiveItem] =
     useState<ListCardPropsForChallenges | null>(null);
@@ -318,7 +288,6 @@ export default function ChallengesPageClient({ refreshData }: Props) {
         <ChallengeList
           sectionTitle="Challenges"
           list={listData.challengeList}
-          onClick={handleToggleDrawer}
           isLoading={isChallengesLoading}
           displayGuildChallenge
         />

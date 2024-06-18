@@ -170,7 +170,6 @@ export function ChallengeList({
                 <CardMedia
                   component="img"
                   image={
-                    item.imageUrl ??
                     'https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg'
                   }
                   alt="challenge image"
