@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
   const badgeIdInBigInt = toBigInt(badgeId as string);
   const badgeData = await supabase
     .from('badge_configuration')
-    .select('')
+    .select('*')
     .eq('game_id', gameIdInBigInt)
     .eq('id', badgeIdInBigInt);
 
