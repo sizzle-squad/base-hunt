@@ -7,11 +7,10 @@ import {
   MapChallengeTypeUserAddress,
   ValidateBodyParams,
 } from '@/utils/claims/selectors';
-import { ChallengeStatus } from '@/utils/database.enums';
+import { ChallengeStatus, CheckFunctionType } from '@/utils/database.enums';
 import { providers } from '@/utils/ethereum';
 import { toBigInt } from '@/utils/toBigInt';
 import { WALLET_API_BASE_URL } from '@/utils/constants';
-import { checkBalance, checkTokenIdBalance } from '@/utils/claims/balanceCheck';
 
 const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
 
@@ -43,7 +42,6 @@ export interface ChallengeWithStatus {
   type: string;
   network: string;
   difficulty_type: string;
-  function_type: string;
   badge_id: number;
   challenge_id: string;
   user_challenge_status: Status[];
@@ -148,26 +146,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, message: 'challenge-claimed' });
   }
 
-  if (
-    !ValidateBodyParams[challenge.function_type as keyof typeof CheckFunctions](
-      body
-    )
-  ) {
-    console.error(
-      'invalid body params for challenge:' +
-        challenge.id +
-        ' function type:' +
-        challenge.function_type
-    );
-    return NextResponse.json(
-      {
-        success: false,
-        message: 'invalid-body-params',
-      },
-      { status: 405 }
-    );
-  }
-
   const exploreContent = await getContentByIdUnauth(exploreChallengeId);
   if (!exploreContent) {
     console.error(
@@ -187,22 +165,39 @@ export async function POST(request: NextRequest) {
   // Provider is always base mainnet
   const provider = providers['networks/base-mainnet'];
 
-  const checkFunc = getValidateFunction(
+  const checkFunctionType = getValidateFunctionType(
     exploreContent.ocsChallengeCard as ocsChallengeCard
   );
 
-  if (checkFunc === undefined) {
+  if (checkFunctionType === undefined) {
     console.error(
-      'check function is undefined:' +
-        challenge.function_type +
-        ' challenge id:' +
-        challenge.id
+      'check function is undefined:' + ' challenge id:' + challenge.id
     );
 
     return NextResponse.json(
       {
         success: false,
         message: 'invalid-check-function',
+      },
+      { status: 405 }
+    );
+  }
+
+  const checkFunc = CheckFunctions[checkFunctionType];
+
+  if (
+    !ValidateBodyParams[checkFunctionType as keyof typeof CheckFunctions](body)
+  ) {
+    console.error(
+      'invalid body params for challenge:' +
+        challenge.id +
+        ' function type:' +
+        checkFunctionType
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'invalid-body-params',
       },
       { status: 405 }
     );
@@ -238,7 +233,7 @@ export async function POST(request: NextRequest) {
     try {
       let userAddress =
         await MapChallengeTypeUserAddress[
-          challenge.function_type as keyof typeof CheckFunctions
+          checkFunctionType as keyof typeof CheckFunctions
         ](checkFuncData);
       if (userAddress === undefined) {
         throw new Error(
@@ -329,10 +324,12 @@ export async function OPTIONS(request: NextRequest) {
 //   }
 // }
 
-function getValidateFunction(challenge: ocsChallengeCard) {
+function getValidateFunctionType(challenge: ocsChallengeCard) {
   if (!challenge.contractAddress) {
     return undefined;
   }
 
-  return challenge.tokenId ? checkTokenIdBalance : checkBalance;
+  return challenge.tokenId
+    ? CheckFunctionType.checkTokenIdBalance
+    : CheckFunctionType.checkBalance;
 }

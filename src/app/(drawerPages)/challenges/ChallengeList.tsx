@@ -102,7 +102,6 @@ export function ChallengeList({
                 <CardMedia
                   component="img"
                   image={
-                    item.imageUrl ??
                     'https://go.wallet.coinbase.com/static/base-hunt/base-house.jpg'
                   }
                   alt="green iguana"
@@ -126,13 +125,13 @@ export function ChallengeList({
                   </Stack>
                   <Button
                     variant="outlined"
-                    bgColor={item.isCompleted ? Color.GRAY : 'none'}
+                    bgColor={'none'}
                     textColor="black"
                     width="fit-content"
                     px="12px"
                     py="8px"
                   >
-                    <Text>{item.isCompleted ? 'Claimed' : 'not claimed'}</Text>
+                    <Text>{'not claimed'}</Text>
                   </Button>
                 </Stack>
               </Stack>
@@ -200,14 +199,14 @@ export function ChallengeList({
                 </Stack>
                 <Button
                   variant="outlined"
-                  bgColor={item.isCompleted ? Color.GRAY : 'none'}
+                  bgColor={'none'}
                   textColor="black"
                   width="100%"
                   px="12px"
                   py="8px"
                   borderColor="#CED2DB"
                 >
-                  <Text>{item.isCompleted ? 'Claimed' : `Earn pts`}</Text>
+                  <Text>{`Earn pts`}</Text>
                 </Button>
               </Stack>
             </Card>

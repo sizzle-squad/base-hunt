@@ -40,7 +40,6 @@ export type Database = {
         Row: {
           badge_id: number | null
           challenge_id: string
-          content_data: Json | null
           contract_address: string | null
           created_at: string
           display_name: string
@@ -50,12 +49,10 @@ export type Database = {
           game_id: number | null
           id: number
           params: Json | null
-          type: Database["public"]["Enums"]["challenge_type"]
         }
         Insert: {
           badge_id?: number | null
           challenge_id: string
-          content_data?: Json | null
           contract_address?: string | null
           created_at?: string
           display_name: string
@@ -65,12 +62,10 @@ export type Database = {
           game_id?: number | null
           id?: number
           params?: Json | null
-          type: Database["public"]["Enums"]["challenge_type"]
         }
         Update: {
           badge_id?: number | null
           challenge_id?: string
-          content_data?: Json | null
           contract_address?: string | null
           created_at?: string
           display_name?: string
@@ -80,7 +75,6 @@ export type Database = {
           game_id?: number | null
           id?: number
           params?: Json | null
-          type?: Database["public"]["Enums"]["challenge_type"]
         }
         Relationships: [
           {
