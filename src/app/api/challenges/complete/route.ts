@@ -7,7 +7,7 @@ import {
   MapChallengeTypeUserAddress,
   ValidateBodyParams,
 } from '@/utils/claims/selectors';
-import { ChallengeStatus, Networks } from '@/utils/database.enums';
+import { ChallengeStatus } from '@/utils/database.enums';
 import { providers } from '@/utils/ethereum';
 import { toBigInt } from '@/utils/toBigInt';
 import { WALLET_API_BASE_URL } from '@/utils/constants';
@@ -121,7 +121,6 @@ export async function POST(request: NextRequest) {
     .eq('user_challenge_status.user_address', userAddress.toLowerCase())
     .single();
 
-  console.log({ challengeData });
   if (challengeData.error) {
     console.error(challengeData.error);
     return new Response(
@@ -185,8 +184,8 @@ export async function POST(request: NextRequest) {
   const points = exploreContent?.ocsChallengeCard?.points;
   const tokenAmount = exploreContent?.ocsChallengeCard?.tokenAmount;
 
-  const network = challenge.network as Networks;
-  const provider = providers[network];
+  // Provider is always base mainnet
+  const provider = providers['networks/base-mainnet'];
 
   const checkFunc = getValidateFunction(
     exploreContent.ocsChallengeCard as ocsChallengeCard
