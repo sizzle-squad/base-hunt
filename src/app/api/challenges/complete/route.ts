@@ -1,145 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 import { type NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { Alchemy, Network } from 'alchemy-sdk';
 
-import { ChallengeTypeEnum } from '@/hooks/types';
 import {
   CheckFunctions,
   MapChallengeTypeUserAddress,
   ValidateBodyParams,
 } from '@/utils/claims/selectors';
-import {
-  ChallengeStatus,
-  ChallengeType,
-  Networks,
-} from '@/utils/database.enums';
+import { ChallengeStatus } from '@/utils/database.enums';
 import { providers } from '@/utils/ethereum';
 import { toBigInt } from '@/utils/toBigInt';
 import { WALLET_API_BASE_URL } from '@/utils/constants';
-
-class Blockscout {
-  apiKey: string | undefined;
-  domain: string;
-  network: string;
-
-  constructor(settings: {
-    apiKey: string | undefined;
-    domain: string;
-    network: string;
-  }) {
-    this.apiKey = settings.apiKey;
-    this.domain = settings.domain;
-    this.network = settings.network;
-  }
-
-  async fetch(
-    action: string,
-    params = { startblock: 0, endblock: 99999999, sort: 'desc' }
-  ) {
-    try {
-      let url = `https://${this.network}.${this.domain}/api?module=account&action=${action}&apikey=${this.apiKey}`;
-      for (const [key, value] of Object.entries(params)) {
-        url += value ? `&${key}=${value}` : '';
-      }
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async getExternalTransfers(
-    params: { startblock: number; endblock: number; sort: string } | undefined
-  ) {
-    return await this.fetch('txlist', params);
-  }
-
-  async getERC20Transfers(
-    params: { startblock: number; endblock: number; sort: string } | undefined
-  ) {
-    return await this.fetch('tokentx', params);
-  }
-
-  async getAssetTransfers(params: {
-    categories: string[];
-    startblock: number;
-    endblock: number;
-    sort: string;
-  }) {
-    const { categories } = params;
-    let transfers: any[] = [];
-    for (const category of categories) {
-      if (category === 'external') {
-        const externalTransfers = await this.getExternalTransfers(params);
-        transfers = [...transfers, ...externalTransfers.result];
-      } else if (category === 'erc20') {
-        const erc20Transfers = await this.getERC20Transfers(params);
-        transfers = [...transfers, ...erc20Transfers.result];
-      }
-    }
-    return transfers;
-  }
-}
-
-const blockscoutSettings = {
-  apiKey: process.env.BLOCKSCOUT_API_KEY,
-  domain: 'blockscout.com',
-  network: 'base',
-};
-
-const blockscout = new Blockscout(blockscoutSettings);
-
-const settings = {
-  apiKey: process.env.ALCHEMY_ID,
-  network: Network.BASE_MAINNET,
-};
-
-const alchemy = new Alchemy(settings);
-
-async function verifyNftOwnership(userAddress: string, contracts: string[]) {
-  const response = await alchemy.nft.verifyNftOwnership(userAddress, contracts);
-  return response;
-}
-
-async function hasToken(
-  userAddress: string,
-  contract: string,
-  threshold: number
-) {
-  const tokenBalanceRes = await alchemy.core.getTokenBalances(userAddress, [
-    contract,
-  ]);
-  const metadata = await alchemy.core.getTokenMetadata(contract);
-  const filterByBalance = tokenBalanceRes.tokenBalances.filter(
-    (balance) =>
-      Number(balance.tokenBalance) /
-        Math.pow(10, metadata.decimals as number) >=
-      threshold
-  );
-  return filterByBalance.length > 0;
-}
-
-async function verifyTransactions(
-  toAddress: string,
-  fromAddress: string,
-  contractAddress: string
-) {
-  const params = {
-    address: fromAddress,
-    contractAddress,
-    categories: ['external', 'erc20'],
-  };
-  const response = await blockscout.getAssetTransfers(params as any);
-  const transfers = response.filter(
-    (transfer) => transfer.to.toLowerCase() === toAddress.toLowerCase()
-  );
-  return transfers.length > 0;
-}
+import { checkBalance, checkTokenIdBalance } from '@/utils/claims/balanceCheck';
 
 const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
 
@@ -182,14 +54,16 @@ export interface Status {
   user_address: string;
 }
 
+type ocsChallengeCard = {
+  contractAddress: string;
+  tokenId: string;
+  points: number;
+  tokenAmount: string;
+};
+
 type ExploreContentResponse = {
   content: {
-    ocsChallengeCard: {
-      contractAddress: string;
-      tokenId: string;
-      points: number;
-      tokenAmount: string;
-    };
+    ocsChallengeCard: ocsChallengeCard;
   };
 };
 
@@ -264,12 +138,13 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
+
   if (challenge.user_challenge_status.length > 0) {
     //challenge already claimed
     console.log(
       `challenge already claimed: ${challenge.user_challenge_status[0].status}`
     );
-    await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt);
+    // await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt);
     return NextResponse.json({ success: true, message: 'challenge-claimed' });
   }
 
@@ -293,24 +168,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let checkFunc =
-    CheckFunctions[challenge.function_type as keyof typeof CheckFunctions];
-  if (checkFunc === undefined) {
-    console.error(
-      'check function is undefined:' +
-        challenge.function_type +
-        ' challenge id:' +
-        challenge.id
-    );
-    return NextResponse.json(
-      {
-        success: false,
-        message: 'invalid-check-function',
-      },
-      { status: 405 }
-    );
-  }
-
   const exploreContent = await getContentByIdUnauth(exploreChallengeId);
   if (!exploreContent) {
     console.error(
@@ -322,15 +179,34 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  console.log(exploreContent.ocsChallengeCard);
-
   const tokenId = exploreContent?.ocsChallengeCard?.tokenId;
   const contractAddress = exploreContent?.ocsChallengeCard?.contractAddress;
   const points = exploreContent?.ocsChallengeCard?.points;
   const tokenAmount = exploreContent?.ocsChallengeCard?.tokenAmount;
 
-  const network = challenge.network as Networks;
-  const provider = providers[network];
+  // Provider is always base mainnet
+  const provider = providers['networks/base-mainnet'];
+
+  const checkFunc = getValidateFunction(
+    exploreContent.ocsChallengeCard as ocsChallengeCard
+  );
+
+  if (checkFunc === undefined) {
+    console.error(
+      'check function is undefined:' +
+        challenge.function_type +
+        ' challenge id:' +
+        challenge.id
+    );
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'invalid-check-function',
+      },
+      { status: 405 }
+    );
+  }
 
   if (provider === undefined) {
     console.error('provider is undefined for network:' + challenge.network);
@@ -338,19 +214,6 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         message: 'invalid-provider',
-      },
-      { status: 405 }
-    );
-  }
-
-  let challengeType =
-    ChallengeType[challenge.type as keyof typeof ChallengeType];
-  if (challengeType === undefined) {
-    console.error(`challenge type is undefined:` + challenge.type);
-    return NextResponse.json(
-      {
-        success: false,
-        message: 'invalid-challenge=type',
       },
       { status: 405 }
     );
@@ -404,7 +267,7 @@ export async function POST(request: NextRequest) {
         throw claim.error;
       }
 
-      await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt);
+      // await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt);
     } catch (e) {
       console.error(e);
       return NextResponse.json(
@@ -438,30 +301,38 @@ export async function OPTIONS(request: NextRequest) {
   });
 }
 
-// creates badge for user if it exists on challenge
-async function createUserBadge(
-  badgeId: number,
-  userAddress: string,
-  gameIdInBigInt: bigint | null
-) {
-  if (badgeId) {
-    const badgeUpsert = await supabase
-      .from('user_badges')
-      .upsert(
-        {
-          user_address: userAddress.toLowerCase(),
-          game_id: gameIdInBigInt,
-          badge_id: badgeId,
-        },
-        {
-          onConflict: 'game_id,user_address,badge_id',
-          ignoreDuplicates: true,
-        }
-      )
-      .select();
+// // creates badge for user if it exists on challenge
+// async function createUserBadge(
+//   badgeId: number,
+//   userAddress: string,
+//   gameIdInBigInt: bigint | null
+// ) {
+//   if (badgeId) {
+//     const badgeUpsert = await supabase
+//       .from('user_badges')
+//       .upsert(
+//         {
+//           user_address: userAddress.toLowerCase(),
+//           game_id: gameIdInBigInt,
+//           badge_id: badgeId,
+//         },
+//         {
+//           onConflict: 'game_id,user_address,badge_id',
+//           ignoreDuplicates: true,
+//         }
+//       )
+//       .select();
 
-    if (badgeUpsert.error) {
-      throw badgeUpsert.error;
-    }
+//     if (badgeUpsert.error) {
+//       throw badgeUpsert.error;
+//     }
+//   }
+// }
+
+function getValidateFunction(challenge: ocsChallengeCard) {
+  if (!challenge.contractAddress) {
+    return undefined;
   }
+
+  return challenge.tokenId ? checkTokenIdBalance : checkBalance;
 }

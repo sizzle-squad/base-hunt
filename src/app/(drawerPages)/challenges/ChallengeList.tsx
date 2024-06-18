@@ -132,11 +132,7 @@ export function ChallengeList({
                     px="12px"
                     py="8px"
                   >
-                    <Text>
-                      {item.isCompleted
-                        ? 'Claimed'
-                        : item.points.toString() + ' pts'}
-                    </Text>
+                    <Text>{item.isCompleted ? 'Claimed' : 'not claimed'}</Text>
                   </Button>
                 </Stack>
               </Stack>
@@ -211,11 +207,7 @@ export function ChallengeList({
                   py="8px"
                   borderColor="#CED2DB"
                 >
-                  <Text>
-                    {item.isCompleted
-                      ? 'Claimed'
-                      : `Earn ${item.points.toString()} pts`}
-                  </Text>
+                  <Text>{item.isCompleted ? 'Claimed' : `Earn pts`}</Text>
                 </Button>
               </Stack>
             </Card>

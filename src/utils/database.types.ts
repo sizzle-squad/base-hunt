@@ -11,16 +11,25 @@ export type Database = {
     Tables: {
       badge_configuration: {
         Row: {
+          function_type:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
           game_id: number | null
           id: number
           name: string | null
         }
         Insert: {
+          function_type?:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
           game_id?: number | null
           id?: number
           name?: string | null
         }
         Update: {
+          function_type?:
+            | Database["public"]["Enums"]["check_function_type"]
+            | null
           game_id?: number | null
           id?: number
           name?: string | null
@@ -40,9 +49,7 @@ export type Database = {
             | null
           game_id: number | null
           id: number
-          network: Database["public"]["Enums"]["networks"] | null
           params: Json | null
-          points: number
           type: Database["public"]["Enums"]["challenge_type"]
         }
         Insert: {
@@ -57,9 +64,7 @@ export type Database = {
             | null
           game_id?: number | null
           id?: number
-          network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
-          points: number
           type: Database["public"]["Enums"]["challenge_type"]
         }
         Update: {
@@ -74,9 +79,7 @@ export type Database = {
             | null
           game_id?: number | null
           id?: number
-          network?: Database["public"]["Enums"]["networks"] | null
           params?: Json | null
-          points?: number
           type?: Database["public"]["Enums"]["challenge_type"]
         }
         Relationships: [
@@ -301,16 +304,12 @@ export type Database = {
           badge_type: Database["public"]["Enums"]["badge_type"]
           contract_address: string | null
           created_at: string
-          cta_url: string | null
           description: string | null
           game_id: number
           id: number
-          image_url: string | null
           level: string | null
           minter: string | null
           name: string
-          prize_description: string | null
-          prize_image_url: string | null
           threshold_points: number
           token_id: number | null
         }
@@ -319,16 +318,12 @@ export type Database = {
           badge_type?: Database["public"]["Enums"]["badge_type"]
           contract_address?: string | null
           created_at?: string
-          cta_url?: string | null
           description?: string | null
           game_id: number
           id?: number
-          image_url?: string | null
           level?: string | null
           minter?: string | null
           name: string
-          prize_description?: string | null
-          prize_image_url?: string | null
           threshold_points: number
           token_id?: number | null
         }
@@ -337,16 +332,12 @@ export type Database = {
           badge_type?: Database["public"]["Enums"]["badge_type"]
           contract_address?: string | null
           created_at?: string
-          cta_url?: string | null
           description?: string | null
           game_id?: number
           id?: number
-          image_url?: string | null
           level?: string | null
           minter?: string | null
           name?: string
-          prize_description?: string | null
-          prize_image_url?: string | null
           threshold_points?: number
           token_id?: number | null
         }

@@ -51,7 +51,6 @@ async function mapChallengeState(
     ctaText: cta_text,
     ctaButtonText: cta_button_text,
     challengeType: challenge.type,
-    points: challenge.points,
     type: challenge.type,
     checkFunction: challenge.function_type,
     displayOrder: display_order,
@@ -97,12 +96,6 @@ export async function GET(request: NextRequest) {
 
   try {
     const formattedChallenges = await Promise.all(compact(challengesFormatted));
-    formattedChallenges.sort((a: Challenge, b: Challenge) => {
-      if (a.isCompleted === b.isCompleted) {
-        return a.points - b.points; // Sort by points in ascending order if isClaimed is equal
-      }
-      return a.isCompleted ? 1 : -1;
-    });
 
     return NextResponse.json(formattedChallenges);
   } catch (error) {
