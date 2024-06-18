@@ -45,7 +45,6 @@ type ListCardPropsForChallenges = ListCardProps & {
   ctaUrl: string | null;
   ctaText: string | null;
   ctaButtonText: string | null;
-  points: number;
   isCompleted?: boolean;
 };
 
@@ -144,7 +143,6 @@ export default function ChallengesPageClient({ refreshData }: Props) {
             ctaUrl: challenge.ctaUrl,
             ctaText: challenge.ctaText,
             ctaButtonText: challenge.ctaButtonText,
-            points: challenge.points,
             isCompleted: challenge.isCompleted,
             gameId: challenge.gameId,
             checkFunction: challenge.checkFunction,
@@ -295,7 +293,7 @@ export default function ChallengesPageClient({ refreshData }: Props) {
               )}
             </Stack>
             <PointsPill
-              points={Number(item.points)}
+              points={Number(0)}
               unit={PageConsts.drawerSubtitleUnit}
               textColor="#151515"
             />
