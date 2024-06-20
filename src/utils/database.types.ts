@@ -11,28 +11,37 @@ export type Database = {
     Tables: {
       badge_configuration: {
         Row: {
+          contract_address: string | null
           function_type:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id: number | null
           id: number
           name: string | null
+          network: Database["public"]["Enums"]["networks"] | null
+          params: Json | null
         }
         Insert: {
+          contract_address?: string | null
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id?: number | null
           id?: number
           name?: string | null
+          network?: Database["public"]["Enums"]["networks"] | null
+          params?: Json | null
         }
         Update: {
+          contract_address?: string | null
           function_type?:
             | Database["public"]["Enums"]["check_function_type"]
             | null
           game_id?: number | null
           id?: number
           name?: string | null
+          network?: Database["public"]["Enums"]["networks"] | null
+          params?: Json | null
         }
         Relationships: []
       }
