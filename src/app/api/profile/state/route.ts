@@ -152,11 +152,6 @@ export async function GET(req: NextRequest) {
       )
     );
 
-    // cache for 60 seconds
-    response.headers.set('Cache-Control', 'public, s-maxage=60');
-    response.headers.set('CDN-Cache-Control', 'public, s-maxage=60');
-    response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=60');
-
     return response;
   } catch (e) {
     console.error(e);
