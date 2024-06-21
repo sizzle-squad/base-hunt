@@ -49,6 +49,7 @@ type ocsChallengeCard = {
   tokenId: string;
   points: number;
   tokenAmount: string;
+  creatorName: string;
 };
 
 type ExploreContentResponse = {
@@ -224,8 +225,6 @@ export async function POST(request: NextRequest) {
       if (claim.error) {
         throw claim.error;
       }
-
-      // await createUserBadge(challenge.badge_id, userAddress, gameIdInBigInt);
     } catch (e) {
       console.error(e);
       return NextResponse.json(
@@ -259,35 +258,11 @@ export async function OPTIONS(request: NextRequest) {
   });
 }
 
-// // creates badge for user if it exists on challenge
-// async function createUserBadge(
-//   badgeId: number,
-//   userAddress: string,
-//   gameIdInBigInt: bigint | null
-// ) {
-//   if (badgeId) {
-//     const badgeUpsert = await supabase
-//       .from('user_badges')
-//       .upsert(
-//         {
-//           user_address: userAddress.toLowerCase(),
-//           game_id: gameIdInBigInt,
-//           badge_id: badgeId,
-//         },
-//         {
-//           onConflict: 'game_id,user_address,badge_id',
-//           ignoreDuplicates: true,
-//         }
-//       )
-//       .select();
-
-//     if (badgeUpsert.error) {
-//       throw badgeUpsert.error;
-//     }
-//   }
-// }
-
 function getValidateFunctionType(challenge: ocsChallengeCard) {
+  if (challenge.creatorName.toLocaleLowerCase().includes('coinbase one')) {
+    return CheckFunctionType.checkCoinbaseOne;
+  }
+
   if (!challenge.contractAddress) {
     return undefined;
   }
