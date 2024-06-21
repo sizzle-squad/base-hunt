@@ -100,7 +100,7 @@ export async function GET(req: NextRequest) {
           .eq('user_address', userAddress.toLowerCase())
           .eq('status', ChallengeStatus.COMPLETE),
         // fetch user badges
-        supabase.rpc('getuserbadges', {
+        supabase.rpc('getuserbadges-v2', {
           _game_id: gameId,
           _user_address: userAddress.toLowerCase(),
         }),
