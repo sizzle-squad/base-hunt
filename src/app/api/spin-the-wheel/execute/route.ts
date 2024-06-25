@@ -169,10 +169,7 @@ async function eligibleForSpinTheWheel(
     .eq('game_id', gameIdInBigInt)
     .single();
 
-  if (statusError) {
-    return false;
-  }
-  if (!scoreData || scoreData.current_score < 250) {
+  if (statusError || !scoreData || scoreData.current_score < 250) {
     return false;
   }
 
