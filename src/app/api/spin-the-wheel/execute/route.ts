@@ -79,7 +79,12 @@ export async function POST(request: NextRequest) {
       BigInt(gameId)
     );
     if (!isEligibleForSpinTheWheel) {
-      spinData.hasAvailableSpin = false;
+      return new Response(
+        `User does not have enough points, not eligible for STW: ${userAddress}, gameId: ${gameId}`,
+        {
+          status: 400,
+        }
+      );
     }
 
     let currentlyEnabledSpins = getEnabledSpins(
