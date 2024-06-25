@@ -1,3 +1,4 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { SpinData, SpinOption, SpinOptionTypeEnum } from '@/hooks/types';
 
 export type UserSpinType = {

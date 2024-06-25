@@ -70,6 +70,21 @@ export async function POST(request: NextRequest) {
 
     let spinOptions = getAllSpins(spinDataRes.data['spinOptions']);
     let spinData = getUserSpinData(spinDataRes.data['spinData'], spinOptions);
+
+    const isEligibleForSpinTheWheel = await eligibleForSpinTheWheel(
+      spinData,
+      userAddress,
+      BigInt(gameId)
+    );
+    if (!isEligibleForSpinTheWheel) {
+      return new Response(
+        `User does not have enough points, not eligible for STW: ${userAddress}, gameId: ${gameId}`,
+        {
+          status: 400,
+        }
+      );
+    }
+
     let currentlyEnabledSpins = getEnabledSpins(
       spinDataRes.data['spinOptions']
     );
@@ -135,4 +150,28 @@ function mapToSpinTheWheelState(
     spinOptions: spinOptions,
     spinData: spinData,
   };
+}
+
+async function eligibleForSpinTheWheel(
+  spinData: SpinData,
+  userAddress: string,
+  gameIdInBigInt: bigint
+): Promise<boolean> {
+  if (spinData.lastSpinResult != null) {
+    // if user already has a spin, that means they already have enough points
+    // no need to check points for that case
+    return true;
+  }
+  const { data: scoreData, error: statusError } = await supabase
+    .from('score')
+    .select('*')
+    .eq('user_address', userAddress.toLowerCase())
+    .eq('game_id', gameIdInBigInt)
+    .single();
+
+  if (statusError || !scoreData || scoreData.current_score < 250) {
+    return false;
+  }
+
+  return true;
 }
