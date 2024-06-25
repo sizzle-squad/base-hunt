@@ -9,7 +9,6 @@ import {
   SpinTheWheelState,
 } from '../../../../hooks/types';
 import {
-  eligibleForSpinTheWheel,
   getAllSpins,
   getEnabledSpins,
   getRandomOutcome,
@@ -73,7 +72,6 @@ export async function POST(request: NextRequest) {
     let spinData = getUserSpinData(spinDataRes.data['spinData'], spinOptions);
 
     const isEligibleForSpinTheWheel = await eligibleForSpinTheWheel(
-      supabase,
       spinData,
       userAddress,
       BigInt(gameId)
@@ -152,4 +150,34 @@ function mapToSpinTheWheelState(
     spinOptions: spinOptions,
     spinData: spinData,
   };
+}
+
+async function eligibleForSpinTheWheel(
+  spinData: SpinData,
+  userAddress: string,
+  gameIdInBigInt: bigint
+): Promise<boolean> {
+  if (spinData.lastSpinResult != null) {
+    // if user already has a spin, that means they already have enough points
+    // no need to check points for that case
+    return true;
+  }
+  const { data: scoreData, error: statusError } = await supabase
+    .from('score')
+    .select('*')
+    .eq('user_address', userAddress.toLowerCase())
+    .eq('game_id', gameIdInBigInt)
+    .single();
+
+  if (statusError) {
+    return false;
+  }
+  if (!scoreData) {
+    return false;
+  }
+  if (scoreData.current_score < 250) {
+    return false;
+  }
+
+  return true;
 }
