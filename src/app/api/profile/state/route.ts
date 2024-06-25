@@ -209,6 +209,7 @@ function getLevelData(levelsData: any, score: any, currentScore: any) {
       }
     }
   }
+
   if (currentLevel === null) {
     currentLevel = {
       id: '',

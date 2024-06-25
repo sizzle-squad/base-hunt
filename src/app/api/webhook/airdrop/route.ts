@@ -45,6 +45,7 @@ export async function POST(req: Request) {
   if (body.old_record) {
     prevScore = BigInt(body.old_record.current_score);
   }
+
   const levelData = (await supabase
     .from('level_configuration')
     .select()

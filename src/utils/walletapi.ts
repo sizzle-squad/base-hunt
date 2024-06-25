@@ -58,13 +58,16 @@ export async function airdropNft(
         'Content-Type': 'application/json',
       },
     });
-    console.log('[AirdropNft] response:', response.data);
-    if (response.status != 200) {
+
+    if (response.status === 200) {
+      console.log('[AirdropNft] airdrop completed');
+      return;
+    } else {
       console.error('[AirdropNft] error airdropping:', response.data);
       return;
     }
   } else {
     console.log('[AirdropNft] airdrop disabled');
+    return;
   }
-  console.log('[AirdropNft] airdrop completed');
 }
