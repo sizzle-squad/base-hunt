@@ -172,10 +172,7 @@ async function eligibleForSpinTheWheel(
   if (statusError) {
     return false;
   }
-  if (!scoreData) {
-    return false;
-  }
-  if (scoreData.current_score < 250) {
+  if (!scoreData || scoreData.current_score < 250) {
     return false;
   }
 
