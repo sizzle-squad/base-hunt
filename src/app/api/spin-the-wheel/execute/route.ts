@@ -9,6 +9,7 @@ import {
   SpinTheWheelState,
 } from '../../../../hooks/types';
 import {
+  eligibleForSpinTheWheel,
   getAllSpins,
   getEnabledSpins,
   getRandomOutcome,
@@ -70,6 +71,17 @@ export async function POST(request: NextRequest) {
 
     let spinOptions = getAllSpins(spinDataRes.data['spinOptions']);
     let spinData = getUserSpinData(spinDataRes.data['spinData'], spinOptions);
+
+    const isEligibleForSpinTheWheel = await eligibleForSpinTheWheel(
+      supabase,
+      spinData,
+      userAddress,
+      BigInt(gameId)
+    );
+    if (!isEligibleForSpinTheWheel) {
+      spinData.hasAvailableSpin = false;
+    }
+
     let currentlyEnabledSpins = getEnabledSpins(
       spinDataRes.data['spinOptions']
     );

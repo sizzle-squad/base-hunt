@@ -1,3 +1,4 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { SpinData, SpinOption, SpinOptionTypeEnum } from '@/hooks/types';
 
 export type UserSpinType = {
@@ -108,4 +109,36 @@ export function getUserSpinData(
     lastSpinResult:
       spinOptions.find((option) => option.id == spinData.spin_result) ?? null,
   } as SpinData;
+}
+
+export async function eligibleForSpinTheWheel(
+  supabase: SupabaseClient<any, 'public', any>,
+  spinData: SpinData,
+  userAddress: string,
+  gameIdInBigInt: bigint
+): Promise<boolean> {
+  if (spinData.lastSpinResult != null) {
+    // if user already has a spin, that means they already have enough points
+    // no need to check points for that case
+    return true;
+  }
+  const { data: scoreData, error: statusError } = await supabase
+    .from('score')
+    .select('*')
+    .eq('user_address', userAddress.toLowerCase())
+    .eq('game_id', gameIdInBigInt);
+
+  if (statusError) {
+    console.error(statusError);
+    return false;
+  }
+  if (!scoreData || scoreData.length === 0) {
+    return false;
+  }
+  let userScore = scoreData[0].current_score;
+  if (userScore < 250) {
+    return false;
+  }
+
+  return true;
 }
