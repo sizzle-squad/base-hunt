@@ -45,6 +45,18 @@ export type Database = {
         }
         Relationships: []
       }
+      badge_info: {
+        Row: {
+          jsonb_agg: Json | null
+        }
+        Insert: {
+          jsonb_agg?: Json | null
+        }
+        Update: {
+          jsonb_agg?: Json | null
+        }
+        Relationships: []
+      }
       challenge_configuration: {
         Row: {
           badge_id: number | null
@@ -553,15 +565,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["challenge_status"]
           user_address?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_challenge_status_challenge_id_fkey"
-            columns: ["challenge_id"]
-            isOneToOne: false
-            referencedRelation: "challenge_configuration"
-            referencedColumns: ["challenge_id"]
-          },
-        ]
+        Relationships: []
       }
       user_referrals: {
         Row: {
@@ -820,6 +824,13 @@ export type Database = {
         Returns: Json
       }
       getuserbadges: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: Json
+      }
+      "getuserbadges-v2": {
         Args: {
           _game_id: number
           _user_address: string
