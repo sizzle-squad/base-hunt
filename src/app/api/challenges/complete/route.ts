@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
   const tokenId = exploreContent?.ocsChallengeCard?.tokenId;
   const contractAddress = exploreContent?.ocsChallengeCard?.contractAddress;
   const points = exploreContent?.ocsChallengeCard?.points;
-  const tokenAmount = exploreContent?.ocsChallengeCard?.tokenAmount;
+  const tokenAmount = exploreContent?.ocsChallengeCard?.tokenAmount || '1';
 
   // Provider is always base mainnet
   const provider = providers['networks/base-mainnet'];

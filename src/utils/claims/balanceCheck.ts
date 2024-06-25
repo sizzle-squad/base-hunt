@@ -85,7 +85,9 @@ export async function checkTokenIdBalance(
     balanceOfTokenIdABI,
     provider
   );
+
   const balance = await contract.balanceOf(params.userAddress, params.tokenId);
   const b = ethers.getBigInt(balance);
+
   return b >= ethers.toBigInt(params.tokenAmount);
 }
