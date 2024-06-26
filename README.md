@@ -5,6 +5,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
+yarn install
+
+yarn add @supabase/supabase-js
+
 export SUPABASE_PROJECT_ID=clfayrerwufuthwcapsn
 
 yarn dev
