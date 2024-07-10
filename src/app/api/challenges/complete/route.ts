@@ -226,7 +226,7 @@ export async function POST(request: NextRequest) {
         throw claim.error;
       }
     } catch (e) {
-      console.error(e);
+      console.error(e, challengeId);
       return NextResponse.json(
         { success: false, message: 'error-challenge' },
         { status: 400 }
