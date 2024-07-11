@@ -106,6 +106,7 @@ export type ProfileState = {
 
 export enum SpinOptionTypeEnum {
   POINTS = 'POINTS',
+  USDC = 'USDC',
   // can have different spin rewards in the future
 }
 

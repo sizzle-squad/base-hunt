@@ -6,6 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import {
   SpinData,
   SpinOption,
+  SpinOptionTypeEnum,
   SpinTheWheelState,
 } from '../../../../hooks/types';
 import {
@@ -100,6 +101,9 @@ export async function POST(request: NextRequest) {
     }
 
     const generatedSpin = getRandomOutcome(currentlyEnabledSpins);
+    if (generatedSpin.type = SpinOptionTypeEnum.USDC) {
+      // TODO : call airdropUSDC function here
+    }
     const saveSpin = await supabase.rpc('update_spin_and_points', {
       _game_id: gameId,
       _user_address: userAddress.toLowerCase(),
