@@ -4,6 +4,7 @@ import { Networks } from '../database.enums';
 import { Database } from '../database.types';
 import { providers } from '../ethereum';
 import { WebhookData } from '../webhook';
+import { isStringAnInteger } from '../integer';
 const balanceOfABI = [
   {
     constant: true,
@@ -71,9 +72,12 @@ export async function checkBalance(
     balanceOfABI,
     provider
   );
+  const tokenAmount = isStringAnInteger(params.tokenAmount)
+    ? params.tokenAmount
+    : '1';
   const balance = await contract.balanceOf(params.userAddress);
   const b = ethers.getBigInt(balance);
-  return b >= ethers.toBigInt(params.tokenAmount);
+  return b >= ethers.toBigInt(tokenAmount);
 }
 
 export async function checkTokenIdBalance(
@@ -86,8 +90,11 @@ export async function checkTokenIdBalance(
     provider
   );
 
+  const tokenAmount = isStringAnInteger(params.tokenAmount)
+    ? params.tokenAmount
+    : '1';
   const balance = await contract.balanceOf(params.userAddress, params.tokenId);
   const b = ethers.getBigInt(balance);
 
-  return b >= ethers.toBigInt(params.tokenAmount);
+  return b >= ethers.toBigInt(tokenAmount);
 }
