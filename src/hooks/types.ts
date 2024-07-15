@@ -244,3 +244,9 @@ export type Guild = {
   socialLink: string | null;
   isEnabled: boolean;
 };
+
+export enum AirdropUSDCValue {
+  FIVE = 'airdrop-stw-5',
+  TEN = 'airdrop-stw-10',
+  ONE_HUNDRED = 'airdrop-stw-100',
+};
