@@ -1,7 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
+import { ethers } from 'ethers';
 import { AirdropUSDCValue, SpinData, SpinOption } from '@/hooks/types';
 import { airdropNft } from '@/utils/walletapi';
-import { ethers } from 'ethers';
 
 export type UserSpinType = {
   id: number;
@@ -113,13 +113,16 @@ export function getUserSpinData(
   } as SpinData;
 }
 
-export async function airdropUSDC(userAddress: string, airdropCmd: AirdropUSDCValue): Promise<boolean> {
-  const random_nonce = ethers.hexlify(ethers.randomBytes(32))
+export async function airdropUSDC(
+  userAddress: string,
+  airdropCmd: AirdropUSDCValue
+): Promise<boolean> {
+  const random_nonce = ethers.hexlify(ethers.randomBytes(32));
   try {
     await airdropNft(userAddress, airdropCmd, random_nonce);
   } catch (e) {
     console.error(e);
-    return false
+    return false;
   }
-  return true
+  return true;
 }
