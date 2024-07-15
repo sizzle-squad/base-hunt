@@ -1,10 +1,8 @@
-import { BigNumberish, ethers } from 'ethers';
+import { ethers } from 'ethers';
+import { Alchemy, Network } from 'alchemy-sdk';
 
-import { Networks } from '../database.enums';
-import { Database } from '../database.types';
-import { providers } from '../ethereum';
-import { WebhookData } from '../webhook';
 import { isStringAnInteger } from '../integer';
+
 const balanceOfABI = [
   {
     constant: true,
@@ -53,6 +51,22 @@ const balanceOfTokenIdABI = [
   },
 ];
 
+const settings = {
+  apiKey: process.env.ALCHEMY_ID,
+  network: Network.BASE_MAINNET,
+};
+
+const alchemy = new Alchemy(settings);
+
+async function verifyNftOwnership(userAddress: string, contracts: string[]) {
+  const response = await alchemy.nft.verifyNftOwnership(userAddress, contracts);
+
+  console.log(
+    response ? 'NFT ownership verified' : 'NFT ownership not verified'
+  );
+  return response;
+}
+
 export type CheckBalanceConfiguration = {
   contractAddress: string;
   tokenAmount: string;
@@ -84,17 +98,9 @@ export async function checkTokenIdBalance(
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  const contract = new ethers.Contract(
+  const isAnOwner = await verifyNftOwnership(params.userAddress, [
     params.contractAddress,
-    balanceOfTokenIdABI,
-    provider
-  );
+  ]);
 
-  const tokenAmount = isStringAnInteger(params.tokenAmount)
-    ? params.tokenAmount
-    : '1';
-  const balance = await contract.balanceOf(params.userAddress, params.tokenId);
-  const b = ethers.getBigInt(balance);
-
-  return b >= ethers.toBigInt(tokenAmount);
+  return isAnOwner[params.contractAddress];
 }
