@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
-import { SpinData, SpinOption, AirdropUSDCValue } from '@/hooks/types';
+import { AirdropUSDCValue, SpinData, SpinOption } from '@/hooks/types';
 import { airdropNft } from '@/utils/walletapi';
 import { ethers } from 'ethers';
 
