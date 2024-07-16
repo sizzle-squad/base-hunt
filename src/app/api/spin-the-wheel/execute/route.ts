@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
 
 import { createClient } from '@supabase/supabase-js';
-
 import {
+  AirdropUSDCValue,
   SpinData,
   SpinOption,
   SpinOptionTypeEnum,
   SpinTheWheelState,
 } from '../../../../hooks/types';
 import {
+  airdropUSDC,
   getAllSpins,
   getEnabledSpins,
   getRandomOutcome,
@@ -101,8 +102,17 @@ export async function POST(request: NextRequest) {
     }
 
     const generatedSpin = getRandomOutcome(currentlyEnabledSpins);
-    if ((generatedSpin.type == SpinOptionTypeEnum.USDC)) {
-      // TODO : call airdropUSDC function here
+    if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
+      // Here we don't await our async function, meaning it runs in the background and we wouldnt recieve a validation
+      if (generatedSpin.points == 5) {
+        airdropUSDC(userAddress, AirdropUSDCValue.FIVE);
+      } else if (generatedSpin.points == 10) {
+        airdropUSDC(userAddress, AirdropUSDCValue.TEN);
+      } else if (generatedSpin.points == 100) {
+        airdropUSDC(userAddress, AirdropUSDCValue.ONE_HUNDRED);
+      }
+      // setting points to 0 for update_spin_and_points function
+      generatedSpin.points = 0;
     }
     const saveSpin = await supabase.rpc('update_spin_and_points', {
       _game_id: gameId,
