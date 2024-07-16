@@ -106,6 +106,7 @@ export type ProfileState = {
 
 export enum SpinOptionTypeEnum {
   POINTS = 'POINTS',
+  USDC = 'USDC',
   // can have different spin rewards in the future
 }
 
@@ -243,3 +244,9 @@ export type Guild = {
   socialLink: string | null;
   isEnabled: boolean;
 };
+
+export enum AirdropUSDCValue {
+  FIVE = 'airdrop-stw-5',
+  TEN = 'airdrop-stw-10',
+  ONE_HUNDRED = 'airdrop-stw-100',
+}
