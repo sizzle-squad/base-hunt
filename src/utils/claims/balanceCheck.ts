@@ -58,12 +58,8 @@ const settings = {
 
 const alchemy = new Alchemy(settings);
 
-async function verifyNftOwnership(userAddress: string, contracts: string[]) {
-  const response = await alchemy.nft.verifyNftOwnership(userAddress, contracts);
-
-  console.log(
-    response ? 'NFT ownership verified' : 'NFT ownership not verified'
-  );
+async function verifyNftOwnership(userAddress: string, contract: string) {
+  const response = await alchemy.nft.verifyNftOwnership(userAddress, contract);
   return response;
 }
 
@@ -98,9 +94,10 @@ export async function checkTokenIdBalance(
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  const isAnOwner = await verifyNftOwnership(params.userAddress, [
-    params.contractAddress,
-  ]);
+  const isAnOwner = await verifyNftOwnership(
+    params.userAddress,
+    params.contractAddress
+  );
 
-  return isAnOwner[params.contractAddress];
+  return isAnOwner;
 }
