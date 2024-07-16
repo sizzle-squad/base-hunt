@@ -109,7 +109,7 @@ describe('getRandomOutcome', () => {
 describe('calculateTimeUntilResetTime', () => {
   it('should calculate the correct time until reset', () => {
     // Mock the Date so new Date(); returns a fixed date in the function
-    const mockDate = new Date(Date.UTC(2024, 4, 20, 14, 0, 0));
+    const mockDate = new Date(Date.UTC(2024, 4, 20, 5, 0, 0));
     const originalDate = Date;
     global.Date = class extends Date {
       constructor(date?: any) {
@@ -153,9 +153,9 @@ describe('hasAvailableSpin', () => {
     global.Date = originalDate;
   });
 
-  it('should return true if last spin was 8:30am and current time is 1pm PST', () => {
+  it('should return true if last spin was 8:30am and current time is 1pm PST next day', () => {
     // Mock the Date so new Date(); returns a fixed date in the function
-    const mockDate = new Date(Date.UTC(2024, 4, 20, 20, 0, 0));
+    const mockDate = new Date(Date.UTC(2024, 4, 21, 20, 0, 0));
     const originalDate = Date;
     global.Date = class extends Date {
       constructor(date?: any) {
