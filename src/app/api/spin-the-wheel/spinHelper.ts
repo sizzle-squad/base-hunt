@@ -9,7 +9,7 @@ export type UserSpinType = {
   last_spin_id: number;
 };
 
-const resetHourUtc = 16; // Reset time for STW is 9 AM PST = 4PM UTC
+const resetHourUtc = 7; // Reset time for midnight PST is 7 AM UTC
 
 export function currentTimeUTC(): string {
   return new Date().toISOString();
