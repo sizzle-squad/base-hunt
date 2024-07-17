@@ -235,7 +235,7 @@ export async function POST(request: NextRequest) {
   } else {
     return NextResponse.json(
       { success: false, message: 'failed-challenge' },
-      { status: 400 }
+      { status: 200 }
     );
   }
 
