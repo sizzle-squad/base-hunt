@@ -32,7 +32,7 @@ export function hasAvailableSpin(lastSpinAt: string): boolean {
   const todayResetTime = getTodayResetTime();
 
   // Convert lastSpinAt to a timestamp
-  const lastSpinTime = new Date(lastSpinAt).getTime();
+  const lastSpinTime = new Date(convertPSTtoUTC(lastSpinAt)).getTime();
 
   // If lastSpinTime is before today's reset time, the user has a spin available
   return lastSpinTime <= todayResetTime.getTime();
@@ -125,4 +125,13 @@ export async function airdropUSDC(
     return false;
   }
   return true;
+}
+
+function convertPSTtoUTC(pstTimeStr: string): string {
+  let pstTime = new Date(pstTimeStr);
+
+  // Convert the PST time to UTC
+  let utcTime = new Date(pstTime.getTime() + resetHourUtc * 60 * 60 * 1000);
+
+  return utcTime.toISOString();
 }
