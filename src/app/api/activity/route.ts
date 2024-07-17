@@ -67,7 +67,6 @@ export async function GET(req: NextRequest) {
     wheelConfiguration.data.forEach((wheelItem) => {
       wheelConfigurationMap.set(wheelItem.id, wheelItem);
     });
-    console.log(wheelConfigurationMap);
 
     // Combine and sort all activities
     const activities: ActivityType[] = [
