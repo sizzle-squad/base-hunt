@@ -12,7 +12,7 @@ type ActivityType = {
   type: string;
   userAddress: string;
   data?: any;
-  created_at: string;
+  createdAt: string;
 };
 
 export async function GET(req: NextRequest) {
@@ -75,12 +75,12 @@ export async function GET(req: NextRequest) {
       ...challenges.data.map((item: any) => ({
         type: 'challenge',
         userAddress: item.user_address,
-        created_at: item.created_at,
+        createdAt: item.created_at,
       })),
       ...spins.data.map((item: any) => ({
         type: 'spin',
         userAddress: item.user_address,
-        created_at: convertPSTtoUTC(item.created_at),
+        createdAt: convertPSTtoUTC(item.created_at),
       })),
       ...badges.data.map((item: any) => ({
         type: 'badge',
@@ -88,12 +88,12 @@ export async function GET(req: NextRequest) {
         data: {
           badgeId: item.badge_id,
         },
-        created_at: item.created_at,
+        createdAt: item.created_at,
       })),
       ...referrals.data.map((item: any) => ({
         type: 'referral',
         userAddress: item.user_address,
-        created_at: item.created_at,
+        createdAt: item.created_at,
       })),
     ];
 
