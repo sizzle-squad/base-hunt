@@ -10,7 +10,8 @@ const supabase = createClient(
 
 type ActivityType = {
   type: string;
-  data: any;
+  userAddress: string;
+  data?: any;
   created_at: string;
 };
 
@@ -73,25 +74,25 @@ export async function GET(req: NextRequest) {
     const activities: ActivityType[] = [
       ...challenges.data.map((item: any) => ({
         type: 'challenge',
-        data: item,
+        userAddress: item.user_address,
         created_at: item.created_at,
       })),
       ...spins.data.map((item: any) => ({
         type: 'spin',
-        data: {
-          ...item,
-          spin_result: wheelConfigurationMap.get(item.spin_result),
-        },
+        userAddress: item.user_address,
         created_at: convertPSTtoUTC(item.created_at),
       })),
       ...badges.data.map((item: any) => ({
         type: 'badge',
-        data: item,
+        userAddress: item.user_address,
+        data: {
+          badgeId: item.badge_id,
+        },
         created_at: item.created_at,
       })),
       ...referrals.data.map((item: any) => ({
         type: 'referral',
-        data: item,
+        userAddress: item.user_address,
         created_at: item.created_at,
       })),
     ];
