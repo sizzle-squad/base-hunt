@@ -127,7 +127,7 @@ export async function airdropUSDC(
   return true;
 }
 
-function convertPSTtoUTC(pstTimeStr: string): string {
+export function convertPSTtoUTC(pstTimeStr: string): string {
   let pstTime = new Date(pstTimeStr);
 
   // Convert the PST time to UTC
