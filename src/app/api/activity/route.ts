@@ -107,7 +107,6 @@ export async function GET(req: NextRequest) {
     response.headers.set('CDN-Cache-Control', 'public, s-maxage=20');
     response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=20');
     return response;
-    return;
   } catch (e) {
     console.error(e);
     return NextResponse.error();
