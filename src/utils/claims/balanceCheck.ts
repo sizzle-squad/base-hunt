@@ -84,11 +84,19 @@ export async function checkTokenIdBalance(
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  const result = await axios.post(verifyOwnershipByCollectionUrl, {
-    userAddress: params.userAddress,
-    contractAddress: params.contractAddress,
-    chainId: '8453',
-  });
+  const result = await axios.post(
+    verifyOwnershipByCollectionUrl,
+    {
+      claimer: params.userAddress,
+      contractAddress: params.contractAddress,
+      chainId: '8453',
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 
   return Boolean(result.data.verified);
 }

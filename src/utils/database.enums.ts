@@ -60,3 +60,8 @@ export enum Networks {
   networks_base_mainnet = "networks/base-mainnet",
   networks_eth_mainnet = "networks/eth-mainnet"
 }
+
+export enum SpinType {
+  POINTS = "POINTS",
+  USDC = "USDC"
+}
