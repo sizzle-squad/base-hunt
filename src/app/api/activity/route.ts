@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { toBigInt } from '@/utils/toBigInt';
+import { convertPSTtoUTC } from '../spin-the-wheel/spinHelper';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -81,7 +82,7 @@ export async function GET(req: NextRequest) {
           ...item,
           spin_result: wheelConfigurationMap.get(item.spin_result),
         },
-        created_at: item.created_at,
+        created_at: convertPSTtoUTC(item.created_at),
       })),
       ...badges.data.map((item: any) => ({
         type: 'badge',
