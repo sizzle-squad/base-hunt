@@ -1,10 +1,10 @@
-import { BigNumberish, ethers } from 'ethers';
-
-import { Networks } from '../database.enums';
-import { Database } from '../database.types';
-import { providers } from '../ethereum';
-import { WebhookData } from '../webhook';
+import { ethers } from 'ethers';
+import axios from 'axios';
 import { isStringAnInteger } from '../integer';
+
+const verifyOwnershipByCollectionUrl =
+  'https://api.wallet.coinbase.com/rpc/v3/collectibles/claims/verifyOwnershipByCollection';
+
 const balanceOfABI = [
   {
     constant: true,
@@ -84,17 +84,11 @@ export async function checkTokenIdBalance(
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  const contract = new ethers.Contract(
-    params.contractAddress,
-    balanceOfTokenIdABI,
-    provider
-  );
+  const result = await axios.post(verifyOwnershipByCollectionUrl, {
+    userAddress: params.userAddress,
+    contractAddress: params.contractAddress,
+    chainId: '8453',
+  });
 
-  const tokenAmount = isStringAnInteger(params.tokenAmount)
-    ? params.tokenAmount
-    : '1';
-  const balance = await contract.balanceOf(params.userAddress, params.tokenId);
-  const b = ethers.getBigInt(balance);
-
-  return b >= ethers.toBigInt(tokenAmount);
+  return Boolean(result.data.verified);
 }
