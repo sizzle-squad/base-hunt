@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
 
     activities.sort(
       (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
     const response = NextResponse.json(activities);
