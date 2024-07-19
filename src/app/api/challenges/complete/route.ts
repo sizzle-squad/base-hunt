@@ -267,7 +267,5 @@ function getValidateFunctionType(challenge: ocsChallengeCard) {
     return undefined;
   }
 
-  return challenge.tokenId
-    ? CheckFunctionType.checkTokenIdBalance
-    : CheckFunctionType.checkBalance;
+  return CheckFunctionType.checkTokenIdBalance;
 }
