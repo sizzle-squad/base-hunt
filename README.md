@@ -9,9 +9,9 @@ yarn install
 
 yarn add @supabase/supabase-js
 
-export SUPABASE_PROJECT_ID=clfayrerwufuthwcapsn
+export SUPABASE_PROJECT_ID=bgfwhzhkmhhvneamibrk
 
-yarn dev
+yarn dev -p 3005
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
