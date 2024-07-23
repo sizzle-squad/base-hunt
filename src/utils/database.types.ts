@@ -441,7 +441,6 @@ export type Database = {
       user_spins: {
         Row: {
           created_at: string
-          created_date: string | null
           game_id: number | null
           id: number
           spin_result: number | null
@@ -449,7 +448,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          created_date?: string | null
           game_id?: number | null
           id?: number
           spin_result?: number | null
@@ -457,7 +455,6 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          created_date?: string | null
           game_id?: number | null
           id?: number
           spin_result?: number | null
@@ -720,7 +717,7 @@ export type Database = {
         | "checkTokensCount"
         | "checkNftTokensCount"
       networks: "networks/base-mainnet" | "networks/eth-mainnet"
-      spin_type: "POINTS" | "USDC"
+      spin_type: "POINTS"
     }
     CompositeTypes: {
       [_ in never]: never
