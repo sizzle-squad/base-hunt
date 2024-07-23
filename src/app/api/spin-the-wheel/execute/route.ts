@@ -102,15 +102,6 @@ export async function POST(request: NextRequest) {
     }
 
     const generatedSpin = getRandomOutcome(currentlyEnabledSpins);
-    if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
-      if (generatedSpin.points == 5) {
-        airdropUSDC(userAddress, AirdropUSDCValue.FIVE);
-      } else if (generatedSpin.points == 10) {
-        airdropUSDC(userAddress, AirdropUSDCValue.TEN);
-      } else if (generatedSpin.points == 100) {
-        airdropUSDC(userAddress, AirdropUSDCValue.ONE_HUNDRED);
-      }
-    }
     const saveSpin = await supabase.rpc('update_spin_and_points', {
       _game_id: gameId,
       _user_address: userAddress.toLowerCase(),
@@ -146,6 +137,16 @@ export async function POST(request: NextRequest) {
       hasAvailableSpin: false,
       lastSpinResult: generatedSpin,
     };
+    
+    if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
+      if (generatedSpin.points == 5) {
+        airdropUSDC(userAddress, AirdropUSDCValue.FIVE);
+      } else if (generatedSpin.points == 10) {
+        airdropUSDC(userAddress, AirdropUSDCValue.TEN);
+      } else if (generatedSpin.points == 100) {
+        airdropUSDC(userAddress, AirdropUSDCValue.ONE_HUNDRED);
+      }
+    }
 
     return NextResponse.json(
       mapToSpinTheWheelState(updatedSpin, currentlyEnabledSpins)
