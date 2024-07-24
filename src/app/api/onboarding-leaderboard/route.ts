@@ -2,14 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 import { type NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
 
-import {
-  CheckFunctions,
-  MapChallengeTypeUserAddress,
-  ValidateBodyParams,
-} from '@/utils/claims/selectors';
-import { ChallengeStatus, CheckFunctionType } from '@/utils/database.enums';
-import { providers } from '@/utils/ethereum';
-import { toBigInt } from '@/utils/toBigInt';
 import { WALLET_API_BASE_URL } from '@/utils/constants';
 import { authenticate } from '@/app/middleware/auth';
 
