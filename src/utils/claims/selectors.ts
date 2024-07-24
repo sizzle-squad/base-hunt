@@ -32,6 +32,9 @@ export const CheckFunctions: {
   [CheckFunctionType.checkCoinbaseOne]: checkCoinbaseOne,
   [CheckFunctionType.checkTokensCount]: checkTokensCount,
   [CheckFunctionType.checkNftTokensCount]: checkNftTokensCount,
+  [CheckFunctionType.checkBypass]: async function (): Promise<boolean> {
+    return true;
+  },
   [CheckFunctionType.checkJoinGuild]: function (body: any): Promise<boolean> {
     throw new Error('Function not implemented.');
   },
@@ -91,6 +94,11 @@ export const MapChallengeTypeUserAddress: {
   ): Promise<string> {
     return body.userAddress.toLowerCase();
   },
+  [CheckFunctionType.checkBypass]: async function (
+    body: CheckBalanceParams
+  ): Promise<string> {
+    return body.userAddress.toLowerCase();
+  },
   [CheckFunctionType.checkJoinGuild]: async function (
     body: any
   ): Promise<string> {
@@ -128,6 +136,9 @@ export const ScoreFunctions: {
   [CheckFunctionType.checkNftTokensCount]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
+  [CheckFunctionType.checkBypass]: function (w: any): number {
+    throw new Error('Function not implemented.');
+  },
   [CheckFunctionType.checkJoinGuild]: function (w: any): number {
     throw new Error('Function not implemented.');
   },
@@ -162,6 +173,14 @@ export const ValidateBodyParams: {
   },
   [CheckFunctionType.checkNftTokensCount]: function (body: object): boolean {
     return body && body.hasOwnProperty('userAddress');
+  },
+  [CheckFunctionType.checkBypass]: function (body: object): boolean {
+    return (
+      body &&
+      body.hasOwnProperty('userAddress') &&
+      body.hasOwnProperty('challengeId') &&
+      body.hasOwnProperty('gameId')
+    );
   },
   [CheckFunctionType.checkJoinGuild]: function (body: object): boolean {
     throw new Error('Function not implemented.');

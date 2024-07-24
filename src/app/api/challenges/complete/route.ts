@@ -10,7 +10,7 @@ import {
 import { ChallengeStatus, CheckFunctionType } from '@/utils/database.enums';
 import { providers } from '@/utils/ethereum';
 import { toBigInt } from '@/utils/toBigInt';
-import { WALLET_API_BASE_URL } from '@/utils/constants';
+import { getContentByIdUnauth } from '@/utils/getContentByIdUnauth';
 
 const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
 
@@ -44,43 +44,13 @@ export interface Status {
   user_address: string;
 }
 
-type ocsChallengeCard = {
+export type ocsChallengeCard = {
   contractAddress: string;
   tokenId: string;
   points: number;
   tokenAmount: string;
   creatorName: string;
 };
-
-type ExploreContentResponse = {
-  content: {
-    ocsChallengeCard: ocsChallengeCard;
-  };
-};
-
-async function getContentByIdUnauth(contentId: string) {
-  const url = `${WALLET_API_BASE_URL}/rpc/v2/explore/getContentByIdUnauth?surface=1&id=${contentId}`;
-
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      console.error('Coinbase API fetch failed:', response.status);
-      return null;
-    }
-
-    const result: ExploreContentResponse = await response.json();
-    return result.content;
-  } catch (error) {
-    console.error('Coinbase API fetch failed:', error);
-    return null;
-  }
-}
 
 export async function POST(request: NextRequest) {
   const body: BoostsClaimRequest = await request.json();
@@ -140,9 +110,13 @@ export async function POST(request: NextRequest) {
   // Provider is always base mainnet
   const provider = providers['networks/base-mainnet'];
 
-  const checkFunctionType = getValidateFunctionType(
-    exploreContent.ocsChallengeCard as ocsChallengeCard
-  );
+  const hasAPIKey = verifyAPISecret(request);
+
+  const checkFunctionType = hasAPIKey
+    ? CheckFunctionType.checkBypass
+    : getValidateFunctionType(
+        exploreContent.ocsChallengeCard as ocsChallengeCard
+      );
 
   if (checkFunctionType === undefined) {
     console.error(
@@ -268,4 +242,20 @@ function getValidateFunctionType(challenge: ocsChallengeCard) {
   }
 
   return CheckFunctionType.checkTokenIdBalance;
+}
+
+export function verifyAPISecret(req: Request): boolean {
+  const secret = process.env.GALLERY_SECRET;
+  const headerSecret = req.headers.get('x-api-secret');
+
+  if (!secret) {
+    console.warn('API_SECRET not set');
+    return false;
+  }
+
+  if (!headerSecret) {
+    return false;
+  }
+
+  return secret === headerSecret;
 }
