@@ -18,6 +18,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
+const baseUSDCAddress = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+
 export type OnboardingLeaderboardRequest = {
   txHash: string;
   userAddress: string;
@@ -149,6 +151,15 @@ export async function POST(request: NextRequest) {
       status: 400,
     });
   }
+
+  if (
+    assetAddress == 'native' ||
+    assetAddress.toLowerCase() == baseUSDCAddress.toLowerCase()
+  ) {
+    // don't want to process ETH or USDC, return success early
+    return NextResponse.json({ success: true });
+  }
+
   let addressMeta = txDetails?.addressMeta[assetAddress];
   if (!addressMeta) {
     console.error('AddressMeta not found:', txHash, assetAddress);
@@ -164,8 +175,8 @@ export async function POST(request: NextRequest) {
     'find_or_create_community',
     {
       _asset_address: assetAddress,
-      _symbol: addressMeta.token?.symbol,
-      _logo: addressMeta.token?.logo?.url,
+      _symbol: addressMeta.token?.symbol ?? 'BASE',
+      _logo: addressMeta.token?.logo?.url ?? '',
     }
   );
   if (findOrCreateCommunityError) {
