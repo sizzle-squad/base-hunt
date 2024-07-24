@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
   // Provider is always base mainnet
   const provider = providers['networks/base-mainnet'];
 
-  const hasAPIKey = verifyAPISecret(request);
+  const hasAPIKey = verifyAPISecret(request, challengeId);
 
   const checkFunctionType = hasAPIKey
     ? CheckFunctionType.checkBypass
@@ -244,8 +244,9 @@ function getValidateFunctionType(challenge: ocsChallengeCard) {
   return CheckFunctionType.checkTokenIdBalance;
 }
 
-export function verifyAPISecret(req: Request): boolean {
+function verifyAPISecret(req: Request, challengeId: string): boolean {
   const secret = process.env.GALLERY_SECRET;
+  const allowedChallengeIds = process.env.BYPASS_CHALLENGE_IDS?.split(',');
   const headerSecret = req.headers.get('x-api-secret');
 
   if (!secret) {
@@ -257,5 +258,8 @@ export function verifyAPISecret(req: Request): boolean {
     return false;
   }
 
-  return secret === headerSecret;
+  return (
+    secret === headerSecret &&
+    Boolean(allowedChallengeIds?.includes(challengeId))
+  );
 }
