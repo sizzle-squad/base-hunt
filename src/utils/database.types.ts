@@ -157,6 +157,33 @@ export type Database = {
           },
         ]
       }
+      communities: {
+        Row: {
+          asset_address: string
+          created_at: string
+          id: number
+          logo: string | null
+          num_onboarded: number
+          symbol: string | null
+        }
+        Insert: {
+          asset_address: string
+          created_at?: string
+          id?: number
+          logo?: string | null
+          num_onboarded?: number
+          symbol?: string | null
+        }
+        Update: {
+          asset_address?: string
+          created_at?: string
+          id?: number
+          logo?: string | null
+          num_onboarded?: number
+          symbol?: string | null
+        }
+        Relationships: []
+      }
       level_configuration: {
         Row: {
           airdrop_command: string
@@ -411,6 +438,38 @@ export type Database = {
         }
         Relationships: []
       }
+      user_onboarding: {
+        Row: {
+          asset_address: string | null
+          created_at: string
+          id: number
+          tx_hash: string | null
+          user_address: string | null
+        }
+        Insert: {
+          asset_address?: string | null
+          created_at?: string
+          id?: number
+          tx_hash?: string | null
+          user_address?: string | null
+        }
+        Update: {
+          asset_address?: string | null
+          created_at?: string
+          id?: number
+          tx_hash?: string | null
+          user_address?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_onboarding_asset_address_fkey"
+            columns: ["asset_address"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["asset_address"]
+          },
+        ]
+      }
       user_referrals: {
         Row: {
           created_at: string
@@ -441,6 +500,7 @@ export type Database = {
       user_spins: {
         Row: {
           created_at: string
+          created_date: string | null
           game_id: number | null
           id: number
           spin_result: number | null
@@ -448,6 +508,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          created_date?: string | null
           game_id?: number | null
           id?: number
           spin_result?: number | null
@@ -455,6 +516,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          created_date?: string | null
           game_id?: number | null
           id?: number
           spin_result?: number | null
@@ -505,6 +567,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      find_or_create_community: {
+        Args: {
+          _asset_address: string
+          _symbol: string
+          _logo: string
+        }
+        Returns: undefined
+      }
       get_all_badges: {
         Args: {
           _game_id: number
@@ -717,7 +787,7 @@ export type Database = {
         | "checkTokensCount"
         | "checkNftTokensCount"
       networks: "networks/base-mainnet" | "networks/eth-mainnet"
-      spin_type: "POINTS"
+      spin_type: "POINTS" | "USDC"
     }
     CompositeTypes: {
       [_ in never]: never
