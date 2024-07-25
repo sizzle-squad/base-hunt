@@ -247,7 +247,7 @@ function getValidateFunctionType(challenge: ocsChallengeCard) {
 function verifyAPISecret(req: Request, challengeId: string): boolean {
   const secret = process.env.GALLERY_SECRET;
   const allowedChallengeIds = process.env.BYPASS_CHALLENGE_IDS?.split(',');
-  const headerSecret = req.headers.get('x-api-secret');
+  const headerSecret = req.headers.get('x-bypass-challenge-secret');
 
   if (!secret) {
     console.warn('API_SECRET not set');
