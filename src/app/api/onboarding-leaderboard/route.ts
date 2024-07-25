@@ -83,7 +83,7 @@ async function getTxDetails(txHash: string, address: string) {
       body: JSON.stringify({
         network: 'networks/base-mainnet',
         hash: txHash,
-        address: address,
+        address,
       }),
     });
 
@@ -114,9 +114,8 @@ export async function POST(request: NextRequest) {
     return authResponse;
   }
 
-  const body: OnboardingLeaderboardRequest = await request.json();
-
-  const { userAddress, txHash, chainId } = body;
+  const { userAddress, txHash, chainId }: OnboardingLeaderboardRequest =
+    await request.json();
 
   if (!userAddress || !txHash) {
     return new Response(
@@ -167,7 +166,7 @@ export async function POST(request: NextRequest) {
     'find_or_create_community',
     {
       _asset_address: assetAddress,
-      _symbol: addressMeta.token?.symbol ?? 'BASE',
+      _symbol: addressMeta.token?.symbol ?? 'TBA',
       _logo: addressMeta.token?.logo?.url ?? '',
     }
   );
@@ -199,6 +198,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from('communities')
     .select('*')
+    .neq('symbol', 'TBA')
     .order('num_onboarded', { ascending: false })
     .limit(10);
 
