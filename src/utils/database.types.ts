@@ -786,6 +786,7 @@ export type Database = {
         | "checkCoinbaseOne"
         | "checkTokensCount"
         | "checkNftTokensCount"
+        | "checkBypass"
       networks: "networks/base-mainnet" | "networks/eth-mainnet"
       spin_type: "POINTS" | "USDC"
     }

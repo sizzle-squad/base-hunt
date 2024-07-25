@@ -53,7 +53,8 @@ export enum CheckFunctionType {
   checkJoinGuild = "checkJoinGuild",
   checkCoinbaseOne = "checkCoinbaseOne",
   checkTokensCount = "checkTokensCount",
-  checkNftTokensCount = "checkNftTokensCount"
+  checkNftTokensCount = "checkNftTokensCount",
+  checkBypass = "checkBypass"
 }
 
 export enum Networks {
