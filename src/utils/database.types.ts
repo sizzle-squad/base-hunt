@@ -596,6 +596,10 @@ export type Database = {
         }
         Returns: Json
       }
+      get_recent_payouts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       get_referral_data: {
         Args: {
           _game_id: number

@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     if (payouts && payouts >= 2000) {
       console.error('Too many payouts');
       return new Response(
-        `Too many payouts have been made recently, please try again later. Payouts: ${payouts}`,
+        `Too many payouts have been made recently, please try again later`,
         {
           status: 400,
         }
