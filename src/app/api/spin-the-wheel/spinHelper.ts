@@ -117,11 +117,14 @@ export async function airdropUSDC(
   userAddress: string,
   airdropCmd: AirdropUSDCValue
 ): Promise<boolean> {
+  console.log('[AirdropUSDC] loaded wallet:', userAddress);
   await delay(10000);
   const random_nonce = ethers.hexlify(ethers.randomBytes(32));
   try {
     await airdropNft(userAddress, airdropCmd, random_nonce);
+    console.log('[AirdropUSDC] airdrop completed');
   } catch (e) {
+    console.log('[AirdropUSDC] airdrop failed');
     console.error(e);
     return false;
   }
