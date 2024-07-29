@@ -117,6 +117,7 @@ export async function airdropUSDC(
   userAddress: string,
   airdropCmd: AirdropUSDCValue
 ): Promise<boolean> {
+  await delay(10000);
   const random_nonce = ethers.hexlify(ethers.randomBytes(32));
   try {
     await airdropNft(userAddress, airdropCmd, random_nonce);
@@ -125,6 +126,10 @@ export async function airdropUSDC(
     return false;
   }
   return true;
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function convertPSTtoUTC(pstTimeStr: string): string {
