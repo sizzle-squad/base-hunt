@@ -358,6 +358,7 @@ export type Database = {
           game_id: number
           id: number
           is_opt_in: boolean
+          is_opt_in_sweepstakes: boolean
           user_address: string
         }
         Insert: {
@@ -365,6 +366,7 @@ export type Database = {
           game_id: number
           id?: number
           is_opt_in?: boolean
+          is_opt_in_sweepstakes?: boolean
           user_address: string
         }
         Update: {
@@ -372,6 +374,7 @@ export type Database = {
           game_id?: number
           id?: number
           is_opt_in?: boolean
+          is_opt_in_sweepstakes?: boolean
           user_address?: string
         }
         Relationships: []
@@ -596,6 +599,17 @@ export type Database = {
         }
         Returns: Json
       }
+      get_is_opt_in_sweepstakes: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: boolean
+      }
+      get_recent_payouts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       get_referral_data: {
         Args: {
           _game_id: number
@@ -720,6 +734,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      opt_in_sweepstakes: {
+        Args: {
+          _game_id: number
+          _user_address: string
+        }
+        Returns: undefined
+      }
       reward_referral: {
         Args: {
           _game_id: number
@@ -786,6 +807,7 @@ export type Database = {
         | "checkCoinbaseOne"
         | "checkTokensCount"
         | "checkNftTokensCount"
+        | "checkBypass"
       networks: "networks/base-mainnet" | "networks/eth-mainnet"
       spin_type: "POINTS" | "USDC"
     }
