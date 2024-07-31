@@ -11,6 +11,7 @@ const supabase = createClient(
 );
 
 const baseUSDCAddress = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+const euroUSDCAddress = '0x60a3e35cc302bfa44cb288bc5a4f316fdb1adb42';
 
 export type OnboardingLeaderboardRequest = {
   txHash: string;
@@ -145,7 +146,8 @@ export async function POST(request: NextRequest) {
 
   if (
     assetAddress == 'native' ||
-    assetAddress.toLowerCase() == baseUSDCAddress.toLowerCase()
+    assetAddress.toLowerCase() == baseUSDCAddress.toLowerCase() ||
+    assetAddress.toLowerCase() == euroUSDCAddress.toLowerCase()
   ) {
     // don't want to process ETH or USDC, return success early
     return NextResponse.json({ success: true });
