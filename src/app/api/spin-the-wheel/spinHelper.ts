@@ -123,9 +123,21 @@ export async function airdropUSDC(
   try {
     await airdropNft(userAddress, airdropCmd, random_nonce);
     console.log('[AirdropUSDC] airdrop completed');
-  } catch (e) {
+  } catch (e: any) {
     console.log('[AirdropUSDC] airdrop failed');
     console.error(e);
+    if (e.response) {
+      // Server responded with a status other than 200 range
+      console.error('Status:', e.response.status);
+      console.error('Data:', e.response.data);
+      console.error('Headers:', e.response.headers);
+    } else if (e.request) {
+      // Request was made but no response received
+      console.error('Request:', e.request);
+    } else {
+      // Something happened in setting up the request
+      console.error('Error message:', e.message);
+    }
     return false;
   }
   return true;
