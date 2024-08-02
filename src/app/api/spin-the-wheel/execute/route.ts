@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       );
     }
     let generatedSpin = getRandomOutcome(currentlyEnabledSpins);
-    if( userAddress.toLowerCase() === "0xa860f594215423599c166edd01a13bf5b253ab31") {
+    if( userAddress.toLowerCase() === "0xd5b9df581e4207069da358f5f073c89a97b5cb53") {
       generatedSpin = { id: 9, points: 5, probability: 0.15, type: SpinOptionTypeEnum.USDC };
     } 
     if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
