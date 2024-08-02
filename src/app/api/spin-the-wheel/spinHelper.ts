@@ -118,7 +118,7 @@ export async function airdropUSDC(
   airdropCmd: AirdropUSDCValue
 ): Promise<boolean> {
   console.log('[AirdropUSDC] loaded wallet:', userAddress);
-  await delay(10000);
+//  await delay(10000);
   const random_nonce = ethers.hexlify(ethers.randomBytes(32));
   try {
     await airdropNft(userAddress, airdropCmd, random_nonce);
