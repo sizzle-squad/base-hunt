@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     const generatedSpin = getRandomOutcome(currentlyEnabledSpins);
     if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
       const payouts = (await supabase.rpc('get_recent_payouts'))?.data;
-      if (payouts && payouts >= 2000) {
+      if (payouts && payouts >= 6000) {
         console.error('Too many payouts');
         return new Response(
           `Too many payouts have been made recently, please try again later`,
