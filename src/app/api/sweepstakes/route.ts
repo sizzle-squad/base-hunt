@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
       throw new Error(error.message);
     }
     console.log('GET /api/sweepstakes/is-opt-in', { data });
+
     const response = NextResponse.json({ isOptedIn: data });
 
     return response;

@@ -117,14 +117,33 @@ export async function airdropUSDC(
   userAddress: string,
   airdropCmd: AirdropUSDCValue
 ): Promise<boolean> {
+  console.log('[AirdropUSDC] loaded wallet:', userAddress);
+  await delay(10000);
   const random_nonce = ethers.hexlify(ethers.randomBytes(32));
   try {
     await airdropNft(userAddress, airdropCmd, random_nonce);
-  } catch (e) {
+    console.log('[AirdropUSDC] airdrop completed');
+  } catch (e: any) {
+    console.log('[AirdropUSDC] airdrop failed');
     console.error(e);
+    if (e.response) {
+      // Server responded with a status other than 200 range
+      console.error('[AirdropUSDC] Status:', e.response.status);
+      console.error('[AirdropUSDC] Data:', e.response.data);
+    } else if (e.request) {
+      // Request was made but no response received
+      console.error('[AirdropUSDC] Request:', e.request);
+    } else {
+      // Something happened in setting up the request
+      console.error('[AirdropUSDC] Error message:', e.message);
+    }
     return false;
   }
   return true;
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function convertPSTtoUTC(pstTimeStr: string): string {

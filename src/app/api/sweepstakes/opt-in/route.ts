@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
       );
     }
     console.log('POST /api/sweepstakes/opt-in', { userAddress, gameId });
+    
     // Check if the user is already opted in
     const { data: isOptedIn, error: optInError } = await supabase.rpc('get_is_opt_in_sweepstakes', {
       _game_id: gameId,
