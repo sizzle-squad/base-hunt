@@ -100,8 +100,19 @@ export async function POST(request: NextRequest) {
         }
       );
     }
-
     const generatedSpin = getRandomOutcome(currentlyEnabledSpins);
+    if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
+      const payouts = (await supabase.rpc('get_recent_payouts'))?.data;
+      if (payouts && payouts >= 6000) {
+        console.error('Too many payouts');
+        return new Response(
+          `Too many payouts have been made recently, please try again later`,
+          {
+            status: 400,
+          }
+        );
+      }
+    }
     const saveSpin = await supabase.rpc('update_spin_and_points', {
       _game_id: gameId,
       _user_address: userAddress.toLowerCase(),
@@ -137,8 +148,18 @@ export async function POST(request: NextRequest) {
       hasAvailableSpin: false,
       lastSpinResult: generatedSpin,
     };
-    
+
     if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
+      const headers: Record<string, string> = {};
+      if (request.headers) {
+        request.headers.forEach((value, key) => {
+          headers[key] = value;
+        });
+        console.log('[AirdropUSDC] Request headers:', headers);
+      } else {
+        console.log('[AirdropUSDC] Request headers not found');
+      }
+
       if (generatedSpin.points == 5) {
         airdropUSDC(userAddress, AirdropUSDCValue.FIVE);
       } else if (generatedSpin.points == 10) {
