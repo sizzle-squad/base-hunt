@@ -35,14 +35,6 @@ export async function GET(req: NextRequest) {
     console.log('GET /api/sweepstakes/is-opt-in', { data });
     const response = NextResponse.json({ isOptedIn: data });
 
-    // Caching response for an hour if user is opted in
-    if (data) {
-      const cacheControlHeader = 'public, s-maxage=3600';
-      response.headers.set('Cache-Control', cacheControlHeader);
-      response.headers.set('CDN-Cache-Control', cacheControlHeader);
-      response.headers.set('Vercel-CDN-Cache-Control', cacheControlHeader);
-    }
-
     return response;
   } catch (error) {
     console.error(error);
