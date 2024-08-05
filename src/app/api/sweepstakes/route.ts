@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import { toBigInt } from '@/utils/toBigInt';
 import { createClient } from '@supabase/supabase-js';
+import { toBigInt } from '@/utils/toBigInt';
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -12,6 +12,8 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const userAddress = searchParams.get('userAddress') as string;
   const gameId = toBigInt(searchParams.get('gameId') as string);
+
+  console.log('GET /api/sweepstakes/is-opt-in', { userAddress, gameId });
 
   if (!userAddress || gameId === null) {
     return new NextResponse(
@@ -30,7 +32,7 @@ export async function GET(req: NextRequest) {
       console.error(error);
       throw new Error(error.message);
     }
-
+    console.log('GET /api/sweepstakes/is-opt-in', { data });
     const response = NextResponse.json({ isOptedIn: data });
 
     // Caching response for an hour if user is opted in
