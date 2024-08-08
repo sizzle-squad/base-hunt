@@ -15,7 +15,7 @@ import { getContentByIdUnauth } from '@/utils/getContentByIdUnauth';
 import { verifyOwnershipByCollectionUrl } from '@/utils/claims/balanceCheck';
 
 const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
-const maxPointMultiplier = 10;
+const maxPointMultiplier = 20;
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
