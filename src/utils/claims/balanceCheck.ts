@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import axios from 'axios';
 import { isStringAnInteger } from '../integer';
 
-const verifyOwnershipByCollectionUrl =
+export const verifyOwnershipByCollectionUrl =
   'https://api.wallet.coinbase.com/rpc/v3/collectibles/claims/verifyOwnershipByCollection';
 
 const balanceOfABI = [

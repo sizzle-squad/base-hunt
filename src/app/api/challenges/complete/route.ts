@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { type NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
+import axios from 'axios';
 
 import {
   CheckFunctions,
@@ -11,8 +12,10 @@ import { ChallengeStatus, CheckFunctionType } from '@/utils/database.enums';
 import { providers } from '@/utils/ethereum';
 import { toBigInt } from '@/utils/toBigInt';
 import { getContentByIdUnauth } from '@/utils/getContentByIdUnauth';
+import { verifyOwnershipByCollectionUrl } from '@/utils/claims/balanceCheck';
 
 const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
+const maxPointMultiplier = 10;
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -104,7 +107,7 @@ export async function POST(request: NextRequest) {
 
   const tokenId = exploreContent?.ocsChallengeCard?.tokenId;
   const contractAddress = exploreContent?.ocsChallengeCard?.contractAddress;
-  const points = exploreContent?.ocsChallengeCard?.points;
+  var points = exploreContent?.ocsChallengeCard?.points;
   const tokenAmount = exploreContent?.ocsChallengeCard?.tokenAmount || '1';
 
   // Provider is always base mainnet
@@ -177,6 +180,12 @@ export async function POST(request: NextRequest) {
         throw new Error(
           'user address could not be mapped and is undefined:' + checkFuncData
         );
+      }
+
+      // hardcoded only for coffee challenge
+      if (challengeId === 'ocsChallenge_9142cba1-ec12-4ee8-915e-7976536908cd') {
+        points =
+          (await pointsMultiplier(userAddress, contractAddress)) * points;
       }
 
       const claim = await supabase
@@ -257,9 +266,37 @@ function verifyAPISecret(req: Request, challengeId: string): boolean {
   if (!headerSecret) {
     return false;
   }
-
   return (
     secret === headerSecret &&
     Boolean(allowedChallengeIds?.includes(challengeId))
   );
+}
+
+async function pointsMultiplier(
+  userAddress: string,
+  contractAddress: string
+): Promise<number> {
+  const result = await axios.post(
+    verifyOwnershipByCollectionUrl,
+    {
+      claimer: userAddress,
+      contractAddress: contractAddress,
+      chainId: '8453',
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  let total = 0;
+  if (result.data.tokenCounts) {
+    for (const [_, value] of Object.entries(result.data.tokenCounts)) {
+      total += Number(value);
+    }
+
+    return total > maxPointMultiplier ? maxPointMultiplier : total;
+  } else {
+    return 1;
+  }
 }
