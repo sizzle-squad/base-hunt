@@ -60,6 +60,25 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // bandaid fix for users who only got points from a free mint
+    const { data: userChallengeStatusData, error } = await supabase
+      .from('user_challenge_status')
+      .select('user_address, status, challenge_id', { count: 'exact' })
+      .eq('game_id', gameId)
+      .eq('user_address', userAddress.toLowerCase());
+
+    if (error) {
+      console.error(error);
+      return new Response(`Error fetching user info`, { status: 400 });
+    }
+
+    if (
+      userChallengeStatusData.length === 1 &&
+      userChallengeStatusData[0].challenge_id === '3nt43Lay6b18Fxqlz2nXS1'
+    ) {
+      return new Response('No spin available', { status: 400 });
+    }
+
     const spinDataRes = await supabase.rpc('getspindata', {
       _game_id: gameId,
       _user_address: userAddress.toLowerCase(),
