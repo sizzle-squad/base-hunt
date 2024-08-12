@@ -24,6 +24,7 @@ const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
 const blockedFundedByAddresses = [
   '0x7e12741836f13de59b0fa1b4bc6265aa5b81a5dd',
   '0xd342ec2a08f07a837a32dfb83420a34f2764186f',
+  '0x3c72c2dd8f931a5a0c4ecfefe36a787aa52fe449',
 ];
 const blockedChallengeIds = [
   '3nt43Lay6b18Fxqlz2nXS1',
@@ -86,7 +87,8 @@ export async function POST(request: NextRequest) {
     }
 
     if (
-      userChallengeStatusData.length === 1 &&
+      userChallengeStatusData.length > 0 &&
+      userChallengeStatusData.length <= 4 &&
       blockedChallengeIds.includes(userChallengeStatusData[0].challenge_id)
     ) {
       if (await checkBlockedAddresses(userAddress)) {
