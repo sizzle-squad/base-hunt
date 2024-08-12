@@ -30,6 +30,7 @@ const blockedChallengeIds = [
   '1n15mCpKb5V02y4WbRbisW',
   '6mpsE4jgRI0GnuU3elo2XV',
   '6VRBNN6qr2algysZeorek8',
+  'ocsChallenge_2f2ea707-d664-4d4b-918b-6299bdf45cd8',
 ];
 
 const supabase = createClient(
