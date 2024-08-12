@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
+import axios from 'axios';
 
 import { createClient } from '@supabase/supabase-js';
 import {
@@ -19,6 +20,8 @@ import {
 } from '../spinHelper';
 
 const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
+
+const blockedFundedByAddresses = ['0x7e12741836f13de59b0fa1b4bc6265aa5b81a5dd'];
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -78,8 +81,10 @@ export async function POST(request: NextRequest) {
         userChallengeStatusData[0].challenge_id === '1n15mCpKb5V02y4WbRbisW' ||
         userChallengeStatusData[0].challenge_id === '6mpsE4jgRI0GnuU3elo2XV')
     ) {
-      console.error(`No spin available for userAddress: ${userAddress}`);
-      return new Response('No spin available', { status: 400 });
+      if (await checkBlockedAddresses(userAddress)) {
+        console.error(`No spin available for userAddress: ${userAddress}`);
+        return new Response('No spin available', { status: 400 });
+      }
     }
 
     const spinDataRes = await supabase.rpc('getspindata', {
@@ -232,4 +237,27 @@ async function eligibleForSpinTheWheel(
   }
 
   return true;
+}
+
+async function checkBlockedAddresses(userAddress: string): Promise<boolean> {
+  const result = await axios.post(
+    'https://api.wallet.coinbase.com/rpc/v3/txHistory/getForAddress',
+    {
+      network: 'networks/base-mainnet',
+      address: userAddress,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  if (result.data.result.addressMeta) {
+    for (const address in result.data.result.addressMeta) {
+      if (blockedFundedByAddresses.includes(address.toLowerCase())) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
