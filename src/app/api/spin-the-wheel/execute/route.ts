@@ -21,7 +21,16 @@ import {
 
 const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
 
-const blockedFundedByAddresses = ['0x7e12741836f13de59b0fa1b4bc6265aa5b81a5dd'];
+const blockedFundedByAddresses = [
+  '0x7e12741836f13de59b0fa1b4bc6265aa5b81a5dd',
+  '0xd342ec2a08f07a837a32dfb83420a34f2764186f',
+];
+const blockedChallengeIds = [
+  '3nt43Lay6b18Fxqlz2nXS1',
+  '1n15mCpKb5V02y4WbRbisW',
+  '6mpsE4jgRI0GnuU3elo2XV',
+  '6VRBNN6qr2algysZeorek8',
+];
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -77,9 +86,7 @@ export async function POST(request: NextRequest) {
 
     if (
       userChallengeStatusData.length === 1 &&
-      (userChallengeStatusData[0].challenge_id === '3nt43Lay6b18Fxqlz2nXS1' ||
-        userChallengeStatusData[0].challenge_id === '1n15mCpKb5V02y4WbRbisW' ||
-        userChallengeStatusData[0].challenge_id === '6mpsE4jgRI0GnuU3elo2XV')
+      blockedChallengeIds.includes(userChallengeStatusData[0].challenge_id)
     ) {
       if (await checkBlockedAddresses(userAddress)) {
         console.error(`No spin available for userAddress: ${userAddress}`);
