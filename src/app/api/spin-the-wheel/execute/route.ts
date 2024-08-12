@@ -265,6 +265,22 @@ async function checkBlockedAddresses(userAddress: string): Promise<boolean> {
         return true;
       }
     }
+    if (result.data.result.transactions) {
+      var hasMintAction = false;
+      for (const tx of result.data.result.transactions) {
+        for (const userOp in tx.userOperations) {
+          const uOp: any = userOp;
+          if (uOp?.primaryAction?.type === 'LABEL_MINT') {
+            hasMintAction = true;
+          }
+        }
+      }
+      if (hasMintAction) {
+        return false;
+      } else {
+        return true;
+      }
+    }
   }
   return false;
 }
