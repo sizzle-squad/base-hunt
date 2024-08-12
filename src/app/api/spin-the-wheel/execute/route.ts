@@ -75,7 +75,8 @@ export async function POST(request: NextRequest) {
     if (
       userChallengeStatusData.length === 1 &&
       (userChallengeStatusData[0].challenge_id === '3nt43Lay6b18Fxqlz2nXS1' ||
-        userChallengeStatusData[0].challenge_id === '1n15mCpKb5V02y4WbRbisW')
+        userChallengeStatusData[0].challenge_id === '1n15mCpKb5V02y4WbRbisW' ||
+        userChallengeStatusData[0].challenge_id === '6mpsE4jgRI0GnuU3elo2XV')
     ) {
       console.error(`No spin available for userAddress: ${userAddress}`);
       return new Response('No spin available', { status: 400 });
