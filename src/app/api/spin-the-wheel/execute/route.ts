@@ -81,10 +81,6 @@ export async function POST(request: NextRequest) {
       return new Response(`Error fetching user info`, { status: 400 });
     }
 
-    if (await shouldBlockSpin(userChallengeStatusData, userAddress)) {
-      return new Response('No spin available', { status: 400 });
-    }
-
     const spinDataRes = await supabase.rpc('getspindata', {
       _game_id: gameId,
       _user_address: userAddress.toLowerCase(),
@@ -110,6 +106,10 @@ export async function POST(request: NextRequest) {
           status: 400,
         }
       );
+    }
+
+    if (await shouldBlockSpin(userChallengeStatusData, userAddress)) {
+      return new Response('No spin available', { status: 400 });
     }
 
     let currentlyEnabledSpins = getEnabledSpins(
