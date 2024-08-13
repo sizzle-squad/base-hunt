@@ -277,13 +277,14 @@ async function checkBlockedAddresses(userAddress: string): Promise<boolean> {
             hasMintAction = true;
           }
         }
-        if ((tx.primaryAction === 'LABEL_MINT')) {
+        if (tx.primaryAction === 'LABEL_MINT') {
           hasMintAction = true;
         }
       }
       if (hasMintAction) {
         return false;
       } else {
+        return result.data.result.transactions.length < 5;
         return true;
       }
     }
