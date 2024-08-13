@@ -19,20 +19,15 @@ import {
   UserSpinType,
 } from '../spinHelper';
 
-const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
+type userChallengeStatusDataType = {
+  user_address: string;
+  challenge_id: string;
+};
 
-const blockedFundedByAddresses = [
-  '0x7e12741836f13de59b0fa1b4bc6265aa5b81a5dd',
-  '0xd342ec2a08f07a837a32dfb83420a34f2764186f',
-  '0x3c72c2dd8f931a5a0c4ecfefe36a787aa52fe449',
-];
-const blockedChallengeIds = [
-  '3nt43Lay6b18Fxqlz2nXS1',
-  '1n15mCpKb5V02y4WbRbisW',
-  '6mpsE4jgRI0GnuU3elo2XV',
-  '6VRBNN6qr2algysZeorek8',
-  'ocsChallenge_2f2ea707-d664-4d4b-918b-6299bdf45cd8',
-];
+const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
+const blockedFundedByAddresses =
+  process.env.STW_BLOCKED_FUNDED_BY_ADDRESSES?.split(',') ?? [];
+const riskyChallengeIds = process.env.STW_RISKY_CHALLENGE_IDS?.split(',') ?? [];
 
 const supabase = createClient(
   process.env.SUPABASE_URL as string,
@@ -86,15 +81,8 @@ export async function POST(request: NextRequest) {
       return new Response(`Error fetching user info`, { status: 400 });
     }
 
-    if (
-      userChallengeStatusData.length > 0 &&
-      userChallengeStatusData.length <= 4 &&
-      blockedChallengeIds.includes(userChallengeStatusData[0].challenge_id)
-    ) {
-      if (await checkBlockedAddresses(userAddress)) {
-        console.error(`No spin available for userAddress: ${userAddress}`);
-        return new Response('No spin available', { status: 400 });
-      }
+    if (await shouldBlockSpin(userChallengeStatusData, userAddress)) {
+      return new Response('No spin available', { status: 400 });
     }
 
     const spinDataRes = await supabase.rpc('getspindata', {
@@ -249,8 +237,16 @@ async function eligibleForSpinTheWheel(
   return true;
 }
 
-async function checkBlockedAddresses(userAddress: string): Promise<boolean> {
-  const result = await axios.post(
+async function shouldBlockSpin(
+  userChallengeStatusData: userChallengeStatusDataType[],
+  userAddress: string
+): Promise<boolean> {
+  if (userChallengeStatusData.length > 4) {
+    // user completed more than 4 challenges, likely not a bot
+    return false;
+  }
+
+  const txHistoryResult = await axios.post(
     'https://api.wallet.coinbase.com/rpc/v3/txHistory/getForAddress',
     {
       network: 'networks/base-mainnet',
@@ -262,31 +258,66 @@ async function checkBlockedAddresses(userAddress: string): Promise<boolean> {
       },
     }
   );
-  if (result.data.result.addressMeta) {
-    for (const address in result.data.result.addressMeta) {
+
+  if (interactedWithBlockedAddresses(txHistoryResult)) {
+    console.error(
+      `User ${userAddress} spin blocked: interacted with blocked addresses`
+    );
+    return true;
+  }
+
+  let numNonRiskyChallengesCompleted = 0;
+  for (const challenge of userChallengeStatusData) {
+    if (!riskyChallengeIds.includes(challenge.challenge_id)) {
+      numNonRiskyChallengesCompleted++;
+    }
+  }
+
+  if (numNonRiskyChallengesCompleted !== 0) {
+    // user has completed some non risky challenges, likely not a bot
+    return false;
+  }
+
+  if (hasNoMintAction(txHistoryResult)) {
+    console.error(`User ${userAddress} spin blocked: no mint action`);
+    return true;
+  }
+
+  return false;
+}
+
+function interactedWithBlockedAddresses(txHistoryResult: any): boolean {
+  if (txHistoryResult.data.result.addressMeta) {
+    for (const address in txHistoryResult.data.result.addressMeta) {
       if (blockedFundedByAddresses.includes(address.toLowerCase())) {
         return true;
       }
     }
-    if (result.data.result.transactions) {
-      var hasMintAction = false;
-      for (const tx of result.data.result.transactions) {
-        for (const userOp in tx.userOperations) {
-          const uOp: any = userOp;
-          if (uOp?.primaryAction?.type === 'LABEL_MINT') {
-            hasMintAction = true;
-          }
-        }
-        if (tx.primaryAction === 'LABEL_MINT') {
+  }
+  return false;
+}
+
+function hasNoMintAction(txHistoryResult: any): boolean {
+  if (txHistoryResult.data.result.transactions) {
+    var hasMintAction = false;
+    for (const tx of txHistoryResult.data.result.transactions) {
+      // check all user operations for mint action
+      for (const userOp in tx.userOperations) {
+        const uOp: any = userOp;
+        if (uOp?.primaryAction?.type === 'LABEL_MINT') {
           hasMintAction = true;
         }
       }
-      if (hasMintAction) {
-        return false;
-      } else {
-        return result.data.result.transactions.length < 5;
-        return true;
+      // check all tx for mint action
+      if (tx.primaryAction === 'LABEL_MINT') {
+        hasMintAction = true;
       }
+    }
+    if (hasMintAction) {
+      // user has minted, likely not a bot
+      return false;
+    } else {
+      return txHistoryResult.data.result.transactions.length < 5;
     }
   }
   return false;
