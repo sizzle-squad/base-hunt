@@ -277,6 +277,9 @@ async function checkBlockedAddresses(userAddress: string): Promise<boolean> {
             hasMintAction = true;
           }
         }
+        if ((tx.primaryAction = 'LABEL_MINT')) {
+          hasMintAction = true;
+        }
       }
       if (hasMintAction) {
         return false;
