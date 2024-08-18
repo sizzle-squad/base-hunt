@@ -241,7 +241,7 @@ async function shouldBlockSpin(
   userChallengeStatusData: userChallengeStatusDataType[],
   userAddress: string
 ): Promise<boolean> {
-  if (userChallengeStatusData.length > 4) {
+  if (userChallengeStatusData.length > 5) {
     // user completed more than 4 challenges, likely not a bot
     return false;
   }
