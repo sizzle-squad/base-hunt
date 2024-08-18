@@ -317,7 +317,7 @@ function hasNoMintAction(txHistoryResult: any): boolean {
       // user has minted, likely not a bot
       return false;
     } else {
-      return txHistoryResult.data.result.transactions.length < 5;
+      return txHistoryResult.data.result.transactions.length < 9;
     }
   }
   return false;
