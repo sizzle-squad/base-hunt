@@ -260,7 +260,7 @@ async function shouldBlockSpin(
   );
 
   if (interactedWithBlockedAddresses(txHistoryResult)) {
-    console.error(
+    console.warn(
       `User ${userAddress} spin blocked: interacted with blocked addresses`
     );
     return true;
@@ -279,7 +279,7 @@ async function shouldBlockSpin(
   }
 
   if (hasNoMintAction(txHistoryResult)) {
-    console.error(`User ${userAddress} spin blocked: no mint action`);
+    console.warn(`User ${userAddress} spin blocked: no mint action`);
     return true;
   }
 
