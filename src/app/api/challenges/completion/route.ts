@@ -6,7 +6,7 @@ import { toBigInt } from '@/utils/toBigInt';
 import { ChallengeStatus } from '@/utils/database.enums';
 
 const supabase = createClient<Database>(
-  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_READ_REPLICA_URL as string,
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
@@ -70,14 +70,9 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    const response = NextResponse.json(
+    return NextResponse.json(
       mapToChallengeCompletionState(userChallengeStatusData)
     );
-    // cache for 30 seconds
-    response.headers.set('Cache-Control', 'public, s-maxage=30');
-    response.headers.set('CDN-Cache-Control', 'public, s-maxage=30');
-    response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=30');
-    return response;
   } catch (error) {
     console.error(error);
     return NextResponse.json(
