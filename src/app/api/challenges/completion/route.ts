@@ -70,9 +70,14 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       mapToChallengeCompletionState(userChallengeStatusData)
     );
+    // cache for 30 seconds
+    response.headers.set('Cache-Control', 'public, s-maxage=30');
+    response.headers.set('CDN-Cache-Control', 'public, s-maxage=30');
+    response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=30');
+    return response;
   } catch (error) {
     console.error(error);
     return NextResponse.json(
