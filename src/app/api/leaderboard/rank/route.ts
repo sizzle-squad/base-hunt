@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       _game_id: gameId,
       _user_address: userAddress.toLowerCase(),
     },
-    { get: true }
+    { get: true } as any
   );
   if (rankData.error) {
     console.log(rankData.error);
