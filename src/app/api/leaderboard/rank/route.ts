@@ -11,7 +11,7 @@ type RankType = {
 };
 
 const supabase = createClient(
-  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_READ_REPLICA_URL as string,
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
@@ -28,10 +28,14 @@ export async function GET(request: NextRequest) {
       }
     );
   }
-  const rankData = await supabase.rpc('getscorerankv2', {
-    _game_id: gameId,
-    _user_address: userAddress.toLowerCase(),
-  });
+  const rankData = await supabase.rpc(
+    'getscorerankv2',
+    {
+      _game_id: gameId,
+      _user_address: userAddress.toLowerCase(),
+    },
+    { get: true }
+  );
   if (rankData.error) {
     console.log(rankData.error);
     return new Response('', { status: 500 });
