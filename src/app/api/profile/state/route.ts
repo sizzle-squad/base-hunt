@@ -13,7 +13,7 @@ import {
 } from '../../../../hooks/types';
 
 const supabase = createClient(
-  process.env.SUPABASE_READ_REPLICA_URL as string,
+  process.env.SUPABASE_URL as string,
   process.env.SUPABASE_SERVICE_KEY as string
 );
 
@@ -56,14 +56,10 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const referrals = await supabase.rpc(
-      'get_referral_data',
-      {
-        _game_id: gameId,
-        _user_address: userAddress.toLowerCase(),
-      },
-      { get: true } as any
-    );
+    const referrals = await supabase.rpc('get_referral_data', {
+      _game_id: gameId,
+      _user_address: userAddress.toLowerCase(),
+    });
 
     if (referrals.error) {
       console.error(referrals.error);
@@ -100,19 +96,16 @@ export async function GET(req: NextRequest) {
         // fetch challenge data
         supabase
           .from('user_challenge_status')
-          .select('*', { count: 'exact' })
+          .select('*', { count: 'exact', head: true })
           .eq('user_address', userAddress.toLowerCase())
           .eq('status', ChallengeStatus.COMPLETE),
         // fetch user badges
-        supabase.rpc(
-          'getuserbadges',
-          {
-            _game_id: gameId,
-            _user_address: userAddress.toLowerCase(),
-          },
-          { get: true } as any
-        ),
+        supabase.rpc('getuserbadges', {
+          _game_id: gameId,
+          _user_address: userAddress.toLowerCase(),
+        }),
       ]);
+
     if (scoreData.error) {
       console.error(scoreData.error);
       throw new Error(scoreData.error.message);
