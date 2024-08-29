@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(mapToProfileStateV2(BigInt(100), false));
     }
 
-    const { data: scoreData, scoreError } = await supabase
+    const { data: scoreData, error: scoreError } = await supabase
       .from('score')
       .select()
       .eq('user_address', userAddress.toLowerCase())
