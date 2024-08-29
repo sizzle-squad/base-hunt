@@ -104,6 +104,11 @@ export type ProfileState = {
   badges: ProfileBadge[];
 };
 
+export type ProfileStateV2 = {
+  currentScore: bigint;
+  playedOCS: boolean;
+};
+
 export enum SpinOptionTypeEnum {
   POINTS = 'POINTS',
   USDC = 'USDC',
