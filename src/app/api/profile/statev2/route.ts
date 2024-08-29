@@ -47,8 +47,8 @@ export async function GET(req: NextRequest) {
       .eq('game_id', gameId);
 
     if (scoreError) {
-      console.error(error);
-      throw new Error(error.message);
+      console.error(scoreError);
+      throw new Error(scoreError.message);
     }
 
     const score = scoreData[0];
