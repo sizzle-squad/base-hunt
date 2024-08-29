@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
   try {
     const { data: optInData, error } = await supabase
       .from('user_address_opt_in')
-      .select()
+      .select('played_ocs')
       .eq('user_address', userAddress.toLowerCase())
       .eq('game_id', gameId);
 
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 
     const { data: scoreData, error: scoreError } = await supabase
       .from('score')
-      .select()
+      .select('current_score')
       .eq('user_address', userAddress.toLowerCase())
       .eq('game_id', gameId);
 
