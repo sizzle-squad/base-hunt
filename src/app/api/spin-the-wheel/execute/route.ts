@@ -56,6 +56,7 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  return NextResponse.json({});
   const body: SpinTheWheelExecuteRequest = await request.json();
 
   const { gameId, userAddress } = body;
