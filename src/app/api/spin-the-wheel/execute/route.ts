@@ -57,151 +57,151 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   return NextResponse.json({});
-  const body: SpinTheWheelExecuteRequest = await request.json();
+  // const body: SpinTheWheelExecuteRequest = await request.json();
 
-  const { gameId, userAddress } = body;
-  if (!userAddress || gameId === null) {
-    return new Response(
-      `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
-      {
-        status: 400,
-      }
-    );
-  }
+  // const { gameId, userAddress } = body;
+  // if (!userAddress || gameId === null) {
+  //   return new Response(
+  //     `Missing parameters: userAddress: ${userAddress}, gameId: ${gameId}`,
+  //     {
+  //       status: 400,
+  //     }
+  //   );
+  // }
 
-  try {
-    // bandaid fix for users who only got points from a free mint
-    const { data: userChallengeStatusData, error } = await supabase
-      .from('user_challenge_status')
-      .select('user_address, status, challenge_id', { count: 'exact' })
-      .eq('game_id', gameId)
-      .eq('user_address', userAddress.toLowerCase());
+  // try {
+  //   // bandaid fix for users who only got points from a free mint
+  //   const { data: userChallengeStatusData, error } = await supabase
+  //     .from('user_challenge_status')
+  //     .select('user_address, status, challenge_id', { count: 'exact' })
+  //     .eq('game_id', gameId)
+  //     .eq('user_address', userAddress.toLowerCase());
 
-    if (error) {
-      console.error(error);
-      return new Response(`Error fetching user info`, { status: 400 });
-    }
+  //   if (error) {
+  //     console.error(error);
+  //     return new Response(`Error fetching user info`, { status: 400 });
+  //   }
 
-    const spinDataRes = await supabase.rpc('getspindata', {
-      _game_id: gameId,
-      _user_address: userAddress.toLowerCase(),
-    });
+  //   const spinDataRes = await supabase.rpc('getspindata', {
+  //     _game_id: gameId,
+  //     _user_address: userAddress.toLowerCase(),
+  //   });
 
-    if (spinDataRes.error) {
-      console.error(spinDataRes.error);
-      throw new Error(spinDataRes.error.message);
-    }
+  //   if (spinDataRes.error) {
+  //     console.error(spinDataRes.error);
+  //     throw new Error(spinDataRes.error.message);
+  //   }
 
-    let spinOptions = getAllSpins(spinDataRes.data['spinOptions']);
-    let spinData = getUserSpinData(spinDataRes.data['spinData'], spinOptions);
+  //   let spinOptions = getAllSpins(spinDataRes.data['spinOptions']);
+  //   let spinData = getUserSpinData(spinDataRes.data['spinData'], spinOptions);
 
-    const isEligibleForSpinTheWheel = await eligibleForSpinTheWheel(
-      spinData,
-      userAddress,
-      BigInt(gameId)
-    );
-    if (!isEligibleForSpinTheWheel) {
-      return new Response(
-        `User does not have enough points, not eligible for STW: ${userAddress}, gameId: ${gameId}`,
-        {
-          status: 400,
-        }
-      );
-    }
+  //   const isEligibleForSpinTheWheel = await eligibleForSpinTheWheel(
+  //     spinData,
+  //     userAddress,
+  //     BigInt(gameId)
+  //   );
+  //   if (!isEligibleForSpinTheWheel) {
+  //     return new Response(
+  //       `User does not have enough points, not eligible for STW: ${userAddress}, gameId: ${gameId}`,
+  //       {
+  //         status: 400,
+  //       }
+  //     );
+  //   }
 
-    if (await shouldBlockSpin(userChallengeStatusData, userAddress)) {
-      return new Response('No spin available', { status: 400 });
-    }
+  //   if (await shouldBlockSpin(userChallengeStatusData, userAddress)) {
+  //     return new Response('No spin available', { status: 400 });
+  //   }
 
-    let currentlyEnabledSpins = getEnabledSpins(
-      spinDataRes.data['spinOptions']
-    );
-    const userHasAvailableSpin = spinData.hasAvailableSpin;
+  //   let currentlyEnabledSpins = getEnabledSpins(
+  //     spinDataRes.data['spinOptions']
+  //   );
+  //   const userHasAvailableSpin = spinData.hasAvailableSpin;
 
-    if (!userHasAvailableSpin) {
-      return new Response(
-        `No available spin for userAddress: ${userAddress}, gameId: ${gameId}`,
-        {
-          status: 400,
-        }
-      );
-    }
-    const generatedSpin = getRandomOutcome(currentlyEnabledSpins);
-    if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
-      const payouts = (await supabase.rpc('get_recent_payouts'))?.data;
-      if (payouts && payouts >= 6000) {
-        console.error('Too many payouts');
-        return new Response(
-          `Too many payouts have been made recently, please try again later`,
-          {
-            status: 400,
-          }
-        );
-      }
-    }
-    const saveSpin = await supabase.rpc('update_spin_and_points', {
-      _game_id: gameId,
-      _user_address: userAddress.toLowerCase(),
-      _last_spin_id: generatedSpin.id,
-      _points_increment:
-        generatedSpin.type == SpinOptionTypeEnum.POINTS
-          ? generatedSpin.points
-          : 0,
-    });
+  //   if (!userHasAvailableSpin) {
+  //     return new Response(
+  //       `No available spin for userAddress: ${userAddress}, gameId: ${gameId}`,
+  //       {
+  //         status: 400,
+  //       }
+  //     );
+  //   }
+  //   const generatedSpin = getRandomOutcome(currentlyEnabledSpins);
+  //   if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
+  //     const payouts = (await supabase.rpc('get_recent_payouts'))?.data;
+  //     if (payouts && payouts >= 6000) {
+  //       console.error('Too many payouts');
+  //       return new Response(
+  //         `Too many payouts have been made recently, please try again later`,
+  //         {
+  //           status: 400,
+  //         }
+  //       );
+  //     }
+  //   }
+  //   const saveSpin = await supabase.rpc('update_spin_and_points', {
+  //     _game_id: gameId,
+  //     _user_address: userAddress.toLowerCase(),
+  //     _last_spin_id: generatedSpin.id,
+  //     _points_increment:
+  //       generatedSpin.type == SpinOptionTypeEnum.POINTS
+  //         ? generatedSpin.points
+  //         : 0,
+  //   });
 
-    if (saveSpin.error) {
-      console.error(saveSpin.error);
-      throw new Error(saveSpin.error.message);
-    }
+  //   if (saveSpin.error) {
+  //     console.error(saveSpin.error);
+  //     throw new Error(saveSpin.error.message);
+  //   }
 
-    if (!saveSpin.data) {
-      console.error(
-        `Unable to save spin for userAddress: ${userAddress}, gameId: ${gameId}`
-      );
-      return new Response(
-        `Unable to save spin for userAddress: ${userAddress}, gameId: ${gameId}`,
-        {
-          status: 400,
-        }
-      );
-    }
+  //   if (!saveSpin.data) {
+  //     console.error(
+  //       `Unable to save spin for userAddress: ${userAddress}, gameId: ${gameId}`
+  //     );
+  //     return new Response(
+  //       `Unable to save spin for userAddress: ${userAddress}, gameId: ${gameId}`,
+  //       {
+  //         status: 400,
+  //       }
+  //     );
+  //   }
 
-    let userSpin = saveSpin.data as UserSpinType;
-    const updatedSpin: SpinData = {
-      id: userSpin.id.toString(),
-      gameId: userSpin.game_id.toString(),
-      userAddress: userSpin.user_address,
-      hasAvailableSpin: false,
-      lastSpinResult: generatedSpin,
-    };
+  //   let userSpin = saveSpin.data as UserSpinType;
+  //   const updatedSpin: SpinData = {
+  //     id: userSpin.id.toString(),
+  //     gameId: userSpin.game_id.toString(),
+  //     userAddress: userSpin.user_address,
+  //     hasAvailableSpin: false,
+  //     lastSpinResult: generatedSpin,
+  //   };
 
-    if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
-      const headers: Record<string, string> = {};
-      if (request.headers) {
-        request.headers.forEach((value, key) => {
-          headers[key] = value;
-        });
-        console.log('[AirdropUSDC] Request headers:', headers);
-      } else {
-        console.log('[AirdropUSDC] Request headers not found');
-      }
+  //   if (generatedSpin.type == SpinOptionTypeEnum.USDC) {
+  //     const headers: Record<string, string> = {};
+  //     if (request.headers) {
+  //       request.headers.forEach((value, key) => {
+  //         headers[key] = value;
+  //       });
+  //       console.log('[AirdropUSDC] Request headers:', headers);
+  //     } else {
+  //       console.log('[AirdropUSDC] Request headers not found');
+  //     }
 
-      if (generatedSpin.points == 5) {
-        airdropUSDC(userAddress, AirdropUSDCValue.FIVE);
-      } else if (generatedSpin.points == 10) {
-        airdropUSDC(userAddress, AirdropUSDCValue.TEN);
-      } else if (generatedSpin.points == 100) {
-        airdropUSDC(userAddress, AirdropUSDCValue.ONE_HUNDRED);
-      }
-    }
+  //     if (generatedSpin.points == 5) {
+  //       airdropUSDC(userAddress, AirdropUSDCValue.FIVE);
+  //     } else if (generatedSpin.points == 10) {
+  //       airdropUSDC(userAddress, AirdropUSDCValue.TEN);
+  //     } else if (generatedSpin.points == 100) {
+  //       airdropUSDC(userAddress, AirdropUSDCValue.ONE_HUNDRED);
+  //     }
+  //   }
 
-    return NextResponse.json(
-      mapToSpinTheWheelState(updatedSpin, currentlyEnabledSpins)
-    );
-  } catch (e) {
-    console.error(e);
-    NextResponse.error();
-  }
+  //   return NextResponse.json(
+  //     mapToSpinTheWheelState(updatedSpin, currentlyEnabledSpins)
+  //   );
+  // } catch (e) {
+  //   console.error(e);
+  //   NextResponse.error();
+  // }
 }
 
 function mapToSpinTheWheelState(
