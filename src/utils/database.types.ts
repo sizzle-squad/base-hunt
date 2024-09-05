@@ -359,6 +359,7 @@ export type Database = {
           id: number
           is_opt_in: boolean
           is_opt_in_sweepstakes: boolean
+          played_ocs: boolean | null
           user_address: string
         }
         Insert: {
@@ -367,6 +368,7 @@ export type Database = {
           id?: number
           is_opt_in?: boolean
           is_opt_in_sweepstakes?: boolean
+          played_ocs?: boolean | null
           user_address: string
         }
         Update: {
@@ -375,6 +377,7 @@ export type Database = {
           id?: number
           is_opt_in?: boolean
           is_opt_in_sweepstakes?: boolean
+          played_ocs?: boolean | null
           user_address?: string
         }
         Relationships: []
