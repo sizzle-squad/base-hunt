@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     );
   }
   const rankData = await supabase.rpc(
-    'getscorerankv2',
+    'getscorerank',
     {
       _game_id: gameId,
       _user_address: userAddress.toLowerCase(),
@@ -50,7 +50,6 @@ export async function GET(request: NextRequest) {
   }
 
   const playerRank = rank[0].j as RankType;
-
   const response = NextResponse.json({
     rank: playerRank?.rank.toString(),
     userAddress: playerRank?.user_address,
