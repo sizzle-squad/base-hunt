@@ -21,13 +21,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: 'unknown' });
   }
 
+  const origin = req.headers.get('origin');
+
+  if (!origin || !ALLOWED_ORGINS.includes(origin)) {
+    return new Response('Forbidden', { status: 403 });
+  }
+
   console.log(commandLog);
   const { userAddress, command, forced } = await req.json();
 
   const nonce = forced ? ethers.hexlify(ethers.randomBytes(32)) : undefined;
 
   try {
-    await airdropNft(userAddress, command, nonce);
+    // await airdropNft(userAddress, command, nonce);
   } catch (error) {
     console.log(error);
     return NextResponse.json({
@@ -36,7 +42,10 @@ export async function POST(req: Request) {
     });
   }
 
-  return NextResponse.json({ status: 'ok' });
+  const res = NextResponse.json({ status: 'ok' });
+  res.headers.set('Access-Control-Allow-Origin', origin); // CORS credentials mode is 'include'
+
+  return res;
 }
 
 function verifyForceAirdropSecret(req: Request): boolean {
@@ -55,16 +64,21 @@ function verifyForceAirdropSecret(req: Request): boolean {
 
 export async function OPTIONS(request: NextRequest) {
   const origin = request.headers.get('origin');
+
   if (!origin || !ALLOWED_ORGINS.includes(origin)) {
     return new Response('Forbidden', { status: 403 });
   }
 
+  console.log(commandLog, 'OPTIONS', { origin });
+
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': origin || '*',
+      'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Allow-Headers':
+        'Content-Type, Authorization, x-cb-device-id, x-cb-project-name, x-cb-user-id, x-cb-pagekey, x-cb-is-logged-in, x-cb-platform,  x-cb-project-name, x-cb-session-uuid, x-cb-ujs, x-cb-version-name, x-force-airdrop-secret',
     },
   });
 }

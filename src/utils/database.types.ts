@@ -280,6 +280,60 @@ export type Database = {
         }
         Relationships: []
       }
+      ocs_score: {
+        Row: {
+          current_score: number | null
+          game_id: number | null
+          id: number | null
+          updated_at: string | null
+          user_address: string | null
+        }
+        Insert: {
+          current_score?: number | null
+          game_id?: number | null
+          id?: number | null
+          updated_at?: string | null
+          user_address?: string | null
+        }
+        Update: {
+          current_score?: number | null
+          game_id?: number | null
+          id?: number | null
+          updated_at?: string | null
+          user_address?: string | null
+        }
+        Relationships: []
+      }
+      ocs_user_challenge_status: {
+        Row: {
+          challenge_id: string | null
+          created_at: string | null
+          game_id: number | null
+          id: number | null
+          points: number | null
+          status: Database["public"]["Enums"]["challenge_status"] | null
+          user_address: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string | null
+          game_id?: number | null
+          id?: number | null
+          points?: number | null
+          status?: Database["public"]["Enums"]["challenge_status"] | null
+          user_address?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string | null
+          game_id?: number | null
+          id?: number | null
+          points?: number | null
+          status?: Database["public"]["Enums"]["challenge_status"] | null
+          user_address?: string | null
+        }
+        Relationships: []
+      }
       score: {
         Row: {
           current_score: number
@@ -359,6 +413,7 @@ export type Database = {
           id: number
           is_opt_in: boolean
           is_opt_in_sweepstakes: boolean
+          played_ocs: boolean | null
           user_address: string
         }
         Insert: {
@@ -367,6 +422,7 @@ export type Database = {
           id?: number
           is_opt_in?: boolean
           is_opt_in_sweepstakes?: boolean
+          played_ocs?: boolean | null
           user_address: string
         }
         Update: {
@@ -375,6 +431,7 @@ export type Database = {
           id?: number
           is_opt_in?: boolean
           is_opt_in_sweepstakes?: boolean
+          played_ocs?: boolean | null
           user_address?: string
         }
         Relationships: []
