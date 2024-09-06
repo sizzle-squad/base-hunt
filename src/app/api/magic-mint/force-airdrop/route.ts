@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { ethers } from 'ethers';
 
 import { airdropNft } from '@/utils/walletapi';
-import { verifyWebhookSecret } from '@/utils/webhook';
+const ALLOWED_ORGINS = process.env.ALLOWED_ORGINS?.split(',') ?? [];
 
 const commandLog = '[magic mint - force airdrop]';
 
@@ -51,4 +51,20 @@ function verifyForceAirdropSecret(req: Request): boolean {
     return false;
   }
   return secret?.toLowerCase() === headerSecret?.toLowerCase();
+}
+
+export async function OPTIONS(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  if (!origin || !ALLOWED_ORGINS.includes(origin)) {
+    return new Response('Forbidden', { status: 403 });
+  }
+
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': origin || '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }
