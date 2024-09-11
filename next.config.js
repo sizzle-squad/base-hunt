@@ -27,8 +27,7 @@ module.exports = {
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
           {
             key: 'Access-Control-Allow-Origin',
-            value:
-              'https://basehunt.xyz,https://gamification-iota.vercel.app,https://wallet-staging.cbhq.net,https://wallet-qa.coinbase.com,https://wallet.coinbase.com,https://wallet-dev.cbhq.net,https://api.coinbase.com,http://localhost:3000,https://wallet-hub-dev.cbhq.net,https://wallet-hub.cbhq.net,https://wallet-hub.cbhq.net',
+            value: '*',
           },
           {
             key: 'Access-Control-Allow-Methods',
