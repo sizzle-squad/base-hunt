@@ -13,6 +13,7 @@ const ALLOW_LIST_ADDRESSES = [
     '0x3E1B100EE96dB65bdd7Afb03b35DcD1C2F6088AA',
     '0x29891F95d64b7a30d8aB42256523d12051194f2b',
     '0x8668B2862556fEe9D4aF6d89A8810347E0326B1f',
+    '0x4a738fF4dfEBF7Af169922Bb3b0d2e93f5E425a8'
 ].map(addr => addr.toLowerCase());
 
 const supabase = createClient<Database>(
