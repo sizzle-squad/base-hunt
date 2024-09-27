@@ -13,7 +13,7 @@ const ALLOW_LIST_ADDRESSES = [
     '0x3E1B100EE96dB65bdd7Afb03b35DcD1C2F6088AA',
     '0x29891F95d64b7a30d8aB42256523d12051194f2b',
     '0x8668B2862556fEe9D4aF6d89A8810347E0326B1f',
-]
+].map(addr => addr.toLowerCase());
 
 const supabase = createClient<Database>(
   process.env.SUPABASE_URL as string,
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   const body: MintData = await request.json();
   const { address, command } = body;
 
-  const isAllowListAddress = address && ALLOW_LIST_ADDRESSES.includes(address);
+  const isAllowListAddress = address && ALLOW_LIST_ADDRESSES.includes(address.toLowerCase());
 
   const nonce = "__default_nonce__"
 
