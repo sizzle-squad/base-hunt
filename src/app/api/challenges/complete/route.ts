@@ -294,6 +294,9 @@ async function pointsMultiplier(
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
+        'X-Platform-Name': 'web',
+        'X-App-Version': '1.0.0',
+        'X-Appsflyer-Id': 'web',
       },
     }
   );
