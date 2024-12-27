@@ -46,6 +46,7 @@ async function getAllBalancesForChain({ userAddress, chainId }: Params) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'Gamification',
       },
     });
 
@@ -73,6 +74,7 @@ async function getCollectiblesPortfolioTokens({
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'Gamification',
       },
     });
 

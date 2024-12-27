@@ -286,6 +286,10 @@ async function pointsMultiplier(
     {
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'Gamification',
+        'X-Platform-Name': 'web',
+        'X-App-Version': '1.0.0',
+        'X-Appsflyer-Id': 'web',
       },
     }
   );
