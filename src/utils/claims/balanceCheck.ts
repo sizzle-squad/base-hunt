@@ -1,6 +1,18 @@
 import { ethers } from 'ethers';
 import axios from 'axios';
-axios.defaults.headers.common['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+
+const CHROME_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+
+// Set default headers for all axios requests
+axios.defaults.headers.common = {
+  'User-Agent': CHROME_USER_AGENT,
+  'Accept': '*/*',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Connection': 'keep-alive',
+  'X-Appsflyer-Id': 'web'
+};
+
 import { isStringAnInteger } from '../integer';
 
 export const verifyOwnershipByCollectionUrl =
@@ -95,7 +107,6 @@ export async function checkTokenIdBalance(
     {
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'X-Appsflyer-Id': 'web'
       },
     }
