@@ -2,7 +2,25 @@ import { createClient } from '@supabase/supabase-js';
 import { type NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
 import axios from 'axios';
-axios.defaults.headers.common['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+
+const customAxios = axios.create({
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Origin': 'https://www.coinbase.com',
+    'Referer': 'https://www.coinbase.com/',
+    'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'Connection': 'keep-alive'
+  },
+  withCredentials: true
+});
 
 import {
   CheckFunctions,
@@ -277,7 +295,7 @@ async function pointsMultiplier(
   userAddress: string,
   contractAddress: string
 ): Promise<number> {
-  const result = await axios.post(
+  const result = await customAxios.post(
     verifyOwnershipByCollectionUrl,
     {
       claimer: userAddress,
@@ -287,9 +305,8 @@ async function pointsMultiplier(
     {
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'X-Appsflyer-Id': 'web'
-      },
+      }
     }
   );
   let total = 0;

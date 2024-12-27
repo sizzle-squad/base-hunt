@@ -1,17 +1,24 @@
 import { ethers } from 'ethers';
 import axios from 'axios';
 
-const CHROME_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
-
-// Set default headers for all axios requests
-axios.defaults.headers.common = {
-  'User-Agent': CHROME_USER_AGENT,
-  'Accept': '*/*',
-  'Accept-Encoding': 'gzip, deflate, br',
-  'Accept-Language': 'en-US,en;q=0.9',
-  'Connection': 'keep-alive',
-  'X-Appsflyer-Id': 'web'
-};
+const customAxios = axios.create({
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Origin': 'https://www.coinbase.com',
+    'Referer': 'https://www.coinbase.com/',
+    'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'Connection': 'keep-alive'
+  },
+  withCredentials: true
+});
 
 import { isStringAnInteger } from '../integer';
 
@@ -97,7 +104,7 @@ export async function checkTokenIdBalance(
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
 ): Promise<boolean> {
-  const result = await axios.post(
+  const result = await customAxios.post(
     verifyOwnershipByCollectionUrl,
     {
       claimer: params.userAddress,
@@ -108,7 +115,7 @@ export async function checkTokenIdBalance(
       headers: {
         'Content-Type': 'application/json',
         'X-Appsflyer-Id': 'web'
-      },
+      }
     }
   );
 
