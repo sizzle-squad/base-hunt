@@ -56,7 +56,7 @@ export async function checkBalance(
 export async function checkTokenIdBalance(
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
-): Promise<boolean> {\
+): Promise<boolean> {
   const cleanUserAddress = params.userAddress.trim();
   const cleanContractAddress = params.contractAddress.trim();
   const headers = {
