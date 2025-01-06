@@ -56,7 +56,9 @@ export async function checkBalance(
 export async function checkTokenIdBalance(
   params: CheckBalanceParams,
   provider: ethers.JsonRpcProvider
-): Promise<boolean> {
+): Promise<boolean> {\
+  const cleanUserAddress = params.userAddress.trim();
+  const cleanContractAddress = params.contractAddress.trim();
   const headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     'Accept': 'application/json, text/plain, */*',
@@ -79,8 +81,8 @@ export async function checkTokenIdBalance(
     method: 'POST',
     headers,
     body: JSON.stringify({
-      claimer: params.userAddress,
-      contractAddress: params.contractAddress,
+      claimer: cleanUserAddress,
+      contractAddress: cleanContractAddress,
       chainId: '8453',
     }),
     credentials: 'include'
