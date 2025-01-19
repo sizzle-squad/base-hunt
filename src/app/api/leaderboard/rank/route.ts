@@ -28,34 +28,38 @@ export async function GET(request: NextRequest) {
       }
     );
   }
-  const rankData = await supabase.rpc(
-    'getscorerankv2',
-    {
-      _game_id: gameId,
-      _user_address: userAddress.toLowerCase(),
-    },
-    { get: true } as any
-  );
-  if (rankData.error) {
-    console.log(rankData.error);
-    return new Response('', { status: 500 });
-  }
-  const rank = rankData.data;
-  if (rank.length === 0) {
-    return NextResponse.json({
-      rank: null,
-      userAddress: userAddress,
-      currentScore: 0,
-    });
-  }
 
-  const playerRank = rank[0].j as RankType;
+  // const rankData = await supabase.rpc(
+  //   'getscorerankv2',
+  //   {
+  //     _game_id: gameId,
+  //     _user_address: userAddress.toLowerCase(),
+  //   },
+  //   { get: true } as any
+  // );
+  // if (rankData.error) {
+  //   console.log(rankData.error);
+  //   return new Response('', { status: 500 });
+  // }
+  // const rank = rankData.data;
+  // if (rank.length === 0) {
+  //   return NextResponse.json({
+  //     rank: null,
+  //     userAddress: userAddress,
+  //     currentScore: 0,
+  //   });
+  // }
 
-  const response = NextResponse.json({
-    rank: playerRank?.rank.toString(),
-    userAddress: playerRank?.user_address,
-    currentScore: playerRank?.current_score,
-  });
+  // const playerRank = rank[0].j as RankType;
+
+  // const response = NextResponse.json({
+  //   rank: playerRank?.rank.toString(),
+  //   userAddress: playerRank?.user_address,
+  //   currentScore: playerRank?.current_score,
+  // });
+
+  // stop-gap solution to avoid hitting the database
+  const response = NextResponse.json({});
 
   // cache for 6 hours
   response.headers.set('Cache-Control', 'public, s-maxage=21600');
