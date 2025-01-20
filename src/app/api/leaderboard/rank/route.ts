@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
   // });
 
   // stop-gap solution to avoid hitting the database
-  const response = NextResponse.json({});
+  const response = NextResponse.json(null);
 
   // cache for 6 hours
   response.headers.set('Cache-Control', 'public, s-maxage=21600');
