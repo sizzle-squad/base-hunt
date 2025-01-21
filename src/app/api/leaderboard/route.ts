@@ -26,32 +26,30 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  // const offset = (page - 1) * limit;
+  const offset = (page - 1) * limit;
 
-  // const { data, error } = await supabase
-  //   .from('score')
-  //   .select('*')
-  //   .eq('game_id', BigInt(gameId))
-  //   .order('current_score', { ascending: false })
-  //   .order('updated_at', { ascending: true })
-  //   .range(offset, offset + limit - 1);
+  const { data, error } = await supabase
+    .from('score')
+    .select('*')
+    .eq('game_id', BigInt(gameId))
+    .order('current_score', { ascending: false })
+    .order('updated_at', { ascending: true })
+    .range(offset, offset + limit - 1);
 
-  // if (error) {
-  //   return new Response(`No top ranks found with gameId: ${gameId}`, {
-  //     status: 400,
-  //   });
-  // }
+  if (error) {
+    return new Response(`No top ranks found with gameId: ${gameId}`, {
+      status: 400,
+    });
+  }
 
-  // const result = data.map((entry) => ({
-  //   updatedAt: entry.updated_at,
-  //   gameId: entry.game_id,
-  //   currentScore: entry.current_score,
-  //   userAddress: entry.user_address,
-  // }));
+  const result = data.map((entry) => ({
+    updatedAt: entry.updated_at,
+    gameId: entry.game_id,
+    currentScore: entry.current_score,
+    userAddress: entry.user_address,
+  }));
 
-  // const response = NextResponse.json(result);
-
-  const response = NextResponse.json([]);
+  const response = NextResponse.json(result);
 
   // cache for 10 seconds
   response.headers.set('Cache-Control', 'public, s-maxage=10');
