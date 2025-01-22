@@ -80,6 +80,7 @@ async function getTxDetails(txHash: string, address: string) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'Gamification',
       },
       body: JSON.stringify({
         network: 'networks/base-mainnet',

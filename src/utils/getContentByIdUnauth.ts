@@ -15,6 +15,7 @@ export async function getContentByIdUnauth(contentId: string) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'Gamification',
       },
     });
 

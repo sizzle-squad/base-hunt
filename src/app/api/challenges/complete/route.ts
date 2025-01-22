@@ -1,8 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { type NextRequest, NextResponse } from 'next/server';
 import '@/utils/helper';
-import axios from 'axios';
-
 import {
   CheckFunctions,
   MapChallengeTypeUserAddress,
@@ -276,22 +274,39 @@ async function pointsMultiplier(
   userAddress: string,
   contractAddress: string
 ): Promise<number> {
-  const result = await axios.post(
-    verifyOwnershipByCollectionUrl,
-    {
+  const headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Content-Type': 'application/json',
+    'Origin': 'https://www.coinbase.com',
+    'Referer': 'https://www.coinbase.com/',
+    'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'Connection': 'keep-alive',
+    'X-Appsflyer-Id': 'web'
+  };
+
+  const response = await fetch(verifyOwnershipByCollectionUrl, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
       claimer: userAddress,
       contractAddress: contractAddress,
       chainId: '8453',
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  );
+    }),
+    credentials: 'include'
+  });
+
+  const result = await response.json();
   let total = 0;
-  if (result.data.tokenCounts) {
-    for (const [_, value] of Object.entries(result.data.tokenCounts)) {
+  if (result.tokenCounts) {
+    for (const [_, value] of Object.entries(result.tokenCounts)) {
       total += Number(value);
     }
 
